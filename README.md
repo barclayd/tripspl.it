@@ -31,7 +31,7 @@ npm test
 npm run dev
 ```
 
-Cloud account, Apple sign-in and associated-domain configuration are required for live shared trips. Local trip creation works without signing in. Never put credentials in the repository. Backend-specific configuration and deployment instructions live in [backend/README.md](backend/README.md).
+The Cloudflare API is deployed at [api.tripspl.it](https://api.tripspl.it/v1/health), with public exchange rates available before sign-in. Live shared trips still require Apple's sign-in key and associated-domain configuration. Local trip creation works without signing in. Never put credentials in the repository. Backend-specific configuration and deployment instructions live in [backend/README.md](backend/README.md).
 
 ## Checks
 
@@ -42,4 +42,4 @@ xcodebuild -project ios/TripSplit.xcodeproj -scheme TripSplit \
   CODE_SIGNING_ALLOWED=NO test
 ```
 
-GitHub Actions checks both the Worker and the native app. Simulator and local checks do not establish successful Apple production sign-in, a deployed backend or installed TestFlight delivery; those require their respective environments and credentials.
+GitHub Actions checks both the Worker and the native app. Simulator and local checks do not establish successful Apple production sign-in or installed TestFlight delivery; those require their respective environments and credentials.

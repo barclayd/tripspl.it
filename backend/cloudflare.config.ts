@@ -8,10 +8,11 @@ const tripWorker = defineWorker({
 export default defineConfig({
   worker: {
     ...tripWorker,
+    domains: ['api.tripspl.it'],
     env: {
-      DB: bindings.d1({ name: 'tripsplit-accounts' }),
+      DB: bindings.d1({ id: '20112438-d042-4b58-8dc0-5395b5c32aee', name: 'tripsplit-accounts' }),
       TRIPS: bindings.durableObject({ worker: tripWorker, exportName: 'TripRoom' }),
-      APPLE_AUDIENCE: bindings.text('' as string),
+      APPLE_AUDIENCE: bindings.text('it.tripspl.TripSplit' as string),
       APPLE_TEAM_ID: bindings.text('' as string),
       APPLE_KEY_ID: bindings.text('' as string),
       APPLE_PRIVATE_KEY: bindings.secret(),

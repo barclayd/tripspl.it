@@ -364,7 +364,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = it.tripspl.TripSplit;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				TRIPSPLIT_API_BASE_URL = "";
+				TRIPSPLIT_API_BASE_URL = "https://api.tripspl.it";
 			};
 			name = Debug;
 		};
@@ -401,7 +401,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = it.tripspl.TripSplit;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				TRIPSPLIT_API_BASE_URL = "";
+				TRIPSPLIT_API_BASE_URL = "https://api.tripspl.it";
 			};
 			name = Release;
 		};

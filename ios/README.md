@@ -24,7 +24,9 @@ The app opens empty. The explicit `--demo` launch argument seeds an empty store 
 xcrun simctl launch <simulator-udid> it.tripspl.TripSplit --demo
 ```
 
-Set `TRIPSPLIT_API_BASE_URL=https://your-configured-service` in the build settings (origin, without `/v1`). With no service configured, local trip creation, editing, manual conversion, splitting and repayment records work; cloud features show a setup state. Public reference FX is available without signing in when the service is configured.
+The default service is `https://api.tripspl.it`, configured by `TRIPSPLIT_API_BASE_URL` in `project.yml` (origin, without `/v1`). Its health endpoint and public reference FX have been verified against the deployed Worker. Currency conversion works without signing in. Apple authentication remains unavailable until the server’s Apple credentials and audience are configured; the app reports that setup error without fabricating a session. Private trip endpoints require authentication.
+
+To use another environment, override `TRIPSPLIT_API_BASE_URL` in the build settings. Clearing it leaves local trip creation, editing, manual conversion, splitting and repayment records available with an explicit cloud setup state.
 
 A Debug build accepts `--api-base-url http://127.0.0.1:8787` or `http://localhost:8787` for a local Worker. Release ignores that argument and only accepts HTTPS from build configuration. ATS has the narrow local-network setting, without arbitrary loads. This is transport configuration only; it adds no authentication bypass.
 
@@ -48,7 +50,7 @@ The initial itinerary is built with stable day/leg IDs and a user-visible trip t
 
 ## Release checks still requiring external configuration
 
-- Signed-device Apple sign-in, token rotation/revocation, cloud multi-user invites and live collaboration.
+- Configure the server’s Apple credentials/audience, then verify signed-device Apple sign-in, token rotation/revocation, cloud multi-user invites and live collaboration.
 - Associated-domain ownership/AASA and real universal-link opening.
 - Device ergonomics and real Duo fold/hinge behavior; simulator coverage is not device verification.
-- App Store privacy declarations, production service credentials and authorised TestFlight delivery.
+- App Store privacy declarations, Apple signing credentials and authorised TestFlight delivery. The production Cloudflare API is deployed; authentication awaits its Apple configuration.

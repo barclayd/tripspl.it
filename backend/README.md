@@ -29,6 +29,18 @@ The compatibility date is `2026-10-30`: the pinned workerd binary supports that 
 
 ## Configuration and release
 
+The initial deployment is `tripsplit-api` at **https://api.tripspl.it**, in the existing Cloudflare account. D1 `tripsplit-accounts` is bound by its real ID, the initial migration is applied, the SQLite `TripRoom` namespace is provisioned and the five-minute cleanup cron is enabled. Public health and real FX lookup have been checked over HTTPS. Apple authentication remains disabled until its team/key configuration is supplied; private trip endpoints reject unauthenticated requests.
+
+The project uses the existing `bunx wrangler` login for deployment. The wrapper retrieves its credential into process memory and passes it to the project-local `cf` CLI; it never prints or saves the credential. A provided `CLOUDFLARE_API_TOKEN` takes precedence. The target account is checked explicitly.
+
+```sh
+npm run deploy -- --dry-run
+npm run deploy
+npm run cloud -- d1 migrations apply 20112438-d042-4b58-8dc0-5395b5c32aee --dir migrations
+```
+
+The production session-encryption secret is stored in Cloudflare, with a protected local backup outside this repository at `~/.config/tripsplit/production-secrets.json`. Do not replace it on routine deployment. The initial Apple private-key binding is deliberately empty, so authentication fails closed. Once the actual key is available, update this protected file and the nonsecret Apple identifiers, then deploy with `--secrets-file <protected-json-file>`. Do not put secret values in command arguments or commit the file.
+
 Authentication deliberately fails closed until the actual Apple configuration exists. Copy `.env.example` to ignored `.dev.vars` for local secrets. Configure nonsecret production bindings in `cloudflare.config.ts` and provide secrets through the deployment's secret store:
 
 | Binding | Required value |
@@ -46,9 +58,9 @@ Authentication deliberately fails closed until the actual Apple configuration ex
 
 Generate an encryption key locally with `openssl rand -base64 32` and store it directly as a secret. Back it up in the deployment secret manager: changing or losing it prevents existing Apple grant revocation and refresh. Key rotation requires re-encrypting stored grants before removing the old key.
 
-The config declares the D1 database by name for an operator to provision/bind; it does not assume an account, resource ID, domain or working Apple credentials. Before an authorized deployment, inspect `cf d1 migrations apply --help`, apply `cf d1 migrations apply <actual-database-uuid> --dir migrations`, configure the Apple bindings/secrets, build, and deploy using the project's approved workflow. `cf` derives Durable Object lifecycle migrations from `exports.TripRoom`; keep the SQLite declaration on subsequent deployments. Cron must remain enabled (`*/5 * * * *`) for account cleanup and expired auth data. Logs/traces are enabled, with automatic invocation logs disabled to avoid collecting request URLs; application logs contain event names/error classes, never tokens or financial payloads.
+The config binds the provisioned D1 database and custom API domain. Apply new migrations before deploying code that requires them. `cf` derives Durable Object lifecycle migrations from `exports.TripRoom`; keep the SQLite declaration on subsequent deployments. Cron must remain enabled (`*/5 * * * *`) for account cleanup and expired auth data. Logs/traces are enabled, with automatic invocation logs disabled to avoid collecting request URLs; application logs contain event names/error classes, never tokens or financial payloads.
 
-Actual Apple sign-in, deployed D1/DO point-in-time recovery, associated-domain entitlement verification, and a production deployment require the real account configuration. They have not been claimed as live-provider verification by the local tests.
+Actual Apple sign-in and associated-domain verification still require Apple's real account configuration. Deployed D1/DO point-in-time recovery has not been rehearsed. Local tests and a successful API deployment do not establish those checks.
 
 ## API behavior
 

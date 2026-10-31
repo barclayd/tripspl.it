@@ -5,6 +5,8 @@
   "type": "module",
   "scripts": {
     "dev": "cf dev",
+    "deploy": "node scripts/cf-auth.mjs deploy",
+    "cloud": "node scripts/cf-auth.mjs",
     "types": "cf workers types",
     "build": "cf build",
     "check": "cf workers types && tsc --noEmit",
