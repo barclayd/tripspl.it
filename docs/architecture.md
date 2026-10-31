@@ -1,12 +1,12 @@
 # TripSplit architecture
 
-Agreed with Dan on 31 October 2026. Native SwiftUI for iPhone v2 (Pop) and iPhone Duo; strict TypeScript on Cloudflare Workers; explicit offline synchronisation; Sign in with Apple. Design reference: `/Users/danbarclay/Downloads/design_handoff_tripsplit/`. The HTML is visual reference, not production code or authoritative financial arithmetic.
+Architecture decisions recorded on 31 October 2026. Native SwiftUI for iPhone v2 (Pop) and iPhone Duo; strict TypeScript on Cloudflare Workers; explicit offline synchronisation; Sign in with Apple. Visual references are the supplied TripSplit v2 Pop and iPhone Duo handoff. The HTML is visual reference, not production code or authoritative financial arithmetic.
 
 ## Product rules
 
 - Trips have a reporting currency and a whole-trip budget. Expenses have an original amount/currency, payer and a nonempty subset of travellers receiving equal shares. The payer need not be a beneficiary.
 - Planned expenses contribute to expected cost, not debt. Paid expenses contribute to actual cost and balances. A repayment reduces debt without increasing spending. Marking planned as paid updates the same expense.
-- Store money as integer minor units encoded as decimal strings in JSON. Use currency metadata for precision; don't copy the prototype's zero-decimal currency list. FX rates are positive decimal strings. Round half-up to the reporting currency's minor unit, then distribute split remainders deterministically by sorted traveller ID. Never use floating-point arithmetic for ledger values.
+- Store money as integer minor units encoded as decimal strings in JSON. Use the shared official ISO 4217 table in `contracts/currencies.json` for accounting precision; display libraries can use different conventions. FX rates are positive decimal strings. Round half-up to the reporting currency's minor unit, then distribute split remainders deterministically by sorted traveller ID. Never use floating-point arithmetic for ledger values.
 - Missing conversion rates mean an incomplete total, never a zero-cost expense. Keep the original amount, conversion source, effective rate date and whether a rate is a reference estimate or manually entered. Paid conversions stay fixed unless explicitly edited. Card charges can be entered as an explicit reporting-currency amount.
 - Label total/person as an average. Calculate the current traveller's share from actual allocations. Preserve pennies in balances; the prototype's half-unit settlement threshold is inappropriate.
 - Trip dates are civil `YYYY-MM-DD` dates, not UTC instants. Stops have ordered nights; days include the departure day and final return day (`sum(nights)+1`). Stable IDs attach expenses to days/legs. Changing itinerary dates or stops must not silently move or discard financial records.
@@ -19,7 +19,7 @@ The Worker authenticates requests and routes them to one SQLite-backed `TripRoom
 
 D1 stores users, Apple identity associations, device sessions, one-use auth challenges, immutable FX quotes and a user-to-trip discovery index. The index is a projection: a persisted TripRoom outbox updates it with retries/alarms and revision-aware upserts. It never grants access. A trip listing resolves authoritative membership before disclosing a trip. Keep sessions hashed; keep secrets in Worker secret bindings. Do not log tokens or private financial payloads.
 
-Suggested TripRoom tables: `trip`, `travellers`, `members`, `stops`, `days`, `legs`, `expenses`, `expense_shares`, `repayments`, `invites`, `operation_receipts`, `changes`, `directory_outbox`. A current JSON snapshot may be stored/derived for transport, but do not replace the whole trip blindly on every edit.
+TripRoom tables include `trip`, versioned `entities` (travellers, expenses and repayments), `members`, `stops`, `days`, `legs`, `invites`, `operation_receipts`, `changes` and `directory_outbox`. Per-entity JSON holds validated record fields; SQL keys and transactions enforce identity/revision boundaries. Derive a current JSON snapshot for transport; never replace the whole trip blindly on each edit.
 
 Suggested D1 tables: `users`, `apple_identities`, `auth_challenges`, `sessions`, `user_trips`, `fx_quotes`. User identity is Apple's verified issuer/subject, not email. The server generates its own user ID. Session refresh rotates credentials; logout and account deletion revoke sessions.
 
@@ -43,12 +43,12 @@ Invite links are created by the owner for an existing traveller, have a cryptogr
 
 ## Native presentation
 
-One app state owns the navigation path `Trips -> Trip -> Day`, sheet drafts, onboarding and map state. Layout changes only presentation. Closed uses the current screen; wide pairs its parent with it; tent reflows the current task. Keep stable view identity, native toolbars, tab bars, sheets and accessibility. iOS 26 baseline; gate Duo APIs to their actual SDK availability (27.1 where required). Xcode 27.1 and an iPhone Duo simulator are available locally.
+One app state owns the navigation path `Trips -> Trip -> Day`, sheet drafts, onboarding and map state. Layout changes only presentation. Closed uses the current screen; wide pairs its parent with it; tent reflows the current task. Keep stable view identity, native toolbars, tab bars, sheets and accessibility. iOS 26 baseline; gate Duo APIs to their actual SDK availability (27.1 where required). Build with Xcode 27.1 or later and verify the supported simulator/device poses.
 
 Implement all designed screens: trips/current/upcoming/past, trip overview and balances, day and travel legs, expense editing, quick convert, seven-step onboarding, globe and the boarding-pass component. Pop is the selected direction; Night informs dark mode. Use Reduce Motion equivalents and Dynamic Type. Seed content is opt-in demo/preview data only, not a new user's trips.
 
 ## Verification and delivery
 
-Swift and TypeScript share the contract and money examples under `contracts/`. Test rounding, unequal beneficiary sets, repayments, unresolved conversions, authorisation, duplicate/reordered commands, conflicts, offline restart and backup restoration. Run native builds and exercise iPhone/Duo flows with screenshots/video. Keep credentials and generated builds outside git. Commit task changes, push the branch and open a PR; leave merging to Dan.
+Swift and TypeScript share the contract and money examples under `contracts/`. Test rounding, unequal beneficiary sets, repayments, unresolved conversions, authorisation, duplicate/reordered commands, conflicts, offline restart and backup restoration. Run native builds and exercise iPhone/Duo flows with screenshots/video. Keep credentials and generated builds outside git.
 
-The frontend agent owns `ios/`; the backend agent owns `backend/`. Root owns `contracts/`, integration, repository docs/CI and delivery. Coordinate contract changes before implementing them. Both build agents use `gpt-6-astra` with `xhigh` reasoning.
+`ios/` contains the native app; `backend/` contains the Worker and storage implementation. `contracts/` defines their shared boundary. Update the contract and both consumers together when changing that boundary.

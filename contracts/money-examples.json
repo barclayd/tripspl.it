@@ -263,6 +263,97 @@
         "isComplete": false,
         "settlements": []
       }
+    },
+    {
+      "name": "settlement consumes initially sorted debtors and creditors",
+      "travellerIds": [
+        "a",
+        "b",
+        "c",
+        "d",
+        "e"
+      ],
+      "expenses": [
+        {
+          "id": "e1",
+          "status": "paid",
+          "homeAmountMinor": "600",
+          "paidBy": "a",
+          "splitWith": [
+            "c"
+          ]
+        },
+        {
+          "id": "e2",
+          "status": "paid",
+          "homeAmountMinor": "200",
+          "paidBy": "a",
+          "splitWith": [
+            "d"
+          ]
+        },
+        {
+          "id": "e3",
+          "status": "paid",
+          "homeAmountMinor": "200",
+          "paidBy": "b",
+          "splitWith": [
+            "d"
+          ]
+        },
+        {
+          "id": "e4",
+          "status": "paid",
+          "homeAmountMinor": "300",
+          "paidBy": "b",
+          "splitWith": [
+            "e"
+          ]
+        }
+      ],
+      "repayments": [],
+      "expected": {
+        "paidMinor": "1300",
+        "plannedMinor": "0",
+        "expectedMinor": "1300",
+        "balances": {
+          "a": "800",
+          "b": "500",
+          "c": "-600",
+          "d": "-400",
+          "e": "-300"
+        },
+        "paidShares": {
+          "a": "0",
+          "b": "0",
+          "c": "600",
+          "d": "400",
+          "e": "300"
+        },
+        "isComplete": true,
+        "settlements": [
+          {
+            "fromTravellerId": "c",
+            "toTravellerId": "a",
+            "amountMinor": "600"
+          },
+          {
+            "fromTravellerId": "d",
+            "toTravellerId": "a",
+            "amountMinor": "200"
+          },
+          {
+            "fromTravellerId": "d",
+            "toTravellerId": "b",
+            "amountMinor": "200"
+          },
+          {
+            "fromTravellerId": "e",
+            "toTravellerId": "b",
+            "amountMinor": "300"
+          }
+        ]
+      }
     }
   ]
 }

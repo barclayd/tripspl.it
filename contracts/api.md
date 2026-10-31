@@ -1,6 +1,6 @@
 # HTTP contract v1
 
-JSON over HTTPS under `/v1`. Bearer access token required except challenge, Apple sign-in, refresh, health and public invite landing/association files. Error shape is `APIError`. IDs are opaque strings (client-created record/operation IDs use UUIDs). Timestamps are ISO 8601 UTC; civil dates use `YYYY-MM-DD`. All money/rates follow `tripsplit-v1.ts`. All lists, body sizes and batches are bounded. No credentials in query strings or logs.
+JSON over HTTPS under `/v1`. Bearer access token required except challenge, Apple sign-in, refresh, health, exchange-rate lookup and public invite landing/association files. Error shape is `APIError`. IDs are opaque strings (client-created record/operation IDs use UUIDs). Timestamps are ISO 8601 UTC; civil dates use `YYYY-MM-DD`. All money/rates follow `tripsplit-v1.ts`. All lists, body sizes and batches are bounded. No credentials in query strings or logs.
 
 | Method | Path | Request | Success response |
 | --- | --- | --- | --- |
@@ -33,3 +33,9 @@ Sync requests process operations in order with an atomic transaction per operati
 The home-currency equivalent of same-currency expenses is `amountMinor`, regardless of conversion. For foreign-currency reference conversions, validate/recompute against an immutable server FX quote; never trust a submitted converted total. Manual overrides are explicit and retain their provenance. If a quote cannot be obtained, retain the original expense with `conversion:null`, and mark total/balances incomplete rather than inventing a rate. Repayments may initially be entered in the reporting currency. A home-currency change with financial records requires explicit revaluation; v1 rejects it rather than silently changing balances.
 
 Invitation URLs must use a configured origin/application link; otherwise return `url:null` and expose a local share/code flow. Do not invent a deployed URL. Never accept membership solely from a client-supplied traveller name or ID.
+
+## Numeric and collection bounds
+
+Every amount/budget, including a converted home amount, is a nonnegative integer no greater than `999999999999` minor units. Expense and repayment amounts must be positive. A trip has at most 10,000 expenses and repayments combined. Rates have at most 18 significant digits and at most 18 fractional digits. These bounds allow exact Swift Decimal conversion and safe Int64 aggregate arithmetic. SQL/TypeScript may use larger integer representations internally, but must enforce the transport bounds. Settlement suggestions sort creditors/debtors by descending initial amount with ascending ID tie-break, then consume each list in order without re-sorting after a transfer.
+
+The v1 trip directory returns one complete snapshot per page to bound Worker memory; clients follow `nextCursor` until null. Rate lookup is public with an IP-based rate limit so local-only users can convert amounts before signing in. It contains no user expense data.
