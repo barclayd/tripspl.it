@@ -45,7 +45,9 @@ public struct TripsView: View {
           DeparturesBoard(trips: trips)
           if trips.contains(where: { $0.phase == .past }) { PassportStamps(trips: trips) }
         }
-      }.pagePadding().padding(.bottom, 28)
+      }
+      .pagePadding().padding(.bottom, 28)
+      .tripActionsContainer()
     }
     .scrollBounceBehavior(.basedOnSize)
     .scrollEdgeEffectHidden(compact, for: .top)
@@ -127,12 +129,15 @@ public struct TripsView: View {
               .padding(.horizontal, 10).padding(.bottom, 4)
             ForEach(group) { trip in
               SidebarRow(trip: trip, selected: model.selectedTripID == trip.id) { model.open(trip) }
+                .tripActions(trip)
             }
           }
         }
       }
     }
     .padding(.horizontal, -10)
+    // A row swiped open for its actions slides under the column's edge rather than into the gutter.
+    .clipped()
   }
 }
 

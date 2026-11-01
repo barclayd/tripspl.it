@@ -32,6 +32,7 @@ struct DeparturesBoard: View {
           }
           .buttonStyle(BoardRowStyle())
           .accessibilityLabel(label(trip))
+          .tripActions(trip)
         }
         Button {
           model.showOnboarding = true
@@ -53,6 +54,8 @@ struct DeparturesBoard: View {
       }
       .padding(.horizontal, 12).padding(.top, 14).padding(.bottom, 8)
       .background(Theme.board, in: RoundedRectangle(cornerRadius: Theme.Radius.card, style: .continuous))
+      // A row swiped open for its actions slides under the board's edge rather than off it.
+      .clipShape(RoundedRectangle(cornerRadius: Theme.Radius.card, style: .continuous))
       .overlay {
         RoundedRectangle(cornerRadius: Theme.Radius.card, style: .continuous)
           .strokeBorder(.white.opacity(0.05))

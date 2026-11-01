@@ -150,18 +150,7 @@ struct RootView: View {
                 }
               }
             }
-            .confirmationDialog(
-              "Delete \(deleting?.name ?? "this trip")?",
-              isPresented: Binding(get: { deleting != nil }, set: { if !$0 { deleting = nil } }),
-              titleVisibility: .visible, presenting: deleting
-            ) { trip in
-              Button("Delete trip", role: .destructive) { Task { await model.deleteTrip(trip) } }
-            } message: { trip in
-              Text(
-                trip.travellers.count > 1
-                  ? "Its days and expenses go for all \(trip.travellers.count) travellers. This can’t be undone."
-                  : "Its days and expenses go too. This can’t be undone.")
-            }
+            .confirmsDeleting($deleting)
             .confirmationDialog(
               clearTitle,
               isPresented: Binding(get: { clearing != nil }, set: { if !$0 { clearing = nil } }),
