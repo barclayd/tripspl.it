@@ -38,6 +38,7 @@ struct PassportStamps: View {
                   Stamp(trip: past[index], index: index)
                 }
                 .buttonStyle(PressStyle(scale: 0.95))
+                .tripActions(past[index], swipes: false)
                 .stampIn(delay: 0.15 + Double(index) * 0.18, visible: visible)
               }
               Spacer(minLength: 0)
