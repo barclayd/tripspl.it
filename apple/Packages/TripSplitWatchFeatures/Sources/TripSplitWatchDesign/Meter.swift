@@ -6,6 +6,7 @@ public struct Meter: View {
   let fill: Color
   let track: Color
   let height: CGFloat
+  @Environment(\.isLuminanceReduced) private var dimmed
 
   public init(value: Double, fill: Color = .white, track: Color, height: CGFloat = 5) {
     self.value = value
@@ -15,8 +16,10 @@ public struct Meter: View {
   }
 
   public var body: some View {
+    // Always On: the track becomes an outline and only the fill stays solid.
     Capsule()
-      .fill(track)
+      .fill(dimmed ? .clear : track)
+      .strokeBorder(dimmed ? WatchTheme.ink3 : .clear, lineWidth: 1)
       .frame(height: height)
       .overlay(alignment: .leading) {
         GeometryReader { proxy in

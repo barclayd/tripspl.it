@@ -22,6 +22,10 @@ import TripSplitDomain
       onChange?()
     }
   }
+  /// The one-off moments already shown, such as the first trip's welcome.
+  public internal(set) var moments: MomentsMemory {
+    didSet { try? mirror?.write(moments, key: "moments") }
+  }
   /// A short message for the user, such as a change the phone could not apply.
   public var message: String?
   /// The instant the UI treats as now. Refreshed when the app becomes active.
@@ -53,6 +57,9 @@ import TripSplitDomain
     tables = mirror?.read([String: FXTable].self, key: "tables") ?? [:]
     convertMemory = mirror?.read(ConvertMemory.self, key: "convert") ?? .init()
     preferences = mirror?.read(WatchPreferences.self, key: "preferences") ?? .init()
+    // A watch that already has trips has had its welcome.
+    moments =
+      mirror?.read(MomentsMemory.self, key: "moments") ?? .init(welcomed: !state.trips.isEmpty)
   }
 
   public var trips: [TripSnapshot] { state.trips }
@@ -67,7 +74,9 @@ import TripSplitDomain
   public var currentTrip: TripSnapshot? { timeline.now.first ?? timeline.upcoming.first }
 
   public func receive(_ context: CompanionContext) {
+    let hadTrips = !trips.isEmpty
     let reasons = state.receive(context)
+    welcomeIfFirst(hadTrips: hadTrips)
     if let reason = reasons.last { message = reason }
     persist()
   }
