@@ -46,6 +46,21 @@ import TripSplitWatchModel
     #expect(log.sharers.count == 3)
   }
 
+  @Test(arguments: [true, false])
+  func onlyTripSkipsLogFor(happeningNow: Bool) throws {
+    let demo = try WatchModel.demo()
+    let phase: TripSnapshot.Phase = happeningNow ? .now : .upcoming
+    let trip = try #require(demo.trips.first { $0.phase(at: demo.now) == phase })
+    let past = demo.trips.filter { $0.phase(at: demo.now) == .past }
+    let model = WatchModel(
+      state: .init(context: .init(trips: [trip] + past, sentAt: demo.now)), send: { _ in })
+    model.now = demo.now
+    let log = LogExpense(model: model)
+    #expect(log.trips.map(\.id) == [trip.id])
+    #expect(log.trip?.id == trip.id)
+    #expect(log.start == (happeningNow ? .amount : .day))
+  }
+
   @Test func tripStillToComeAsksWhichDayAndStartsBeforeYouGo() throws {
     let (model, _) = try model()
     let trip = try #require(model.timeline.upcoming.first)
