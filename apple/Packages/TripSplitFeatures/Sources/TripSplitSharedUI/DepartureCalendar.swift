@@ -3,12 +3,13 @@ import TripSplitDesignSystem
 import TripSplitDomain
 
 /// A Monday-first month grid that shades the whole trip, from departure to the day you're back.
-/// Planning a trip and changing its dates both pick on it.
+/// Planning a trip and changing its dates both pick on it. Before either is picked, it shows only
+/// today, ringed.
 package struct DepartureCalendar: View {
   /// `wide` shows two months side by side, as the open Duo has room for. `identifier` names each
   /// day for UI tests: `<identifier>.<date>`.
   package init(
-    start: String, end: String, today: String, wide: Bool = false,
+    start: String?, end: String?, today: String, wide: Bool = false,
     identifier: String = "onboarding.calendar",
     isSelectable: @escaping (String) -> Bool = { _ in true }, hint: String = "",
     select: @escaping (String) -> Void
@@ -21,10 +22,10 @@ package struct DepartureCalendar: View {
     self.isSelectable = isSelectable
     self.hint = hint
     self.select = select
-    _month = State(initialValue: Self.firstOfMonth(start))
+    _month = State(initialValue: Self.firstOfMonth(start ?? today))
   }
-  let start: String
-  let end: String
+  let start: String?
+  let end: String?
   let today: String
   let isSelectable: (String) -> Bool
   let hint: String
@@ -54,6 +55,7 @@ package struct DepartureCalendar: View {
       }
     }
     .onChange(of: start) { _, start in
+      guard let start else { return }
       let shown = Self.firstOfMonth(start)
       let visible = wide ? [month, Self.addingMonths(1, to: month)] : [month]
       if !visible.contains(shown) { month = shown }
@@ -141,7 +143,7 @@ package struct DepartureCalendar: View {
   private func cell(_ date: String, column: Int, month: String) -> some View {
     let isStart = date == start
     let isEnd = date == end && end != start
-    let inRange = date >= start && date <= end
+    let inRange = start.map { date >= $0 } == true && end.map { date <= $0 } == true
     let isDisabled = !isSelectable(date)
     let day = Int(date.suffix(2)) ?? 0
     let lastDay = Self.daysInMonth(month)

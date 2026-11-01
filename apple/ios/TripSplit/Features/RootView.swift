@@ -247,7 +247,12 @@ struct RootView: View {
           if draft.reached(1), let home = Destination.home(region: Locale.current.region?.identifier) {
             draft.setOrigin(home.origin)
           }
-          if draft.reached(1) { draft.setDeparture(CivilDate.adding(12, to: draft.startsOn)) }
+          // Step 1 opens on a bare calendar; the steps after it have dates picked.
+          if draft.reached(2) {
+            let leaving = CivilDate.adding(12, to: draft.startsOn)
+            draft.pick(leaving)
+            draft.pick(CivilDate.adding(draft.nights, to: leaving))
+          }
           if draft.reached(3) {
             draft.travellers += zip(["Sam", "Priya", "Jonah"], [250.0, 75, 160]).map {
               Traveller(name: $0, hue: $1)

@@ -17,6 +17,9 @@ enum OnboardingCopy {
     case 8:
       return draft.origin.map { "Leaving from \($0.flag) \($0.place)" } ?? ""
     case 1:
+      guard draft.hasDates else {
+        return draft.isPickingHome ? "Now the day you’re home" : "Tap the day you set off"
+      }
       if draft.nights == 0 { return "A day trip. Easy." }
       return draft.nights >= 14
         ? "A proper adventure" : draft.nights >= 6 ? "A good long trip" : "Short and sweet"
@@ -112,7 +115,9 @@ enum OnboardingCopy {
     switch step {
     case 0: return draft.stops.map { "\($0.flag) \($0.place)" }.joined(separator: " → ")
     case 8: return draft.origin.map { "\($0.flag) \($0.place)" } ?? ""
-    case 1: return "\(dateRange(draft)) · \(draft.days) day\(draft.days == 1 ? "" : "s")"
+    case 1:
+      guard draft.hasDates else { return "" }
+      return "\(dateRange(draft)) · \(draft.days) day\(draft.days == 1 ? "" : "s")"
     case 2:
       return draft.stops.map { "\($0.flag) \($0.nights)" }.joined(separator: " · ")
     case 3: return draft.travellers.map(\.name).joined(separator: ", ")
@@ -160,6 +165,7 @@ enum OnboardingCopy {
       default: size == .full ? countries(draft) : "\(draft.stops.count) stops"
       }
     let budgetAnswered = draft.reached(5) && !draft.budget.isEmpty
+    let dated = draft.reached(1) && draft.hasDates
     let highlight: BoardingPassContent.Highlight? =
       switch draft.step {
       case 0, 8: .destination
@@ -171,7 +177,7 @@ enum OnboardingCopy {
     return TripPassContent(
       from: home?.passCode ?? "HOME", fromName: home?.place ?? "Home", to: to, toName: toName,
       placeholder: draft.stops.isEmpty,
-      date: .init(draft.reached(1) ? dateRange(draft) : "When?", answered: draft.reached(1)),
+      date: .init(dated ? dateRange(draft) : "When?", answered: dated),
       pax: .init(
         "\(draft.travellers.count)", answered: draft.reached(4) || draft.travellers.count > 1),
       budget: .init(

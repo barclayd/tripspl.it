@@ -238,7 +238,8 @@ public struct OnboardingDraft: Codable, Equatable, Sendable {
     currency: String = "GBP",
     budget: String = "2400",
     name: String = "",
-    origin: TripOrigin? = nil
+    origin: TripOrigin? = nil,
+    datesPicked: DatesPicked? = nil
   ) {
     self.createdTripID = createdTripID
     self.step = step
@@ -250,9 +251,13 @@ public struct OnboardingDraft: Codable, Equatable, Sendable {
     self.budget = budget
     self.name = name
     self.origin = origin
+    self.datesPicked = datesPicked
   }
-  /// A fresh draft for the new-trip flow, with the budget left for the flow to suggest.
-  public static func newTrip() -> OnboardingDraft { OnboardingDraft(budget: "") }
+  /// A fresh draft for the new-trip flow, with the budget left for the flow to suggest and the
+  /// dates left for you to pick.
+  public static func newTrip() -> OnboardingDraft {
+    OnboardingDraft(budget: "", datesPicked: .neither)
+  }
 
   public static let maximumStops = 6
   public static let maximumTravellers = 8
@@ -273,6 +278,17 @@ public struct OnboardingDraft: Codable, Equatable, Sendable {
   public var name = ""
   /// Where the trip leaves from and returns to; drafts saved before the step have none.
   public var origin: TripOrigin?
+  /// How far picking the dates has got. A new trip starts with neither, so the calendar shows only
+  /// today until you tap; drafts saved before you picked them have none and keep their dates.
+  public var datesPicked: DatesPicked?
+  public enum DatesPicked: String, Codable, Sendable { case neither, leaving, both }
+  /// The day you leave, once picked.
+  public var pickedStart: String? { datesPicked == .neither ? nil : startsOn }
+  /// The day you're home, once picked.
+  public var pickedEnd: String? { hasDates ? returnDate : nil }
+  public var hasDates: Bool { (datesPicked ?? .both) == .both }
+  /// The next tap on the calendar sets the day you're home.
+  public var isPickingHome: Bool { datesPicked == .leaving }
   public var nights: Int { stops.reduce(0) { $0 + $1.nights } }
   public var days: Int { nights + 1 }
   public var returnDate: String { CivilDate.adding(nights, to: startsOn) }
@@ -301,7 +317,8 @@ public struct OnboardingDraft: Codable, Equatable, Sendable {
     switch step {
     case 0: return !stops.isEmpty
     case 8: return origin != nil
-    case 1: return stops.allSatisfy { $0.resolvedTimeZone != nil } && tripNights.contains(nights)
+    case 1:
+      return hasDates && stops.allSatisfy { $0.resolvedTimeZone != nil } && tripNights.contains(nights)
     case 2: return !stops.isEmpty && stops.allSatisfy { nightRange.contains($0.nights) }
     case 5: return ((try? Money.parse(budget, currency: currency)) ?? 0) > 0
     default: return true
@@ -309,6 +326,43 @@ public struct OnboardingDraft: Codable, Equatable, Sendable {
   }
   /// Moves the whole trip, keeping its length.
   public mutating func setDeparture(_ date: String) { startsOn = date }
+  /// Any day from today. Picking home, a day on or after leaving also has to leave a night for
+  /// each stop on a longer route; a day before leaving moves leaving instead.
+  public func canPick(_ date: String, today: String) -> Bool {
+    guard date >= today else { return false }
+    guard isPickingHome, date >= startsOn else { return true }
+    return tripNights.contains(CivilDate.days(from: startsOn, to: date))
+  }
+  /// A tap on the calendar: the first picks the day you leave and the next the day you're home,
+  /// unless it's before leaving, which moves leaving instead. Once both are picked, a tap starts
+  /// over from that day.
+  public mutating func pick(_ date: String) {
+    if isPickingHome, date >= startsOn {
+      setReturn(date)
+      datesPicked = .both
+    } else {
+      startsOn = date
+      datesPicked = .leaving
+    }
+  }
+  /// Forgets both dates, as a draft left until after the day it leaves has to.
+  public mutating func clearDates(today: String) {
+    startsOn = today
+    datesPicked = .neither
+  }
+  /// Adds or removes stops, keeping the dates you picked: the trip's nights are shared out across
+  /// the new route, or the day home is cleared to pick again when it's too short for every stop.
+  public mutating func changeRoute(_ change: (inout [Stop]) -> Void) {
+    let home = returnDate
+    change(&stops)
+    reconcileRoute()
+    guard hasDates else { return }
+    if !stops.isEmpty, tripNights.contains(CivilDate.days(from: startsOn, to: home)) {
+      setReturn(home)
+    } else {
+      datesPicked = .leaving
+    }
+  }
   /// Sets the day you're home, sharing the nights between stops in their current proportions.
   public mutating func setReturn(_ date: String) {
     let total = min(
