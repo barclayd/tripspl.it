@@ -30,17 +30,22 @@ public struct TripDetailView: View {
             TripCostCard(trip: trip)
           }
           SyncNotice(tripID: trip.id)
-          SegmentedControl(
-            "Trip section", selection: $section,
-            options: [(.days, "Days"), (.balances, "Who owes who")])
+          // On your own there's no one to owe, so the days stand alone without a picker.
+          let shared = TripBalances.applies(to: trip)
+          if shared {
+            SegmentedControl(
+              "Trip section", selection: $section,
+              options: [(.days, "Days"), (.balances, "Who owes who")])
+          }
+          let shown = shared ? section : .days
           Group {
-            switch section {
+            switch shown {
             case .days: TripDaysList(trip: trip, compact: compact)
             case .balances: TripBalances(trip: trip) { repayment = $0 }
             }
           }
           .transition(.opacity)
-          .id(section)
+          .id(shown)
         }
         .pagePadding()
         .padding(.bottom, 48)

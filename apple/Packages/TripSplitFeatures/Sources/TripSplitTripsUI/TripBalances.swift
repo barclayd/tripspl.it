@@ -27,14 +27,21 @@ struct TripBalances: View {
   }
 
   /// Everyone still on the trip, plus anyone archived who still has money involved.
-  private func travellers(_ ledger: Ledger) -> [Traveller] {
+  static func travellers(in trip: TripSnapshot, _ ledger: Ledger) -> [Traveller] {
     trip.travellers.filter {
       !$0.archived || ledger.balances[$0.id, default: 0] != 0 || ledger.paidBy[$0.id, default: 0] != 0
     }
   }
 
+  /// Whether there's anyone to owe: more than one person with a share in the trip, or repayments
+  /// already made.
+  static func applies(to trip: TripSnapshot) -> Bool {
+    trip.activeTravellers.count > 1 || !trip.repayments.isEmpty
+      || travellers(in: trip, Ledger(trip)).count > 1
+  }
+
   private func people(_ ledger: Ledger) -> some View {
-    let people = travellers(ledger)
+    let people = Self.travellers(in: trip, ledger)
     let most = max(1, people.map { ledger.paidBy[$0.id, default: 0] }.max() ?? 0)
     return VStack(spacing: 0) {
       ForEach(Array(people.enumerated()), id: \.element.id) { index, person in
