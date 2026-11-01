@@ -45,17 +45,21 @@ const ogImage = new URL('/og.png', Astro.site);
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={ogImage} />
 
-    <!-- Without JavaScript every scroll scene shows its finished state and the hero is just the title page. -->
+    <!-- Without JavaScript every scroll scene shows its finished state and the hero is just the title page.
+         The doubled attribute outranks the components' styles, which Astro scopes with an attribute of their own. -->
     <noscript>
       <style>
         html [data-sc] {
           --p: 1;
         }
-        html [data-sc='hero'] {
+        html [data-sc][data-sc='hero'] {
           height: 100svh;
         }
-        html [data-sc='hero'] .hero-scene {
+        html [data-sc][data-sc='hero'] .hero-scene {
           display: none;
+        }
+        html [data-sc][data-sc='dep'] {
+          height: auto;
         }
       </style>
     </noscript>
