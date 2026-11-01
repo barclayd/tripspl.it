@@ -18,7 +18,7 @@ struct HomeCurrencyStep: View {
     VStack(alignment: .leading, spacing: 14) {
       StepTitle(
         "What’s your home currency?",
-        "We convert every expense back to this, so the total is always real.")
+        "We’ll convert every expense to your home currency so you know what you’re paying")
       LazyVGrid(
         columns: [GridItem(.flexible(), spacing: 12), GridItem(.flexible(), spacing: 12)],
         spacing: 12

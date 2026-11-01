@@ -32,10 +32,8 @@ enum OnboardingCopy {
       case let count: return "Party of \(count)!"
       }
     case 4:
-      let foreign = unique(draft.stops.map(\.currency)).filter { $0 != draft.currency }
-      return foreign.isEmpty
-        ? "No conversion needed"
-        : "We’ll convert \(foreign.joined(separator: " & ")) into \(draft.currency)"
+      return draft.stops.allSatisfy { $0.currency == draft.currency }
+        ? "No conversion needed" : "Currency data updated daily"
     default:
       return ""
     }
