@@ -52,6 +52,34 @@ struct ExpenseRow: View {
   }
 }
 
+/// A spend on Today or a day that can be tapped to edit it in the log flow or delete it.
+struct ExpenseItem: View {
+  @Environment(WatchModel.self) private var model
+  let expense: Expense
+  let pages: TripPages
+  @State private var choosing = false
+  @State private var editing = false
+
+  var body: some View {
+    Button {
+      choosing = true
+    } label: {
+      ExpenseRow(expense: expense, pages: pages)
+    }
+    .buttonStyle(.plain)
+    .accessibilityHint("Edit or delete")
+    .confirmationDialog(expense.title, isPresented: $choosing, titleVisibility: .visible) {
+      Button("Edit") { editing = true }
+      Button("Delete", role: .destructive) {
+        withAnimation(.snappy) { model.deleteExpense(expense, in: pages.trip) }
+      }
+    }
+    .sheet(isPresented: $editing) {
+      LogExpenseView(model: model, trip: pages.trip, editing: expense)
+    }
+  }
+}
+
 /// Marks something logged on the watch that the phone hasn't confirmed yet.
 struct UnsyncedDot: View {
   var body: some View {

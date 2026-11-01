@@ -42,8 +42,10 @@ struct TripDestination: View {
 
 /// A trip as vertical pages: Today (while it's happening), Budget, Who owes who and Days.
 struct TripView: View {
+  @Environment(WatchModel.self) private var model
   let pages: TripPages
   @State private var page: TripPages.Page
+  @State private var logging = false
 
   init(pages: TripPages) {
     self.pages = pages
@@ -57,6 +59,14 @@ struct TripView: View {
       }
     }
     .tabViewStyle(.verticalPage)
+    .toolbar {
+      if pages.canLog {
+        ToolbarItem(placement: .topBarTrailing) {
+          LogButton { logging = true }
+        }
+      }
+    }
+    .sheet(isPresented: $logging) { LogExpenseView(model: model, trip: pages.trip) }
   }
 
   @ViewBuilder private func content(_ page: TripPages.Page) -> some View {
@@ -113,7 +123,7 @@ struct TodayPage: View {
               .foregroundStyle(WatchTheme.ink3)
               .frame(maxWidth: .infinity, alignment: .leading)
           }
-          ForEach(items) { ExpenseRow(expense: $0, pages: pages) }
+          ForEach(items) { ExpenseItem(expense: $0, pages: pages) }
         }
         .padding(.top, 22)
       }

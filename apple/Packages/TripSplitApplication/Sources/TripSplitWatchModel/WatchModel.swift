@@ -25,6 +25,8 @@ import TripSplitDomain
     (@Sendable (String, String, String) async throws -> FXQuote)?
   @ObservationIgnored private let loadTable: (@Sendable (String, String) async throws -> FXTable)?
   @ObservationIgnored private var retained: AnyObject?
+  /// Whether the phone can be reached right now. Nil assumes it can, as in previews and tests.
+  @ObservationIgnored var reachability: (@MainActor () -> Bool)?
   /// Called after trips change, for widget timeline reloads.
   @ObservationIgnored public var onChange: (@MainActor () -> Void)?
 
@@ -61,6 +63,14 @@ import TripSplitDomain
     persist()
   }
 
+  /// Whether changes reach the phone straight away, or wait on the watch until it's back.
+  public var isPhoneReachable: Bool { reachability?() ?? true }
+
+  /// Removes a spend through the phone. A save the phone hasn't seen yet is dropped instead.
+  public func deleteExpense(_ expense: Expense, in trip: TripSnapshot) {
+    send(.deleteExpense(tripID: trip.id, expenseID: expense.id))
+  }
+
   public func send(_ command: CompanionCommand) {
     state.queue(command)
     persist()
@@ -76,16 +86,34 @@ import TripSplitDomain
 
   /// The best known rate: the freshest cached reference quote or table rate, else the latest
   /// rate recorded on an expense.
-  public func rate(from: String, to: String) -> String? {
-    if from == to { return "1" }
+  public func rate(from: String, to: String) -> String? { reference(from: from, to: to)?.rate }
+
+  /// The best known rate with the day it was fetched for, so the watch can say how fresh it is.
+  public func reference(from: String, to: String) -> (rate: String, date: String)? {
+    if from == to { return ("1", CivilDate.string(now)) }
     let quote = rates[Self.key(from, to)]
     let table = tables.values.sorted { $0.requestedDate > $1.requestedDate }
       .first { $0.rate(from: from, to: to) != nil }
-    if let quote, quote.requestedDate >= table?.requestedDate ?? "" { return quote.rate }
-    if let rate = table?.rate(from: from, to: to) { return rate }
+    if let quote, quote.requestedDate >= table?.requestedDate ?? "" {
+      return (quote.rate, quote.requestedDate)
+    }
+    if let table, let rate = table.rate(from: from, to: to) { return (rate, table.requestedDate) }
     let expenses = trips.filter { $0.homeCurrency == to }.flatMap(\.expenses)
       .filter { $0.currency == from && $0.conversion != nil }
-    return expenses.last?.conversion?.rate
+    return expenses.last?.conversion.map { ($0.rate, $0.rateDate) }
+  }
+
+  /// How many units one Crown detent counts in: 1 for most currencies, more for low-value ones
+  /// so a step is worth something, e.g. ×100 for yen into pounds.
+  public func detentScale(from: String, to: String) -> Decimal {
+    var units: Int64 = 1
+    while units < 1_000_000,
+      let converted = convert(10 * units * Money.factor(from), from: from, to: to),
+      converted < Money.factor(to)
+    {
+      units *= 10
+    }
+    return Decimal(units)
   }
 
   /// Fetches a fresh reference rate when online. Keeps the cached rate when the fetch fails.

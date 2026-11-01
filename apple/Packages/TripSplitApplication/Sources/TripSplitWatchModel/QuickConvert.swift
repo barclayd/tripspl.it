@@ -145,9 +145,8 @@ public struct ConvertMemory: Codable, Hashable, Sendable {
 
   // MARK: Amount
 
-  /// How many units one Crown detent counts in: 1 for most currencies, more for low-value ones
-  /// so a step is worth something, e.g. ×100 for yen into pounds.
-  public var scale: Decimal { scale(from: pair.from, to: pair.to) }
+  /// How many units one Crown detent counts in, e.g. ×100 for yen into pounds.
+  public var scale: Decimal { model.detentScale(from: pair.from, to: pair.to) }
 
   /// The amount in major units of the from currency. Opens at the last amount used.
   public var amount: Decimal {
@@ -169,21 +168,10 @@ public struct ConvertMemory: Codable, Hashable, Sendable {
 
   /// One detent of `from` in `to`, e.g. "£1 = $1.33". Nil without a rate.
   public func rateText(from: String, to: String, separator: String = " = ") -> String? {
-    let unit = Self.minor(scale(from: from, to: to), from)
+    let unit = Self.minor(model.detentScale(from: from, to: to), from)
     guard let converted = model.convert(unit, from: from, to: to) else { return nil }
     return WatchCurrency.format(unit, from, compact: true) + separator
       + WatchCurrency.format(converted, to)
-  }
-
-  private func scale(from: String, to: String) -> Decimal {
-    var units: Int64 = 1
-    while units < 1_000_000,
-      let converted = model.convert(10 * units * Money.factor(from), from: from, to: to),
-      converted < Money.factor(to)
-    {
-      units *= 10
-    }
-    return Decimal(units)
   }
 
   /// The Crown detent for the amount.

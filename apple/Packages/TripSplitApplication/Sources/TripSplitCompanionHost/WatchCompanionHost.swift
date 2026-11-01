@@ -46,10 +46,15 @@ import TripSplitDomain
     do {
       switch command {
       case .saveExpense(let tripID, var expense):
-        if expense.conversion == nil {
+        // The watch estimates offline from cached rates, which carry no quote, and the API only
+        // accepts reference conversions backed by one, so the phone quotes them again.
+        if expense.conversion == nil || expense.conversion?.isUnquotedReference == true {
           expense.conversion = await estimate(expense, in: trip)
         }
         try model.store.saveExpense(expense, tripID: tripID)
+      case .deleteExpense(let tripID, let id):
+        guard let expense = trip.expenses.first(where: { $0.id == id }) else { break }
+        try model.store.deleteExpense(expense, tripID: tripID)
       case .saveRepayment(let tripID, let repayment):
         try model.store.enqueue(
           .init(
@@ -117,3 +122,8 @@ import TripSplitDomain
     }
   }
 #endif
+
+extension Conversion {
+  /// A reference rate the watch worked out from its cached table, with no quote behind it.
+  fileprivate var isUnquotedReference: Bool { kind == "reference" && quoteId == nil }
+}

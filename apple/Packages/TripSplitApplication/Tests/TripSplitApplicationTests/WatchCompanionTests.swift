@@ -49,6 +49,49 @@ import TripSplitWatchModel
     #expect(published.last?.rejected[command.id] != nil)
   }
 
+  @Test func hostDeletesWhatTheWatchRemoved() async throws {
+    let store = try LocalStore(inMemory: true, installationID: "test")
+    let trip = try trip()
+    try store.create(trip)
+    let spend = expense(trip)
+    try store.saveExpense(spend, tripID: trip.id)
+    var published: [CompanionContext] = []
+    let host = WatchCompanionHost(model: AppModel(store: store)) { published.append($0) }
+    let command = CompanionCommand.deleteExpense(tripID: trip.id, expenseID: spend.id)
+    await host.receive(command)
+    #expect(store.trip(trip.id)?.expenses.isEmpty == true)
+    await host.receive(command)
+    #expect(published.last?.rejected.isEmpty == true)
+    #expect(published.last.map { command.isReflected(in: $0.trips[0]) } == true)
+  }
+
+  @Test func hostDropsAWatchEstimateItCannotQuote() async throws {
+    let store = try LocalStore(inMemory: true, installationID: "test")
+    let trip = try trip()
+    try store.create(trip)
+    let host = WatchCompanionHost(model: AppModel(store: store)) { _ in }
+    var spend = expense(trip, amount: "4200")
+    spend.currency = "EUR"
+    spend.conversion = .init(
+      homeAmountMinor: "3621", rate: "0.862", rateDate: trip.startsOn,
+      source: "Estimated on Apple Watch", kind: "reference")
+    await host.receive(.saveExpense(tripID: trip.id, expense: spend))
+    let saved = try #require(store.trip(trip.id)?.expenses.first)
+    #expect(saved.amountMinor == "4200")
+    // Without a quote the API would refuse it, so it waits for the phone to convert it instead.
+    #expect(saved.conversion == nil)
+  }
+
+  @Test func deletingAnExpenseReplacesItsPendingSave() throws {
+    let trip = try trip()
+    let spend = expense(trip)
+    var state = CompanionState(context: .init(trips: [trip]))
+    state.queue(.saveExpense(tripID: trip.id, expense: spend))
+    state.queue(.deleteExpense(tripID: trip.id, expenseID: spend.id))
+    #expect(state.pending.count == 1)
+    #expect(state.trips[0].expenses.isEmpty)
+  }
+
   @Test func hostQueuesRepayments() async throws {
     let store = try LocalStore(inMemory: true, installationID: "test")
     let trip = try trip()

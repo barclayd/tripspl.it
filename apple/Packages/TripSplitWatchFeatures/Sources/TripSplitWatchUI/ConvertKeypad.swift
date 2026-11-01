@@ -5,7 +5,28 @@ import TripSplitWatchModel
 
 /// C2 · Type it. A keypad for exact amounts, with the result live above. The Crown still dials.
 struct ConvertKeypad: View {
-  let convert: QuickConvert
+  @Bindable var convert: QuickConvert
+
+  var body: some View {
+    AmountKeypad(
+      code: convert.pair.from, currency: convert.currency(convert.pair.from),
+      result: convert.result.map { WatchCurrency.format($0, convert.pair.to) } ?? "—",
+      amount: $convert.amount, detent: convert.amountDetent, detents: AmountLadder.count,
+      dial: convert.dial(to:))
+  }
+}
+
+/// A keypad for exact amounts, with the entry and what it comes to above. The Crown still dials,
+/// in the same detents as the screen it came from.
+struct AmountKeypad: View {
+  let code: String
+  let currency: WatchCurrency
+  /// What the amount comes to, in pink beside it, or nil to show the entry alone.
+  let result: String?
+  @Binding var amount: Decimal
+  let detent: Int
+  let detents: Int
+  let dial: (Int) -> Void
   @State private var entry = ""
   /// The next digit replaces the amount rather than appending to it.
   @State private var fresh = true
@@ -15,17 +36,17 @@ struct ConvertKeypad: View {
   private static let keys = [["1", "2", "3"], ["4", "5", "6"], ["7", "8", "9"], [".", "0", "⌫"]]
 
   var body: some View {
-    let currency = convert.currency(convert.pair.from)
-    let result = convert.result.map { WatchCurrency.format($0, convert.pair.to) } ?? "—"
     VStack(spacing: 6) {
       HStack(alignment: .firstTextBaseline, spacing: 8) {
         Text(currency.symbol == currency.code ? "\(currency.code) \(entry)" : currency.symbol + entry)
           .watchFont(26, .black)
           .contentTransition(.numericText())
-        Text(result)
-          .watchFont(17, .black)
-          .foregroundStyle(WatchTheme.accentText)
-          .contentTransition(.numericText())
+        if let result {
+          Text(result)
+            .watchFont(17, .black)
+            .foregroundStyle(WatchTheme.accentText)
+            .contentTransition(.numericText())
+        }
       }
       .lineLimit(1)
       .minimumScaleFactor(0.5)
@@ -41,7 +62,7 @@ struct ConvertKeypad: View {
                 label(key)
               }
               .buttonStyle(KeyStyle())
-              .disabled(key == "." && Money.precision(convert.pair.from) == 0)
+              .disabled(key == "." && Money.precision(code) == 0)
             }
           }
         }
@@ -53,22 +74,22 @@ struct ConvertKeypad: View {
     .focused($crownFocused)
     .focusEffectDisabled()
     .digitalCrownRotation(
-      detent: $crown, from: 0, through: Double(AmountLadder.count - 1), by: 1,
+      detent: $crown, from: 0, through: Double(detents - 1), by: 1,
       sensitivity: .medium, isContinuous: false, isHapticFeedbackEnabled: true
     )
     .onChange(of: crown) { _, value in
-      let detent = Int(value.rounded())
-      guard detent != convert.amountDetent else { return }
-      convert.dial(to: detent)
-      entry = Self.plain(convert.amount)
+      let turned = Int(value.rounded())
+      guard turned != detent else { return }
+      dial(turned)
+      entry = Self.plain(amount)
       fresh = true
     }
-    .onChange(of: convert.amountDetent) { _, detent in
+    .onChange(of: detent) { _, detent in
       if crown != Double(detent) { crown = Double(detent) }
     }
     .onAppear {
-      entry = Self.plain(convert.amount)
-      crown = Double(convert.amountDetent)
+      entry = Self.plain(amount)
+      crown = Double(detent)
       crownFocused = true
     }
   }
@@ -83,7 +104,7 @@ struct ConvertKeypad: View {
   }
 
   private func press(_ key: String) {
-    let precision = Money.precision(convert.pair.from)
+    let precision = Money.precision(code)
     switch key {
     case "⌫":
       entry = String(entry.dropLast())
@@ -107,7 +128,7 @@ struct ConvertKeypad: View {
     }
     fresh = false
     withAnimation(.snappy) {
-      convert.amount = Decimal(string: entry, locale: Locale(identifier: "en_US_POSIX")) ?? 0
+      amount = Decimal(string: entry, locale: Locale(identifier: "en_US_POSIX")) ?? 0
     }
   }
 
