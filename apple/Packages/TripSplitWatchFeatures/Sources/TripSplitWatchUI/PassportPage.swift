@@ -27,11 +27,15 @@ struct PassportPage: View {
         ForEach(Array(trips.enumerated()), id: \.element.id) { index, trip in
           let isCircle = index.isMultiple(of: 2)
           let band = CGFloat(index / 2) * Self.band
-          PassportStamp(
-            trip: trip, isCircle: isCircle,
-            ink: WatchTheme.stampInks[index % WatchTheme.stampInks.count],
-            angle: isCircle ? (index / 2).isMultiple(of: 2) ? -12 : -7 : 9
-          )
+          // A stamp opens that trip read-only: its budget and who owes who.
+          NavigationLink(value: TripRoute.trip(trip.id)) {
+            PassportStamp(
+              trip: trip, isCircle: isCircle,
+              ink: WatchTheme.stampInks[index % WatchTheme.stampInks.count],
+              angle: isCircle ? (index / 2).isMultiple(of: 2) ? -12 : -7 : 9
+            )
+          }
+          .buttonStyle(.plain)
           .padding(isCircle ? .leading : .trailing, isCircle ? 12 : 10)
           .padding(.top, band + (isCircle ? 14 : 56))
           .frame(

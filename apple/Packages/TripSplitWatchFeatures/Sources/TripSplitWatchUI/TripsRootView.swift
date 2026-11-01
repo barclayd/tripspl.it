@@ -19,6 +19,7 @@ public struct TripsRootView: View {
           TripsList()
         }
       }
+      .navigationDestination(for: TripRoute.self) { TripDestination(route: $0) }
       .toolbar {
         // The wordmark sits level with the time, in the accent, as in the design.
         ToolbarItem(placement: .topBarLeading) {
@@ -53,12 +54,18 @@ struct TripsList: View {
           .accessibilityHint("Opens quick convert")
         }
         ForEach(timeline.now) { trip in
-          NowCard(trip: trip, now: model.now)
+          NavigationLink(value: TripRoute.trip(trip.id)) {
+            NowCard(trip: trip, now: model.now)
+          }
+          .buttonStyle(.plain)
         }
         if !timeline.upcoming.isEmpty {
           SectionLabel("Departures", symbol: "airplane", colour: WatchTheme.amber)
           ForEach(timeline.upcoming) { trip in
-            DepartureRow(trip: trip, today: today)
+            NavigationLink(value: TripRoute.trip(trip.id)) {
+              DepartureRow(trip: trip, today: today)
+            }
+            .buttonStyle(.plain)
           }
         }
         if !timeline.past.isEmpty {
