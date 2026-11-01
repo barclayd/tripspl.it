@@ -268,6 +268,10 @@ struct RootView: View {
           }
           if arguments.contains("--add-expense") {
             model.editExpense(trip: trip, attachment: model.selectedAttachment ?? trip.currentAttachment)
+            // `--expense-amount 6.40` types an amount, to show the conversion and the split.
+            if let index = arguments.firstIndex(of: "--expense-amount"), arguments.indices.contains(index + 1) {
+              model.expenseDraft?.amount = arguments[index + 1]
+            }
           }
           if arguments.contains("--quick-convert") {
             model.showConverter = true

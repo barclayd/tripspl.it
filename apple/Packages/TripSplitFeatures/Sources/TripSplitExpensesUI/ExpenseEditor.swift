@@ -33,7 +33,8 @@ public struct ExpenseEditor: View {
           }
         }
         .background(Theme.surface)
-        .navigationTitle(heading(draft))
+        // Beside the keypad the heading shares a row with the day chips, so the bar stays empty.
+        .navigationTitle(wideSheet && usesVerticalRail ? "" : heading(draft))
         .navigationBarTitleDisplayMode(.inline)
         .toolbarVisibility(usesVerticalRail && saved == nil ? .automatic : .hidden, for: .navigationBar)
         .toolbar {
@@ -92,15 +93,30 @@ public struct ExpenseEditor: View {
 
   // MARK: - Layout
 
+  /// Wide enough for the keypad to sit beside the form, as on the open Duo's trailing sheet.
   @ViewBuilder private func form(_ trip: TripSnapshot, draft: ExpenseDraft) -> some View {
     let keypad = NumberPad(
-      value: bind(\.amount, fallback: ""), currency: draft.currency, keyHeight: 52, spacing: 4)
+      value: bind(\.amount, fallback: ""), currency: draft.currency,
+      keyHeight: wideSheet ? 56 : 52, spacing: 4, filled: wideSheet)
     VStack(spacing: 0) {
-      if !usesVerticalRail { header(draft).padding(.horizontal, 18) }
+      if !usesVerticalRail { header(draft).padding(.horizontal, wideSheet ? 22 : 18) }
       if wideSheet {
-        HStack(alignment: .bottom, spacing: 24) {
+        HStack(spacing: 14) {
+          if usesVerticalRail {
+            Text(heading(draft))
+              .typeface(20, .heavy, relativeTo: .title3, maximum: 1.3)
+              .foregroundStyle(Theme.ink)
+              .fixedSize()
+              .accessibilityAddTraits(.isHeader)
+              .padding(.leading, 22)
+          }
+          dayChips(trip, draft: draft, inset: usesVerticalRail ? 0 : 22)
+            .padding(.trailing, usesVerticalRail ? 22 : 0)
+        }
+        .padding(.top, usesVerticalRail ? 20 : 2).padding(.bottom, 14)
+        HStack(alignment: .bottom, spacing: 0) {
           ScrollView { fields(trip, draft: draft) }.scrollDismissesKeyboard(.interactively)
-          keypad.frame(width: 200).padding(.bottom, 12).padding(.trailing, 18)
+          keypad.frame(width: 200).padding(.bottom, 18).padding(.trailing, 22)
         }
       } else {
         ScrollView { fields(trip, draft: draft) }.scrollDismissesKeyboard(.interactively)
@@ -108,7 +124,7 @@ public struct ExpenseEditor: View {
       }
     }
     .frame(maxWidth: .infinity, maxHeight: .infinity)
-    .onGeometryChange(for: Bool.self) { $0.size.width >= 590 } action: { wideSheet = $0 }
+    .onGeometryChange(for: Bool.self) { $0.size.width >= 480 } action: { wideSheet = $0 }
   }
 
   /// Cancel, the heading, then delete and a Save pill that lights up once there's an amount.
@@ -151,10 +167,13 @@ public struct ExpenseEditor: View {
     .frame(height: 44)
   }
 
+  /// Leading and trailing space for the form; beside the keypad it's also the gap to the keys.
+  private var inset: CGFloat { wideSheet ? 22 : 18 }
+
   private func fields(_ trip: TripSnapshot, draft: ExpenseDraft) -> some View {
     VStack(alignment: .leading, spacing: 12) {
-      dayChips(trip, draft: draft).padding(.top, 2)
-      amountBlock(trip, draft: draft).padding(.top, 2).padding(.bottom, -2)
+      if !wideSheet { dayChips(trip, draft: draft, inset: inset).padding(.top, 2) }
+      amountBlock(trip, draft: draft).padding(.top, 2).padding(.bottom, wideSheet ? 2 : -2)
       TextField(
         draft.attachment.kind == .leg ? "e.g. Taxi to the airport" : "What was it?",
         text: bind(\.title, fallback: "")
@@ -164,9 +183,9 @@ public struct ExpenseEditor: View {
       .submitLabel(.done)
       .padding(.vertical, 13).padding(.horizontal, 16)
       .background(Theme.inset, in: RoundedRectangle(cornerRadius: 14, style: .continuous))
-      .padding(.horizontal, 18)
+      .padding(.horizontal, inset)
       categoryChips(draft)
-      panel(trip, draft: draft).padding(.horizontal, 18)
+      panel(trip, draft: draft).padding(.horizontal, inset)
       if draft.currency != trip.homeCurrency {
         Text(
           draft.conversion.map { "Saved rate: \($0.rate) · \($0.source) · \($0.rateDate)" }
@@ -174,11 +193,11 @@ public struct ExpenseEditor: View {
         )
         .typeface(12, .semibold, relativeTo: .caption)
         .foregroundStyle(Theme.tertiary)
-        .padding(.horizontal, 22)
+        .padding(.horizontal, inset + 4)
       }
       if let localError {
         Text(localError).typeface(13, .semibold, relativeTo: .footnote)
-          .foregroundStyle(Theme.bad).padding(.horizontal, 22)
+          .foregroundStyle(Theme.bad).padding(.horizontal, inset + 4)
       }
     }
     .padding(.bottom, 8)
@@ -187,7 +206,7 @@ public struct ExpenseEditor: View {
   // MARK: - When
 
   /// Every day and leg in itinerary order, so an expense can move to another day.
-  private func dayChips(_ trip: TripSnapshot, draft: ExpenseDraft) -> some View {
+  private func dayChips(_ trip: TripSnapshot, draft: ExpenseDraft, inset: CGFloat) -> some View {
     ScrollViewReader { proxy in
       ScrollView(.horizontal) {
         HStack(spacing: 6) {
@@ -210,7 +229,7 @@ public struct ExpenseEditor: View {
         }
       }
       .scrollIndicators(.hidden)
-      .contentMargins(.horizontal, 18, for: .scrollContent)
+      .contentMargins(.horizontal, inset, for: .scrollContent)
       .onAppear { proxy.scrollTo(draft.attachment.id, anchor: .center) }
     }
   }
@@ -254,17 +273,18 @@ public struct ExpenseEditor: View {
 
   // MARK: - How much
 
+  /// Centred over the keypad on the phone, and leading beside it on a wide sheet.
   private func amountBlock(_ trip: TripSnapshot, draft: ExpenseDraft) -> some View {
     let minor = amount(draft)
     let shown = Money.typed(draft.amount, currency: draft.currency)
-    return VStack(spacing: 12) {
+    return VStack(alignment: wideSheet ? .leading : .center, spacing: wideSheet ? 10 : 12) {
       Text(shown)
-        .typeface(58, .bold, tracking: -0.05, relativeTo: .largeTitle, maximum: 1.2)
+        .typeface(wideSheet ? 54 : 58, .bold, tracking: -0.05, relativeTo: .largeTitle, maximum: 1.2)
         .monospacedDigit()
         .foregroundStyle(minor > 0 ? Theme.ink : Theme.tertiary)
         .lineLimit(1).minimumScaleFactor(0.5)
         .bump(on: shown)
-        .padding(.horizontal, 18)
+        .padding(.horizontal, inset)
         .accessibilityLabel("Amount, \(shown)")
       ScrollView(.horizontal) {
         HStack(spacing: 6) {
@@ -309,10 +329,10 @@ public struct ExpenseEditor: View {
       }
       .scrollIndicators(.hidden)
       .scrollBounceBehavior(.basedOnSize, axes: .horizontal)
-      .contentMargins(.horizontal, 18, for: .scrollContent)
-      .defaultScrollAnchor(.center, for: .alignment)
+      .contentMargins(.horizontal, inset, for: .scrollContent)
+      .defaultScrollAnchor(wideSheet ? .leading : .center, for: .alignment)
     }
-    .frame(maxWidth: .infinity)
+    .frame(maxWidth: .infinity, alignment: wideSheet ? .leading : .center)
   }
 
   private func estimate(_ trip: TripSnapshot, draft: ExpenseDraft, minor: Int64) -> Int64? {
@@ -355,36 +375,43 @@ public struct ExpenseEditor: View {
 
   // MARK: - What
 
-  private func categoryChips(_ draft: ExpenseDraft) -> some View {
+  /// One scrolling row on the phone; beside the keypad they wrap, so every category shows.
+  @ViewBuilder private func categoryChips(_ draft: ExpenseDraft) -> some View {
     let categories =
       draft.attachment.kind == .leg ? ExpenseCategory.travelCategories : ExpenseCategory.dayCategories
-    return ScrollView(.horizontal) {
-      HStack(spacing: 7) {
-        ForEach(categories, id: \.self) { category in
-          let selected = draft.category == category
-          Button {
-            Haptics.selection()
-            mutate { $0.category = category }
-          } label: {
-            HStack(spacing: 6) {
-              Image(systemName: category.glyph).font(.system(size: 14, weight: .semibold))
-              Text(category.title)
-            }
-            .typeface(13.5, .heavy, relativeTo: .footnote, maximum: 1.4)
-            .foregroundStyle(selected ? Theme.background : Theme.secondary)
-            .padding(.vertical, 8).padding(.leading, 10).padding(.trailing, 12)
-            .background(selected ? Theme.ink : Theme.inset, in: Capsule())
-            .scaleEffect(selected ? 1.04 : 1)
-            .animation(Motion.spring, value: selected)
-          }
-          .buttonStyle(.plain)
-          .accessibilityAddTraits(selected ? .isSelected : [])
-        }
-      }
-      .padding(.vertical, 2)
+    let chips = ForEach(categories, id: \.self) { category in
+      categoryChip(category, selected: draft.category == category)
     }
-    .scrollIndicators(.hidden)
-    .contentMargins(.horizontal, 18, for: .scrollContent)
+    if wideSheet {
+      FlowLayout(spacing: 6) { chips }.padding(.horizontal, inset)
+    } else {
+      ScrollView(.horizontal) {
+        HStack(spacing: 7) { chips }.padding(.vertical, 2)
+      }
+      .scrollIndicators(.hidden)
+      .contentMargins(.horizontal, inset, for: .scrollContent)
+    }
+  }
+
+  private func categoryChip(_ category: ExpenseCategory, selected: Bool) -> some View {
+    Button {
+      Haptics.selection()
+      mutate { $0.category = category }
+    } label: {
+      HStack(spacing: 6) {
+        Image(systemName: category.glyph).font(.system(size: wideSheet ? 13 : 14, weight: .semibold))
+        Text(category.title)
+      }
+      .typeface(wideSheet ? 13 : 13.5, .heavy, relativeTo: .footnote, maximum: 1.4)
+      .foregroundStyle(selected ? Theme.background : Theme.secondary)
+      .padding(.vertical, wideSheet ? 7 : 8).padding(.leading, wideSheet ? 9 : 10)
+      .padding(.trailing, wideSheet ? 11 : 12)
+      .background(selected ? Theme.ink : Theme.inset, in: Capsule())
+      .scaleEffect(selected ? 1.04 : 1)
+      .animation(Motion.spring, value: selected)
+    }
+    .buttonStyle(.plain)
+    .accessibilityAddTraits(selected ? .isSelected : [])
   }
 
   // MARK: - Who
@@ -394,14 +421,17 @@ public struct ExpenseEditor: View {
       row("Status") { status(draft) }
       row("Paid by") { people(trip, draft: draft, split: false) }
       row("Split") { people(trip, draft: draft, split: true) }
-      HStack(spacing: 12) {
-        Text(splitSummary(draft)).foregroundStyle(Theme.secondary).monospacedDigit()
-          .lineLimit(1).minimumScaleFactor(0.8).layoutPriority(1)
-          .contentTransition(.numericText())
-          .animation(Motion.bump, value: splitSummary(draft))
-        Spacer(minLength: 4)
-        Button("Just me") { mutate { $0.splitWith = [trip.currentTravellerId] } }
-        Button("Everyone") { mutate { $0.splitWith = trip.activeTravellers.map(\.id) } }
+      // The shortcuts drop under the summary when the panel's too narrow for one line.
+      ViewThatFits(in: .horizontal) {
+        HStack(spacing: 12) {
+          splitTotal(draft)
+          Spacer(minLength: 4)
+          splitShortcuts(trip)
+        }
+        VStack(alignment: .leading, spacing: 6) {
+          splitTotal(draft)
+          HStack(spacing: 14) { splitShortcuts(trip) }
+        }
       }
       .buttonStyle(.plain)
       .foregroundStyle(Theme.accentText)
@@ -424,6 +454,18 @@ public struct ExpenseEditor: View {
     }
     .padding(12)
     .background(Theme.inset, in: RoundedRectangle(cornerRadius: 18, style: .continuous))
+  }
+
+  private func splitTotal(_ draft: ExpenseDraft) -> some View {
+    Text(splitSummary(draft)).foregroundStyle(Theme.secondary).monospacedDigit()
+      .lineLimit(1).minimumScaleFactor(0.8).layoutPriority(1)
+      .contentTransition(.numericText())
+      .animation(Motion.bump, value: splitSummary(draft))
+  }
+
+  @ViewBuilder private func splitShortcuts(_ trip: TripSnapshot) -> some View {
+    Button("Just me") { mutate { $0.splitWith = [trip.currentTravellerId] } }
+    Button("Everyone") { mutate { $0.splitWith = trip.activeTravellers.map(\.id) } }
   }
 
   private func row(_ label: String, @ViewBuilder content: () -> some View) -> some View {
@@ -483,13 +525,13 @@ public struct ExpenseEditor: View {
             }
           } label: {
             HStack(spacing: 6) {
-              Avatar(traveller: person, size: 26)
+              Avatar(traveller: person, size: wideSheet ? 24 : 26)
               Text(person.id == trip.currentTravellerId ? "You" : person.name)
-                .typeface(13, .heavy, relativeTo: .footnote, maximum: 1.3)
+                .typeface(wideSheet ? 12.5 : 13, .heavy, relativeTo: .footnote, maximum: 1.3)
                 .foregroundStyle(Theme.ink)
             }
-            .padding(.leading, 3).padding(.trailing, 11)
-            .frame(height: 32)
+            .padding(.leading, 3).padding(.trailing, wideSheet ? 10 : 11)
+            .frame(height: wideSheet ? 30 : 32)
             .background(selected ? Theme.surface : .clear, in: Capsule())
             .overlay { if selected { Capsule().strokeBorder(Theme.accent, lineWidth: 2) } }
             .opacity(selected ? 1 : split ? 0.45 : 0.55)
