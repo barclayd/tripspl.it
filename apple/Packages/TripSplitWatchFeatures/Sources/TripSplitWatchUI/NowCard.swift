@@ -7,10 +7,7 @@ struct NowCard: View {
   let trip: TripSnapshot
   let now: Date
 
-  private var flags: String {
-    trip.stops.map(\.flag).reduce(into: [String]()) { if !$0.contains($1) { $0.append($1) } }
-      .joined()
-  }
+  private var flags: String { trip.uniqueFlags.joined() }
 
   var body: some View {
     let day = trip.currentDay(at: now)

@@ -87,7 +87,7 @@ public struct TripWrapUp: Sendable {
   public init(pages: TripPages) {
     let trip = pages.trip
     tripID = trip.id
-    flags = trip.stops.map(\.flag).reduce(into: []) { if !$0.contains($1) { $0.append($1) } }
+    flags = trip.uniqueFlags
     places = trip.stops.map(\.place).reduce(into: [String]()) { if $0.last != $1 { $0.append($1) } }
       .joined(separator: "·").uppercased()
     dates = trip.dateRange(withYear: true).uppercased()

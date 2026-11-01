@@ -1,9 +1,11 @@
 import SwiftUI
 import TripSplitWatchModel
 import TripSplitWatchUI
+import WatchKit
 import WidgetKit
 
 @main struct TripSplitWatchApp: App {
+  @WKApplicationDelegateAdaptor private var delegate: WatchAppDelegate
   @State private var model: WatchModel
   @Environment(\.scenePhase) private var scenePhase
 
@@ -14,8 +16,12 @@ import WidgetKit
     } else {
       model = .live(baseURL: APIConfiguration.baseURL)
     }
-    // Complications read what the model mirrors to the App Group, so redraw them on every change.
-    model.onChange = { WidgetCenter.shared.reloadAllTimelines() }
+    // Complications read what the model mirrors to the App Group, so redraw them on every change,
+    // and the notices are worked out from the same trips.
+    model.onChange = { [weak model] in
+      WidgetCenter.shared.reloadAllTimelines()
+      if let model { WatchNotifications.shared.reschedule(model) }
+    }
     _model = State(initialValue: model)
   }
 
@@ -26,8 +32,13 @@ import WidgetKit
         .task(id: scenePhase) {
           guard scenePhase == .active else { return }
           model.now = Date()
+          WatchNotifications.shared.reschedule(model)
+          await WatchNotifications.shared.requestAuthorization(model)
           await model.refreshRates()
         }
     }
+    WKNotificationScene(controller: NoticeController.self, category: WatchNotice.Kind.landed.category)
+    WKNotificationScene(
+      controller: NoticeController.self, category: WatchNotice.Kind.eveningWrap.category)
   }
 }
