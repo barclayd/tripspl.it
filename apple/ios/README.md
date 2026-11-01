@@ -3,7 +3,7 @@
 Native SwiftUI app, iOS 26 minimum, built with Xcode 27.1. XcodeGen owns the project configuration; the generated project is included for opening directly in Xcode. The authorised Apple team is `R2GGK3VN2C`; provisioning profiles remain managed by Xcode.
 
 ```sh
-cd ios
+cd apple/ios
 xcodegen generate
 xcodebuild -project TripSplit.xcodeproj -scheme TripSplit \
   -sdk iphonesimulator -destination 'generic/platform=iOS Simulator' \
@@ -15,13 +15,28 @@ xcodebuild -project TripSplit.xcodeproj -scheme TripSplit \
   CODE_SIGNING_ALLOWED=NO -parallel-testing-enabled NO test
 ```
 
-Tests use the canonical money/currency fixtures in `../contracts/`. The native suite also tests SQLite restart, restored installation identity, immutable uncertain operations, multi-batch sync, conflicts, account isolation and JSON null encoding. The package tests include a synthetic store created by the old app module and a consumer using only public APIs.
+Tests use the canonical money/currency fixtures in `../../api/contracts/fixtures/` and `../../api/src/data/currencies.json`. The native suite also tests SQLite restart, restored installation identity, immutable uncertain operations, multi-batch sync, conflicts, account isolation and JSON null encoding. The package tests include a synthetic store created by the old app module and a consumer using only public APIs.
 
 ## Shared packages
 
-The app is a composition shell for four local packages in `../Packages/`: `TripSplitDomain`, `TripSplitInfrastructure`, `TripSplitApplication` and `TripSplitFeatures`. Infrastructure exposes networking, persistence and sync separately. Features exposes design system, shared UI, Apple adapters and six vertical UI products. See [the architecture and dependency rules](../docs/architecture.md#package-architecture) before adding a feature.
+The app is a composition shell for four local packages in `../Packages/`: `TripSplitDomain`, `TripSplitInfrastructure`, `TripSplitApplication` and `TripSplitFeatures`. Infrastructure exposes networking, persistence and sync separately. Features exposes design system, shared UI, Apple adapters and six vertical UI products. See [the architecture and dependency rules](../../docs/architecture.md#package-architecture) before adding a feature.
 
-Domain, networking, persistence, sync, application coordination and conversion are usable without iOS presentation code. Their minimum platforms are iOS 26, macOS 26 and watchOS 26. CI runs their macOS tests and compiles the application and conversion products for watchOS. Watch and Mac application interfaces remain future work.
+Domain, networking, persistence, sync, application coordination and conversion are usable without iOS presentation code. Their minimum platforms are iOS 26, macOS 26 and watchOS 26. Run macOS package tests locally; when changing shared services, also compile the affected products for watchOS. CI keeps only fast validation and does not repeat these builds or tests. Watch and Mac application interfaces remain future work.
+
+From `apple/ios/`, check the watchOS consumers with:
+
+```sh
+swift build --package-path ../Packages/TripSplitApplication \
+  --scratch-path /tmp/tripsplit-watch-packages \
+  --triple arm64_32-apple-watchos26.0 \
+  --sdk "$(xcrun --sdk watchos --show-sdk-path)" \
+  --target TripSplitApplication
+swift build --package-path ../Packages/TripSplitApplication \
+  --scratch-path /tmp/tripsplit-watch-packages \
+  --triple arm64_32-apple-watchos26.0 \
+  --sdk "$(xcrun --sdk watchos --show-sdk-path)" \
+  --target TripSplitConversion
+```
 
 ## Run and configure
 
@@ -66,16 +81,16 @@ Quick Convert opens with the current stop's currency and the trip's home currenc
 
 ## Internal beta delivery
 
-App Store Connect app `6829340844` is **TripSplit: Travel Budget**; the installed name remains TripSplit. The intended internal group is **Dan**, ID `69183108-1726-4905-82c5-e3e6ecae0251`. Nonsecret release settings live in `testflight.json` alongside this README. The wrapper accepts both `ios` and `apple/ios` layouts and requires one matching project; move this config with the iOS shell.
+App Store Connect app `6829340844` is **TripSplit: Travel Budget**; the installed name remains TripSplit. The intended internal group is **Dan**, ID `69183108-1726-4905-82c5-e3e6ecae0251`. Nonsecret release settings live in `testflight.json` alongside this README. The Apple release entrypoint is `apple/scripts/testflight.py`; its project path is relative to the repository root. Run the commands below from that root.
 
 Use the shared `testflight-release` skill and tools from `~/Developer/barclayd` (`./codex/install-testflight.sh`). The normal local route is manual distribution signing and App Store Connect API authentication, with no Organizer or Safari dependency:
 
 ```sh
-python3 scripts/testflight.py check
-python3 scripts/testflight.py release --dry-run
-python3 scripts/testflight.py release
-python3 scripts/testflight.py resume --receipt /private/path/release.json
-python3 scripts/testflight.py status --receipt /private/path/release.json
+python3 apple/scripts/testflight.py check
+python3 apple/scripts/testflight.py release --dry-run
+python3 apple/scripts/testflight.py release
+python3 apple/scripts/testflight.py resume --receipt /private/path/release.json
+python3 apple/scripts/testflight.py status --receipt /private/path/release.json
 ```
 
 Run from a clean committed checkout. `release` runs the scheme's tests, resolves the next remote build number, unlocks the dedicated signing keychain, archives/exports an internal-only IPA, uploads it once and performs a bounded availability check. It holds a local release lock through upload and reuses `~/Library/Caches/TripSplit/TestFlightDerivedData`; do not routinely clean this cache. The build number is an archive override, not a source edit. A source change during tests/archive stops upload.
@@ -88,6 +103,6 @@ Build **1.0 (7)** proved CLI archive, manual signed export, API upload and exact
 
 ### Hosted releases
 
-The manual `testflight.yml` GitHub Actions workflow calls the shared, commit-pinned macOS workflow. The repository's `testflight` environment contains the ASC key, exportable distribution identity/password and App Store profile as secrets. It uses a temporary keychain and removes temporary signing material afterwards. Only the release receipt is retained as an artifact.
+The manual `testflight.yml` GitHub Actions workflow calls the shared, commit-pinned macOS workflow. It sets `run-tests: false` to avoid repeating local tests: run the relevant checks on the committed release revision and record its SHA/results before dispatch. CI still checks Apple access, archives, signs, uploads and verifies the exact build's availability. The repository's `testflight` environment contains the ASC key, exportable distribution identity/password and App Store profile as secrets. It uses a temporary keychain and removes temporary signing material afterwards. Only the release receipt is retained as an artifact.
 
 After the workflow is merged to the default branch, trigger it with `gh workflow run testflight.yml --ref main` (or an authorised branch), then follow the returned run. Hosted execution is unverified until its first successful run; the local CLI path and CI signing prepare/cleanup have been exercised. Coordinate local releases with CI—the build-number lookup is not a cross-machine reservation. Keep the caller's `uses` and `tooling-ref` on the same reviewed shared-tooling commit.

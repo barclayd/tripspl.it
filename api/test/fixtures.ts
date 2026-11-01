@@ -1,5 +1,5 @@
 import { env, exports } from 'cloudflare:workers';
-import type { Expense, Operation, Session, TripSnapshot } from '../../contracts/tripsplit-v1';
+import type { Expense, Operation, Session, TripSnapshot } from '../src/types/contract';
 import { issueSession } from '../src/services/auth';
 
 export function draft(id = crypto.randomUUID()): TripSnapshot {

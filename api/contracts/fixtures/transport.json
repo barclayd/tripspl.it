@@ -1,0 +1,114 @@
+{
+  "trip": {
+    "id": "trip-example",
+    "revision": 0,
+    "syncEpoch": "local",
+    "name": "Japan",
+    "startsOn": "2026-10-01",
+    "timeZone": "Asia/Tokyo",
+    "homeCurrency": "GBP",
+    "budgetMinor": "200000",
+    "ownerTravellerId": "a",
+    "currentTravellerId": "a",
+    "role": "owner",
+    "archived": false,
+    "updatedAt": "2026-10-01T00:00:00.000Z",
+    "travellers": [
+      {
+        "id": "a",
+        "name": "Alice",
+        "hue": 0,
+        "archived": false,
+        "revision": 0
+      },
+      {
+        "id": "b",
+        "name": "Bob",
+        "hue": 100,
+        "archived": false,
+        "revision": 0
+      },
+      {
+        "id": "c",
+        "name": "Charlie",
+        "hue": 200,
+        "archived": false,
+        "revision": 0
+      }
+    ],
+    "stops": [
+      {
+        "id": "tokyo",
+        "countryCode": "JP",
+        "place": "Tokyo",
+        "nights": 1,
+        "currency": "JPY",
+        "latitude": 35.68,
+        "longitude": 139.69
+      }
+    ],
+    "days": [
+      {
+        "id": "day1",
+        "date": "2026-10-01",
+        "stopId": "tokyo"
+      },
+      {
+        "id": "day2",
+        "date": "2026-10-02",
+        "stopId": "tokyo"
+      }
+    ],
+    "legs": [],
+    "expenses": [],
+    "repayments": []
+  },
+  "expense": {
+    "id": "expense-example",
+    "revision": 0,
+    "attachment": {
+      "kind": "day",
+      "id": "day1"
+    },
+    "title": "Dinner",
+    "category": "food",
+    "amountMinor": "10000",
+    "currency": "GBP",
+    "status": "planned",
+    "paidOn": null,
+    "paidBy": "a",
+    "splitWith": [
+      "c",
+      "a",
+      "b"
+    ],
+    "conversion": null
+  },
+  "conversion": {
+    "homeAmountMinor": "8100",
+    "rate": "0.81",
+    "rateDate": "2026-10-01",
+    "source": "Card statement",
+    "kind": "manual",
+    "quoteId": null
+  },
+  "repayment": {
+    "id": "repayment-example",
+    "revision": 0,
+    "fromTravellerId": "b",
+    "toTravellerId": "a",
+    "amountMinor": "1000",
+    "currency": "GBP",
+    "paidOn": "2026-10-01",
+    "conversion": null,
+    "note": ""
+  },
+  "leg": {
+    "id": "flight-example",
+    "kind": "outbound",
+    "date": "2026-10-01",
+    "fromStopId": null,
+    "toStopId": "tokyo",
+    "dayId": null
+  }
+}

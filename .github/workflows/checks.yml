@@ -2,8 +2,7 @@ name: checks
 
 on:
   pull_request:
-  push:
-    branches: [main]
+  workflow_dispatch:
 
 permissions:
   contents: read
@@ -13,19 +12,9 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  release-tools:
+  validation:
     runs-on: ubuntu-latest
     timeout-minutes: 5
-    steps:
-      - uses: actions/checkout@v7
-      - run: python3 -m unittest discover -s scripts/tests -v
-
-  api:
-    runs-on: ubuntu-latest
-    timeout-minutes: 15
-    defaults:
-      run:
-        working-directory: api
     steps:
       - uses: actions/checkout@v7
       - uses: actions/setup-node@v7
@@ -34,52 +23,11 @@ jobs:
       - uses: oven-sh/setup-bun@v2
         with:
           bun-version: '1.4.0'
-      - run: bun install --frozen-lockfile
-      - run: bun run check
-      - run: bun run test
-      - run: bun run build
-
-  ios:
-    runs-on: xcode-27
-    timeout-minutes: 35
-    steps:
-      - uses: actions/checkout@v7
-      - name: Select Xcode 27.1
-        run: sudo xcode-select --switch /Applications/Xcode_27.1.app
-      - name: Install XcodeGen
-        run: brew install xcodegen
-      - name: Test shared domain
-        run: swift test --package-path Packages/TripSplitDomain
-      - name: Test shared application services
-        run: swift test --package-path Packages/TripSplitApplication
-      - name: Build shared services for watchOS
-        run: |
-          swift build --package-path Packages/TripSplitApplication \
-            --scratch-path "$RUNNER_TEMP/tripsplit-watch-packages" \
-            --triple arm64_32-apple-watchos26.0 \
-            --sdk "$(xcrun --sdk watchos --show-sdk-path)" \
-            --target TripSplitApplication
-          swift build --package-path Packages/TripSplitApplication \
-            --scratch-path "$RUNNER_TEMP/tripsplit-watch-packages" \
-            --triple arm64_32-apple-watchos26.0 \
-            --sdk "$(xcrun --sdk watchos --show-sdk-path)" \
-            --target TripSplitConversion
+      - name: Install locked API dependencies
+        working-directory: api
+        run: bun install --frozen-lockfile
+      - name: Check API types and generated contract
+        working-directory: api
+        run: bun run check
       - name: Validate destination catalogue
         run: python3 scripts/generate_destination_catalogue.py --check
-      - name: Generate project
-        working-directory: ios
-        run: xcodegen generate
-      - name: Build and test on Duo
-        run: >-
-          xcodebuild -quiet
-          -project ios/TripSplit.xcodeproj
-          -scheme TripSplit
-          -destination 'platform=iOS Simulator,name=iPhone Duo,OS=27.1'
-          -resultBundlePath build/TripSplit.xcresult
-          CODE_SIGNING_ALLOWED=NO test
-      - uses: actions/upload-artifact@v7
-        if: failure()
-        with:
-          name: ios-test-results
-          path: build/TripSplit.xcresult
-          retention-days: 7

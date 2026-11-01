@@ -1,7 +1,7 @@
 import { env } from 'cloudflare:workers';
 import { describe, expect, it, vi } from 'vitest';
-import type { Operation, SyncResponse, TripSnapshot } from '../../contracts/tripsplit-v1';
-import currencyMetadata from '../../contracts/currencies.json';
+import type { Operation, SyncResponse, TripSnapshot } from '../src/types/contract';
+import currencyMetadata from '../src/data/currencies.json';
 import { currencyDigits } from '../src/utils/money';
 import { parse, snapshotSchema, validateTrip } from '../src/schemas/trip';
 import { addExpense, create, draft, expense, request, session } from './fixtures';

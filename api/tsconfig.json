@@ -22,10 +22,10 @@
   "include": [
     "src",
     "test",
+    "scripts",
     "cloudflare.config.ts",
     "vitest.config.ts",
     ".cloudflare/types",
-    "../contracts/tripsplit-v1.ts",
     "vite.config.ts"
   ]
 }

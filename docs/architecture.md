@@ -12,7 +12,7 @@ The 1 November 2026 re-architecture follows KeepFresh's local Swift packages, fe
 | `TripSplitInfrastructure` | Separate networking, persistence and sync products; explicit transport, storage and credential boundaries |
 | `TripSplitApplication` | Observable application coordination and independently usable conversion state |
 | `TripSplitFeatures` | Design system, shared presentation and separate vertical UI products for trips, expenses, conversion, onboarding, account and globe |
-| `ios/TripSplit` | App lifecycle, platform configuration, assets and root navigation composition |
+| `apple/ios/TripSplit` | App lifecycle, platform configuration, assets and root navigation composition |
 
 Dependencies point from features and application coordination toward the core. Domain does not import a design system; networking does not discover configuration from `Bundle.main` or reach into a global signed-in account. The app supplies configuration and services. Each feature declares the products it actually uses. Apple sign-in presentation, map presentation and haptics stay at the platform edge.
 
@@ -44,11 +44,21 @@ The API follows KeepFresh's typed Hono route definitions and schema modules, usi
 
 New features should add a focused target/product, declare its dependencies and expose a small entry point for app composition. Share business rules and services first; share presentation only when the destination platform supports the interaction. Avoid adding a dependency from a core product back to application or feature code.
 
+### Repository boundaries and API contracts
+
+All Apple applications and Swift packages live under `apple/`. The current iPhone/iPad shell is `apple/ios/`; reusable packages are `apple/Packages/`. Future watchOS and macOS shells can sit alongside `ios/` and consume those same local products. `api/` owns server code, and a future `web/` application will be a sibling. Shared repository documentation and data-generation tools remain at the root. The folder name is a project convention, not an Apple requirement; [Apple's guidance](https://developer.apple.com/documentation/xcode/organizing-your-code-with-local-packages) supports local packages in the same repository as their consuming app.
+
+`api/src/schemas/` is the authoritative runtime and wire-shape definition. `api/src/types/contract.ts` infers TypeScript types from those schemas rather than maintaining duplicate interfaces. `api/contracts/openapi.json` is generated from the Hono route definitions and checked for drift in CI. The API does not need a separately maintained root `contracts/` package.
+
+[Hono RPC](https://hono.dev/docs/guides/rpc) shares TypeScript types with TypeScript clients; it is not a Swift contract. [Hono's Zod/OpenAPI integration](https://hono.dev/examples/zod-openapi) gives non-TypeScript consumers a portable schema. [Swift OpenAPI Generator](https://github.com/apple/swift-openapi-generator) can consume that artifact when we introduce generated transport adapters. Existing Swift Codable transport and persisted domain models remain stable during this layout migration; generated network types must not become the persistence schema implicitly.
+
+Schema validation does not replace protocol semantics or accounting examples. `api/docs/protocol.md` records operation identity, retries, authentication and sync behaviour. `api/contracts/fixtures/money-examples.json` verifies matching Swift/TypeScript arithmetic; `api/src/data/currencies.json` owns the ISO currency precision metadata. Swift tests and the destination generator read these canonical API-owned files. The running app uses bundled/generated Swift resources and does not depend on the API source tree being present.
+
 ## Product rules
 
 - Trips have a reporting currency and a whole-trip budget. Expenses have an original amount/currency, payer and a nonempty subset of travellers receiving equal shares. The payer need not be a beneficiary.
 - Planned expenses contribute to expected cost, not debt. Paid expenses contribute to actual cost and balances. A repayment reduces debt without increasing spending. Marking planned as paid updates the same expense.
-- Store money as integer minor units encoded as decimal strings in JSON. Use the shared official ISO 4217 table in `contracts/currencies.json` for accounting precision; display libraries can use different conventions. FX rates are positive decimal strings. Round half-up to the reporting currency's minor unit, then distribute split remainders deterministically by sorted traveller ID. Never use floating-point arithmetic for ledger values.
+- Store money as integer minor units encoded as decimal strings in JSON. Use the shared official ISO 4217 table in `api/src/data/currencies.json` for accounting precision; display libraries can use different conventions. FX rates are positive decimal strings. Round half-up to the reporting currency's minor unit, then distribute split remainders deterministically by sorted traveller ID. Never use floating-point arithmetic for ledger values.
 - Missing conversion rates mean an incomplete total, never a zero-cost expense. Keep the original amount, conversion source, effective rate date and whether a rate is a reference estimate or manually entered. Paid conversions stay fixed unless explicitly edited. Card charges can be entered as an explicit reporting-currency amount.
 - Label total/person as an average. Calculate the current traveller's share from actual allocations. Preserve pennies in balances; the prototype's half-unit settlement threshold is inappropriate.
 - Trip dates are civil `YYYY-MM-DD` dates, not UTC instants. Stops have ordered nights; days include the departure day and final return day (`sum(nights)+1`). Stable IDs attach expenses to days/legs. Changing itinerary dates or stops must not silently move or discard financial records.
@@ -91,6 +101,6 @@ Implement all designed screens: trips/current/upcoming/past, trip overview and b
 
 ## Verification and delivery
 
-Swift and TypeScript share the contract and money examples under `contracts/`. Test rounding, unequal beneficiary sets, repayments, unresolved conversions, authorisation, duplicate/reordered commands, conflicts, offline restart and backup restoration. Run native builds and exercise iPhone/Duo flows with screenshots/video. Keep credentials and generated builds outside git.
+Swift and TypeScript share the money examples under `api/contracts/fixtures/`; API schemas generate the portable OpenAPI contract. Test rounding, unequal beneficiary sets, repayments, unresolved conversions, authorisation, duplicate/reordered commands, conflicts, offline restart and backup restoration. Run native builds and exercise iPhone/Duo flows with screenshots/video. Keep credentials and generated builds outside git.
 
-`ios/` contains the native app shell; `Packages/` contains shared Swift products; `api/` contains the Worker and storage implementation. `contracts/` defines their shared boundary. Update the contract and both consumers together when changing that boundary.
+`apple/ios/` contains the native app shell; `apple/Packages/` contains shared Swift products; `api/` contains the Worker, storage implementation and canonical contracts. Update the API schema and both consumers together when changing that boundary.

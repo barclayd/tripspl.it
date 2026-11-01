@@ -9,10 +9,12 @@
     "cloud": "node scripts/cf-auth.mjs",
     "types": "cf workers types",
     "build": "cf build",
-    "check": "cf workers types && tsc --noEmit",
+    "check": "cf workers types && tsc --noEmit && bun run contracts:check",
     "test": "vitest run",
     "test:watch": "vitest",
-    "migrate:local": "node scripts/migrate-local.mjs"
+    "migrate:local": "node scripts/migrate-local.mjs",
+    "contracts:generate": "bun scripts/generate-contract.ts",
+    "contracts:check": "bun scripts/generate-contract.ts --check"
   },
   "dependencies": {
     "@hono/zod-openapi": "1.6.3",
@@ -24,6 +26,8 @@
     "@cloudflare/vite-plugin": "2.0.0-beta.v.8",
     "@cloudflare/vitest-plugin": "1.4.11",
     "@types/node": "^24.0.0",
+    "ajv": "8.20.0",
+    "ajv-formats": "3.0.1",
     "cf": "1.0.0-beta.26",
     "typescript": "~5.9.3",
     "vite": "8.3.5",

@@ -2,7 +2,7 @@ import { env } from 'cloudflare:workers';
 import { evictDurableObject, runInDurableObject } from 'cloudflare:test';
 import { expect, it } from 'vitest';
 import { addExpense, create, request, session } from './fixtures';
-import type { TripSnapshot } from '../../contracts/tripsplit-v1';
+import type { TripSnapshot } from '../src/types/contract';
 
 it('hibernates authenticated live subscriptions, sends hints and closes revoked members', async () => {
   const owner = await session(), member = await session(), trip = await create(owner);

@@ -10,14 +10,32 @@ A native iOS trip budget that keeps original currencies, planned costs, paid exp
 - **Sync:** Cloudflare serves both personal devices and shared trip members; automatic CloudKit sync is disabled
 - **Recovery:** normal device backup eligibility for local drafts/pending edits, plus separate server recovery
 
-See [destination data and currencies](docs/destination-data.md), [architecture](docs/architecture.md), [HTTP contract](contracts/api.md), [transport types](contracts/tripsplit-v1.ts) and [shared money examples](contracts/money-examples.json).
+See [destination data and currencies](docs/destination-data.md), [architecture](docs/architecture.md), [protocol rules](api/docs/protocol.md), [generated OpenAPI](api/contracts/openapi.json), [inferred transport types](api/src/types/contract.ts) and [shared money examples](api/contracts/fixtures/money-examples.json).
+
+## Repository layout
+
+```text
+apple/
+  ios/                 iPhone/iPad app shell and Xcode project
+  Packages/            Shared Swift services and feature products
+  scripts/             Apple build and TestFlight delivery tools
+api/
+  src/schemas/         Authoritative Zod request/response schemas
+  src/data/            Currency metadata used by the API and Swift checks
+  contracts/           Generated OpenAPI and shared accounting fixtures
+  docs/                Protocol semantics
+docs/                  Cross-platform architecture and data provenance
+scripts/               Shared destination-data tools
+```
+
+Future Watch and Mac app shells belong under `apple/`; a web application will be a root-level `web/` sibling. The API owns the wire contract. TypeScript types and OpenAPI are derived from its Zod schemas; Swift keeps its local domain and persistence models independent of server implementation code.
 
 ## Development
 
 The iOS project is generated with XcodeGen and builds with Xcode 27.1 or later. Ordinary iPhones target iOS 26; Duo presentation uses availability-gated iOS 27.1 APIs.
 
 ```sh
-cd ios
+cd apple/ios
 xcodegen generate
 open TripSplit.xcodeproj
 ```
@@ -36,18 +54,20 @@ The Cloudflare API is deployed at [api.tripspl.it](https://api.tripspl.it/v1/hea
 
 ## Swift packages
 
-`Packages/TripSplitDomain` owns models, exact money calculations, civil dates, shared transport values and bundled destination data. `Packages/TripSplitInfrastructure` separates networking, persistence and sync. `Packages/TripSplitApplication` coordinates those services. `Packages/TripSplitFeatures` provides separate UI products, following the local-package and vertical-feature structure used by KeepFresh.
+`apple/Packages/TripSplitDomain` owns models, exact money calculations, civil dates, shared transport values and bundled destination data. `apple/Packages/TripSplitInfrastructure` separates networking, persistence and sync. `apple/Packages/TripSplitApplication` coordinates those services. `apple/Packages/TripSplitFeatures` provides separate UI products, following the local-package and vertical-feature structure used by KeepFresh.
 
 The reusable service layers are intended for iOS, watchOS and macOS consumers. Existing feature UI remains designed for iPhone and iPad; this repository does not yet ship a Watch or Mac app. New platforms compose their own presentation around the shared products. See [the dependency graph and migration plan](docs/architecture.md#package-architecture) for boundaries and extension guidance.
 
 ## Checks
 
 ```sh
-swift test --package-path Packages/TripSplitDomain
-swift test --package-path Packages/TripSplitApplication
-xcodebuild -project ios/TripSplit.xcodeproj -scheme TripSplit \
+swift test --package-path apple/Packages/TripSplitDomain
+swift test --package-path apple/Packages/TripSplitApplication
+xcodebuild -project apple/ios/TripSplit.xcodeproj -scheme TripSplit \
   -destination 'platform=iOS Simulator,name=iPhone Duo,OS=27.1' \
   CODE_SIGNING_ALLOWED=NO test
 ```
 
-GitHub Actions checks both the Worker and the native app. Simulator and local checks do not establish successful Apple production sign-in or installed TestFlight delivery; those require their respective environments and credentials.
+Run relevant API and Swift tests locally before delivery. Pull-request CI performs only fast API type/contract and destination-data checks; it does not repeat test suites, native builds or watchOS compilation. Merging the checked revision to `main` does not start a duplicate validation run. TestFlight's separate manual workflow performs the archive and upload.
+
+Simulator and local checks do not establish successful Apple production sign-in or installed TestFlight delivery; those require their respective environments and credentials.

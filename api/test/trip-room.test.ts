@@ -1,7 +1,7 @@
 import { env } from 'cloudflare:workers';
 import { evictDurableObject, runDurableObjectAlarm, runInDurableObject } from 'cloudflare:test';
 import { describe, expect, it } from 'vitest';
-import type { Operation, SyncResponse, TripSnapshot } from '../../contracts/tripsplit-v1';
+import type { Operation, SyncResponse, TripSnapshot } from '../src/types/contract';
 import { create, draft, expense, addExpense, request, session } from './fixtures';
 
 async function sync(trip: TripSnapshot, user: Awaited<ReturnType<typeof session>>, operations: Operation[]): Promise<SyncResponse> {

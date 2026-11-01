@@ -58,12 +58,19 @@ struct MoneyTests {
     var conversionCases: [ConversionCase]
     var ledgerCases: [LedgerCase]
   }
+  private func apiData(_ relativePath: String) throws -> Data {
+    var directory = URL(fileURLWithPath: #filePath).deletingLastPathComponent()
+    while directory.path != "/" {
+      let file = directory.appending(path: "api/" + relativePath)
+      if FileManager.default.fileExists(atPath: file.path) {
+        return try Data(contentsOf: file)
+      }
+      directory.deleteLastPathComponent()
+    }
+    throw CocoaError(.fileReadNoSuchFile, userInfo: [NSFilePathErrorKey: "api/" + relativePath])
+  }
   func fixtures() throws -> Fixtures {
-    let root = URL(fileURLWithPath: #filePath).deletingLastPathComponent()
-      .deletingLastPathComponent().deletingLastPathComponent()
-      .deletingLastPathComponent().deletingLastPathComponent()
-    return try JSONDecoder().decode(
-      Fixtures.self, from: Data(contentsOf: root.appending(path: "contracts/money-examples.json")))
+    try JSONDecoder().decode(Fixtures.self, from: apiData("contracts/fixtures/money-examples.json"))
   }
   @Test func requiredNullableKeysAreExplicitJSONNull() throws {
     var draft = OnboardingDraft()
@@ -100,11 +107,8 @@ struct MoneyTests {
   }
   @Test func officialCurrencyMetadata() throws {
     struct Metadata: Decodable { var minorUnits: [String: Int] }
-    let root = URL(fileURLWithPath: #filePath).deletingLastPathComponent()
-      .deletingLastPathComponent().deletingLastPathComponent()
-      .deletingLastPathComponent().deletingLastPathComponent()
     let metadata = try JSONDecoder().decode(
-      Metadata.self, from: Data(contentsOf: root.appending(path: "contracts/currencies.json")))
+      Metadata.self, from: apiData("src/data/currencies.json"))
     #expect(CurrencyMetadata.minorUnits == metadata.minorUnits)
   }
   @Test func sharedAllocationFixtures() throws {

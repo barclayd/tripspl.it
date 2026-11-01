@@ -1,0 +1,2417 @@
+{
+  "components": {
+    "parameters": {},
+    "schemas": {
+      "APIError": {
+        "properties": {
+          "error": {
+            "properties": {
+              "code": {
+                "type": "string"
+              },
+              "message": {
+                "type": "string"
+              },
+              "retryable": {
+                "type": "boolean"
+              }
+            },
+            "required": [
+              "code",
+              "message",
+              "retryable"
+            ],
+            "type": "object"
+          }
+        },
+        "required": [
+          "error"
+        ],
+        "type": "object"
+      },
+      "AcceptInvitationRequest": {
+        "additionalProperties": false,
+        "properties": {
+          "token": {
+            "pattern": "^[a-f0-9]{64}$",
+            "type": "string"
+          }
+        },
+        "required": [
+          "token"
+        ],
+        "type": "object"
+      },
+      "AppleSignInRequest": {
+        "additionalProperties": false,
+        "properties": {
+          "authorizationCode": {
+            "maxLength": 4096,
+            "minLength": 1,
+            "type": "string"
+          },
+          "challengeId": {
+            "$ref": "#/components/schemas/ID"
+          },
+          "displayName": {
+            "maxLength": 120,
+            "minLength": 1,
+            "type": "string"
+          },
+          "identityToken": {
+            "maxLength": 16384,
+            "minLength": 1,
+            "type": "string"
+          }
+        },
+        "required": [
+          "challengeId",
+          "identityToken",
+          "authorizationCode"
+        ],
+        "type": "object"
+      },
+      "AuthChallenge": {
+        "properties": {
+          "expiresAt": {
+            "type": "string"
+          },
+          "id": {
+            "type": "string"
+          },
+          "nonce": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "nonce",
+          "expiresAt"
+        ],
+        "type": "object"
+      },
+      "Category": {
+        "enum": [
+          "food",
+          "coffee",
+          "stay",
+          "activity",
+          "transport",
+          "shopping",
+          "flight",
+          "train",
+          "taxi",
+          "other"
+        ],
+        "type": "string"
+      },
+      "CivilDate": {
+        "description": "Valid Gregorian civil date from 1900-01-01 through 2200-12-31; no time zone conversion.",
+        "format": "date",
+        "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
+        "type": "string"
+      },
+      "Conversion": {
+        "additionalProperties": false,
+        "properties": {
+          "homeAmountMinor": {
+            "$ref": "#/components/schemas/MinorUnits"
+          },
+          "kind": {
+            "enum": [
+              "reference",
+              "manual"
+            ],
+            "type": "string"
+          },
+          "quoteId": {
+            "$ref": "#/components/schemas/NullableID"
+          },
+          "rate": {
+            "$ref": "#/components/schemas/DecimalRate"
+          },
+          "rateDate": {
+            "$ref": "#/components/schemas/CivilDate"
+          },
+          "source": {
+            "maxLength": 120,
+            "minLength": 1,
+            "type": "string"
+          }
+        },
+        "required": [
+          "homeAmountMinor",
+          "rate",
+          "rateDate",
+          "source",
+          "kind",
+          "quoteId"
+        ],
+        "type": "object"
+      },
+      "CreateInvitationRequest": {
+        "additionalProperties": false,
+        "properties": {
+          "travellerId": {
+            "$ref": "#/components/schemas/ID"
+          }
+        },
+        "required": [
+          "travellerId"
+        ],
+        "type": "object"
+      },
+      "CreateTripRequest": {
+        "additionalProperties": false,
+        "properties": {
+          "operationId": {
+            "$ref": "#/components/schemas/ID"
+          },
+          "trip": {
+            "$ref": "#/components/schemas/TripSnapshot"
+          }
+        },
+        "required": [
+          "operationId",
+          "trip"
+        ],
+        "type": "object"
+      },
+      "CurrencyCode": {
+        "description": "Supported ISO 4217 code from the bundled currency metadata.",
+        "enum": [
+          "AED",
+          "AFN",
+          "ALL",
+          "AMD",
+          "AOA",
+          "ARS",
+          "AUD",
+          "AWG",
+          "AZN",
+          "BAM",
+          "BBD",
+          "BDT",
+          "BHD",
+          "BIF",
+          "BMD",
+          "BND",
+          "BOB",
+          "BOV",
+          "BRL",
+          "BSD",
+          "BTN",
+          "BWP",
+          "BYN",
+          "BZD",
+          "CAD",
+          "CDF",
+          "CHE",
+          "CHF",
+          "CHW",
+          "CLF",
+          "CLP",
+          "CNY",
+          "COP",
+          "COU",
+          "CRC",
+          "CUP",
+          "CVE",
+          "CZK",
+          "DJF",
+          "DKK",
+          "DOP",
+          "DZD",
+          "EGP",
+          "ERN",
+          "ETB",
+          "EUR",
+          "FJD",
+          "FKP",
+          "GBP",
+          "GEL",
+          "GHS",
+          "GIP",
+          "GMD",
+          "GNF",
+          "GTQ",
+          "GYD",
+          "HKD",
+          "HNL",
+          "HTG",
+          "HUF",
+          "IDR",
+          "ILS",
+          "INR",
+          "IQD",
+          "IRR",
+          "ISK",
+          "JMD",
+          "JOD",
+          "JPY",
+          "KES",
+          "KGS",
+          "KHR",
+          "KMF",
+          "KPW",
+          "KRW",
+          "KWD",
+          "KYD",
+          "KZT",
+          "LAK",
+          "LBP",
+          "LKR",
+          "LRD",
+          "LSL",
+          "LYD",
+          "MAD",
+          "MDL",
+          "MGA",
+          "MKD",
+          "MMK",
+          "MNT",
+          "MOP",
+          "MRU",
+          "MUR",
+          "MVR",
+          "MWK",
+          "MXN",
+          "MXV",
+          "MYR",
+          "MZN",
+          "NAD",
+          "NGN",
+          "NIO",
+          "NOK",
+          "NPR",
+          "NZD",
+          "OMR",
+          "PAB",
+          "PEN",
+          "PGK",
+          "PHP",
+          "PKR",
+          "PLN",
+          "PYG",
+          "QAR",
+          "RON",
+          "RSD",
+          "RUB",
+          "RWF",
+          "SAR",
+          "SBD",
+          "SCR",
+          "SDG",
+          "SEK",
+          "SGD",
+          "SHP",
+          "SLE",
+          "SOS",
+          "SRD",
+          "SSP",
+          "STN",
+          "SVC",
+          "SYP",
+          "SZL",
+          "THB",
+          "TJS",
+          "TMT",
+          "TND",
+          "TOP",
+          "TRY",
+          "TTD",
+          "TWD",
+          "TZS",
+          "UAH",
+          "UGX",
+          "USD",
+          "USN",
+          "UYI",
+          "UYU",
+          "UYW",
+          "UZS",
+          "VED",
+          "VES",
+          "VND",
+          "VUV",
+          "WST",
+          "XAD",
+          "XAF",
+          "XCD",
+          "XCG",
+          "XOF",
+          "XPF",
+          "YER",
+          "ZAR",
+          "ZMW",
+          "ZWG"
+        ],
+        "pattern": "^[A-Z]{3}$",
+        "type": "string"
+      },
+      "DecimalRate": {
+        "description": "Exact positive decimal text with at most 18 significant digits, 18 fractional digits and 12 whole digits. Zero, exponent notation and binary floating-point conversion are forbidden; precision is checked at runtime.",
+        "maxLength": 32,
+        "type": "string"
+      },
+      "DeletionPending": {
+        "properties": {
+          "status": {
+            "enum": [
+              "pending"
+            ],
+            "type": "string"
+          }
+        },
+        "required": [
+          "status"
+        ],
+        "type": "object"
+      },
+      "EmptyRequest": {
+        "additionalProperties": false,
+        "properties": {},
+        "type": "object"
+      },
+      "Expense": {
+        "additionalProperties": false,
+        "properties": {
+          "amountMinor": {
+            "$ref": "#/components/schemas/PositiveMinorUnits"
+          },
+          "attachment": {
+            "additionalProperties": false,
+            "properties": {
+              "id": {
+                "$ref": "#/components/schemas/ID"
+              },
+              "kind": {
+                "enum": [
+                  "day",
+                  "leg"
+                ],
+                "type": "string"
+              }
+            },
+            "required": [
+              "kind",
+              "id"
+            ],
+            "type": "object"
+          },
+          "category": {
+            "$ref": "#/components/schemas/Category"
+          },
+          "conversion": {
+            "$ref": "#/components/schemas/NullableConversion"
+          },
+          "currency": {
+            "$ref": "#/components/schemas/CurrencyCode"
+          },
+          "id": {
+            "$ref": "#/components/schemas/ID"
+          },
+          "paidBy": {
+            "$ref": "#/components/schemas/ID"
+          },
+          "paidOn": {
+            "$ref": "#/components/schemas/NullableCivilDate"
+          },
+          "revision": {
+            "maximum": 9007199254740991,
+            "minimum": 0,
+            "type": "integer"
+          },
+          "splitWith": {
+            "items": {
+              "$ref": "#/components/schemas/ID"
+            },
+            "maxItems": 40,
+            "minItems": 1,
+            "type": "array"
+          },
+          "status": {
+            "enum": [
+              "planned",
+              "paid"
+            ],
+            "type": "string"
+          },
+          "title": {
+            "maxLength": 120,
+            "minLength": 1,
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "revision",
+          "attachment",
+          "title",
+          "category",
+          "amountMinor",
+          "currency",
+          "status",
+          "paidOn",
+          "paidBy",
+          "splitWith",
+          "conversion"
+        ],
+        "type": "object"
+      },
+      "ExpenseDeleteOperation": {
+        "additionalProperties": false,
+        "properties": {
+          "entityId": {
+            "$ref": "#/components/schemas/ID"
+          },
+          "expectedRevision": {
+            "maximum": 9007199254740991,
+            "minimum": 0,
+            "type": "integer"
+          },
+          "id": {
+            "$ref": "#/components/schemas/ID"
+          },
+          "payload": {
+            "type": "null"
+          },
+          "syncEpoch": {
+            "maxLength": 128,
+            "minLength": 1,
+            "type": "string"
+          },
+          "type": {
+            "enum": [
+              "expense.delete"
+            ],
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "syncEpoch",
+          "entityId",
+          "type",
+          "expectedRevision",
+          "payload"
+        ],
+        "type": "object"
+      },
+      "ExpenseUpsertOperation": {
+        "additionalProperties": false,
+        "properties": {
+          "entityId": {
+            "$ref": "#/components/schemas/ID"
+          },
+          "expectedRevision": {
+            "maximum": 9007199254740991,
+            "minimum": 0,
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "id": {
+            "$ref": "#/components/schemas/ID"
+          },
+          "payload": {
+            "$ref": "#/components/schemas/Expense"
+          },
+          "syncEpoch": {
+            "maxLength": 128,
+            "minLength": 1,
+            "type": "string"
+          },
+          "type": {
+            "enum": [
+              "expense.upsert"
+            ],
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "syncEpoch",
+          "entityId",
+          "type",
+          "expectedRevision",
+          "payload"
+        ],
+        "type": "object"
+      },
+      "FXQuote": {
+        "properties": {
+          "from": {
+            "type": "string"
+          },
+          "id": {
+            "type": "string"
+          },
+          "rate": {
+            "type": "string"
+          },
+          "rateDate": {
+            "type": "string"
+          },
+          "requestedDate": {
+            "type": "string"
+          },
+          "source": {
+            "type": "string"
+          },
+          "to": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "from",
+          "to",
+          "rate",
+          "requestedDate",
+          "rateDate",
+          "source"
+        ],
+        "type": "object"
+      },
+      "ID": {
+        "maxLength": 128,
+        "minLength": 1,
+        "pattern": "^[A-Za-z0-9_-]+$",
+        "type": "string"
+      },
+      "Invitation": {
+        "properties": {
+          "expiresAt": {
+            "type": "string"
+          },
+          "id": {
+            "type": "string"
+          },
+          "token": {
+            "type": "string"
+          },
+          "url": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        },
+        "required": [
+          "id",
+          "token",
+          "expiresAt",
+          "url"
+        ],
+        "type": "object"
+      },
+      "LiveHint": {
+        "properties": {
+          "revision": {
+            "type": "number"
+          },
+          "syncEpoch": {
+            "type": "string"
+          },
+          "type": {
+            "enum": [
+              "changed"
+            ],
+            "type": "string"
+          }
+        },
+        "required": [
+          "type",
+          "revision",
+          "syncEpoch"
+        ],
+        "type": "object"
+      },
+      "MinorUnits": {
+        "description": "Exact nonnegative integer minor-unit string, at most 999999999999. Never a JSON number.",
+        "pattern": "^(0|[1-9]\\d{0,11})$",
+        "type": "string"
+      },
+      "NullableCivilDate": {
+        "description": "Valid Gregorian civil date from 1900-01-01 through 2200-12-31; no time zone conversion.",
+        "format": "date",
+        "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
+        "type": [
+          "string",
+          "null"
+        ]
+      },
+      "NullableConversion": {
+        "additionalProperties": false,
+        "properties": {
+          "homeAmountMinor": {
+            "$ref": "#/components/schemas/MinorUnits"
+          },
+          "kind": {
+            "enum": [
+              "reference",
+              "manual"
+            ],
+            "type": "string"
+          },
+          "quoteId": {
+            "$ref": "#/components/schemas/NullableID"
+          },
+          "rate": {
+            "$ref": "#/components/schemas/DecimalRate"
+          },
+          "rateDate": {
+            "$ref": "#/components/schemas/CivilDate"
+          },
+          "source": {
+            "maxLength": 120,
+            "minLength": 1,
+            "type": "string"
+          }
+        },
+        "required": [
+          "homeAmountMinor",
+          "rate",
+          "rateDate",
+          "source",
+          "kind",
+          "quoteId"
+        ],
+        "type": [
+          "object",
+          "null"
+        ]
+      },
+      "NullableID": {
+        "maxLength": 128,
+        "minLength": 1,
+        "pattern": "^[A-Za-z0-9_-]+$",
+        "type": [
+          "string",
+          "null"
+        ]
+      },
+      "NullableTripSnapshot": {
+        "additionalProperties": false,
+        "properties": {
+          "archived": {
+            "type": "boolean"
+          },
+          "budgetMinor": {
+            "$ref": "#/components/schemas/MinorUnits"
+          },
+          "currentTravellerId": {
+            "$ref": "#/components/schemas/ID"
+          },
+          "days": {
+            "items": {
+              "$ref": "#/components/schemas/TripDay"
+            },
+            "maxItems": 400,
+            "minItems": 1,
+            "type": "array"
+          },
+          "expenses": {
+            "items": {
+              "$ref": "#/components/schemas/Expense"
+            },
+            "maxItems": 10000,
+            "type": "array"
+          },
+          "homeCurrency": {
+            "$ref": "#/components/schemas/CurrencyCode"
+          },
+          "id": {
+            "$ref": "#/components/schemas/ID"
+          },
+          "legs": {
+            "items": {
+              "$ref": "#/components/schemas/TravelLeg"
+            },
+            "maxItems": 100,
+            "type": "array"
+          },
+          "name": {
+            "maxLength": 120,
+            "minLength": 1,
+            "type": "string"
+          },
+          "ownerTravellerId": {
+            "$ref": "#/components/schemas/ID"
+          },
+          "repayments": {
+            "items": {
+              "$ref": "#/components/schemas/Repayment"
+            },
+            "maxItems": 10000,
+            "type": "array"
+          },
+          "revision": {
+            "maximum": 9007199254740991,
+            "minimum": 0,
+            "type": "integer"
+          },
+          "role": {
+            "enum": [
+              "owner",
+              "member"
+            ],
+            "type": "string"
+          },
+          "startsOn": {
+            "$ref": "#/components/schemas/CivilDate"
+          },
+          "stops": {
+            "items": {
+              "$ref": "#/components/schemas/Stop"
+            },
+            "maxItems": 30,
+            "minItems": 1,
+            "type": "array"
+          },
+          "syncEpoch": {
+            "maxLength": 128,
+            "minLength": 1,
+            "type": "string"
+          },
+          "timeZone": {
+            "maxLength": 100,
+            "type": "string"
+          },
+          "travellers": {
+            "items": {
+              "$ref": "#/components/schemas/Traveller"
+            },
+            "maxItems": 40,
+            "minItems": 1,
+            "type": "array"
+          },
+          "updatedAt": {
+            "format": "date-time",
+            "type": "string"
+          }
+        },
+        "required": [
+          "name",
+          "startsOn",
+          "timeZone",
+          "homeCurrency",
+          "budgetMinor",
+          "stops",
+          "days",
+          "legs",
+          "id",
+          "revision",
+          "syncEpoch",
+          "ownerTravellerId",
+          "currentTravellerId",
+          "role",
+          "travellers",
+          "expenses",
+          "repayments",
+          "archived",
+          "updatedAt"
+        ],
+        "type": [
+          "object",
+          "null"
+        ]
+      },
+      "Operation": {
+        "discriminator": {
+          "mapping": {
+            "expense.delete": "#/components/schemas/ExpenseDeleteOperation",
+            "expense.upsert": "#/components/schemas/ExpenseUpsertOperation",
+            "repayment.delete": "#/components/schemas/RepaymentDeleteOperation",
+            "repayment.upsert": "#/components/schemas/RepaymentUpsertOperation",
+            "traveller.upsert": "#/components/schemas/TravellerUpsertOperation",
+            "trip.archive": "#/components/schemas/TripArchiveOperation",
+            "trip.update": "#/components/schemas/TripUpdateOperation"
+          },
+          "propertyName": "type"
+        },
+        "oneOf": [
+          {
+            "$ref": "#/components/schemas/ExpenseUpsertOperation"
+          },
+          {
+            "$ref": "#/components/schemas/ExpenseDeleteOperation"
+          },
+          {
+            "$ref": "#/components/schemas/RepaymentUpsertOperation"
+          },
+          {
+            "$ref": "#/components/schemas/RepaymentDeleteOperation"
+          },
+          {
+            "$ref": "#/components/schemas/TravellerUpsertOperation"
+          },
+          {
+            "$ref": "#/components/schemas/TripUpdateOperation"
+          },
+          {
+            "$ref": "#/components/schemas/TripArchiveOperation"
+          }
+        ]
+      },
+      "OperationResult": {
+        "properties": {
+          "code": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "id": {
+            "type": "string"
+          },
+          "message": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "revision": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "status": {
+            "enum": [
+              "accepted",
+              "duplicate",
+              "conflict",
+              "rejected"
+            ],
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "status",
+          "revision",
+          "code",
+          "message"
+        ],
+        "type": "object"
+      },
+      "PositiveMinorUnits": {
+        "description": "Exact positive integer minor-unit string, from 1 through 999999999999. Zero is only allowed for budgets and converted totals.",
+        "pattern": "^[1-9]\\d{0,11}$",
+        "type": "string"
+      },
+      "RefreshTokenRequest": {
+        "additionalProperties": false,
+        "properties": {
+          "refreshToken": {
+            "pattern": "^[a-f0-9]{64}$",
+            "type": "string"
+          }
+        },
+        "required": [
+          "refreshToken"
+        ],
+        "type": "object"
+      },
+      "Repayment": {
+        "additionalProperties": false,
+        "properties": {
+          "amountMinor": {
+            "$ref": "#/components/schemas/PositiveMinorUnits"
+          },
+          "conversion": {
+            "$ref": "#/components/schemas/NullableConversion"
+          },
+          "currency": {
+            "$ref": "#/components/schemas/CurrencyCode"
+          },
+          "fromTravellerId": {
+            "$ref": "#/components/schemas/ID"
+          },
+          "id": {
+            "$ref": "#/components/schemas/ID"
+          },
+          "note": {
+            "maxLength": 500,
+            "type": "string"
+          },
+          "paidOn": {
+            "$ref": "#/components/schemas/CivilDate"
+          },
+          "revision": {
+            "maximum": 9007199254740991,
+            "minimum": 0,
+            "type": "integer"
+          },
+          "toTravellerId": {
+            "$ref": "#/components/schemas/ID"
+          }
+        },
+        "required": [
+          "id",
+          "revision",
+          "fromTravellerId",
+          "toTravellerId",
+          "amountMinor",
+          "currency",
+          "paidOn",
+          "conversion",
+          "note"
+        ],
+        "type": "object"
+      },
+      "RepaymentDeleteOperation": {
+        "additionalProperties": false,
+        "properties": {
+          "entityId": {
+            "$ref": "#/components/schemas/ID"
+          },
+          "expectedRevision": {
+            "maximum": 9007199254740991,
+            "minimum": 0,
+            "type": "integer"
+          },
+          "id": {
+            "$ref": "#/components/schemas/ID"
+          },
+          "payload": {
+            "type": "null"
+          },
+          "syncEpoch": {
+            "maxLength": 128,
+            "minLength": 1,
+            "type": "string"
+          },
+          "type": {
+            "enum": [
+              "repayment.delete"
+            ],
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "syncEpoch",
+          "entityId",
+          "type",
+          "expectedRevision",
+          "payload"
+        ],
+        "type": "object"
+      },
+      "RepaymentUpsertOperation": {
+        "additionalProperties": false,
+        "properties": {
+          "entityId": {
+            "$ref": "#/components/schemas/ID"
+          },
+          "expectedRevision": {
+            "maximum": 9007199254740991,
+            "minimum": 0,
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "id": {
+            "$ref": "#/components/schemas/ID"
+          },
+          "payload": {
+            "$ref": "#/components/schemas/Repayment"
+          },
+          "syncEpoch": {
+            "maxLength": 128,
+            "minLength": 1,
+            "type": "string"
+          },
+          "type": {
+            "enum": [
+              "repayment.upsert"
+            ],
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "syncEpoch",
+          "entityId",
+          "type",
+          "expectedRevision",
+          "payload"
+        ],
+        "type": "object"
+      },
+      "Session": {
+        "properties": {
+          "accessToken": {
+            "type": "string"
+          },
+          "expiresAt": {
+            "type": "string"
+          },
+          "refreshToken": {
+            "type": "string"
+          },
+          "user": {
+            "$ref": "#/components/schemas/User"
+          }
+        },
+        "required": [
+          "user",
+          "accessToken",
+          "refreshToken",
+          "expiresAt"
+        ],
+        "type": "object"
+      },
+      "Stop": {
+        "additionalProperties": false,
+        "properties": {
+          "countryCode": {
+            "pattern": "^[A-Z]{2}$",
+            "type": "string"
+          },
+          "currency": {
+            "$ref": "#/components/schemas/CurrencyCode"
+          },
+          "id": {
+            "$ref": "#/components/schemas/ID"
+          },
+          "latitude": {
+            "maximum": 90,
+            "minimum": -90,
+            "type": "number"
+          },
+          "longitude": {
+            "maximum": 180,
+            "minimum": -180,
+            "type": "number"
+          },
+          "nights": {
+            "maximum": 365,
+            "minimum": 0,
+            "type": "integer"
+          },
+          "place": {
+            "maxLength": 120,
+            "minLength": 1,
+            "type": "string"
+          },
+          "timeZone": {
+            "maxLength": 80,
+            "minLength": 1,
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "countryCode",
+          "place",
+          "nights",
+          "currency",
+          "latitude",
+          "longitude"
+        ],
+        "type": "object"
+      },
+      "Success": {
+        "properties": {
+          "ok": {
+            "enum": [
+              true
+            ],
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "ok"
+        ],
+        "type": "object"
+      },
+      "SyncRequest": {
+        "additionalProperties": false,
+        "properties": {
+          "cursor": {
+            "maximum": 9007199254740991,
+            "minimum": 0,
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "operations": {
+            "items": {
+              "$ref": "#/components/schemas/Operation"
+            },
+            "maxItems": 50,
+            "type": "array"
+          },
+          "syncEpoch": {
+            "maxLength": 128,
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        },
+        "required": [
+          "cursor",
+          "syncEpoch",
+          "operations"
+        ],
+        "type": "object"
+      },
+      "SyncResponse": {
+        "properties": {
+          "cursor": {
+            "type": "number"
+          },
+          "results": {
+            "items": {
+              "$ref": "#/components/schemas/OperationResult"
+            },
+            "type": "array"
+          },
+          "snapshot": {
+            "$ref": "#/components/schemas/NullableTripSnapshot"
+          },
+          "syncEpoch": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "cursor",
+          "syncEpoch",
+          "snapshot",
+          "results"
+        ],
+        "type": "object"
+      },
+      "TravelLeg": {
+        "additionalProperties": false,
+        "properties": {
+          "date": {
+            "$ref": "#/components/schemas/CivilDate"
+          },
+          "dayId": {
+            "$ref": "#/components/schemas/NullableID"
+          },
+          "fromStopId": {
+            "$ref": "#/components/schemas/NullableID"
+          },
+          "id": {
+            "$ref": "#/components/schemas/ID"
+          },
+          "kind": {
+            "enum": [
+              "outbound",
+              "transfer",
+              "return"
+            ],
+            "type": "string"
+          },
+          "toStopId": {
+            "$ref": "#/components/schemas/NullableID"
+          }
+        },
+        "required": [
+          "id",
+          "kind",
+          "date",
+          "fromStopId",
+          "toStopId",
+          "dayId"
+        ],
+        "type": "object"
+      },
+      "Traveller": {
+        "additionalProperties": false,
+        "properties": {
+          "archived": {
+            "type": "boolean"
+          },
+          "hue": {
+            "maximum": 360,
+            "minimum": 0,
+            "type": "number"
+          },
+          "id": {
+            "$ref": "#/components/schemas/ID"
+          },
+          "name": {
+            "maxLength": 120,
+            "minLength": 1,
+            "type": "string"
+          },
+          "revision": {
+            "maximum": 9007199254740991,
+            "minimum": 0,
+            "type": "integer"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "hue",
+          "archived",
+          "revision"
+        ],
+        "type": "object"
+      },
+      "TravellerUpsertOperation": {
+        "additionalProperties": false,
+        "properties": {
+          "entityId": {
+            "$ref": "#/components/schemas/ID"
+          },
+          "expectedRevision": {
+            "maximum": 9007199254740991,
+            "minimum": 0,
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "id": {
+            "$ref": "#/components/schemas/ID"
+          },
+          "payload": {
+            "$ref": "#/components/schemas/Traveller"
+          },
+          "syncEpoch": {
+            "maxLength": 128,
+            "minLength": 1,
+            "type": "string"
+          },
+          "type": {
+            "enum": [
+              "traveller.upsert"
+            ],
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "syncEpoch",
+          "entityId",
+          "type",
+          "expectedRevision",
+          "payload"
+        ],
+        "type": "object"
+      },
+      "TripArchiveOperation": {
+        "additionalProperties": false,
+        "properties": {
+          "entityId": {
+            "$ref": "#/components/schemas/ID"
+          },
+          "expectedRevision": {
+            "maximum": 9007199254740991,
+            "minimum": 0,
+            "type": "integer"
+          },
+          "id": {
+            "$ref": "#/components/schemas/ID"
+          },
+          "payload": {
+            "additionalProperties": false,
+            "properties": {
+              "archived": {
+                "type": "boolean"
+              }
+            },
+            "required": [
+              "archived"
+            ],
+            "type": "object"
+          },
+          "syncEpoch": {
+            "maxLength": 128,
+            "minLength": 1,
+            "type": "string"
+          },
+          "type": {
+            "enum": [
+              "trip.archive"
+            ],
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "syncEpoch",
+          "entityId",
+          "type",
+          "expectedRevision",
+          "payload"
+        ],
+        "type": "object"
+      },
+      "TripDay": {
+        "additionalProperties": false,
+        "properties": {
+          "date": {
+            "$ref": "#/components/schemas/CivilDate"
+          },
+          "id": {
+            "$ref": "#/components/schemas/ID"
+          },
+          "stopId": {
+            "$ref": "#/components/schemas/ID"
+          }
+        },
+        "required": [
+          "id",
+          "date",
+          "stopId"
+        ],
+        "type": "object"
+      },
+      "TripList": {
+        "properties": {
+          "nextCursor": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "trips": {
+            "items": {
+              "$ref": "#/components/schemas/TripSnapshot"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "trips",
+          "nextCursor"
+        ],
+        "type": "object"
+      },
+      "TripSettings": {
+        "additionalProperties": false,
+        "properties": {
+          "budgetMinor": {
+            "$ref": "#/components/schemas/MinorUnits"
+          },
+          "days": {
+            "items": {
+              "$ref": "#/components/schemas/TripDay"
+            },
+            "maxItems": 400,
+            "minItems": 1,
+            "type": "array"
+          },
+          "homeCurrency": {
+            "$ref": "#/components/schemas/CurrencyCode"
+          },
+          "legs": {
+            "items": {
+              "$ref": "#/components/schemas/TravelLeg"
+            },
+            "maxItems": 100,
+            "type": "array"
+          },
+          "name": {
+            "maxLength": 120,
+            "minLength": 1,
+            "type": "string"
+          },
+          "startsOn": {
+            "$ref": "#/components/schemas/CivilDate"
+          },
+          "stops": {
+            "items": {
+              "$ref": "#/components/schemas/Stop"
+            },
+            "maxItems": 30,
+            "minItems": 1,
+            "type": "array"
+          },
+          "timeZone": {
+            "maxLength": 100,
+            "type": "string"
+          }
+        },
+        "required": [
+          "name",
+          "startsOn",
+          "timeZone",
+          "homeCurrency",
+          "budgetMinor",
+          "stops",
+          "days",
+          "legs"
+        ],
+        "type": "object"
+      },
+      "TripSnapshot": {
+        "additionalProperties": false,
+        "properties": {
+          "archived": {
+            "type": "boolean"
+          },
+          "budgetMinor": {
+            "$ref": "#/components/schemas/MinorUnits"
+          },
+          "currentTravellerId": {
+            "$ref": "#/components/schemas/ID"
+          },
+          "days": {
+            "items": {
+              "$ref": "#/components/schemas/TripDay"
+            },
+            "maxItems": 400,
+            "minItems": 1,
+            "type": "array"
+          },
+          "expenses": {
+            "items": {
+              "$ref": "#/components/schemas/Expense"
+            },
+            "maxItems": 10000,
+            "type": "array"
+          },
+          "homeCurrency": {
+            "$ref": "#/components/schemas/CurrencyCode"
+          },
+          "id": {
+            "$ref": "#/components/schemas/ID"
+          },
+          "legs": {
+            "items": {
+              "$ref": "#/components/schemas/TravelLeg"
+            },
+            "maxItems": 100,
+            "type": "array"
+          },
+          "name": {
+            "maxLength": 120,
+            "minLength": 1,
+            "type": "string"
+          },
+          "ownerTravellerId": {
+            "$ref": "#/components/schemas/ID"
+          },
+          "repayments": {
+            "items": {
+              "$ref": "#/components/schemas/Repayment"
+            },
+            "maxItems": 10000,
+            "type": "array"
+          },
+          "revision": {
+            "maximum": 9007199254740991,
+            "minimum": 0,
+            "type": "integer"
+          },
+          "role": {
+            "enum": [
+              "owner",
+              "member"
+            ],
+            "type": "string"
+          },
+          "startsOn": {
+            "$ref": "#/components/schemas/CivilDate"
+          },
+          "stops": {
+            "items": {
+              "$ref": "#/components/schemas/Stop"
+            },
+            "maxItems": 30,
+            "minItems": 1,
+            "type": "array"
+          },
+          "syncEpoch": {
+            "maxLength": 128,
+            "minLength": 1,
+            "type": "string"
+          },
+          "timeZone": {
+            "maxLength": 100,
+            "type": "string"
+          },
+          "travellers": {
+            "items": {
+              "$ref": "#/components/schemas/Traveller"
+            },
+            "maxItems": 40,
+            "minItems": 1,
+            "type": "array"
+          },
+          "updatedAt": {
+            "format": "date-time",
+            "type": "string"
+          }
+        },
+        "required": [
+          "name",
+          "startsOn",
+          "timeZone",
+          "homeCurrency",
+          "budgetMinor",
+          "stops",
+          "days",
+          "legs",
+          "id",
+          "revision",
+          "syncEpoch",
+          "ownerTravellerId",
+          "currentTravellerId",
+          "role",
+          "travellers",
+          "expenses",
+          "repayments",
+          "archived",
+          "updatedAt"
+        ],
+        "type": "object"
+      },
+      "TripUpdateOperation": {
+        "additionalProperties": false,
+        "properties": {
+          "entityId": {
+            "$ref": "#/components/schemas/ID"
+          },
+          "expectedRevision": {
+            "maximum": 9007199254740991,
+            "minimum": 0,
+            "type": "integer"
+          },
+          "id": {
+            "$ref": "#/components/schemas/ID"
+          },
+          "payload": {
+            "$ref": "#/components/schemas/TripSettings"
+          },
+          "syncEpoch": {
+            "maxLength": 128,
+            "minLength": 1,
+            "type": "string"
+          },
+          "type": {
+            "enum": [
+              "trip.update"
+            ],
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "syncEpoch",
+          "entityId",
+          "type",
+          "expectedRevision",
+          "payload"
+        ],
+        "type": "object"
+      },
+      "User": {
+        "properties": {
+          "displayName": {
+            "type": "string"
+          },
+          "id": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "displayName"
+        ],
+        "type": "object"
+      }
+    },
+    "securitySchemes": {
+      "bearerAuth": {
+        "bearerFormat": "opaque",
+        "description": "TripSplit access token in the Authorization header, including WebSocket upgrades. Never put credentials in URLs.",
+        "scheme": "bearer",
+        "type": "http"
+      }
+    }
+  },
+  "info": {
+    "description": "Generated v1 JSON transport contract. Money and rates are exact decimal strings. Runtime refinements, authorization, transactional sync rules and WebSocket semantics are specified in api/docs/protocol.md. Public HTML invitation and Apple association documents are outside this JSON API description.",
+    "title": "TripSplit API",
+    "version": "1.0.0"
+  },
+  "openapi": "3.1.0",
+  "paths": {
+    "/v1/auth/apple": {
+      "post": {
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AppleSignInRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Session"
+                }
+              }
+            },
+            "description": "Authenticated TripSplit session."
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/APIError"
+                }
+              }
+            },
+            "description": "TripSplit error with a stable code and retryability."
+          }
+        }
+      }
+    },
+    "/v1/auth/apple/challenge": {
+      "post": {
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EmptyRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthChallenge"
+                }
+              }
+            },
+            "description": "One-use Apple sign-in challenge."
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/APIError"
+                }
+              }
+            },
+            "description": "TripSplit error with a stable code and retryability."
+          }
+        }
+      }
+    },
+    "/v1/auth/logout": {
+      "post": {
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RefreshTokenRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Success"
+                }
+              }
+            },
+            "description": "Session revoked."
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/APIError"
+                }
+              }
+            },
+            "description": "TripSplit error with a stable code and retryability."
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/v1/auth/refresh": {
+      "post": {
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RefreshTokenRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Session"
+                }
+              }
+            },
+            "description": "Rotated access and refresh credentials."
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/APIError"
+                }
+              }
+            },
+            "description": "TripSplit error with a stable code and retryability."
+          }
+        }
+      }
+    },
+    "/v1/fx": {
+      "get": {
+        "parameters": [
+          {
+            "description": "Supported source currency code. The first value is used when repeated.",
+            "in": "query",
+            "name": "from",
+            "required": true,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "items": {
+                    "type": "string"
+                  },
+                  "minItems": 1,
+                  "type": "array"
+                }
+              ],
+              "default": "",
+              "description": "Supported source currency code. The first value is used when repeated."
+            }
+          },
+          {
+            "description": "Supported target currency code. The first value is used when repeated.",
+            "in": "query",
+            "name": "to",
+            "required": true,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "items": {
+                    "type": "string"
+                  },
+                  "minItems": 1,
+                  "type": "array"
+                }
+              ],
+              "default": "",
+              "description": "Supported target currency code. The first value is used when repeated."
+            }
+          },
+          {
+            "description": "Requested Gregorian civil date (YYYY-MM-DD). The first value is used when repeated.",
+            "in": "query",
+            "name": "date",
+            "required": true,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "items": {
+                    "type": "string"
+                  },
+                  "minItems": 1,
+                  "type": "array"
+                }
+              ],
+              "default": "",
+              "description": "Requested Gregorian civil date (YYYY-MM-DD). The first value is used when repeated."
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FXQuote"
+                }
+              }
+            },
+            "description": "Immutable reference quote with exact decimal rate."
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/APIError"
+                }
+              }
+            },
+            "description": "TripSplit error with a stable code and retryability."
+          }
+        }
+      }
+    },
+    "/v1/health": {
+      "get": {
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Success"
+                }
+              }
+            },
+            "description": "Service health."
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/APIError"
+                }
+              }
+            },
+            "description": "TripSplit error with a stable code and retryability."
+          }
+        }
+      }
+    },
+    "/v1/me": {
+      "delete": {
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EmptyRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "202": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeletionPending"
+                }
+              }
+            },
+            "description": "Durable account deletion queued."
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/APIError"
+                }
+              }
+            },
+            "description": "TripSplit error with a stable code and retryability."
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      },
+      "get": {
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/User"
+                }
+              }
+            },
+            "description": "Current account."
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/APIError"
+                }
+              }
+            },
+            "description": "TripSplit error with a stable code and retryability."
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/v1/trips": {
+      "get": {
+        "parameters": [
+          {
+            "in": "query",
+            "name": "cursor",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "items": {
+                    "type": "string"
+                  },
+                  "minItems": 1,
+                  "type": "array"
+                }
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TripList"
+                }
+              }
+            },
+            "description": "One full snapshot per discovery page."
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/APIError"
+                }
+              }
+            },
+            "description": "TripSplit error with a stable code and retryability."
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      },
+      "post": {
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateTripRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TripSnapshot"
+                }
+              }
+            },
+            "description": "Created trip snapshot."
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/APIError"
+                }
+              }
+            },
+            "description": "TripSplit error with a stable code and retryability."
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/v1/trips/{tripId}": {
+      "get": {
+        "parameters": [
+          {
+            "in": "path",
+            "name": "tripId",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/ID"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TripSnapshot"
+                }
+              }
+            },
+            "description": "Authoritative trip snapshot."
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/APIError"
+                }
+              }
+            },
+            "description": "TripSplit error with a stable code and retryability."
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/v1/trips/{tripId}/invites": {
+      "post": {
+        "parameters": [
+          {
+            "in": "path",
+            "name": "tripId",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/ID"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateInvitationRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Invitation"
+                }
+              }
+            },
+            "description": "One-recipient invitation."
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/APIError"
+                }
+              }
+            },
+            "description": "TripSplit error with a stable code and retryability."
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/v1/trips/{tripId}/invites/{inviteId}": {
+      "delete": {
+        "parameters": [
+          {
+            "in": "path",
+            "name": "tripId",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/ID"
+            }
+          },
+          {
+            "in": "path",
+            "name": "inviteId",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/ID"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Success"
+                }
+              }
+            },
+            "description": "Invitation revoked."
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/APIError"
+                }
+              }
+            },
+            "description": "TripSplit error with a stable code and retryability."
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/v1/trips/{tripId}/invites/{inviteId}/accept": {
+      "post": {
+        "parameters": [
+          {
+            "in": "path",
+            "name": "tripId",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/ID"
+            }
+          },
+          {
+            "in": "path",
+            "name": "inviteId",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/ID"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AcceptInvitationRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TripSnapshot"
+                }
+              }
+            },
+            "description": "Joined trip snapshot."
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/APIError"
+                }
+              }
+            },
+            "description": "TripSplit error with a stable code and retryability."
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/v1/trips/{tripId}/live": {
+      "get": {
+        "parameters": [
+          {
+            "in": "path",
+            "name": "tripId",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/ID"
+            }
+          }
+        ],
+        "responses": {
+          "101": {
+            "description": "WebSocket upgrade; subsequent messages follow the LiveHint schema and are synchronization hints. Always sync on foreground or reconnect."
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/APIError"
+                }
+              }
+            },
+            "description": "TripSplit error with a stable code and retryability."
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/v1/trips/{tripId}/members/{travellerId}": {
+      "delete": {
+        "parameters": [
+          {
+            "in": "path",
+            "name": "tripId",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/ID"
+            }
+          },
+          {
+            "in": "path",
+            "name": "travellerId",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/ID"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Success"
+                }
+              }
+            },
+            "description": "Membership removed."
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/APIError"
+                }
+              }
+            },
+            "description": "TripSplit error with a stable code and retryability."
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/v1/trips/{tripId}/sync": {
+      "post": {
+        "parameters": [
+          {
+            "in": "path",
+            "name": "tripId",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/ID"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SyncRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SyncResponse"
+                }
+              }
+            },
+            "description": "Ordered operation receipts and optional snapshot."
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/APIError"
+                }
+              }
+            },
+            "description": "TripSplit error with a stable code and retryability."
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    }
+  },
+  "servers": [
+    {
+      "url": "https://api.tripspl.it"
+    }
+  ],
+  "webhooks": {}
+}

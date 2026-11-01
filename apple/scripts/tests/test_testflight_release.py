@@ -17,9 +17,9 @@ CONFIG = {"app_id": "123", "bundle_id": "example.app", "group_id": "internal", "
 
 class ReleaseTests(unittest.TestCase):
     def setup_root(self, root):
-        (root / "ios").mkdir()
+        (root / "apple/ios").mkdir(parents=True)
         (root / "App.xcodeproj").mkdir()
-        (root / "ios/testflight.json").write_text(json.dumps(CONFIG))
+        (root / "apple/ios/testflight.json").write_text(json.dumps(CONFIG))
 
     def test_receipt_for_another_group_never_reaches_cli(self):
         with tempfile.TemporaryDirectory() as tmp:
