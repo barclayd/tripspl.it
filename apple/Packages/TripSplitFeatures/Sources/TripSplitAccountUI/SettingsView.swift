@@ -61,6 +61,7 @@ public struct SettingsView: View {
             Text(error).font(.footnote).foregroundStyle(Theme.bad)
           }
         }
+        WatchFaceSection()
         Section("Local data & recovery") {
           Text(
             "Normal device backups can include your saved trips, drafts and unsent changes. A replacement device requires Apple sign-in again; restored changes are reviewed before syncing."

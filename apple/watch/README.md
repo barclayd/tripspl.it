@@ -37,6 +37,16 @@ Quick convert (C) dials an amount between today's stop currency and home with th
 
 The watch app is not embedded in the iPhone app or its TestFlight builds yet. That needs provisioning profiles for `it.tripspl.TripSplit.watchkitapp` and the App Group, and multi-profile signing in the release workflow.
 
+## TripSplit face
+
+The iPhone app's Account & sync screen offers the "TripSplit" face (G4) through `CLKWatchFaceLibrary`, once a paired watch has TripSplit installed. Faces can only be made on a watch, so it's exported once and bundled:
+
+1. On a watch with TripSplit, set up a face with four corner complications: Quick convert, Budget left, Who owes and Today
+2. In the iPhone's Watch app, open it under My Faces, tap Share and save the `.watchface` file
+3. Save it as `apple/ios/TripSplit/TripSplit.watchface` and run `xcodegen generate` in `apple/ios`, which adds it to the app's resources
+
+Until the file's there, the Apple Watch section doesn't show.
+
 ## Design
 
 The watch design handoff (Claude Design, `design_handoff_tripsplit_watch`) groups its screens by letter: A empty states, B trips list, C quick convert, D trip pages, E people, F log expense, G complications and H notifications. `TripSplitWatchDesign` holds its tokens (`WatchTheme`), type (`watchFont`, `boardFont`) and shared pieces such as the split-flap departure text.
