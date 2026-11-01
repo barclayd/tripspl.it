@@ -28,12 +28,6 @@ extension Money {
 }
 
 extension TripSnapshot {
-  /// Each stop's flag once, in itinerary order.
-  package var uniqueFlags: [String] {
-    var seen = Set<String>()
-    return stops.map(\.flag).filter { seen.insert($0).inserted }
-  }
-
   /// Totals for every itinerary day, in order, counting planned and paid expenses.
   package var dayTotals: [Int64] {
     days.map { Ledger(self, expenses: expenses(for: .init(kind: .day, id: $0.id))).total }

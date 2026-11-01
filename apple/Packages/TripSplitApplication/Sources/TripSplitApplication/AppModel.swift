@@ -21,7 +21,11 @@ import TripSplitSync
   public var onboarding: OnboardingDraft
   public var toast: String?
   public var error: String?
-  public var mapFilter = "All"
+  public var globeFilter = GlobeFilter.all {
+    didSet { if globeFilter != oldValue { globeTripID = nil } }
+  }
+  /// The trip highlighted on the globe, kept across tab switches.
+  public var globeTripID: String?
   public var inviteURL: URL?
   public var pendingInvitation: URL?
   /// The last reference rates from pounds, kept for indicative amounts such as a suggested
@@ -37,6 +41,26 @@ import TripSplitSync
     referenceRates = store.read(FXTable.self, key: "referenceRates")
   }
   /// An indicative rate between any two currencies the cached table lists.
+  /// The currency most trips are kept in, for totals that span trips.
+  public var displayCurrency: String {
+    let counts = Dictionary(grouping: store.trips, by: \.homeCurrency).mapValues(\.count)
+    return counts.max { $0.value < $1.value || $0.value == $1.value && $0.key > $1.key }?.key
+      ?? Locale.current.currency?.identifier ?? "GBP"
+  }
+  /// What trips that have started cost, converted at reference rates. Nil while a rate is missing.
+  public func spentSoFar(in currency: String) -> Int64? {
+    var total: Int64 = 0
+    for trip in store.trips where trip.phase != .upcoming {
+      let amount = Ledger(trip).total
+      guard
+        let rate = trip.homeCurrency == currency
+          ? "1" : referenceRates?.rate(from: trip.homeCurrency, to: currency),
+        let converted = try? Money.convert(amount, from: trip.homeCurrency, to: currency, rate: rate)
+      else { return nil }
+      total += converted
+    }
+    return total
+  }
   public func indicativeRate(from: String, to: String) -> Double? {
     if from == to { return 1 }
     return referenceRates?.rate(from: from, to: to).flatMap(Double.init)

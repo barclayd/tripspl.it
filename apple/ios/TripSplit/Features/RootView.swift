@@ -147,6 +147,8 @@ struct RootView: View {
         Color.clear
       }
     }
+    // The globe sits in dark space, so the tab bar and its sheets go dark with it.
+    .preferredColorScheme(model.selectedTab == 1 ? .dark : nil)
     .sheet(isPresented: $model.showSettings) { SettingsView().trailingSheet() }
     .sheet(isPresented: $model.showTripSettings) {
       if let trip = model.selectedTrip { TripSettingsView(tripID: trip.id).trailingSheet() }
@@ -182,6 +184,17 @@ struct RootView: View {
           model.selectedTripID = (trips.first { $0.phase == .now } ?? trips.first)?.id
         }
         let arguments = ProcessInfo.processInfo.arguments
+        // `--globe` opens the globe tab; `--globe-trip` also picks out the trip under way.
+        if arguments.contains("--globe") || arguments.contains("--globe-trip") {
+          model.selectedTripID = nil
+          model.selectedTab = 1
+          if arguments.contains("--globe-trip") {
+            // Picked once the globe is up, as a tap would, so the camera flies there.
+            try? await Task.sleep(for: .seconds(2))
+            let trips = model.store.trips
+            model.globeTripID = (trips.first { $0.phase == .now } ?? trips.first)?.id
+          }
+        }
         // `--onboarding-step N` opens new trip onboarding at step N with a demo route filled in.
         if let index = arguments.firstIndex(of: "--onboarding-step"), arguments.indices.contains(index + 1),
           let step = Int(arguments[index + 1])

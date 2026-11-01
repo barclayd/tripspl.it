@@ -76,6 +76,11 @@ public struct Destination: Identifiable, Hashable, Sendable {
   public static func country(_ code: String) -> Destination? {
     CountryMetadata.country(code).map(makeCountry)
   }
+  /// The catalogue's leading city for a region, standing in for home until people set one.
+  public static func home(region: String?) -> Destination? {
+    guard let region = region?.uppercased() else { return nil }
+    return all.first { $0.countryCode == region && !$0.isCountry }
+  }
 
   /// Exact names and aliases precede prefixes; country-name matches include their cities.
   public static func search(_ query: String, limit: Int = 40) -> [Destination] {
