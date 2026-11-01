@@ -71,8 +71,15 @@ public struct TripsRootView: View {
       path = model.trip(id) == nil ? [] : [.trip(id, page: page)]
     case .convert:
       sheet = .convert
+    case .localConvert:
+      // Just landed: convert from the new local currency, not a pair picked earlier.
+      model.followTripCurrency()
+      sheet = .convert
     case .log(let trip):
       sheet = .log(trip: trip)
+    case .day(let trip, let day):
+      sheet = nil
+      path = model.trip(trip) == nil ? [] : [.trip(trip, page: .days), .day(trip: trip, day: day)]
     }
   }
 }
@@ -166,6 +173,17 @@ struct WatchSettings: View {
         Text("Hide amounts")
           .watchFont(14, .semibold)
         Text("On the watch face when your wrist is down")
+          .watchFont(11, .semibold)
+          .foregroundStyle(WatchTheme.ink2)
+      }
+    }
+    .tint(WatchTheme.accent)
+    .padding(.vertical, 4)
+    Toggle(isOn: $model.preferences.eveningWrap) {
+      VStack(alignment: .leading, spacing: 2) {
+        Text("Evening wrap")
+          .watchFont(14, .semibold)
+        Text("At 21:30, what the day came to and anything to add")
           .watchFont(11, .semibold)
           .foregroundStyle(WatchTheme.ink2)
       }

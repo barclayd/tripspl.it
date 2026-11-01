@@ -156,6 +156,21 @@ import TripSplitDomain
     return try? Money.convert(minor, from: from, to: to, rate: rate)
   }
 
+  /// One Crown detent of `from` in `to`, e.g. "€1 = £0.86" or "¥100 = £0.50". Nil without a rate.
+  public func rateText(from: String, to: String, separator: String = " = ") -> String? {
+    let unit = QuickConvert.minor(detentScale(from: from, to: to), from)
+    guard let converted = convert(unit, from: from, to: to) else { return nil }
+    return WatchCurrency.format(unit, from, compact: true) + separator
+      + WatchCurrency.format(converted, to)
+  }
+
+  /// Drops a hand-picked convert pair so quick convert follows today's stop again, as the
+  /// Landed notification promises.
+  public func followTripCurrency() {
+    convertMemory.pair = nil
+    convertMemory.flipped = false
+  }
+
   /// Stores a reference table, replacing the older one for its base.
   public func cache(_ table: FXTable) {
     tables[table.base] = table
@@ -210,11 +225,25 @@ import TripSplitDomain
 
 /// Settings kept on the watch.
 public struct WatchPreferences: Codable, Hashable, Sendable {
-  public init(hidesAmountsWhenWristDown: Bool = false) {
+  public init(hidesAmountsWhenWristDown: Bool = false, eveningWrap: Bool = true) {
     self.hidesAmountsWhenWristDown = hidesAmountsWhenWristDown
+    self.eveningWrap = eveningWrap
   }
   /// Shows amounts on the watch face as "£•••" while the wrist is down.
   public var hidesAmountsWhenWristDown: Bool
+  /// Sends the H2 Evening wrap at 21:30 on trip days.
+  public var eveningWrap: Bool
+
+  // Settings saved before a key existed keep their defaults for it.
+  public init(from decoder: any Decoder) throws {
+    let container = try decoder.container(keyedBy: CodingKeys.self)
+    let defaults = Self()
+    hidesAmountsWhenWristDown =
+      try container.decodeIfPresent(Bool.self, forKey: .hidesAmountsWhenWristDown)
+      ?? defaults.hidesAmountsWhenWristDown
+    eveningWrap =
+      try container.decodeIfPresent(Bool.self, forKey: .eveningWrap) ?? defaults.eveningWrap
+  }
 }
 
 /// A sample conversion in today's local currency, shown on the convert capsule.

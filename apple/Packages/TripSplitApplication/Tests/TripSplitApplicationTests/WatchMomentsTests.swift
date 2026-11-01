@@ -69,7 +69,7 @@ import TripSplitWatchModel
     let wrap = TripWrapUp(pages: pages)
     #expect(wrap.headline == "Stamped. \(WatchCurrency.whole(pages.spent, "GBP")) all in.")
     #expect(wrap.places == trip.stops.map { $0.place.uppercased() }.joined(separator: "·"))
-    #expect(wrap.flags == trip.stops.map(\.flag).reduce(into: []) { if !$0.contains($1) { $0.append($1) } })
+    #expect(wrap.flags == trip.uniqueFlags)
     let balances = pages.ledger.balances
     if let yours = balances[pages.you], yours < 0 {
       #expect(wrap.detail.hasPrefix("You still owe "))

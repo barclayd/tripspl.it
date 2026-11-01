@@ -10,8 +10,12 @@ public enum WatchLink: Hashable, Sendable {
   case trip(String, page: TripPages.Page? = nil)
   /// Quick convert (C1).
   case convert
+  /// Quick convert set back to the trip's local currency, from the Landed notification (H1).
+  case localConvert(trip: String)
   /// Logging a spend (F1), on a trip when known.
   case log(trip: String? = nil)
+  /// One day of a trip, from the Evening wrap (H2).
+  case day(trip: String, day: String)
 
   public static let scheme = "tripsplit"
 
@@ -27,9 +31,15 @@ public enum WatchLink: Hashable, Sendable {
       if let page { components.queryItems = [.init(name: "page", value: page.rawValue)] }
     case .convert:
       components.host = "convert"
+    case .localConvert(let trip):
+      components.host = "convert"
+      components.queryItems = [.init(name: "trip", value: trip)]
     case .log(let trip):
       components.host = "log"
       if let trip { components.queryItems = [.init(name: "trip", value: trip)] }
+    case .day(let trip, let day):
+      components.host = "day"
+      components.path = "/\(trip)/\(day)"
     }
     return components.url ?? URL(string: "\(Self.scheme)://trips")!
   }
@@ -43,12 +53,16 @@ public enum WatchLink: Hashable, Sendable {
     }
     switch components.host {
     case "trips": self = .trips
-    case "convert": self = .convert
+    case "convert": self = query("trip").map { .localConvert(trip: $0) } ?? .convert
     case "log": self = .log(trip: query("trip"))
     case "trip":
       let id = components.path.split(separator: "/").first.map(String.init)
       guard let id, !id.isEmpty else { return nil }
       self = .trip(id, page: query("page").flatMap(TripPages.Page.init(rawValue:)))
+    case "day":
+      let parts = components.path.split(separator: "/").map(String.init)
+      guard parts.count == 2 else { return nil }
+      self = .day(trip: parts[0], day: parts[1])
     default: return nil
     }
   }

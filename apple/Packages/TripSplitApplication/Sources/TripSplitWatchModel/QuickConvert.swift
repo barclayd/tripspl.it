@@ -168,10 +168,7 @@ public struct ConvertMemory: Codable, Hashable, Sendable {
 
   /// One detent of `from` in `to`, e.g. "£1 = $1.33". Nil without a rate.
   public func rateText(from: String, to: String, separator: String = " = ") -> String? {
-    let unit = Self.minor(model.detentScale(from: from, to: to), from)
-    guard let converted = model.convert(unit, from: from, to: to) else { return nil }
-    return WatchCurrency.format(unit, from, compact: true) + separator
-      + WatchCurrency.format(converted, to)
+    model.rateText(from: from, to: to, separator: separator)
   }
 
   /// The Crown detent for the amount.

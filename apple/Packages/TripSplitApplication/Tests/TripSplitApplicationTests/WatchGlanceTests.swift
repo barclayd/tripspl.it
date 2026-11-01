@@ -181,7 +181,7 @@ struct WatchLinkTests {
   @Test func linksRoundTrip() {
     let links: [WatchLink] = [
       .trips, .trip("abc"), .trip("abc", page: .budget), .trip("abc", page: .balances), .convert,
-      .log(), .log(trip: "abc"),
+      .log(), .log(trip: "abc"), .localConvert(trip: "abc"), .day(trip: "abc", day: "d1"),
     ]
     for link in links { #expect(WatchLink(url: link.url) == link) }
   }
