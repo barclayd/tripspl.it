@@ -25,6 +25,25 @@ public enum CountryMetadata {
     }
   private static let byCode = Dictionary(uniqueKeysWithValues: all.map { ($0.code, $0) })
   public static func country(_ code: String) -> Country? { byCode[code.uppercased()] }
+
+  /// The country a name refers to, in English, the device's language or a common alias, e.g.
+  /// "Deutschland" or "UK". The UK's nations count as the UK, since that's how Maps can describe
+  /// a place in it.
+  public static func code(named name: String) -> String? {
+    let key = Destination.normalise(name)
+    return key.isEmpty ? nil : byName[key]
+  }
+  private static let byName: [String: String] = {
+    let english = Locale(identifier: "en")
+    let nations = ["England", "Scotland", "Wales", "Northern Ireland"].map { ($0, "GB") }
+    let names = all.flatMap { country in
+      let english = english.localizedString(forRegionCode: country.code)
+      return (country.searchNames + [english].compactMap { $0 }).map { ($0, country.code) }
+    }
+    return Dictionary(
+      (names + nations).map { (Destination.normalise($0.0), $0.1) }.filter { !$0.0.isEmpty },
+      uniquingKeysWith: { first, _ in first })
+  }()
 }
 
 public enum DestinationData {

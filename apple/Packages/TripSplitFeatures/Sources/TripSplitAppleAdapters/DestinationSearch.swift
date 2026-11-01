@@ -55,26 +55,8 @@ import TripSplitSync
       }
       guard generation == token, !Task.isCancelled else { return }
       var identifiers = Set<String>()
-      matches = response.mapItems.compactMap { item in
-        guard let code = item.addressRepresentations?.region?.identifier,
-          let country = CountryMetadata.country(code),
-          let name = item.name, !name.isEmpty
-        else { return nil }
-        let coordinate = item.location.coordinate
-        guard CLLocationCoordinate2DIsValid(coordinate) else { return nil }
-        let isCountry = country.searchNames.map(Destination.normalise).contains(
-          Destination.normalise(name))
-        let id =
-          isCountry
-          ? "country:" + country.code
-          : "maps:\(country.code):\(name):\(coordinate.latitude):\(coordinate.longitude)"
-        guard identifiers.insert(id).inserted else { return nil }
-        return Destination(
-          countryCode: country.code, country: country.name, city: name,
-          currency: country.defaultCurrency ?? "", latitude: coordinate.latitude,
-          longitude: coordinate.longitude, catalogID: id, isCountry: isCountry,
-          detail: item.addressRepresentations?.cityWithContext(.full) ?? country.name,
-          timeZone: item.timeZone?.identifier)
+      matches = response.mapItems.compactMap(Destination.init(mapItem:)).filter {
+        identifiers.insert($0.id).inserted
       }
       if matches.isEmpty {
         error =
