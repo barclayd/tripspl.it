@@ -69,3 +69,17 @@ struct NumberPadTests {
     #expect(NumberPad.next("", key: "⌫", precision: 2) == "")
   }
 }
+
+struct WholeMoneyTests {
+  @Test func roundsHalfAwayFromZero() {
+    #expect(Money.wholeUnits(93_258, "GBP") == 93_300)
+    #expect(Money.wholeUnits(93_249, "GBP") == 93_200)
+    #expect(Money.wholeUnits(-1_250, "GBP") == -1_300)
+    #expect(Money.wholeUnits(1_234, "JPY") == 1_234)
+  }
+
+  @Test func formatsWithATrueMinus() {
+    #expect(Money.whole(-1_250, "GBP") == "−" + Money.format(1_300, "GBP", compact: true))
+    #expect(Money.whole(0, "GBP") == Money.format(0, "GBP", compact: true))
+  }
+}

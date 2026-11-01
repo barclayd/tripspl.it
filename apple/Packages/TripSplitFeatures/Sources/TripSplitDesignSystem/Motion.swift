@@ -161,3 +161,65 @@ private struct StampFrame {
   var scale: CGFloat = 1
   var turn: Double = 0
 }
+
+/// Shrinks a tappable surface while pressed, springing back with overshoot.
+package struct PressStyle: ButtonStyle {
+  package init(scale: CGFloat = 0.97, onPress: ((Bool) -> Void)? = nil) {
+    self.scale = scale
+    self.onPress = onPress
+  }
+  package var scale: CGFloat
+  /// Reports presses so a parent can scale a larger surface than the label.
+  package var onPress: ((Bool) -> Void)?
+
+  package func makeBody(configuration: Configuration) -> some View {
+    configuration.label
+      .scaleEffect(configuration.isPressed && onPress == nil ? scale : 1)
+      .animation(Motion.bump, value: configuration.isPressed)
+      .onChange(of: configuration.isPressed) { _, pressed in onPress?(pressed) }
+  }
+}
+
+/// Grows a bar up from its baseline.
+private struct GrowUp: ViewModifier {
+  let delay: Double
+  @State private var grown = false
+  @Environment(\.accessibilityReduceMotion) private var reduceMotion
+
+  func body(content: Content) -> some View {
+    content.scaleEffect(x: 1, y: grown || reduceMotion ? 1 : 0, anchor: .bottom)
+      .onAppear {
+        guard !grown else { return }
+        withAnimation(Motion.rise.speed(0.55 / 0.7).delay(delay)) { grown = true }
+      }
+  }
+}
+
+/// Slams down from twice the size, as a passport stamp lands.
+private struct StampIn: ViewModifier {
+  let delay: Double
+  let visible: Bool
+  @State private var landed = false
+  @Environment(\.accessibilityReduceMotion) private var reduceMotion
+
+  func body(content: Content) -> some View {
+    content.scaleEffect(landed || reduceMotion ? 1 : 2).opacity(landed || reduceMotion ? 1 : 0)
+      .onChange(of: visible, initial: true) { _, visible in
+        guard visible, !landed else { return }
+        withAnimation(.timingCurve(0.34, 1.56, 0.64, 1, duration: 0.6).delay(delay)) {
+          landed = true
+        }
+      }
+  }
+}
+
+extension View {
+  /// Grows up from the bottom edge, 0.7s.
+  package func growUp(delay: Double = 0) -> some View {
+    modifier(GrowUp(delay: delay))
+  }
+  /// Stamps in once `visible` turns true.
+  package func stampIn(delay: Double = 0, visible: Bool = true) -> some View {
+    modifier(StampIn(delay: delay, visible: visible))
+  }
+}
