@@ -92,5 +92,11 @@ let package = Package(
         .product(name: "TripSplitApplication", package: "TripSplitApplication"),
         "TripSplitDesignSystem",
       ]),
+    .testTarget(
+      name: "TripSplitFeaturesTests",
+      dependencies: [
+        .product(name: "TripSplitDomain", package: "TripSplitDomain"),
+        "TripSplitDesignSystem", "TripSplitSharedUI",
+      ]),
   ]
 )

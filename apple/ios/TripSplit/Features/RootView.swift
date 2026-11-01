@@ -162,7 +162,15 @@ struct RootView: View {
     } message: {
       Text(model.error ?? "")
     }
-    .task { await model.sync.syncAll() }
+    .task {
+      #if DEBUG
+        // Opens a demo trip straight away so simulator screenshots can reach trip screens.
+        if ProcessInfo.processInfo.arguments.contains("--open-trip") {
+          model.selectedTripID = model.store.trips.first?.id
+        }
+      #endif
+      await model.sync.syncAll()
+    }
     .onChange(of: scenePhase) { _, phase in
       if phase == .active {
         model.sync.startLive(tripID: model.selectedTripID)

@@ -290,10 +290,10 @@ public struct OnboardingView: View {
                 model.onboarding.travellers.removeAll { $0.id == person.id }
               }.labelStyle(.iconOnly).font(.caption2).frame(minWidth: 44, minHeight: 44)
             }
-          }.foregroundStyle(Color(hue: person.hue / 360, saturation: 0.6, brightness: 0.4)).padding(
+          }.foregroundStyle(AvatarPalette(hue: person.hue).foreground).padding(
             13
           ).background(
-            Color(hue: person.hue / 360, saturation: 0.18, brightness: 0.97),
+            AvatarPalette(hue: person.hue).background,
             in: RoundedRectangle(cornerRadius: 10)
           ).rotationEffect(.degrees(index % 2 == 0 ? -2 : 2))
         }
@@ -538,9 +538,8 @@ public struct OnboardingView: View {
   private func addPerson() {
     let name = personName.trimmingCharacters(in: .whitespaces)
     guard !name.isEmpty, model.onboarding.travellers.count < 8 else { return }
-    let hues: [Double] = [350, 250, 75, 160, 300, 30, 200, 120]
     model.onboarding.travellers.append(
-      Traveller(name: name, hue: hues[model.onboarding.travellers.count]))
+      Traveller(name: name, hue: AvatarPalette.hue(at: model.onboarding.travellers.count)))
     personName = ""
   }
   private func advance() {
