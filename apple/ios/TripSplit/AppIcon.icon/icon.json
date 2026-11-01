@@ -22,7 +22,8 @@
           "opacity": 0.78,
           "fill-specializations": [
             { "value": { "solid": "srgb:0.898039,0.149020,0.419608,1.000000" } },
-            { "appearance": "dark", "value": { "solid": "srgb:0.898039,0.149020,0.419608,1.000000" } }
+            { "appearance": "dark", "value": { "solid": "srgb:0.898039,0.149020,0.419608,1.000000" } },
+            { "appearance": "tinted", "value": { "solid": "srgb:0.050000,0.050000,0.050000,1.000000" } }
           ]
         },
         {
@@ -31,7 +32,8 @@
           "opacity": 0.26,
           "fill-specializations": [
             { "value": { "solid": "srgb:0.898039,0.149020,0.419608,1.000000" } },
-            { "appearance": "dark", "value": { "solid": "srgb:0.898039,0.149020,0.419608,1.000000" } }
+            { "appearance": "dark", "value": { "solid": "srgb:0.898039,0.149020,0.419608,1.000000" } },
+            { "appearance": "tinted", "value": { "solid": "srgb:0.050000,0.050000,0.050000,1.000000" } }
           ]
         },
         {
@@ -39,7 +41,8 @@
           "image-name": "02-airplane.svg",
           "fill-specializations": [
             { "value": { "solid": "srgb:0.898039,0.149020,0.419608,1.000000" } },
-            { "appearance": "dark", "value": { "solid": "srgb:0.898039,0.149020,0.419608,1.000000" } }
+            { "appearance": "dark", "value": { "solid": "srgb:0.898039,0.149020,0.419608,1.000000" } },
+            { "appearance": "tinted", "value": { "solid": "srgb:0.050000,0.050000,0.050000,1.000000" } }
           ]
         },
         {
@@ -47,7 +50,8 @@
           "image-name": "01-ticket.svg",
           "fill-specializations": [
             { "value": { "solid": "srgb:1.000000,1.000000,1.000000,1.000000" } },
-            { "appearance": "dark", "value": { "solid": "srgb:0.952941,0.913725,0.929412,1.000000" } }
+            { "appearance": "dark", "value": { "solid": "srgb:0.952941,0.913725,0.929412,1.000000" } },
+            { "appearance": "tinted", "value": { "solid": "srgb:1.000000,1.000000,1.000000,1.000000" } }
           ]
         }
       ],
