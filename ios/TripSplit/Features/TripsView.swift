@@ -32,7 +32,7 @@ struct TripsView: View {
                 Kicker(title: "Happening now")
               }
               CurrentTripCard(trip: trip)
-              if trip.stop(for: trip.currentAttachment)?.currency != trip.homeCurrency {
+              if trip.showsHomeConverter {
                 Button {
                   model.open(trip)
                   model.showConverter = true
@@ -52,7 +52,7 @@ struct TripsView: View {
                       ).foregroundStyle(Theme.accent)
                     }
                   }
-                }.buttonStyle(.plain)
+                }.buttonStyle(.plain).accessibilityIdentifier("home.quickConvert")
               }
             }
           }

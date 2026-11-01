@@ -33,12 +33,10 @@ struct DayView: View {
       .safeAreaInset(edge: .bottom) {
         if !usesVerticalRail {
           HStack(spacing: 12) {
-            if trip.stop(for: attachment)?.currency != trip.homeCurrency {
-              Button("Quick convert", systemImage: "arrow.left.arrow.right") {
-                model.showConverter = true
-              }.labelStyle(.iconOnly).font(.title3.weight(.bold)).frame(width: 56, height: 56)
-                .background(Theme.surface, in: RoundedRectangle(cornerRadius: 18))
-            }
+            Button("Quick convert", systemImage: "arrow.left.arrow.right") {
+              model.showConverter = true
+            }.labelStyle(.iconOnly).font(.title3.weight(.bold)).frame(width: 56, height: 56)
+              .background(Theme.surface, in: RoundedRectangle(cornerRadius: 18))
             PrimaryButton(
               title: attachment.kind == .leg ? "Add travel" : "Add expense", symbol: "plus"
             ) { model.editExpense(trip: trip, attachment: attachment) }
@@ -65,11 +63,9 @@ struct DayView: View {
               model.editExpense(trip: trip, attachment: attachment)
             }
           }
-          if trip.stop(for: attachment)?.currency != trip.homeCurrency {
-            ToolbarItem {
-              Button("Quick convert", systemImage: "arrow.left.arrow.right") {
-                model.showConverter = true
-              }
+          ToolbarItem {
+            Button("Quick convert", systemImage: "arrow.left.arrow.right") {
+              model.showConverter = true
             }
           }
         }

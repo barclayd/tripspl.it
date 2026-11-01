@@ -117,11 +117,11 @@ import SwiftUI
           homeAmountMinor: String(home), rate: Money.rateString(rate),
           rateDate: trip.date(for: draft.attachment),
           source: "Actual card charge entered by traveller", kind: "manual", quoteId: nil)
-      } else if var reference = conversion, reference.kind == "reference" {
-        reference.homeAmountMinor = String(
+      } else if var estimate = conversion {
+        estimate.homeAmountMinor = String(
           try Money.convert(
-            amount, from: draft.currency, to: trip.homeCurrency, rate: reference.rate))
-        conversion = reference
+            amount, from: draft.currency, to: trip.homeCurrency, rate: estimate.rate))
+        conversion = estimate
       } else if conversion == nil, sync.configured,
         let quote = try? await sync.api.quote(
           from: draft.currency, to: trip.homeCurrency, date: trip.date(for: draft.attachment),

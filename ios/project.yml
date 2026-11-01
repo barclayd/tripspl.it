@@ -37,7 +37,7 @@ targets:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: it.tripspl.TripSplit
         MARKETING_VERSION: '1.0'
-        CURRENT_PROJECT_VERSION: 3
+        CURRENT_PROJECT_VERSION: 4
         TRIPSPLIT_API_BASE_URL: https://api.tripspl.it
         ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
         CODE_SIGN_ENTITLEMENTS: Config/TripSplit.entitlements

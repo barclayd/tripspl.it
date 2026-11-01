@@ -31,6 +31,46 @@ import Testing
     #expect(saved.conversion?.quoteId == "quote-id")
     #expect(saved.conversion?.homeAmountMinor == "1720")
   }
+  @Test func converterManualRateRecomputesWhenExpenseAmountChanges() async throws {
+    let store = try LocalStore(inMemory: true, installationID: "test")
+    let trip = try trip()
+    try store.create(trip)
+    let converter = ConversionModel(
+      from: .forCurrency("EUR"), to: .forCurrency(trip.homeCurrency), date: trip.startsOn,
+      loadQuote: { _, _, _ in throw URLError(.notConnectedToInternet) })
+    converter.enterManualRate("0.8")
+    var draft = try converter.expenseDraft(
+      trip: trip, attachment: .init(kind: .day, id: trip.days[0].id))
+    #expect(draft.actualHomeAmount.isEmpty)
+    #expect(draft.conversion?.homeAmountMinor == "800")
+    draft.amount = "20"
+    let model = AppModel(store: store)
+    model.expenseDraft = draft
+    let saved = try await model.saveExpense()
+    #expect(saved.conversion?.homeAmountMinor == "1600")
+    #expect(saved.conversion?.rate == "0.8")
+    #expect(saved.conversion?.kind == "manual")
+    #expect(saved.conversion?.quoteId == nil)
+  }
+
+  @Test func explicitCardChargeOverridesConverterEstimate() async throws {
+    let store = try LocalStore(inMemory: true, installationID: "test")
+    let trip = try trip()
+    try store.create(trip)
+    var draft = ExpenseDraft(trip: trip, attachment: .init(kind: .day, id: trip.days[0].id))
+    draft.currency = "EUR"
+    draft.amount = "20"
+    draft.conversion = Conversion(
+      homeAmountMinor: "800", rate: "0.8", rateDate: trip.startsOn,
+      source: "Manual exchange rate", kind: "manual", quoteId: nil)
+    draft.actualHomeAmount = "17.25"
+    let model = AppModel(store: store)
+    model.expenseDraft = draft
+    let saved = try await model.saveExpense()
+    #expect(saved.conversion?.homeAmountMinor == "1725")
+    #expect(saved.conversion?.source == "Actual card charge entered by traveller")
+  }
+
   @Test func savedReceiptDoesNotRestoreDuplicateDraft() async throws {
     let store = try LocalStore(inMemory: true, installationID: "test")
     let trip = try trip()
