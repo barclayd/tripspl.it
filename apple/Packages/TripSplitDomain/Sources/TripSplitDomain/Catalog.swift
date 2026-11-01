@@ -58,6 +58,27 @@ public struct Destination: Identifiable, Hashable, Sendable {
       latitude: latitude, longitude: longitude, timeZone: resolvedTimeZone)
   }
 
+  /// The destination a stop was picked from: its catalogue entry, or one rebuilt from the stop
+  /// for a place found on Apple Maps.
+  public init(stop: Stop) {
+    if let match = Self.all.first(where: { $0.matches(stop) }) {
+      self = match
+      return
+    }
+    self.init(
+      countryCode: stop.countryCode,
+      country: CountryMetadata.country(stop.countryCode)?.name ?? stop.countryCode,
+      city: stop.place, currency: stop.currency, latitude: stop.latitude,
+      longitude: stop.longitude, timeZone: stop.timeZone)
+  }
+
+  /// Whether the stop is a visit here: the same place, ignoring case and accents, at the same spot.
+  public func matches(_ stop: Stop) -> Bool {
+    stop.countryCode == countryCode
+      && stop.place.compare(city, options: [.caseInsensitive, .diacriticInsensitive]) == .orderedSame
+      && abs(stop.latitude - latitude) <= 0.0001 && abs(stop.longitude - longitude) <= 0.0001
+  }
+
   /// The first entries retain the original demo itinerary's order.
   public static let all: [Destination] = {
     let places = DestinationData.decode([Place].self, file: "Destinations")

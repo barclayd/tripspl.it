@@ -12,6 +12,22 @@ struct DestinationTests {
     #expect(destination.secondaryLabel == "Taipei, Taiwan")
   }
 
+  @Test func stopsLeadBackToWhereTheyWerePicked() throws {
+    let lisbon = try #require(Destination.search("Lisbon").first)
+    let portugal = try #require(Destination.country("PT"))
+    #expect(Destination(stop: lisbon.stop()) == lisbon)
+    #expect(Destination(stop: portugal.stop()) == portugal)
+
+    let jiufen = Destination(
+      countryCode: "TW", country: "Taiwan", city: "Jiufen", currency: "TWD", latitude: 25.109,
+      longitude: 121.845, detail: "Ruifang District, New Taipei")
+    let rebuilt = Destination(stop: jiufen.stop())
+    #expect(rebuilt.id == jiufen.id)
+    #expect(rebuilt.currency == "TWD")
+    #expect(rebuilt.matches(jiufen.stop()))
+    #expect(!rebuilt.matches(lisbon.stop()))
+  }
+
   @Test func countriesFollowTheirDisplayedNames() throws {
     let countries = CountryMetadata.all
     #expect(countries.count >= 249)
