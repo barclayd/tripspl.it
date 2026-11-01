@@ -99,4 +99,13 @@ struct DestinationTests {
     #expect(Destination.search("Taipei", limit: 0).isEmpty)
     #expect(Destination.search("   ") == Destination.suggestions)
   }
+
+  @Test func popularPlacesTakeTurnsDownEachRanking() {
+    let popular = Destination.popular
+    #expect(popular.count == 20)
+    #expect(Set(popular.map(\.id)).count == popular.count)
+    #expect(popular.indices.allSatisfy { popular[$0].isCountry == !$0.isMultiple(of: 2) })
+    #expect(popular.prefix(4).map(\.city) == ["Bangkok", "France", "Hong Kong", "Spain"])
+    #expect(Destination.search("Mecca").first?.city == "Makkah")
+  }
 }

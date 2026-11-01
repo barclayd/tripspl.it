@@ -112,6 +112,25 @@ public struct Destination: Identifiable, Hashable, Sendable {
   }()
 
   public static var suggestions: [Destination] { Array(all.prefix(12)) }
+  /// Where to start before anything's typed: the world's most visited cities and countries, taking
+  /// turns down each ranking. Cities follow Euromonitor's Top 100 City Destinations 2025 by
+  /// international arrivals, and countries UN Tourism's international arrivals for 2024.
+  public static let popular: [Destination] = {
+    let cities = [
+      "geonames-1609350",  // Bangkok
+      "geonames-1819729",  // Hong Kong
+      "geonames-2643743",  // London
+      "geonames-1821274",  // Macau
+      "geonames-745044",  // Istanbul
+      "geonames-292223",  // Dubai
+      "geonames-104515",  // Makkah
+      "geonames-323777",  // Antalya
+      "geonames-2988507",  // Paris
+      "geonames-1735161",  // Kuala Lumpur
+    ].compactMap { id in all.first { $0.catalogID == id } }
+    let countries = ["FR", "ES", "US", "TR", "IT", "MX", "GB", "DE", "JP", "GR"].compactMap(country)
+    return zip(cities, countries).flatMap { [$0, $1] }
+  }()
   /// The catalogue's city by one of its names in a country, so a place found through Maps and the
   /// chips agree on it.
   public static func catalogued(city name: String, countryCode: String) -> Destination? {

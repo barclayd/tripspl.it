@@ -24,7 +24,7 @@ struct StepTitle: View {
   }
 }
 
-/// Step 1: pick countries in visiting order. Tapping a chip again visits it again.
+/// Step 1: pick cities and countries in visiting order. Tapping a chip again visits it again.
 struct RouteStep: View {
   let focus: FocusState<Bool>.Binding
   @Environment(AppModel.self) private var model
@@ -33,14 +33,10 @@ struct RouteStep: View {
   @State private var addingCustom = false
   @State private var currencyDestination: Destination?
 
-  private static let suggested = [
-    "PT", "ES", "FR", "IT", "GR", "HR", "CH", "IS", "JP", "TH", "VN", "ID", "US", "MX", "MA", "AU",
-  ].compactMap(Destination.country)
-
   /// Places in the route that aren't suggestions, such as a city found by searching, so coming
   /// back here still shows everything you picked.
   private var picked: [Destination] {
-    var seen = Set(Self.suggested.map(\.id))
+    var seen = Set(Destination.popular.map(\.id))
     return model.onboarding.stops.map(Destination.init(stop:)).filter { seen.insert($0.id).inserted }
   }
 
@@ -49,12 +45,12 @@ struct RouteStep: View {
 
   var body: some View {
     VStack(alignment: .leading, spacing: 16) {
-      StepTitle("Where are you off to?", "Add each country in the order you’ll visit.")
+      StepTitle("Where are you off to?", "Add each city or country in the order you’ll visit.")
       PlaceSearchField(
         text: $query, focus: focus,
         hint: "Suggests countries and cities anywhere as you type")
       if searchQuery.isEmpty {
-        chips(picked + Self.suggested)
+        chips(picked + Destination.popular)
       } else {
         PlaceResults(
           results: Destination.search(searchQuery, limit: 40), completer: completer,
