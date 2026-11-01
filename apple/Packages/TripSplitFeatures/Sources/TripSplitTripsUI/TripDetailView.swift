@@ -22,7 +22,9 @@ public struct TripDetailView: View {
     if let trip = model.store.trip(tripID) {
       ScrollView {
         VStack(alignment: .leading, spacing: 22) {
-          if !compact {
+          if compact {
+            compactHeader(trip)
+          } else {
             header(trip)
             BoardingPassStack(trip: trip) { model.openDay(.init(kind: .leg, id: $0.id)) }
             TripCostCard(trip: trip)
@@ -50,6 +52,40 @@ public struct TripDetailView: View {
         RepaymentView(tripID: trip.id, settlement: settlement)
       }
     }
+  }
+
+  /// The trip column's slim header: flags, name, people and what it costs each.
+  private func compactHeader(_ trip: TripSnapshot) -> some View {
+    let people = trip.activeTravellers
+    let total = Ledger(trip).total
+    return VStack(alignment: .leading, spacing: 8) {
+      HStack(spacing: 4) {
+        ForEach(Array(trip.uniqueFlags.enumerated()), id: \.offset) { _, flag in
+          Text(flag).font(.system(size: 20))
+        }
+      }
+      .accessibilityHidden(true)
+      Text(trip.name)
+        .typeface(20, .heavy, tracking: -0.03, relativeTo: .title2, maximum: 1.3)
+        .foregroundStyle(Theme.ink).lineLimit(2)
+        .accessibilityAddTraits(.isHeader)
+      HStack(spacing: 8) {
+        HStack(spacing: -6) {
+          ForEach(people) { person in
+            Avatar(traveller: person, size: 22)
+              .background(Circle().fill(Theme.background).padding(-2))
+          }
+        }
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel(people.map(\.name).formatted(.list(type: .and)))
+        Text(
+          "\(Money.whole(total, trip.homeCurrency)) · \(Money.whole(total / Int64(max(1, people.count)), trip.homeCurrency)) each"
+        )
+        .typeface(13, .semibold, relativeTo: .footnote).monospacedDigit()
+        .foregroundStyle(Theme.secondary).lineLimit(1)
+      }
+    }
+    .padding(.top, 4)
   }
 
   private func header(_ trip: TripSnapshot) -> some View {
