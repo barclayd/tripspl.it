@@ -176,16 +176,21 @@ package struct TripPass: View {
     }
   }
 
+  /// Spread edge to edge with even gaps between, each field centred on its label.
   private var fields: some View {
-    WeightedRow(weights: full ? [1.6, 0.6, 1.1] : [1.7, 0.55], spacing: 8) {
+    HStack(spacing: 0) {
       field("DATE", content.date, index: 1)
+      Spacer(minLength: 14)
       field("PAX", content.pax, index: 2)
-      if full { field("BUDGET", content.budget, index: 3) }
+      if full {
+        Spacer(minLength: 14)
+        field("BUDGET", content.budget, index: 3)
+      }
     }
   }
 
   private func field(_ title: String, _ field: TripPassContent.Value, index: Int) -> some View {
-    VStack(alignment: .leading, spacing: 0) {
+    VStack(spacing: 0) {
       Text(title).font(.system(size: label, weight: .black)).tracking(label * 0.12)
         .foregroundStyle(palette.text)
       Text(field.text).font(.system(size: value, weight: .black)).lineLimit(1)
@@ -194,7 +199,6 @@ package struct TripPass: View {
         .contentTransition(.numericText())
     }
     .padding(.horizontal, 6).padding(.vertical, 3)
-    .frame(maxWidth: .infinity, alignment: .leading)
     .background(
       content.highlight == .field(index) ? palette.highlight : .clear,
       in: RoundedRectangle(cornerRadius: 8)
@@ -236,37 +240,5 @@ package struct TripPass: View {
     .frame(width: stubWidth)
     .frame(maxHeight: .infinity)
     .overlay(alignment: .leading) { DashedRule(color: Theme.line2) }
-  }
-}
-
-/// Lays its children out in a row, sharing the width in proportion to `weights`.
-private struct WeightedRow: Layout {
-  var weights: [CGFloat]
-  var spacing: CGFloat
-
-  private func widths(_ total: CGFloat, count: Int) -> [CGFloat] {
-    let weights = (0..<count).map { $0 < self.weights.count ? self.weights[$0] : 1 }
-    let sum = weights.reduce(0, +)
-    let available = max(0, total - spacing * CGFloat(max(count - 1, 0)))
-    return weights.map { available * $0 / max(sum, 0.0001) }
-  }
-
-  func sizeThatFits(proposal: ProposedViewSize, subviews: Subviews, cache: inout ()) -> CGSize {
-    let width = proposal.width ?? 280
-    let height =
-      zip(subviews, widths(width, count: subviews.count))
-      .map { $0.sizeThatFits(ProposedViewSize(width: $1, height: nil)).height }.max() ?? 0
-    return CGSize(width: width, height: height)
-  }
-
-  func placeSubviews(
-    in bounds: CGRect, proposal: ProposedViewSize, subviews: Subviews, cache: inout ()
-  ) {
-    var x = bounds.minX
-    for (subview, width) in zip(subviews, widths(bounds.width, count: subviews.count)) {
-      subview.place(
-        at: CGPoint(x: x, y: bounds.minY), proposal: ProposedViewSize(width: width, height: bounds.height))
-      x += width + spacing
-    }
   }
 }
