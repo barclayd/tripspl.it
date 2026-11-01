@@ -219,7 +219,6 @@ struct RootView: View {
     }
     .task {
       #if DEBUG
-        // Opens a demo trip straight away so simulator screenshots can reach trip screens.
         // `--landscape` turns the device on its side, for the Duo's tent and two pane layouts.
         if ProcessInfo.processInfo.arguments.contains("--landscape"),
           let scene = UIApplication.shared.connectedScenes.first as? UIWindowScene
@@ -229,6 +228,7 @@ struct RootView: View {
             print("Couldn’t turn to landscape: \(error.localizedDescription)")
           }
         }
+        // `--open-trip` opens a demo trip straight away so simulator screenshots can reach trip screens.
         if ProcessInfo.processInfo.arguments.contains("--open-trip") {
           let trips = model.store.trips
           model.selectedTripID = (trips.first { $0.phase == .now } ?? trips.first)?.id
