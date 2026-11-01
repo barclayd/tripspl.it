@@ -263,6 +263,23 @@ public struct Repayment: Codable, Identifiable, Hashable, Sendable {
   public var conversion: Conversion?
   public var note: String
 }
+/// Where a trip sets off from and returns to. Flag, pass code and currency come from the
+/// country, so only the place itself travels over the wire.
+public struct TripOrigin: Codable, Hashable, Sendable {
+  public init(place: String, countryCode: String, latitude: Double, longitude: Double) {
+    self.place = place
+    self.countryCode = countryCode
+    self.latitude = latitude
+    self.longitude = longitude
+  }
+  public var place: String
+  public var countryCode: String
+  public var latitude: Double
+  public var longitude: Double
+  public var flag: String { countryCode.flag }
+  /// The country's main currency, the default for a trip set off from here.
+  public var currency: String? { CountryMetadata.country(countryCode)?.defaultCurrency }
+}
 public struct TripSnapshot: Codable, Identifiable, Hashable, Sendable {
   public init(
     id: String = UUID().uuidString,
@@ -273,6 +290,7 @@ public struct TripSnapshot: Codable, Identifiable, Hashable, Sendable {
     timeZone: String,
     homeCurrency: String,
     budgetMinor: String,
+    origin: TripOrigin? = nil,
     ownerTravellerId: String,
     currentTravellerId: String,
     role: String = "owner",
@@ -293,6 +311,7 @@ public struct TripSnapshot: Codable, Identifiable, Hashable, Sendable {
     self.timeZone = timeZone
     self.homeCurrency = homeCurrency
     self.budgetMinor = budgetMinor
+    self.origin = origin
     self.ownerTravellerId = ownerTravellerId
     self.currentTravellerId = currentTravellerId
     self.role = role
@@ -313,6 +332,8 @@ public struct TripSnapshot: Codable, Identifiable, Hashable, Sendable {
   public var timeZone: String
   public var homeCurrency: String
   public var budgetMinor: String
+  /// Optional and never null on the wire; older trips have none.
+  public var origin: TripOrigin? = nil
   public var ownerTravellerId: String
   public var currentTravellerId: String
   public var role = "owner"
@@ -410,6 +431,8 @@ public struct TripSettings: Codable, Hashable, Sendable {
   public var timeZone: String
   public var homeCurrency: String
   public var budgetMinor: String
+  /// Omitted when nil, which keeps the saved origin rather than clearing it.
+  public var origin: TripOrigin?
   public var stops: [Stop]
   public var days: [TripDay]
   public var legs: [TravelLeg]
@@ -419,6 +442,7 @@ public struct TripSettings: Codable, Hashable, Sendable {
     timeZone = trip.timeZone
     homeCurrency = trip.homeCurrency
     budgetMinor = trip.budgetMinor
+    origin = trip.origin
     stops = trip.stops
     days = trip.days
     legs = trip.legs
@@ -511,6 +535,7 @@ public struct Operation: Codable, Identifiable, Hashable, Sendable {
       trip.timeZone = v.timeZone
       trip.homeCurrency = v.homeCurrency
       trip.budgetMinor = v.budgetMinor
+      if let origin = v.origin { trip.origin = origin }
       trip.stops = v.stops
       trip.days = v.days
       trip.legs = v.legs

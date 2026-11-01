@@ -68,14 +68,31 @@ public struct GlobeView: View {
     }
   }
 
+  /// Where a trip's arc starts and ends: the origin picked for it, else the device's home city.
+  static func origin(of trip: TripSnapshot, home: Destination?)
+    -> (name: String, point: GeoPoint)?
+  {
+    if let origin = trip.origin { return (origin.place, origin.point) }
+    return home.map { ("Home", $0.point) }
+  }
+
+  /// One home dot per distinct starting point across the trips on the globe.
+  static func origins(of trips: [TripSnapshot], home: Destination?)
+    -> [(name: String, point: GeoPoint)]
+  {
+    var seen = Set<GeoPoint>()
+    return trips.compactMap { origin(of: $0, home: home) }
+      .filter { seen.insert($0.point).inserted }
+  }
+
   private func map(trips: [TripSnapshot], selected: TripSnapshot?, home: Destination?)
     -> some View
   {
     // The selected trip draws last so its arc and pins sit on top.
     let ordered = trips.filter { $0.id != selected?.id } + (selected.map { [$0] } ?? [])
-    let ends = home.map { [$0.point] } ?? []
     return Map(position: $position) {
       ForEach(ordered) { trip in
+        let ends = Self.origin(of: trip, home: home).map { [$0.point] } ?? []
         let route = ends + trip.stops.map(\.point) + ends
         if route.count > 1 {
           MapPolyline(coordinates: route.map(\.location), contourStyle: .geodesic)
@@ -86,8 +103,8 @@ public struct GlobeView: View {
                 dash: trip.phase == .upcoming ? [1, 5] : []))
         }
       }
-      if let home {
-        Annotation("Home", coordinate: home.point.location, anchor: .center) {
+      ForEach(Self.origins(of: ordered, home: home), id: \.point) { origin in
+        Annotation(origin.name, coordinate: origin.point.location, anchor: .center) {
           Circle().fill(.white).frame(width: 10, height: 10)
             .overlay(Circle().stroke(Color(hex: 0x24548F), lineWidth: 2.5))
             .accessibilityHidden(true)

@@ -37,9 +37,25 @@ struct BoardingPassContentTests {
     #expect(passes[0].fields[1] == .init("PAX", "2"))
   }
 
+  @Test func itineraryLeavesFromAndReturnsToTheOrigin() {
+    let dublin = TripOrigin(place: "Dublin", countryCode: "IE", latitude: 53.35, longitude: -6.26)
+    let passes = BoardingPassContent.itinerary(
+      stops: [stop("Lisbon", "PT", nights: 3)], start: "2026-10-28", homeCurrency: "GBP",
+      origin: dublin)
+    #expect(passes.map(\.from) == ["DUB", "LIS"])
+    #expect(passes.map(\.to) == ["LIS", "DUB"])
+    #expect(passes.map(\.toName) == ["Lisbon", "Dublin"])
+    #expect(passes[1].flag == "🇮🇪")
+    #expect(passes[1].stubValue == "HOME")
+    let empty = BoardingPassContent.itinerary(
+      stops: [], start: nil, homeCurrency: "GBP", origin: dublin)
+    #expect(empty[0].from == "DUB")
+  }
+
   @Test func passCodesPreferCitiesThenCountryHubs() {
     #expect(stop("Kyoto", "JP", nights: 1).passCode == "KYO")
     #expect(stop("Valencia", "ES", nights: 1).passCode == "VAL")
+    #expect(stop("London", "GB", nights: 1).passCode == "LON")
     if let japan = CountryMetadata.country("JP")?.name {
       #expect(stop(japan, "JP", nights: 1).passCode == "TYO")
     }

@@ -21,6 +21,10 @@ extension Stop {
   public var point: GeoPoint { .init(latitude: latitude, longitude: longitude) }
 }
 
+extension TripOrigin {
+  public var point: GeoPoint { .init(latitude: latitude, longitude: longitude) }
+}
+
 extension Destination {
   public var point: GeoPoint { .init(latitude: latitude, longitude: longitude) }
 }
