@@ -1,0 +1,359 @@
+{
+  "version": 1,
+  "rounding": "half-up to currency minor unit; split remainders by ascending traveller ID",
+  "allocationCases": [
+    {
+      "name": "pennies are preserved",
+      "amountMinor": "10000",
+      "travellerIds": [
+        "c",
+        "a",
+        "b"
+      ],
+      "expected": {
+        "a": "3334",
+        "b": "3333",
+        "c": "3333"
+      }
+    },
+    {
+      "name": "one penny is allocated once",
+      "amountMinor": "1",
+      "travellerIds": [
+        "c",
+        "a",
+        "b"
+      ],
+      "expected": {
+        "a": "1",
+        "b": "0",
+        "c": "0"
+      }
+    },
+    {
+      "name": "single beneficiary",
+      "amountMinor": "999",
+      "travellerIds": [
+        "b"
+      ],
+      "expected": {
+        "b": "999"
+      }
+    }
+  ],
+  "conversionCases": [
+    {
+      "name": "EUR to GBP rounds half up",
+      "amountMinor": "12345",
+      "from": "EUR",
+      "fromExponent": 2,
+      "to": "GBP",
+      "toExponent": 2,
+      "rate": "0.86",
+      "expectedMinor": "10617"
+    },
+    {
+      "name": "JPY has no fractional minor units",
+      "amountMinor": "1000",
+      "from": "JPY",
+      "fromExponent": 0,
+      "to": "GBP",
+      "toExponent": 2,
+      "rate": "0.005",
+      "expectedMinor": "500"
+    },
+    {
+      "name": "IDR supports two minor digits",
+      "amountMinor": "10000000",
+      "from": "IDR",
+      "fromExponent": 2,
+      "to": "GBP",
+      "toExponent": 2,
+      "rate": "0.00005",
+      "expectedMinor": "500"
+    },
+    {
+      "name": "KWD has three fractional digits",
+      "amountMinor": "12345",
+      "from": "KWD",
+      "fromExponent": 3,
+      "to": "GBP",
+      "toExponent": 2,
+      "rate": "2.5",
+      "expectedMinor": "3086"
+    },
+    {
+      "name": "exact half rounds upwards",
+      "amountMinor": "1",
+      "from": "EUR",
+      "fromExponent": 2,
+      "to": "GBP",
+      "toExponent": 2,
+      "rate": "0.5",
+      "expectedMinor": "1"
+    },
+    {
+      "name": "small nonzero conversion may round to zero",
+      "amountMinor": "1",
+      "from": "EUR",
+      "fromExponent": 2,
+      "to": "GBP",
+      "toExponent": 2,
+      "rate": "0.49",
+      "expectedMinor": "0"
+    }
+  ],
+  "ledgerCases": [
+    {
+      "name": "planned expenses and repayments have separate effects",
+      "travellerIds": [
+        "a",
+        "b",
+        "c"
+      ],
+      "expenses": [
+        {
+          "id": "e1",
+          "status": "paid",
+          "homeAmountMinor": "10000",
+          "paidBy": "a",
+          "splitWith": [
+            "a",
+            "b",
+            "c"
+          ]
+        },
+        {
+          "id": "e2",
+          "status": "paid",
+          "homeAmountMinor": "999",
+          "paidBy": "b",
+          "splitWith": [
+            "b"
+          ]
+        },
+        {
+          "id": "e3",
+          "status": "planned",
+          "homeAmountMinor": "6000",
+          "paidBy": "c",
+          "splitWith": [
+            "a",
+            "b",
+            "c"
+          ]
+        }
+      ],
+      "repayments": [
+        {
+          "fromTravellerId": "b",
+          "toTravellerId": "a",
+          "homeAmountMinor": "1000"
+        }
+      ],
+      "expected": {
+        "paidMinor": "10999",
+        "plannedMinor": "6000",
+        "expectedMinor": "16999",
+        "balances": {
+          "a": "5666",
+          "b": "-2333",
+          "c": "-3333"
+        },
+        "paidShares": {
+          "a": "3334",
+          "b": "4332",
+          "c": "3333"
+        },
+        "isComplete": true,
+        "settlements": [
+          {
+            "fromTravellerId": "c",
+            "toTravellerId": "a",
+            "amountMinor": "3333"
+          },
+          {
+            "fromTravellerId": "b",
+            "toTravellerId": "a",
+            "amountMinor": "2333"
+          }
+        ]
+      }
+    },
+    {
+      "name": "payer need not receive a share",
+      "travellerIds": [
+        "a",
+        "b",
+        "c"
+      ],
+      "expenses": [
+        {
+          "id": "e1",
+          "status": "paid",
+          "homeAmountMinor": "250",
+          "paidBy": "a",
+          "splitWith": [
+            "b",
+            "c"
+          ]
+        }
+      ],
+      "repayments": [],
+      "expected": {
+        "paidMinor": "250",
+        "plannedMinor": "0",
+        "expectedMinor": "250",
+        "balances": {
+          "a": "250",
+          "b": "-125",
+          "c": "-125"
+        },
+        "paidShares": {
+          "a": "0",
+          "b": "125",
+          "c": "125"
+        },
+        "isComplete": true,
+        "settlements": [
+          {
+            "fromTravellerId": "b",
+            "toTravellerId": "a",
+            "amountMinor": "125"
+          },
+          {
+            "fromTravellerId": "c",
+            "toTravellerId": "a",
+            "amountMinor": "125"
+          }
+        ]
+      }
+    },
+    {
+      "name": "missing rate makes totals incomplete",
+      "travellerIds": [
+        "a",
+        "b"
+      ],
+      "expenses": [
+        {
+          "id": "e1",
+          "status": "paid",
+          "homeAmountMinor": null,
+          "paidBy": "a",
+          "splitWith": [
+            "a",
+            "b"
+          ]
+        }
+      ],
+      "repayments": [],
+      "expected": {
+        "paidMinor": "0",
+        "plannedMinor": "0",
+        "expectedMinor": "0",
+        "balances": {
+          "a": "0",
+          "b": "0"
+        },
+        "paidShares": {
+          "a": "0",
+          "b": "0"
+        },
+        "isComplete": false,
+        "settlements": []
+      }
+    },
+    {
+      "name": "settlement consumes initially sorted debtors and creditors",
+      "travellerIds": [
+        "a",
+        "b",
+        "c",
+        "d",
+        "e"
+      ],
+      "expenses": [
+        {
+          "id": "e1",
+          "status": "paid",
+          "homeAmountMinor": "600",
+          "paidBy": "a",
+          "splitWith": [
+            "c"
+          ]
+        },
+        {
+          "id": "e2",
+          "status": "paid",
+          "homeAmountMinor": "200",
+          "paidBy": "a",
+          "splitWith": [
+            "d"
+          ]
+        },
+        {
+          "id": "e3",
+          "status": "paid",
+          "homeAmountMinor": "200",
+          "paidBy": "b",
+          "splitWith": [
+            "d"
+          ]
+        },
+        {
+          "id": "e4",
+          "status": "paid",
+          "homeAmountMinor": "300",
+          "paidBy": "b",
+          "splitWith": [
+            "e"
+          ]
+        }
+      ],
+      "repayments": [],
+      "expected": {
+        "paidMinor": "1300",
+        "plannedMinor": "0",
+        "expectedMinor": "1300",
+        "balances": {
+          "a": "800",
+          "b": "500",
+          "c": "-600",
+          "d": "-400",
+          "e": "-300"
+        },
+        "paidShares": {
+          "a": "0",
+          "b": "0",
+          "c": "600",
+          "d": "400",
+          "e": "300"
+        },
+        "isComplete": true,
+        "settlements": [
+          {
+            "fromTravellerId": "c",
+            "toTravellerId": "a",
+            "amountMinor": "600"
+          },
+          {
+            "fromTravellerId": "d",
+            "toTravellerId": "a",
+            "amountMinor": "200"
+          },
+          {
+            "fromTravellerId": "d",
+            "toTravellerId": "b",
+            "amountMinor": "200"
+          },
+          {
+            "fromTravellerId": "e",
+            "toTravellerId": "b",
+            "amountMinor": "300"
+          }
+        ]
+      }
+    }
+  ]
+}

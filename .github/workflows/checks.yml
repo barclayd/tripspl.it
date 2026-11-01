@@ -1,0 +1,61 @@
+name: checks
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: checks-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  backend:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    defaults:
+      run:
+        working-directory: backend
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: '24'
+          cache: npm
+          cache-dependency-path: backend/package-lock.json
+      - run: npm ci
+      - run: npm run check
+      - run: npm test
+      - run: npm run build
+
+  ios:
+    runs-on: xcode-27
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v7
+      - name: Select Xcode 27.1
+        run: sudo xcode-select --switch /Applications/Xcode_27.1.app
+      - name: Install XcodeGen
+        run: brew install xcodegen
+      - name: Test domain calculations
+        run: swift test --package-path ios
+      - name: Generate project
+        working-directory: ios
+        run: xcodegen generate
+      - name: Build and test on Duo
+        run: >-
+          xcodebuild -quiet
+          -project ios/TripSplit.xcodeproj
+          -scheme TripSplit
+          -destination 'platform=iOS Simulator,name=iPhone Duo,OS=27.1'
+          -resultBundlePath build/TripSplit.xcresult
+          CODE_SIGNING_ALLOWED=NO test
+      - uses: actions/upload-artifact@v7
+        if: failure()
+        with:
+          name: ios-test-results
+          path: build/TripSplit.xcresult
+          retention-days: 7
