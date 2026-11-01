@@ -1,4 +1,5 @@
 import Foundation
+import TripSplitDesignSystem
 import TripSplitDomain
 
 /// The words and derived figures that react to each onboarding answer.
@@ -91,6 +92,95 @@ enum OnboardingCopy {
   static func budgetMajor(_ draft: OnboardingDraft) -> Double? {
     guard let minor = try? Money.parse(draft.budget, currency: draft.currency) else { return nil }
     return Double(minor) / Double(Money.factor(draft.currency))
+  }
+
+  // MARK: Open Duo
+
+  /// The six questions, as the open Duo's sidebar lists them.
+  static let stepTitles = ["Where", "When", "How long", "Who", "Home currency", "Budget"]
+
+  /// Each answered step in a line, e.g. "🇵🇹 Portugal → 🇪🇸 Spain" or "7 nights · 8 days".
+  static func answer(_ step: Int, _ draft: OnboardingDraft) -> String {
+    switch step {
+    case 0: return draft.stops.map { "\($0.flag) \($0.place)" }.joined(separator: " → ")
+    case 1: return CivilDate.display(draft.startsOn, format: "EEE d MMM")
+    case 2:
+      return "\(draft.nights) night\(draft.nights == 1 ? "" : "s") · \(draft.days) days"
+    case 3: return draft.travellers.map(\.name).joined(separator: ", ")
+    case 4: return "\(ConversionCurrency.forCurrency(draft.currency).flag) \(draft.currency)"
+    case 5: return Money.typed(draft.budget, currency: draft.currency)
+    default: return ""
+    }
+  }
+
+  /// "18 – 25 Nov", or "28 Nov – 5 Dec" across months.
+  static func dateRange(_ draft: OnboardingDraft) -> String {
+    let start = draft.startsOn
+    let end = draft.returnDate
+    let sameMonth = start.prefix(7) == end.prefix(7)
+    return "\(CivilDate.display(start, format: sameMonth ? "d" : "d MMM")) – \(CivilDate.display(end))"
+  }
+
+  /// Every country once, in route order: "Portugal & Spain".
+  static func countries(_ draft: OnboardingDraft) -> String {
+    let names = unique(draft.stops.map(\.countryCode)).map {
+      CountryMetadata.country($0)?.name ?? $0
+    }
+    guard names.count > 1 else { return names.first ?? "" }
+    return names.dropLast().joined(separator: ", ") + " & " + names[names.count - 1]
+  }
+
+  /// The pass as the answers stand, tinting whichever field the current step fills in.
+  static func tripPass(
+    _ draft: OnboardingDraft, size: TripPass.Size,
+    region: String? = Locale.current.region?.identifier
+  ) -> TripPassContent {
+    let home = Destination.home(region: region)?.stop()
+    let codes = unique(draft.stops.map(\.countryCode))
+    let to =
+      switch draft.stops.count {
+      case 0: "???"
+      case 1: draft.stops[0].passCode
+      default: codes.joined(separator: "·")
+      }
+    let toName =
+      switch draft.stops.count {
+      case 0: "Where to?"
+      case 1: draft.stops[0].place
+      default: size == .full ? countries(draft) : "\(draft.stops.count) stops"
+      }
+    let budgetAnswered = draft.step >= 5 && !draft.budget.isEmpty
+    let highlight: BoardingPassContent.Highlight? =
+      switch draft.step {
+      case 0: .destination
+      case 1, 2: .field(1)
+      case 3: .field(2)
+      case 5: .field(3)
+      default: nil
+      }
+    return TripPassContent(
+      from: home?.passCode ?? "HOME", fromName: home?.place ?? "Home", to: to, toName: toName,
+      placeholder: draft.stops.isEmpty,
+      date: .init(draft.step >= 1 ? dateRange(draft) : "When?", answered: draft.step >= 1),
+      pax: .init("\(draft.travellers.count)", answered: draft.step > 3 || draft.travellers.count > 1),
+      budget: .init(
+        budgetAnswered ? Money.typed(draft.budget, currency: draft.currency) : "Budget?",
+        answered: budgetAnswered),
+      flags: unique(draft.stops.map(\.flag)).joined(),
+      highlight: highlight)
+  }
+
+  /// The finished trip in a line: "Portugal & Spain · 18 – 25 Nov · 3 people".
+  static func summary(_ draft: OnboardingDraft) -> String {
+    let people = draft.travellers.count
+    return "\(countries(draft)) · \(dateRange(draft)) · \(people) \(people == 1 ? "person" : "people")"
+  }
+
+  /// Each traveller's share of the budget, in whole units: "£700".
+  static func share(_ draft: OnboardingDraft) -> String? {
+    guard let budget = budgetMajor(draft), budget > 0 else { return nil }
+    let each = (budget / Double(max(draft.travellers.count, 1))).rounded()
+    return Money.format(Int64(each) * Money.factor(draft.currency), draft.currency, compact: true)
   }
 
   private static func unique(_ values: [String]) -> [String] {

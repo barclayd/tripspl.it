@@ -12,11 +12,13 @@ struct StepTitle: View {
   }
   let title: String
   let subtitle: String
+  @Environment(\.onboardingWide) private var wide
   var body: some View {
     VStack(alignment: .leading, spacing: 6) {
-      Text(title).typeface(28, .heavy, tracking: -0.03, relativeTo: .largeTitle, maximum: 1.3)
+      Text(title)
+        .typeface(wide ? 32 : 28, .heavy, tracking: -0.03, relativeTo: .largeTitle, maximum: 1.3)
         .foregroundStyle(Theme.ink).accessibilityAddTraits(.isHeader)
-      Text(subtitle).typeface(15, .semibold, relativeTo: .subheadline, maximum: 1.4)
+      Text(subtitle).typeface(wide ? 16 : 15, .semibold, relativeTo: .subheadline, maximum: 1.4)
         .foregroundStyle(Theme.secondary)
     }.frame(maxWidth: .infinity, alignment: .leading).fixedSize(horizontal: false, vertical: true)
   }

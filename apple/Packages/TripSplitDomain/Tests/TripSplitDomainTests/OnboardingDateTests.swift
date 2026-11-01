@@ -98,6 +98,20 @@ struct OnboardingDateTests {
     #expect(draft.stepPosition == draft.totalSteps)
   }
 
+  @Test func revisitingOnlyJumpsBackToAnsweredSteps() {
+    var draft = draft()
+    draft.step = 4
+    draft.revisit(5)
+    #expect(draft.step == 4)
+    draft.revisit(1)
+    #expect(draft.step == 1)
+    draft.revisit(-1)
+    #expect(draft.step == 1)
+    draft.step = 6
+    draft.revisit(0)
+    #expect(draft.step == 6)
+  }
+
   @Test func budgetSuggestionScalesWithDaysPeopleAndCurrency() {
     var draft = draft()
     draft.travellers.append(Traveller(name: "Maya"))

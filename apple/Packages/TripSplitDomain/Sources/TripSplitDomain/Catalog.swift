@@ -225,6 +225,11 @@ public struct OnboardingDraft: Codable, Equatable, Sendable {
     guard let index = flowSteps.firstIndex(of: step), index > 0, step != 6 else { return }
     step = flowSteps[index - 1]
   }
+  /// Jumps back to an answered step to change it; never forward, and never once the trip exists.
+  public mutating func revisit(_ target: Int) {
+    guard step != 6, flowSteps.contains(target), target < step else { return }
+    step = target
+  }
   /// Days × people × £75, in the home currency at `homePerGBP`, rounded to 50 and at least 100.
   public func suggestedBudget(homePerGBP: Double) -> Int {
     let value =
