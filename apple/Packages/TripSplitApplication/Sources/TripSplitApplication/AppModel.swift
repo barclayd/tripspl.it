@@ -142,14 +142,22 @@ import TripSplitSync
       notify("Deleted \(trip.name)")
     } catch { self.error = error.localizedDescription }
   }
-  /// Moves expenses to another day or leg. Paid ones count as paid on its date.
+  /// Moves expenses to another day or leg. Paid ones count as paid on its date. A half of a return
+  /// ticket moves on its own, so both halves become plain expenses.
   public func moveExpenses(_ items: [Expense], to attachment: Attachment, trip: TripSnapshot) {
     let moving = items.filter { $0.attachment != attachment }
     guard !moving.isEmpty else { return }
     perform {
+      let ids = Set(moving.map(\.id))
+      for partner in moving.flatMap(trip.ticket(of:)) where !ids.contains(partner.id) {
+        var unlinked = partner
+        unlinked.returnPairId = nil
+        try store.saveExpense(unlinked, tripID: trip.id)
+      }
       for item in moving {
         var moved = item
         moved.attachment = attachment
+        moved.returnPairId = nil
         if moved.status == .paid { moved.paidOn = trip.date(for: attachment) }
         try store.saveExpense(moved, tripID: trip.id)
       }
@@ -158,23 +166,35 @@ import TripSplitSync
       changed()
     }
   }
-  /// Deletes every expense on a day or leg.
+  /// Deletes every expense on a day or leg, and the other half of any return ticket on it.
   public func clearDay(_ attachment: Attachment, trip: TripSnapshot) {
     perform {
-      for item in trip.expenses(for: attachment) { try store.deleteExpense(item, tripID: trip.id) }
+      for item in trip.expenses(for: attachment).flatMap(trip.ticket(of:)) {
+        try store.deleteExpense(item, tripID: trip.id)
+      }
       changed()
     }
   }
+  /// Deletes an expense, both halves of a return ticket.
+  public func deleteExpense(_ expense: Expense, trip: TripSnapshot) throws {
+    for item in trip.ticket(of: expense) { try store.deleteExpense(item, tripID: trip.id) }
+  }
+  /// Ticks an expense off as paid, or back to planned, both halves of a return ticket together.
   public func toggleExpense(_ expense: Expense, trip: TripSnapshot) {
     perform {
-      var edited = expense
-      edited.status = expense.status == .paid ? .planned : .paid
-      edited.paidOn = edited.status == .paid ? trip.today(for: edited.attachment) : nil
-      try store.saveExpense(edited, tripID: trip.id)
-      notify(edited.status == .paid ? "Ticked off as paid" : "Moved back to planned")
+      let status: Expense.Status = expense.status == .paid ? .planned : .paid
+      for item in trip.ticket(of: expense) {
+        var edited = item
+        edited.status = status
+        edited.paidOn = status == .paid ? trip.today(for: expense.attachment) : nil
+        try store.saveExpense(edited, tripID: trip.id)
+      }
+      notify(status == .paid ? "Ticked off as paid" : "Moved back to planned")
       changed()
     }
   }
+  /// Saves the draft, and returns the expense as it was entered. A return ticket saves as two
+  /// halves, getting there and getting home; one changed to one way drops its half getting home.
   public func saveExpense() async throws -> Expense {
     guard let draft = expenseDraft, let trip = store.trip(draft.tripID) else {
       throw MoneyError.invalid
@@ -182,7 +202,10 @@ import TripSplitSync
     let amount = try Money.parse(draft.amount, currency: draft.currency)
     guard amount > 0, !draft.splitWith.isEmpty else { throw MoneyError.invalid }
     var conversion = draft.conversion
-    let previous = trip.expenses.first(where: { $0.id == draft.expenseID })
+    let saved = trip.expenses.first(where: { $0.id == draft.expenseID })
+    let previous = saved.map(trip.wholeTicket)
+    let partner = saved.flatMap { trip.returnHalves(of: $0)?.back }
+    let isReturn = draft.isReturn && trip.asksReturn(draft.category, on: draft.attachment)
     if let previous, previous.amountMinor != String(amount) || previous.currency != draft.currency {
       conversion = nil
     }
@@ -216,15 +239,28 @@ import TripSplitSync
     } else {
       conversion = nil
     }
+    // A title the app filled in follows the ticket, e.g. "Return flight" back to "Flight".
+    let typed = draft.title.trimmingCharacters(in: .whitespaces)
+    let named =
+      !typed.isEmpty && typed != draft.category.title
+      && !ExpenseCategory.allCases.contains { $0.returnTitle == typed }
     let expense = Expense(
       id: draft.expenseID ?? draft.id, revision: previous?.revision ?? 0,
       attachment: draft.attachment,
-      title: draft.title.trimmingCharacters(in: .whitespaces).isEmpty
-        ? draft.category.title : draft.title, category: draft.category, amountMinor: String(amount),
+      title: named
+        ? draft.title
+        : isReturn ? draft.category.returnTitle ?? draft.category.title : draft.category.title,
+      category: draft.category, amountMinor: String(amount),
       currency: draft.currency, status: draft.status,
       paidOn: draft.status == .paid ? trip.date(for: draft.attachment) : nil, paidBy: draft.paidBy,
-      splitWith: draft.splitWith.sorted(), conversion: conversion)
-    try store.saveExpense(expense, tripID: trip.id)
+      splitWith: draft.splitWith.sorted(), conversion: conversion,
+      returnPairId: isReturn ? previous?.returnPairId : nil)
+    if isReturn, let halves = trip.splitReturn(expense, back: partner) {
+      for half in halves { try store.saveExpense(half, tripID: trip.id) }
+    } else {
+      try store.saveExpense(expense, tripID: trip.id)
+      if let partner { try store.deleteExpense(partner, tripID: trip.id) }
+    }
     completedDraftID = draft.id
     try store.removeDocument("expense:" + trip.id)
     changed()

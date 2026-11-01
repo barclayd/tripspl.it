@@ -135,7 +135,7 @@ extension Expense {
     id == other.id && attachment == other.attachment && title == other.title
       && category == other.category && amountMinor == other.amountMinor
       && currency == other.currency && status == other.status && paidBy == other.paidBy
-      && splitWith.sorted() == other.splitWith.sorted()
+      && splitWith.sorted() == other.splitWith.sorted() && returnPairId == other.returnPairId
   }
 }
 

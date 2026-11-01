@@ -418,6 +418,15 @@ public struct ExpenseEditor: View {
 
   private func panel(_ trip: TripSnapshot, draft: ExpenseDraft) -> some View {
     VStack(alignment: .leading, spacing: 10) {
+      if trip.asksReturn(draft.category, on: draft.attachment) {
+        row("Ticket") { ticket(draft) }
+        if let note = returnNote(trip, draft: draft) {
+          Text(note)
+            .typeface(12.5, .bold, relativeTo: .caption, maximum: 1.4)
+            .foregroundStyle(Theme.secondary).monospacedDigit()
+            .padding(.leading, 68)
+        }
+      }
       row("Status") { status(draft) }
       row("Paid by") { people(trip, draft: draft, split: false) }
       row("Split") { people(trip, draft: draft, split: true) }
@@ -482,12 +491,39 @@ public struct ExpenseEditor: View {
   }
 
   private func status(_ draft: ExpenseDraft) -> some View {
+    segments([(Expense.Status.paid, "Paid"), (.planned, "Planned")], selected: draft.status) {
+      $0.status = $1
+    }
+  }
+
+  /// Travel booked before you go is a return unless it's one way, like the watch asks.
+  private func ticket(_ draft: ExpenseDraft) -> some View {
+    segments([(true, "Return"), (false, "One way")], selected: draft.isReturn) {
+      $0.coversReturn = $1
+    }
+  }
+
+  /// "£210.00 there · £210.00 home" under the ticket choice, so the split shows before saving.
+  private func returnNote(_ trip: TripSnapshot, draft: ExpenseDraft) -> String? {
+    guard draft.isReturn, trip.asksReturn(draft.category, on: draft.attachment) else { return nil }
+    let minor = amount(draft)
+    guard minor > 0 else { return "Half there · half home" }
+    let out = Money.format(minor - minor / 2, draft.currency)
+    let back = Money.format(minor / 2, draft.currency)
+    return "\(out) there · \(back) home"
+  }
+
+  private func segments<Value: Hashable>(
+    _ options: [(Value, String)], selected current: Value,
+    set: @escaping (inout ExpenseDraft, Value) -> Void
+  ) -> some View {
     HStack(spacing: 4) {
-      ForEach([Expense.Status.paid, .planned], id: \.self) { value in
-        let selected = draft.status == value
-        Button(value == .paid ? "Paid" : "Planned") {
+      ForEach(options, id: \.0) { option in
+        let value = option.0
+        let selected = current == value
+        Button(option.1) {
           Haptics.selection()
-          mutate { $0.status = value }
+          mutate { set(&$0, value) }
         }
         .buttonStyle(.plain)
         .typeface(13, .heavy, relativeTo: .footnote, maximum: 1.4)
@@ -503,7 +539,7 @@ public struct ExpenseEditor: View {
     }
     .padding(3)
     .background(Theme.line, in: Capsule())
-    .animation(.easeOut(duration: 0.25), value: draft.status)
+    .animation(.easeOut(duration: 0.25), value: current)
   }
 
   private func people(_ trip: TripSnapshot, draft: ExpenseDraft, split: Bool) -> some View {
@@ -583,7 +619,7 @@ public struct ExpenseEditor: View {
   private func delete(_ draft: ExpenseDraft, trip: TripSnapshot) {
     model.perform {
       guard let expense = trip.expenses.first(where: { $0.id == draft.expenseID }) else { return }
-      try model.store.deleteExpense(expense, tripID: trip.id)
+      try model.deleteExpense(expense, trip: trip)
       try model.store.removeDocument("expense:" + trip.id)
       model.changed()
       model.notify("Deleted")

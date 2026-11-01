@@ -176,29 +176,76 @@ import TripSplitWatchModel
     #expect(receipt.heading.hasPrefix("Return from trip · "))
   }
 
-  @Test func flightBeforeYouGoAsksIfItsAReturn() throws {
+  @Test func aReturnBeforeYouGoIsSplitWithTheWayHome() throws {
     let (model, sent) = try model()
     let trip = try #require(model.timeline.upcoming.first)
     let out = try #require(trip.legs.first { $0.kind == .outbound })
+    let back = try #require(trip.legs.first { $0.kind == .return })
     let log = LogExpense(model: model, trip: trip)
     log.choose(Attachment(kind: .leg, id: out.id))
     #expect(log.asksReturn)
     #expect(log.coversReturn)
     #expect(log.step(after: .category) == .returnToo)
     #expect(log.step(after: .returnToo) == .split)
-    log.amount = 420
+    log.amount = try #require(Decimal(string: "420.01"))
     let receipt = try #require(log.save())
-    let ticket = try saved(sent())
-    #expect(ticket.title == "Return flight")
-    #expect(ticket.attachment.id == out.id)
+    let halves = saves(sent())
+    #expect(halves.map(\.attachment.id) == [out.id, back.id])
+    #expect(halves.map(\.amountMinor) == ["21001", "21000"])
+    #expect(halves.allSatisfy { $0.title == "Return flight" && $0.returnPairId == halves[0].id })
     #expect(receipt.category == "Return flight")
+    #expect(receipt.amount == "£420.01")
     #expect(receipt.heading.hasPrefix("Before you go · "))
-    // Editing keeps it a return until you say it's one way.
-    let editing = LogExpense(model: model, trip: trip, editing: ticket)
+
+    // Either half changes the whole ticket, and it stays a return until you say it's one way.
+    let editing = LogExpense(model: model, trip: model.trip(trip.id), editing: halves[1])
+    #expect(editing.editing?.id == halves[0].id)
+    #expect(editing.attachment?.id == out.id)
+    #expect(editing.amount == Decimal(string: "420.01"))
     #expect(editing.coversReturn)
-    editing.coversReturn = false
+    editing.amount = 400
     editing.save()
-    #expect(try saved(sent()).title == "Flight")
+    let edited = saves(sent()).suffix(2)
+    #expect(edited.map(\.id) == halves.map(\.id))
+    #expect(edited.map(\.amountMinor) == ["20000", "20000"])
+    #expect(model.pendingCount == 2)
+
+    let oneWay = LogExpense(model: model, trip: model.trip(trip.id), editing: halves[0])
+    oneWay.coversReturn = false
+    oneWay.save()
+    let flight = try saved(Array(sent().dropLast()))
+    #expect(flight.id == halves[0].id && flight.title == "Flight" && flight.returnPairId == nil)
+    #expect(flight.amountMinor == "40000")
+    guard case .deleteExpense(_, let dropped) = sent().last else {
+      Issue.record("Expected the way home to go, got \(sent())")
+      return
+    }
+    #expect(dropped == halves[1].id)
+    #expect(model.trip(trip.id)?.expenses.filter { $0.attachment.id == back.id }.isEmpty == true)
+  }
+
+  @Test func deletingEitherHalfDeletesTheReturn() throws {
+    let (model, sent) = try model()
+    let trip = try #require(model.timeline.upcoming.first)
+    let log = LogExpense(model: model, trip: trip)
+    log.choose(try #require(log.dayOptions.first).attachment)
+    log.amount = 300
+    log.save()
+    let halves = saves(sent())
+    model.deleteExpense(halves[1], in: try #require(model.trip(trip.id)))
+    let deleted = sent().compactMap { command -> String? in
+      guard case .deleteExpense(_, let id) = command else { return nil }
+      return id
+    }
+    #expect(Set(deleted) == Set(halves.map(\.id)))
+    #expect(model.trip(trip.id)?.expenses.contains { $0.returnPairId != nil } == false)
+  }
+
+  func saves(_ commands: [CompanionCommand]) -> [Expense] {
+    commands.compactMap { command in
+      guard case .saveExpense(_, let expense) = command else { return nil }
+      return expense
+    }
   }
 
   @Test(arguments: [ExpenseCategory.taxi, .stay, .shopping, .other])

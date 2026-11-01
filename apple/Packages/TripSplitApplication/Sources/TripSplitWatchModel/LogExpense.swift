@@ -3,8 +3,8 @@ import Observation
 import TripSplitDomain
 
 /// The watch's log flow: which trip (F1), which day for a trip still to come (F6), how much (F2),
-/// what it was (F3), whether travel booked before you go is a return, and, with others on the
-/// trip, who shares it (F4). Saves through the phone like any other watch change,
+/// what it was (F3), whether travel booked before you go is a return, split half before you go
+/// and half on the way home, and, with others on the trip, who shares it (F4). Saves through the phone like any other watch change,
 /// with an estimate from cached rates so the spend shows in the home currency straight away, even
 /// offline. The phone swaps the estimate for a quoted rate when it applies the change.
 @MainActor @Observable public final class LogExpense {
@@ -13,8 +13,11 @@ import TripSplitDomain
   }
 
   @ObservationIgnored public let model: WatchModel
-  /// The spend being changed, or nil when logging a new one.
+  /// The spend being changed, or nil when logging a new one. A return ticket is changed whole,
+  /// from its half before you go.
   public let editing: Expense?
+  /// The half on the way home of the return ticket being changed, so both halves change together.
+  private let partner: Expense?
   public private(set) var tripID: String?
   public private(set) var attachment: Attachment?
   public private(set) var currency = ""
@@ -22,8 +25,8 @@ import TripSplitDomain
   public var amount: Decimal = 0
   public var category: ExpenseCategory = .food
   /// Whether a ticket booked before you go covers getting home too, as most flights do. Only
-  /// asked of travel there and back (`asksReturn`), and it names the spend "Return flight". It
-  /// stays one spend on the way out, so the balances count it once.
+  /// asked of travel there and back (`asksReturn`). A return is named "Return flight" and split
+  /// across the trip like the phone does, half before you go and half on the way home.
   public var coversReturn = true
   /// Shared between travellers, or just for you.
   public var isShared = true
@@ -34,16 +37,17 @@ import TripSplitDomain
   /// with only one trip to log for, it starts on that trip, as there's nothing to choose.
   public init(model: WatchModel, trip: TripSnapshot? = nil, editing expense: Expense? = nil) {
     self.model = model
-    editing = expense
+    editing = expense.map { trip?.wholeTicket($0) ?? $0 }
+    partner = expense.flatMap { trip?.returnHalves(of: $0)?.back }
     let only = expense == nil && trips.count == 1 ? trips.first : nil
     if let trip = trip ?? only { choose(trip) }
-    guard let expense else { return }
+    guard let expense = editing else { return }
     attachment = expense.attachment
     currency = expense.currency
     amount =
       Decimal(Money.minor(expense.amountMinor) ?? 0) / Decimal(Money.factor(expense.currency))
     category = expense.category
-    coversReturn = expense.title == expense.category.returnTitle
+    coversReturn = partner != nil || expense.title == expense.category.returnTitle
     paidBy = expense.paidBy
     splitWith = Set(expense.splitWith)
     isShared = !(expense.splitWith == [expense.paidBy] && expense.paidBy == you)
@@ -75,8 +79,8 @@ import TripSplitDomain
   /// Travel booked before you go that might be a return ticket: a flight, train or coach, not a
   /// taxi, deposit or gear.
   public var asksReturn: Bool {
-    guard category.returnTitle != nil, let attachment, attachment.kind == .leg else { return false }
-    return trip?.legs.first { $0.id == attachment.id }?.kind == .outbound
+    guard let trip, let attachment else { return false }
+    return trip.asksReturn(category, on: attachment)
   }
 
   private var isReturnTicket: Bool { asksReturn && coversReturn }
@@ -257,7 +261,8 @@ import TripSplitDomain
 
   // MARK: Save
 
-  /// Queues the spend for the phone and returns what the receipt prints.
+  /// Queues the spend for the phone and returns what the receipt prints. A return ticket queues
+  /// both halves, and one changed to one way drops its half on the way home.
   @discardableResult public func save() -> Receipt? {
     guard canSave, let trip, let attachment else { return nil }
     let minor = amountMinor
@@ -268,8 +273,14 @@ import TripSplitDomain
       attachment: attachment, title: title, category: category, amountMinor: String(minor),
       currency: currency, status: status,
       paidOn: status == .paid ? trip.date(for: attachment) : nil, paidBy: payer,
-      splitWith: sharers.sorted(), conversion: estimate.conversion)
-    model.send(.saveExpense(tripID: trip.id, expense: expense))
+      splitWith: sharers.sorted(), conversion: estimate.conversion,
+      returnPairId: isReturnTicket ? editing?.returnPairId : nil)
+    if isReturnTicket, let halves = trip.splitReturn(expense, back: partner) {
+      for half in halves { model.send(.saveExpense(tripID: trip.id, expense: half)) }
+    } else {
+      model.send(.saveExpense(tripID: trip.id, expense: expense))
+      if let partner { model.send(.deleteExpense(tripID: trip.id, expenseID: partner.id)) }
+    }
     return receipt(expense, in: trip, rateDate: estimate.date)
   }
 
@@ -365,17 +376,6 @@ extension ExpenseCategory {
   public static let watchOrder: [ExpenseCategory] = [
     .food, .coffee, .transport, .activity, .shopping, .stay, .taxi, .flight, .train, .other,
   ]
-
-  /// What a ticket that covers getting home too is called, for travel there and back: flights,
-  /// trains and coaches. Nil for taxis, deposits, gear and the rest, which are one way.
-  public var returnTitle: String? {
-    switch self {
-    case .flight: "Return flight"
-    case .train: "Return train"
-    case .transport: "Return journey"
-    default: nil
-    }
-  }
 
   /// A one-word label for the watch's category grid and receipt.
   public var watchTitle: String {

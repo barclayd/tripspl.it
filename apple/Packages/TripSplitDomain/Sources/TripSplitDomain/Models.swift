@@ -199,7 +199,8 @@ public struct Expense: Codable, Identifiable, Hashable, Sendable {
     paidOn: String? = nil,
     paidBy: String,
     splitWith: [String],
-    conversion: Conversion? = nil
+    conversion: Conversion? = nil,
+    returnPairId: String? = nil
   ) {
     self.id = id
     self.revision = revision
@@ -213,6 +214,7 @@ public struct Expense: Codable, Identifiable, Hashable, Sendable {
     self.paidBy = paidBy
     self.splitWith = splitWith
     self.conversion = conversion
+    self.returnPairId = returnPairId
   }
   public enum Status: String, Codable, CaseIterable, Sendable { case planned, paid }
   public var id: String = UUID().uuidString
@@ -227,6 +229,9 @@ public struct Expense: Codable, Identifiable, Hashable, Sendable {
   public var paidBy: String
   public var splitWith: [String]
   public var conversion: Conversion?
+  /// Shared by both halves of a return ticket, one on the way out and one on the way home, so
+  /// they edit and delete together. See `TripSnapshot.returnHalves(of:)`.
+  public var returnPairId: String?
   public func homeMinor(in currency: String) -> Int64? {
     Money.minor(self.currency == currency ? amountMinor : conversion?.homeAmountMinor)
   }
