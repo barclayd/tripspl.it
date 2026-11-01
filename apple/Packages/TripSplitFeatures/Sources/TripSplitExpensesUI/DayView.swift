@@ -75,7 +75,8 @@ public struct DayView: View {
         if closed { noticeNew(items.map(\.id)) }
       }
       .readVerticalRail($usesVerticalRail)
-      .taskRail()
+      // Navigation-led on the phone, so the tabs stay when the rail's squeezed; task-led standing in a tent.
+      .taskRail(tent)
     }
   }
 

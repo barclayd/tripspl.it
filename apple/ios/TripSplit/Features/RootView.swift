@@ -20,6 +20,10 @@ struct RootView: View {
   @State private var landscape = false
   /// Whether the bar runs down the side as the Duo's rail, which then carries the screen's actions.
   @State private var railed = false
+  /// Where the fold runs while the Duo's half open.
+  @State private var fold: CGRect?
+  /// `--fold` stands in for the Duo half open, as the simulator can't fold.
+  @State private var debugFold: CGRect?
   @State private var deleting: TripSnapshot?
   @State private var clearing: Attachment?
   var body: some View {
@@ -61,7 +65,9 @@ struct RootView: View {
               TripDetailView(tripID: trip.id, compact: true)
             }
           }
-          .navigationSplitViewColumnWidth(min: 300, ideal: 340, max: 360)
+          // Half open, the leading pane runs right up to the fold.
+          .navigationSplitViewColumnWidth(
+            min: bookFold?.minX ?? 300, ideal: bookFold?.minX ?? 340, max: bookFold?.minX ?? 360)
           .navigationTitle("")
           // Each pane draws its own header, so the bar only shows to hold the rail.
           .toolbar(railed ? .automatic : .hidden, for: .navigationBar)
@@ -92,6 +98,8 @@ struct RootView: View {
                   "Select a trip", systemImage: "airplane")
               }
             }
+            // The pane beside starts past the fold, so nothing to tap sits in the curve.
+            .safeAreaPadding(.leading, sidebarShown ? bookFold?.width ?? 0 : 0)
             // Picking a trip in the sidebar slides it up into the pane beside.
             .animation(twoPane ? .smooth(duration: 0.5) : nil, value: model.selectedTripID)
             .pinsBar(twoPane)
@@ -166,6 +174,14 @@ struct RootView: View {
           }
         }
         .navigationSplitViewStyle(.balanced)
+        .readFold($fold)
+        #if DEBUG
+          .onGeometryChange(for: CGSize.self) { $0.size } action: { size in
+            guard ProcessInfo.processInfo.arguments.contains("--fold") else { return }
+            debugFold = CGRect(x: size.width / 2 - 23, y: 0, width: 46, height: size.height)
+          }
+        #endif
+        .animation(.smooth, value: bookFold)
         .toolbar(removing: .sidebarToggle)
         // Two panes only when unfolded on its side; otherwise one, capped in width.
         .environment(\.horizontalSizeClass, twoPane ? .regular : .compact)
@@ -315,6 +331,15 @@ struct RootView: View {
 extension RootView {
   /// Unfolded on its side: the Duo's two panes, or an iPad in landscape.
   private var twoPane: Bool { sizeClass == .regular && landscape }
+
+  /// Both panes showing, rather than a Day full screen.
+  private var sidebarShown: Bool { twoPane && !(model.fullScreenDay && model.selectedAttachment != nil) }
+
+  /// Half open like a book, the fold runs down between the panes and becomes the divider.
+  private var bookFold: CGRect? {
+    guard twoPane, let fold = debugFold ?? fold, fold.height > fold.width else { return nil }
+    return fold
+  }
 
   /// On the rail, "+" adds to the trip on screen rather than starting a new one.
   private var addsToTrip: Bool { railed && model.selectedTab == 0 && model.selectedTrip != nil }

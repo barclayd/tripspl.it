@@ -446,9 +446,23 @@ extension View {
   @ViewBuilder public func trailingSheet() -> some View {
     if #available(iOS 27.1, *) { self.presentationPlacement(.trailing) } else { self }
   }
-  @ViewBuilder package func taskRail() -> some View {
+  /// When a Live Activity squeezes the rail, a task-led screen keeps its actions and shrinks the
+  /// tab bar; a navigation-led one keeps the tabs and sends its actions to "…" first.
+  @ViewBuilder package func taskRail(_ taskLed: Bool = true) -> some View {
     if #available(iOS 27.1, *) {
-      self.toolbarVerticalCompressionBehavior(.prefersToolbarItems)
+      self.toolbarVerticalCompressionBehavior(taskLed ? .prefersToolbarItems : .prefersTabBar)
+    } else {
+      self
+    }
+  }
+  /// Where the fold runs while the Duo's half open, in this view's coordinates; nil while it's flat or closed.
+  @ViewBuilder public func readFold(_ binding: Binding<CGRect?>) -> some View {
+    if #available(iOS 27.1, *) {
+      self.onGeometryChange(for: CGRect?.self) { proxy in
+        proxy.reservedRegions(kind: .division).first(where: \.isActive)?.frame
+      } action: {
+        binding.wrappedValue = $0
+      }
     } else {
       self
     }
