@@ -28,7 +28,7 @@ extension Font {
 }
 
 /// How a complication is being drawn right now: tinted faces swap colour for the system tint and
-/// flags for country codes; with privacy on, Always On hides amounts and dims fills to outlines.
+/// draw flags in its shades; with privacy on, Always On hides amounts and dims fills.
 struct GlanceLook {
   var accented: Bool
   var hidden: Bool
@@ -63,20 +63,36 @@ extension WatchGlance {
   }
 }
 
-/// A flag, or its two-letter country code on a tinted face where emoji can't take the tint.
+/// A flag. A tinted face fills a text emoji with the tint, so there it's drawn as an image the
+/// system can desaturate and tint instead; the two-letter country code stands in without a flag.
 struct FlagMark: View {
   let place: WatchGlance.Place
   let size: CGFloat
   @Environment(\.widgetRenderingMode) private var mode
+  @Environment(\.displayScale) private var displayScale
 
   var body: some View {
-    if mode == .accented || place.flag.isEmpty {
-      Text(place.code)
-        .font(.glance(size * 0.62, .heavy))
-        .widgetAccentable()
-    } else {
+    if place.flag.isEmpty {
+      code
+    } else if mode != .accented {
       Text(place.flag).font(.system(size: size))
+    } else if let image = tintable {
+      image.widgetAccentedRenderingMode(.accentedDesaturated)
+    } else {
+      code
     }
+  }
+
+  private var code: some View {
+    Text(place.code)
+      .font(.glance(size * 0.62, .heavy))
+      .widgetAccentable()
+  }
+
+  private var tintable: Image? {
+    let renderer = ImageRenderer(content: Text(place.flag).font(.system(size: size)))
+    renderer.scale = displayScale
+    return renderer.cgImage.map { Image(decorative: $0, scale: displayScale) }
   }
 }
 
@@ -106,31 +122,6 @@ struct Well: View {
       Circle().fill(Ink.well)
     } else {
       AccessoryWidgetBackground().clipShape(.circle)
-    }
-  }
-}
-
-/// A segmented gauge: the track, then the filled segments in colour, or as outlines when dimmed.
-struct Ring: View {
-  let layout: SegmentedArc.Layout
-  let count: Int
-  let filled: Int
-  let fill: Color
-  var track: Color = Ink.track
-  var outlined = false
-
-  var body: some View {
-    ZStack {
-      SegmentedArc(layout, count: count).fill(track)
-      if outlined {
-        SegmentedArc(layout, count: count, segments: 0..<filled)
-          .stroke(fill.opacity(0.7), lineWidth: 0.75)
-          .widgetAccentable()
-      } else {
-        SegmentedArc(layout, count: count, segments: 0..<filled)
-          .fill(fill)
-          .widgetAccentable()
-      }
     }
   }
 }

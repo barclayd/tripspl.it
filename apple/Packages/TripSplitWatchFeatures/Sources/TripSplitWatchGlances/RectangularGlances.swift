@@ -110,10 +110,9 @@ struct CountdownRectangular: View {
       Text(countdown.line)
         .font(.glance(17))
         .foregroundStyle(.white)
-        .lineLimit(1)
+        .lineLimit(2)
         .minimumScaleFactor(0.6)
       Spacer(minLength: 0)
-      LinearGauge(value: countdown.fraction, fill: WatchTheme.amber, outlined: look.hidden)
     }
     .modifier(Backplate(look: look))
     .accessibilityElement(children: .ignore)

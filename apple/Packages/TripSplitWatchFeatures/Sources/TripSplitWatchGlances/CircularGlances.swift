@@ -3,7 +3,8 @@ import TripSplitWatchDesign
 import TripSplitWatchModel
 import WidgetKit
 
-// G5 · Circular set. Every gauge is segmented; text stays within five characters.
+// G5 · Circular set. Rings are the system's gauges, so they match the weight and position of
+// Apple's own; text stays within five characters.
 
 /// The amount in a ring: 14.5 on the grid, 13 once it runs to five characters.
 private func ringText(_ text: String, _ scale: CGFloat) -> some View {
@@ -15,6 +16,13 @@ private func ringText(_ text: String, _ scale: CGFloat) -> some View {
     .frame(width: 34 * scale)
 }
 
+extension View {
+  /// Colours a system gauge, dimmed while Always On hides amounts, and gives it the face's tint.
+  fileprivate func gaugeTint(_ colour: Color, _ look: GlanceLook) -> some View {
+    tint(colour.opacity(look.hidden ? 0.5 : 1)).widgetAccentable()
+  }
+}
+
 /// Budget left · flag: today's flag, ring empties as you spend. Green, amber under 25%, red at 0.
 struct BudgetFlagCircular: View {
   let remaining: WatchGlance.Remaining
@@ -23,8 +31,9 @@ struct BudgetFlagCircular: View {
 
   var body: some View {
     Dial { scale in
-      BudgetRing(remaining: remaining, look: look)
-      FlagMark(place: place, size: 19 * scale)
+      BudgetRing(remaining: remaining, look: look) {
+        FlagMark(place: place, size: 19 * scale)
+      }
     }
     .accessibilityElement()
     .accessibilityLabel("\(remaining.percent) of today's budget left")
@@ -38,24 +47,29 @@ struct BudgetPercentCircular: View {
 
   var body: some View {
     Dial { scale in
-      BudgetRing(remaining: remaining, look: look)
-      ringText(remaining.percent, scale)
+      BudgetRing(remaining: remaining, look: look) {
+        ringText(remaining.percent, scale)
+      }
     }
     .accessibilityElement()
     .accessibilityLabel(remaining.left < 0 ? "Over budget" : "\(remaining.percent) of budget left")
   }
 }
 
-private struct BudgetRing: View {
+/// A closed ring that empties as you spend, in the budget's level colour.
+private struct BudgetRing<Centre: View>: View {
   let remaining: WatchGlance.Remaining
   let look: GlanceLook
+  @ViewBuilder let centre: () -> Centre
 
   var body: some View {
-    let colour = Ink.level(remaining.level)
-    Ring(
-      layout: .closed, count: 12, filled: SegmentedArc.filled(remaining.fraction, of: 12),
-      fill: colour, track: remaining.level == .out ? colour.opacity(0.35) : Ink.track,
-      outlined: look.hidden)
+    Gauge(value: remaining.fraction) {
+      EmptyView()
+    } currentValueLabel: {
+      centre()
+    }
+    .gaugeStyle(.accessoryCircularCapacity)
+    .gaugeTint(Ink.level(remaining.level), look)
   }
 }
 
@@ -68,20 +82,20 @@ struct BudgetAmountCircular: View {
 
   var body: some View {
     Dial { scale in
-      let colour = Ink.level(remaining.level)
-      Ring(
-        layout: .open, count: 10, filled: SegmentedArc.filled(remaining.fraction, of: 10),
-        fill: colour, track: remaining.level == .out ? colour.opacity(0.35) : Ink.track,
-        outlined: look.hidden)
-      ringText(look.amount(remaining.amount, glance), scale)
-      FlagMark(place: place, size: 9 * scale).at(25, 44.5, scale)
+      Gauge(value: remaining.fraction) {
+        FlagMark(place: place, size: 10 * scale)
+      } currentValueLabel: {
+        ringText(look.amount(remaining.amount, glance), scale)
+      }
+      .gaugeStyle(.accessoryCircular)
+      .gaugeTint(Ink.level(remaining.level), look)
     }
     .accessibilityElement()
     .accessibilityLabel(look.hidden ? "Budget left" : "\(remaining.amount) left")
   }
 }
 
-/// Total spent: open range from 0 to the trip budget in pink, with a red end cap once over.
+/// Total spent: open range from 0 to the trip budget in pink, turning red once over.
 struct TotalSpentCircular: View {
   let total: WatchGlance.Total
   let glance: WatchGlance
@@ -89,45 +103,46 @@ struct TotalSpentCircular: View {
 
   var body: some View {
     Dial { scale in
-      Ring(
-        layout: .open, count: 10, filled: SegmentedArc.filled(min(total.fraction, 1), of: 10),
-        fill: WatchTheme.accentText, outlined: look.hidden)
-      ringText(look.amount(total.amount, glance), scale)
-      Group {
-        Text("0").at(17, 44.2, scale)
-        Text(look.hidden ? "•••" : total.budgetLabel).at(33, 44.2, scale)
+      Gauge(value: min(total.fraction, 1)) {
+        EmptyView()
+      } currentValueLabel: {
+        ringText(look.amount(total.amount, glance), scale)
+      } minimumValueLabel: {
+        bound("0", scale)
+      } maximumValueLabel: {
+        bound(look.hidden ? "•••" : total.budgetLabel, scale)
       }
-      .font(.glance(6.5 * scale))
-      .foregroundStyle(WatchTheme.ink2)
-      if total.isOver {
-        Circle()
-          .fill(WatchTheme.bad)
-          .frame(width: 5.2 * scale, height: 5.2 * scale)
-          .widgetAccentable()
-          .at(39.1, 39.1, scale)
-      }
+      .gaugeStyle(.accessoryCircular)
+      .gaugeTint(total.isOver ? WatchTheme.bad : WatchTheme.accentText, look)
     }
     .accessibilityElement()
     .accessibilityLabel(
       look.hidden ? "Total spent" : "\(total.amount) spent of \(total.budgetLabel), \(total.percent)")
   }
+
+  private func bound(_ text: String, _ scale: CGFloat) -> some View {
+    Text(text)
+      .font(.glance(6.5 * scale))
+      .foregroundStyle(WatchTheme.ink2)
+  }
 }
 
-/// Where you are: one segment per trip day, the days so far in pink and "4/8" in the gap.
+/// Where you are: today's flag, the ring marking the day of the trip and "4/8" in the gap.
 struct WhereYouAreCircular: View {
   let today: WatchGlance.Today
   let look: GlanceLook
 
   var body: some View {
     Dial { scale in
-      Ring(
-        layout: .open, count: today.days, filled: today.day, fill: WatchTheme.accentText,
-        outlined: look.hidden)
-      FlagMark(place: today.place, size: 19 * scale)
-      Text(today.progress)
-        .font(.glance(8 * scale, .heavy))
-        .foregroundStyle(.white)
-        .at(25, 44.7, scale)
+      Gauge(value: Double(min(today.day, today.days)), in: 0...Double(max(today.days, 1))) {
+        Text(today.progress)
+          .font(.glance(8 * scale, .heavy))
+          .foregroundStyle(.white)
+      } currentValueLabel: {
+        FlagMark(place: today.place, size: 17 * scale)
+      }
+      .gaugeStyle(.accessoryCircular)
+      .gaugeTint(WatchTheme.accentText, look)
     }
     .accessibilityElement()
     .accessibilityLabel("\(today.place.name), day \(today.day) of \(today.days)")
@@ -158,27 +173,26 @@ struct ConvertCircular: View {
   }
 }
 
-/// Countdown: amber open ring that fills as departure nears, destination flag in the gap.
+/// Countdown: the next trip's flag over the days to go. No ring, as days away has nothing to
+/// fill towards.
 struct CountdownCircular: View {
   let countdown: WatchGlance.Countdown
 
   var body: some View {
     Dial { scale in
-      Ring(
-        layout: .open, count: 10, filled: SegmentedArc.filled(countdown.fraction, of: 10),
-        fill: WatchTheme.amber)
-      VStack(spacing: -1 * scale) {
-        Text(countdown.days, format: .number)
-          .font(.glance(14.5 * scale))
-          .foregroundStyle(.white)
-        Text(countdown.unit)
-          .font(.glance(6.5 * scale))
-          .foregroundStyle(WatchTheme.ink2)
-      }
-      .lineLimit(1)
-      .minimumScaleFactor(0.5)
-      .padding(.top, 1 * scale)
-      FlagMark(place: countdown.place, size: 9 * scale).at(25, 44.5, scale)
+      FlagMark(place: countdown.place, size: 13 * scale).at(25, 14.5, scale)
+      Text(countdown.days, format: .number)
+        .font(.glance(16 * scale))
+        .foregroundStyle(.white)
+        .lineLimit(1)
+        .minimumScaleFactor(0.5)
+        .frame(width: 36 * scale)
+        .at(25, 28.5, scale)
+      Text(countdown.unit)
+        .font(.glance(6.5 * scale, .heavy))
+        .foregroundStyle(WatchTheme.amber)
+        .widgetAccentable()
+        .at(25, 39, scale)
     }
     .accessibilityElement()
     .accessibilityLabel(countdown.line)
