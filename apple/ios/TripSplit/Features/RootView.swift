@@ -22,8 +22,6 @@ struct RootView: View {
   @State private var railed = false
   /// Where the fold runs while the Duo's half open.
   @State private var fold: CGRect?
-  /// `--fold` stands in for the Duo half open, as the simulator can't fold.
-  @State private var debugFold: CGRect?
   @State private var deleting: TripSnapshot?
   @State private var clearing: Attachment?
   var body: some View {
@@ -77,6 +75,8 @@ struct RootView: View {
               convertItem { model.showConverter = true }
             }
           }
+          // Only takes effect on the sidebar column's content, not on the split view itself.
+          .toolbar(removing: .sidebarToggle)
         } detail: {
           NavigationStack {
             ZStack {
@@ -175,14 +175,7 @@ struct RootView: View {
         }
         .navigationSplitViewStyle(.balanced)
         .readFold($fold)
-        #if DEBUG
-          .onGeometryChange(for: CGSize.self) { $0.size } action: { size in
-            guard ProcessInfo.processInfo.arguments.contains("--fold") else { return }
-            debugFold = CGRect(x: size.width / 2 - 23, y: 0, width: 46, height: size.height)
-          }
-        #endif
         .animation(.smooth, value: bookFold)
-        .toolbar(removing: .sidebarToggle)
         // Two panes only when unfolded on its side; otherwise one, capped in width.
         .environment(\.horizontalSizeClass, twoPane ? .regular : .compact)
       }
@@ -337,7 +330,7 @@ extension RootView {
 
   /// Half open like a book, the fold runs down between the panes and becomes the divider.
   private var bookFold: CGRect? {
-    guard twoPane, let fold = debugFold ?? fold, fold.height > fold.width else { return nil }
+    guard twoPane, let fold, fold.height > fold.width else { return nil }
     return fold
   }
 
