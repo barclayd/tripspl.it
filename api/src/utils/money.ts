@@ -73,3 +73,9 @@ export function settle(balances: Record<string, string>): Ledger['settlements'] 
   assert(!debtors.length && !creditors.length, 'UNBALANCED', 'Balances must sum to zero.');
   return result;
 }
+/** Money for people to read, e.g. "£66" or "£66.50", dropping the pence when there are none. */
+export function display(amountMinor: string, currency: string): string {
+  const digits = currencyDigits(currency), value = minor(amountMinor), scale = 10n ** BigInt(digits);
+  const fraction = value % scale === 0n ? 0 : digits;
+  return new Intl.NumberFormat('en-GB', { style: 'currency', currency, minimumFractionDigits: fraction, maximumFractionDigits: fraction }).format(Number(value) / Number(scale));
+}

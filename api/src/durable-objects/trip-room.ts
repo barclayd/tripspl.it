@@ -1,10 +1,12 @@
 import { DurableObject } from 'cloudflare:workers';
-import type { Expense, Invitation, LiveHint, Operation, OperationResult, Repayment, Success, SyncRequest, SyncResponse, Traveller, TripSnapshot } from '../types/contract';
+import type { Expense, Invitation, LiveHint, NudgeResult, Operation, OperationResult, Repayment, Success, SyncRequest, SyncResponse, Traveller, TripSnapshot } from '../types/contract';
 import { AppError, assert, errorResponse } from '../utils/errors';
 import { canonical, randomToken, sha256 } from '../utils/crypto';
 import { normalizeConversion, normalizeRecords } from '../services/fx';
 import { parse, snapshotSchema, syncSchema, validateTrip } from '../schemas/trip';
 import { authenticate, registerTarget, type Principal } from '../services/auth';
+import type { PushMessage } from '../services/push';
+import { display, ledger } from '../utils/money';
 
 type Meta = Omit<TripSnapshot, 'travellers' | 'stops' | 'days' | 'legs' | 'expenses' | 'repayments' | 'currentTravellerId' | 'role'>;
 type TripRow = { data: string; revision: number; epoch: string; recovery_epoch: number; purged: number };
@@ -19,8 +21,10 @@ export type RoomAction =
   | { type: 'read' } | { type: 'create'; operationId: string; trip: TripSnapshot }
   | { type: 'sync'; request: SyncRequest } | { type: 'invite'; travellerId: string }
   | { type: 'accept'; inviteId: string; token: string } | { type: 'revokeInvite'; inviteId: string }
-  | { type: 'removeMember'; travellerId: string } | { type: 'delete' };
-type RoomValue = TripSnapshot | SyncResponse | Invitation | Success;
+  | { type: 'removeMember'; travellerId: string } | { type: 'delete' } | { type: 'nudge'; travellerId: string };
+/** A nudge, and who to buzz. The worker sends the push so APNs latency stays out of the room. */
+export type Nudge = NudgeResult & { push: { userId: string; message: PushMessage } | null };
+type RoomValue = TripSnapshot | SyncResponse | Invitation | Success | Nudge;
 type RoomResult = { ok: true; value: RoomValue } | { ok: false; error: { status: number; code: string; message: string; retryable: boolean } };
 
 export class TripRoom extends DurableObject<Env> {
@@ -39,6 +43,7 @@ export class TripRoom extends DurableObject<Env> {
         CREATE TABLE IF NOT EXISTS invites(id TEXT PRIMARY KEY, traveller_id TEXT NOT NULL, token_hash TEXT NOT NULL, expires_at INTEGER NOT NULL, revoked INTEGER NOT NULL DEFAULT 0, accepted_by TEXT);
         CREATE TABLE IF NOT EXISTS operation_receipts(id TEXT PRIMARY KEY, hash TEXT NOT NULL, user_id TEXT NOT NULL, revision INTEGER NOT NULL);
         CREATE TABLE IF NOT EXISTS changes(revision INTEGER PRIMARY KEY, operation_id TEXT, actor TEXT NOT NULL, type TEXT NOT NULL, entity_id TEXT NOT NULL, before_json TEXT, after_json TEXT, created_at TEXT NOT NULL);
+        CREATE TABLE IF NOT EXISTS nudges(sender TEXT NOT NULL, recipient TEXT NOT NULL, day TEXT NOT NULL, created_at INTEGER NOT NULL, PRIMARY KEY(sender,recipient,day));
         CREATE TABLE IF NOT EXISTS directory_outbox(user_id TEXT PRIMARY KEY, trip_id TEXT NOT NULL, revision INTEGER NOT NULL, active INTEGER NOT NULL, updated_at TEXT NOT NULL);
       `);
     });
@@ -58,6 +63,7 @@ export class TripRoom extends DurableObject<Env> {
         case 'revokeInvite': await this.revokeInvite(user.id, action.inviteId); value = { ok: true }; break;
         case 'removeMember': await this.removeMember(user.id, action.travellerId); value = { ok: true }; break;
         case 'delete': await this.deleteTrip(user.id); value = { ok: true }; break;
+        case 'nudge': value = this.nudge(user.id, action.travellerId); break;
       }
       return { ok: true, value };
     } catch (error) {
@@ -359,13 +365,41 @@ export class TripRoom extends DurableObject<Env> {
     await this.env.DB.prepare('DELETE FROM user_trip_targets WHERE trip_id=?').bind(tripId).run();
     this.scheduleMaintenance(); await this.notify();
   }
+  /**
+   * Nudges a traveller who owes the sender, at most once per pair per trip day. A traveller with no
+   * account on the trip can't be buzzed, so that isn't recorded and doesn't use up the day.
+   */
+  nudge(userId: string, travellerId: string): Nudge {
+    return this.ctx.storage.transactionSync(() => {
+      const sender = this.member(userId), trip = this.snapshot(userId);
+      const traveller = trip.travellers.find(t => t.id === travellerId);
+      assert(traveller && !traveller.archived && travellerId !== sender.traveller_id, 'TRAVELLER', 'Choose someone else on this trip.');
+      const owed = ledger(trip).settlements.find(s => s.from === travellerId && s.to === sender.traveller_id);
+      assert(owed, 'NOTHING_OWED', `${traveller.name} doesn't owe you anything right now.`, 409);
+      const nudgedOn = civilDate(trip.timeZone, Date.now());
+      const recipient = this.ctx.storage.sql.exec<{ user_id: string }>('SELECT user_id FROM members WHERE traveller_id=? AND active=1', travellerId).toArray()[0];
+      if (!recipient) return { status: 'notJoined', nudgedOn, push: null };
+      const recorded = this.ctx.storage.sql.exec('INSERT INTO nudges(sender,recipient,day,created_at) VALUES(?,?,?,?) ON CONFLICT DO NOTHING RETURNING day', sender.traveller_id, travellerId, nudgedOn, Date.now()).toArray();
+      assert(recorded.length, 'NUDGE_LIMIT', `You've already nudged ${traveller.name} today.`, 429);
+      this.ctx.storage.sql.exec('DELETE FROM nudges WHERE day<?', civilDate(trip.timeZone, Date.now() - 7 * 86_400_000));
+      const name = trip.travellers.find(t => t.id === sender.traveller_id)?.name ?? 'Someone';
+      return {
+        status: 'sent', nudgedOn,
+        push: { userId: recipient.user_id, message: {
+          title: `${name} nudged you`, body: `You owe ${name} ${display(owed.amountMinor, trip.homeCurrency)} for ${trip.name}.`,
+          category: 'tripsplit.nudge', threadId: trip.id, collapseId: `nudge.${trip.id}.${sender.traveller_id}`,
+          data: { trip: trip.id, traveller: sender.traveller_id },
+        } },
+      };
+    });
+  }
   /** Empties the trip but keeps receipts and tombstones, so restored devices can't bring it back. */
   private purge(meta: Meta): void {
     meta.name = 'Deleted trip'; meta.archived = true; meta.budgetMinor = '0';
     meta.startsOn = '1970-01-01'; meta.timeZone = 'UTC'; meta.homeCurrency = 'GBP'; meta.ownerTravellerId = 'deleted';
     this.ctx.storage.sql.exec('UPDATE entities SET data=NULL,deleted=1,revision=revision+1');
     for (const table of TABLES) this.ctx.storage.sql.exec(`DELETE FROM ${table}`);
-    this.ctx.storage.sql.exec('DELETE FROM changes'); this.ctx.storage.sql.exec('DELETE FROM invites');
+    this.ctx.storage.sql.exec('DELETE FROM changes'); this.ctx.storage.sql.exec('DELETE FROM invites'); this.ctx.storage.sql.exec('DELETE FROM nudges');
   }
   async removeAccount(userId: string): Promise<void> {
     await this.armMaintenance();
@@ -503,4 +537,10 @@ export class TripRoom extends DurableObject<Env> {
   }
   override async webSocketClose(socket: WebSocket, code: number): Promise<void> { socket.close(code); }
   override async webSocketError(socket: WebSocket): Promise<void> { socket.close(1011, 'Refresh required'); }
+}
+
+/** The civil date (YYYY-MM-DD) at a moment in an IANA time zone. */
+function civilDate(timeZone: string, at: number): string {
+  const parts = Object.fromEntries(new Intl.DateTimeFormat('en-US', { timeZone, year: 'numeric', month: '2-digit', day: '2-digit' }).formatToParts(at).map(part => [part.type, part.value]));
+  return `${parts.year}-${parts.month}-${parts.day}`;
 }

@@ -368,6 +368,42 @@
         ],
         "type": "object"
       },
+      "DeviceRegistration": {
+        "additionalProperties": false,
+        "properties": {
+          "environment": {
+            "enum": [
+              "sandbox",
+              "production"
+            ],
+            "type": "string"
+          },
+          "token": {
+            "description": "Hex APNs device token.",
+            "pattern": "^[a-f0-9]{64,200}$",
+            "type": "string"
+          }
+        },
+        "required": [
+          "token",
+          "environment"
+        ],
+        "type": "object"
+      },
+      "DeviceToken": {
+        "additionalProperties": false,
+        "properties": {
+          "token": {
+            "description": "Hex APNs device token.",
+            "pattern": "^[a-f0-9]{64,200}$",
+            "type": "string"
+          }
+        },
+        "required": [
+          "token"
+        ],
+        "type": "object"
+      },
       "EmptyRequest": {
         "additionalProperties": false,
         "properties": {},
@@ -664,6 +700,38 @@
         "description": "Exact nonnegative integer minor-unit string, at most 999999999999. Never a JSON number.",
         "pattern": "^(0|[1-9]\\d{0,11})$",
         "type": "string"
+      },
+      "NudgeRequest": {
+        "additionalProperties": false,
+        "properties": {
+          "travellerId": {
+            "$ref": "#/components/schemas/ID"
+          }
+        },
+        "required": [
+          "travellerId"
+        ],
+        "type": "object"
+      },
+      "NudgeResult": {
+        "properties": {
+          "nudgedOn": {
+            "$ref": "#/components/schemas/CivilDate"
+          },
+          "status": {
+            "description": "`notJoined` when the traveller has no TripSplit account on this trip, so nobody can be buzzed. It is not recorded.",
+            "enum": [
+              "sent",
+              "notJoined"
+            ],
+            "type": "string"
+          }
+        },
+        "required": [
+          "status",
+          "nudgedOn"
+        ],
+        "type": "object"
       },
       "NullableCivilDate": {
         "description": "Valid Gregorian civil date from 1900-01-01 through 2200-12-31; no time zone conversion.",
@@ -2085,6 +2153,86 @@
         ]
       }
     },
+    "/v1/me/devices": {
+      "delete": {
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DeviceToken"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Success"
+                }
+              }
+            },
+            "description": "Device no longer notified for this account. Call before signing out."
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/APIError"
+                }
+              }
+            },
+            "description": "TripSplit error with a stable code and retryability."
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      },
+      "post": {
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DeviceRegistration"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Success"
+                }
+              }
+            },
+            "description": "Device registered for this account's notifications. Registering a token again moves it to this account; each account keeps its 10 most recent devices."
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/APIError"
+                }
+              }
+            },
+            "description": "TripSplit error with a stable code and retryability."
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
     "/v1/trips": {
       "get": {
         "parameters": [
@@ -2479,6 +2627,57 @@
               }
             },
             "description": "Membership removed."
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/APIError"
+                }
+              }
+            },
+            "description": "TripSplit error with a stable code and retryability."
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/v1/trips/{tripId}/nudges": {
+      "post": {
+        "parameters": [
+          {
+            "in": "path",
+            "name": "tripId",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/ID"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/NudgeRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NudgeResult"
+                }
+              }
+            },
+            "description": "Reminds a traveller who owes you, with a push to their devices. Once per pair per trip day (NUDGE_LIMIT 429 after); NOTHING_OWED 409 when they owe you nothing."
           },
           "default": {
             "content": {

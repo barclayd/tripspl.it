@@ -76,6 +76,8 @@ Authentication deliberately fails closed when required Apple configuration is mi
 | `APPLE_AUDIENCE` | Enabled native Sign in with Apple bundle ID, `it.tripspl.TripSplit` |
 | `APPLE_TEAM_ID`, `APPLE_KEY_ID` | Actual Apple team and Sign in with Apple key identifiers |
 | `APPLE_PRIVATE_KEY` | PKCS#8 `.p8` signing key; a Worker secret |
+| `APNS_KEY_ID` | APNs authentication key ID for nudge pushes, or empty to record nudges without pushing |
+| `APNS_PRIVATE_KEY` | PKCS#8 `.p8` APNs key; a Worker secret, only needed when `APNS_KEY_ID` differs from `APPLE_KEY_ID` (a key with both Sign in with Apple and APNs enabled is reused) |
 | `SESSION_ENCRYPTION_KEY` | Base64 of 32 random bytes for AES-256-GCM encryption of Apple grants; a Worker secret |
 | `INVITE_ORIGIN` | Provisioned HTTPS universal-link origin, or empty for code-only sharing |
 | `APPLE_APP_ID` | Actual `TEAMID.bundle.identifier` for the association file; never a guessed ID |
@@ -95,6 +97,8 @@ The HTTPS invitation origin is `https://api.tripspl.it`, with AASA app ID `R2GGK
 All endpoints are under `/v1` except the public invitation landing page and association file. Health, Apple challenge/sign-in, refresh and FX do not require a TripSplit access token. Trip data, sync, invitations and account deletion require one. Native WebSockets send the bearer token in the upgrade request's `Authorization` header. Do not put access or refresh tokens in URLs.
 
 A challenge's raw random nonce is returned once. Native code hashes it with SHA-256 hex for Apple's request. The API validates Apple's RSA signature, issuer, audience, expiry and nonce, consumes the challenge once, exchanges the code and verifies the exchanged token's identity. Apple refresh grants are encrypted with account-bound authenticated data. Access/refresh tokens are random opaque secrets stored only as SHA-256 hashes. Access expires after 15 minutes, refresh after 30 days; refresh rotates both credentials atomically. Every refresh revalidates the Apple grant and returned identity, so a revoked Apple authorization cannot keep rotating TripSplit sessions indefinitely. Provider outages remain retryable; invalid/revoked grants revoke local sessions. There is no email/name-based account matching.
+
+Nudges are limited to one per sender, recipient and trip day, and are pushed through APNs from the Worker after the response (`waitUntil`) so APNs latency never holds the room. The topic is `APPLE_AUDIENCE`; sandbox and production tokens go to their own APNs hosts. Migration `0002_devices.sql` adds `device_tokens` and must be applied before deploying nudges.
 
 Limits are explicit: 1 MiB request bodies, 50 ordered operations per sync request, 40 travellers, 30 stops, 400 days, 100 travel legs, 10,000 combined expenses/repayments per trip, and 500 known trip targets per account. `/trips` returns **one complete snapshot per page** to bound memory at maximum trip size; continue `nextCursor` until null, including empty pages caused by removed memberships. Auth endpoints allow 30 requests/IP/minute, public FX 30/IP/minute, and authenticated requests 240/account/minute. Invalid and oversized requests do not apply operations. A large offline trip can be created with its itinerary/travellers and its financial records uploaded in bounded operation batches.
 
