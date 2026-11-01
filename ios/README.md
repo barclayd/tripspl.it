@@ -50,7 +50,7 @@ The initial itinerary is built with stable day/leg IDs and a user-visible trip t
 
 ## Remaining release checks
 
-- Verify signed-device Apple sign-in, token rotation/revocation, cloud multi-user invites and live collaboration; the supplied Apple key must authorise this app’s primary App ID.
+- Verify signed-device Apple sign-in, token rotation/revocation, cloud multi-user invites and live collaboration; the supplied Apple key is associated with this app’s primary App ID.
 - Verify real universal-link opening after Apple fetches the association file.
 - Device ergonomics and real Duo fold/hinge behavior; simulator coverage is not device verification.
 - Complete App Store privacy declarations before any public release. Internal TestFlight delivery is configured for Dan; installation and device acceptance remain separate checks.

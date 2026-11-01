@@ -60,7 +60,7 @@ Generate an encryption key locally with `openssl rand -base64 32` and store it d
 
 The config binds the provisioned D1 database and custom API domain. Apply new migrations before deploying code that requires them. `cf` derives Durable Object lifecycle migrations from `exports.TripRoom`; keep the SQLite declaration on subsequent deployments. Cron must remain enabled (`*/5 * * * *`) for account cleanup and expired auth data. Logs/traces are enabled, with automatic invocation logs disabled to avoid collecting request URLs; application logs contain event names/error classes, never tokens or financial payloads.
 
-The HTTPS invitation origin is `https://api.tripspl.it`, with AASA app ID `R2GGK3VN2C.it.tripspl.TripSplit`. Actual Apple sign-in, the key’s primary-App-ID association and universal-link opening still need signed-device verification. Deployed D1/DO point-in-time recovery has not been rehearsed. Local tests and a successful API deployment do not establish those checks.
+The HTTPS invitation origin is `https://api.tripspl.it`, with AASA app ID `R2GGK3VN2C.it.tripspl.TripSplit`. The key’s primary-App-ID association is verified in Apple Developer as `R2GGK3VN2C.it.tripspl.TripSplit`. Actual Apple sign-in and universal-link opening still need signed-device verification. Deployed D1/DO point-in-time recovery has not been rehearsed. Local tests and a successful API deployment do not establish those checks.
 
 ## API behavior
 
