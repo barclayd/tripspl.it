@@ -4,21 +4,25 @@ import TripSplitDomain
 
 /// A plain three-column keypad that types an amount in a currency's precision.
 package struct NumberPad: View {
-  package init(value: Binding<String>, currency: String, keyHeight: CGFloat = 48) {
+  package init(
+    value: Binding<String>, currency: String, keyHeight: CGFloat = 48, spacing: CGFloat = 8
+  ) {
     self._value = value
     self.currency = currency
     self.keyHeight = keyHeight
+    self.spacing = spacing
   }
   @Binding var value: String
   package var currency: String
   package var keyHeight: CGFloat
+  package var spacing: CGFloat
   @State private var rejected = 0
 
   private static let keys = ["1", "2", "3", "4", "5", "6", "7", "8", "9", ".", "0", "⌫"]
 
   package var body: some View {
     let decimals = Money.precision(currency) > 0
-    Grid(horizontalSpacing: 8, verticalSpacing: 8) {
+    Grid(horizontalSpacing: spacing, verticalSpacing: spacing) {
       ForEach(0..<4, id: \.self) { row in
         GridRow {
           ForEach(Self.keys[(row * 3)..<(row * 3 + 3)], id: \.self) { key in

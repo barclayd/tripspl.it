@@ -165,14 +165,7 @@ struct RootView: View {
       item: Binding(
         get: { model.inviteURL.map(InviteLink.init) }, set: { model.inviteURL = $0?.url })
     ) { invite in AcceptInviteView(url: invite.url) }
-    .overlay(alignment: .top) {
-      if let toast = model.toast {
-        Text(toast).font(.subheadline.weight(.semibold)).padding(.horizontal, 20).padding(
-          .vertical, 12
-        ).background(.regularMaterial, in: Capsule()).padding(.top, 8).allowsHitTesting(false)
-          .transition(.opacity)
-      }
-    }
+    .toast(model.toast)
     .alert(
       "Couldn’t complete that",
       isPresented: Binding(get: { model.error != nil }, set: { if !$0 { model.error = nil } })
@@ -187,6 +180,23 @@ struct RootView: View {
         if ProcessInfo.processInfo.arguments.contains("--open-trip") {
           let trips = model.store.trips
           model.selectedTripID = (trips.first { $0.phase == .now } ?? trips.first)?.id
+        }
+        let arguments = ProcessInfo.processInfo.arguments
+        if let trip = model.selectedTrip {
+          // `--open-day current|outbound|return` and `--add-expense` reach the day and sheet.
+          if let index = arguments.firstIndex(of: "--open-day"), arguments.indices.contains(index + 1) {
+            let kind: TravelLeg.Kind? =
+              switch arguments[index + 1] {
+              case "outbound": .outbound
+              case "return": .return
+              default: nil
+              }
+            let leg = kind.flatMap { kind in trip.legs.first { $0.kind == kind } }
+            model.selectedAttachment = leg.map { .init(kind: .leg, id: $0.id) } ?? trip.currentAttachment
+          }
+          if arguments.contains("--add-expense") {
+            model.editExpense(trip: trip, attachment: model.selectedAttachment ?? trip.currentAttachment)
+          }
         }
       #endif
       await model.sync.syncAll()
