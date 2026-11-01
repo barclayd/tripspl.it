@@ -1,4 +1,15 @@
 import SwiftUI
+import TripSplitAccountUI
+import TripSplitApplication
+import TripSplitConversionUI
+import TripSplitDesignSystem
+import TripSplitDomain
+import TripSplitExpensesUI
+import TripSplitGlobeUI
+import TripSplitOnboardingUI
+import TripSplitPersistence
+import TripSplitSync
+import TripSplitTripsUI
 
 struct RootView: View {
   @Environment(AppModel.self) private var model

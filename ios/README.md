@@ -8,13 +8,20 @@ xcodegen generate
 xcodebuild -project TripSplit.xcodeproj -scheme TripSplit \
   -sdk iphonesimulator -destination 'generic/platform=iOS Simulator' \
   -derivedDataPath /tmp/tripsplit-ios-build CODE_SIGNING_ALLOWED=NO build
-swift test
+swift test --package-path ../Packages/TripSplitDomain
+swift test --package-path ../Packages/TripSplitApplication
 xcodebuild -project TripSplit.xcodeproj -scheme TripSplit \
   -destination 'platform=iOS Simulator,name=iPhone 17 Pro,OS=26.5' \
   CODE_SIGNING_ALLOWED=NO -parallel-testing-enabled NO test
 ```
 
-Tests use the canonical money/currency fixtures in `../contracts/`. The native suite also tests SQLite restart, restored installation identity, immutable uncertain operations, multi-batch sync, conflicts, account isolation and JSON null encoding. The `Domain` directory is Foundation-only and runs as a Swift package on macOS.
+Tests use the canonical money/currency fixtures in `../contracts/`. The native suite also tests SQLite restart, restored installation identity, immutable uncertain operations, multi-batch sync, conflicts, account isolation and JSON null encoding. The package tests include a synthetic store created by the old app module and a consumer using only public APIs.
+
+## Shared packages
+
+The app is a composition shell for four local packages in `../Packages/`: `TripSplitDomain`, `TripSplitInfrastructure`, `TripSplitApplication` and `TripSplitFeatures`. Infrastructure exposes networking, persistence and sync separately. Features exposes design system, shared UI, Apple adapters and six vertical UI products. See [the architecture and dependency rules](../docs/architecture.md#package-architecture) before adding a feature.
+
+Domain, networking, persistence, sync, application coordination and conversion are usable without iOS presentation code. Their minimum platforms are iOS 26, macOS 26 and watchOS 26. CI runs their macOS tests and compiles the application and conversion products for watchOS. Watch and Mac application interfaces remain future work.
 
 ## Run and configure
 
@@ -44,7 +51,7 @@ Trips bound to an account are hidden from other accounts and cannot upload into 
 
 ## Native presentation
 
-The trip/day selection and editor drafts live above the adaptive layout. `NavigationSplitView` and system `TabView`/toolbars supply iPhone and Duo chrome; iOS 27 APIs are guarded. Closed shows the selected task, wide shows its parent alongside, and a short landscape day highlights the total beside its items. The map camera remains in app state. Custom travel motifs are native SwiftUI: boarding passes, departures flaps, passport stamps, expense receipt and luggage tags. Reduce Motion removes spatial receipt/pass transitions; system text styles and accessibility labels cover controls.
+The trip/day selection and editor drafts live above the adaptive layout. `NavigationSplitView` and system `TabView`/toolbars supply iPhone and Duo chrome; iOS 27 APIs are guarded. Closed shows the selected task, wide shows its parent alongside, and a short landscape day highlights the total beside its items. The globe feature owns map camera state. Custom travel motifs are native SwiftUI: boarding passes, departures flaps, passport stamps, expense receipt and luggage tags. Reduce Motion removes spatial receipt/pass transitions; system text styles and accessibility labels cover controls.
 
 The initial itinerary is built with stable day/leg IDs and a user-visible trip time zone. Settings allow title, budget, time zone and traveller changes. Editing the stop sequence/durations after creation is deliberately not exposed yet: it needs an explicit financial-record reassignment workflow, and the app does not silently move expenses. Current financial operations can move an individual expense between existing days/legs in its editor.
 

@@ -2,6 +2,48 @@
 
 Architecture decisions recorded on 31 October 2026. Native SwiftUI for iPhone v2 (Pop) and iPhone Duo; strict TypeScript on Cloudflare Workers; explicit offline synchronisation; Sign in with Apple. Visual references are the supplied TripSplit v2 Pop and iPhone Duo handoff. The HTML is visual reference, not production code or authoritative financial arithmetic.
 
+## Package architecture
+
+The 1 November 2026 re-architecture follows KeepFresh's local Swift packages, feature products and thin application composition. The reusable core has no dependency on SwiftUI, UIKit, MapKit presentation or a particular application's bundle. The existing iOS interface remains the first consumer; watchOS and macOS can compose the shared services with their own interfaces later. iPadOS uses the existing adaptive iOS app.
+
+| Package | Responsibility |
+| --- | --- |
+| `TripSplitDomain` | Codable models, accounting, civil dates, destination metadata, transport values and local drafts |
+| `TripSplitInfrastructure` | Separate networking, persistence and sync products; explicit transport, storage and credential boundaries |
+| `TripSplitApplication` | Observable application coordination and independently usable conversion state |
+| `TripSplitFeatures` | Design system, shared presentation and separate vertical UI products for trips, expenses, conversion, onboarding, account and globe |
+| `ios/TripSplit` | App lifecycle, platform configuration, assets and root navigation composition |
+
+Dependencies point from features and application coordination toward the core. Domain does not import a design system; networking does not discover configuration from `Bundle.main` or reach into a global signed-in account. The app supplies configuration and services. Each feature declares the products it actually uses. Apple sign-in presentation, map presentation and haptics stay at the platform edge.
+
+```mermaid
+flowchart TD
+    App[iOS app composition] --> Features[Vertical feature products]
+    App --> Adapters[Apple platform adapters]
+    Features --> Application[Application and conversion state]
+    Features --> Design[Design system and shared UI]
+    Application --> Sync[Sync]
+    Sync --> Networking[Networking]
+    Sync --> Persistence[Persistence]
+    Networking --> Domain[Domain]
+    Persistence --> Domain
+    Application --> Domain
+    Adapters --> Application
+```
+
+The API follows KeepFresh's typed Hono route definitions and schema modules, using `OpenAPIHono`, `createRoute` and `@hono/zod-openapi`. Bun installs locked dependencies and runs development, validation and release scripts. Requests still execute on Cloudflare Workers; Durable Objects and D1 retain their existing identities and responsibilities. Hono changes the HTTP composition layer, not the sync or financial protocol. There is no new public API-documentation endpoint.
+
+### Migration plan and acceptance
+
+1. Record the existing app/API contracts and preserve an actual build-5 SQLite store, including its document hashes, before moving code.
+2. Extract Foundation domain and transport values, then networking, persistence and sync. Preserve stored field names, document keys, SwiftData entity schema, session Keychain identifiers and operation payloads.
+3. Extract observable application state and vertical SwiftUI products. Keep app lifecycle and root navigation in the iOS shell, and load package resources through their owning bundles.
+4. Rename `backend/` to `api/`, adopt Bun's frozen lockfile and compose typed Hono routes. Preserve bounded request parsing, error envelopes, middleware order, maintenance behaviour, WebSocket responses and scheduled cleanup.
+5. Run package tests and native iOS tests, compile the reusable products for watchOS and macOS, reopen a legacy store and update the installed simulator app in place. Verify existing trips, drafts and pending operations survive.
+6. Update documentation, generator paths and CI; review the diff; deliver the source through a PR and the existing Cloudflare/internal TestFlight workflows. A new Watch or Mac UI is a separate feature, not part of this migration.
+
+New features should add a focused target/product, declare its dependencies and expose a small entry point for app composition. Share business rules and services first; share presentation only when the destination platform supports the interaction. Avoid adding a dependency from a core product back to application or feature code.
+
 ## Product rules
 
 - Trips have a reporting currency and a whole-trip budget. Expenses have an original amount/currency, payer and a nonempty subset of travellers receiving equal shares. The payer need not be a beneficiary.
@@ -43,7 +85,7 @@ Invite links are created by the owner for an existing traveller, have a cryptogr
 
 ## Native presentation
 
-One app state owns the navigation path `Trips -> Trip -> Day`, sheet drafts, onboarding and map state. Layout changes only presentation. Closed uses the current screen; wide pairs its parent with it; tent reflows the current task. Keep stable view identity, native toolbars, tab bars, sheets and accessibility. iOS 26 baseline; gate Duo APIs to their actual SDK availability (27.1 where required). Build with Xcode 27.1 or later and verify the supported simulator/device poses.
+One app state owns the navigation path `Trips -> Trip -> Day`, sheet drafts and onboarding; the globe feature owns its map camera. Layout changes only presentation. Closed uses the current screen; wide pairs its parent with it; tent reflows the current task. Keep stable view identity, native toolbars, tab bars, sheets and accessibility. iOS 26 baseline; gate Duo APIs to their actual SDK availability (27.1 where required). Build with Xcode 27.1 or later and verify the supported simulator/device poses.
 
 Implement all designed screens: trips/current/upcoming/past, trip overview and balances, day and travel legs, expense editing, quick convert, seven-step onboarding, globe and the boarding-pass component. Pop is the selected direction; Night informs dark mode. Use Reduce Motion equivalents and Dynamic Type. Seed content is opt-in demo/preview data only, not a new user's trips.
 
@@ -51,4 +93,4 @@ Implement all designed screens: trips/current/upcoming/past, trip overview and b
 
 Swift and TypeScript share the contract and money examples under `contracts/`. Test rounding, unequal beneficiary sets, repayments, unresolved conversions, authorisation, duplicate/reordered commands, conflicts, offline restart and backup restoration. Run native builds and exercise iPhone/Duo flows with screenshots/video. Keep credentials and generated builds outside git.
 
-`ios/` contains the native app; `backend/` contains the Worker and storage implementation. `contracts/` defines their shared boundary. Update the contract and both consumers together when changing that boundary.
+`ios/` contains the native app shell; `Packages/` contains shared Swift products; `api/` contains the Worker and storage implementation. `contracts/` defines their shared boundary. Update the contract and both consumers together when changing that boundary.

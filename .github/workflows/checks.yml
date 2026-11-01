@@ -13,23 +13,24 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  backend:
+  api:
     runs-on: ubuntu-latest
     timeout-minutes: 15
     defaults:
       run:
-        working-directory: backend
+        working-directory: api
     steps:
       - uses: actions/checkout@v7
       - uses: actions/setup-node@v7
         with:
           node-version: '24'
-          cache: npm
-          cache-dependency-path: backend/package-lock.json
-      - run: npm ci
-      - run: npm run check
-      - run: npm test
-      - run: npm run build
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: '1.4.0'
+      - run: bun install --frozen-lockfile
+      - run: bun run check
+      - run: bun run test
+      - run: bun run build
 
   ios:
     runs-on: xcode-27
@@ -40,8 +41,22 @@ jobs:
         run: sudo xcode-select --switch /Applications/Xcode_27.1.app
       - name: Install XcodeGen
         run: brew install xcodegen
-      - name: Test domain calculations
-        run: swift test --package-path ios
+      - name: Test shared domain
+        run: swift test --package-path Packages/TripSplitDomain
+      - name: Test shared application services
+        run: swift test --package-path Packages/TripSplitApplication
+      - name: Build shared services for watchOS
+        run: |
+          swift build --package-path Packages/TripSplitApplication \
+            --scratch-path "$RUNNER_TEMP/tripsplit-watch-packages" \
+            --triple arm64_32-apple-watchos26.0 \
+            --sdk "$(xcrun --sdk watchos --show-sdk-path)" \
+            --target TripSplitApplication
+          swift build --package-path Packages/TripSplitApplication \
+            --scratch-path "$RUNNER_TEMP/tripsplit-watch-packages" \
+            --triple arm64_32-apple-watchos26.0 \
+            --sdk "$(xcrun --sdk watchos --show-sdk-path)" \
+            --target TripSplitConversion
       - name: Validate destination catalogue
         run: python3 scripts/generate_destination_catalogue.py --check
       - name: Generate project

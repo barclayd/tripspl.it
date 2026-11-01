@@ -1,0 +1,15 @@
+{
+  "primaryTripID": "612C39C3-D32D-46B0-862B-DD7922AF6E75",
+  "accountID": "legacy-account",
+  "installationID": "legacy-installation",
+  "pendingOperationIDs": [
+    "8603D01B-0B61-4539-85FB-5F75ACE3A549",
+    "BCCA8F42-0451-4EDB-A225-4206697DE265"
+  ],
+  "attemptedExpenseID": "2C0FC2FF-84D3-4AFD-B485-193CE8F71A4A",
+  "createOperationID": "AB727902-48D7-4145-A8D0-D9195E5764F3",
+  "frozenCreateTripID": "5CA57880-3F31-4EAB-817A-01082D39C259",
+  "frozenCreateOperationID": "373408B3-102F-4EC0-8F14-C4E95EA14B28",
+  "expenseDraftID": "legacy-expense-draft",
+  "onboardingStep": 2
+}

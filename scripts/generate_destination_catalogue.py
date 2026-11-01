@@ -17,7 +17,7 @@ import xml.etree.ElementTree as ET
 ROOT = Path(__file__).resolve().parents[1]
 DATA = ROOT / 'scripts' / 'destination-data'
 SOURCES = DATA / 'sources'
-OUTPUT = ROOT / 'ios' / 'TripSplit' / 'Domain' / 'Resources'
+OUTPUT = ROOT / 'Packages' / 'TripSplitDomain' / 'Sources' / 'TripSplitDomain' / 'Resources'
 
 
 def read_json(path: Path):

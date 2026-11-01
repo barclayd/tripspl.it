@@ -11,11 +11,45 @@ settings:
     CODE_SIGN_STYLE: Automatic
     ENABLE_USER_SCRIPT_SANDBOXING: YES
     SWIFT_STRICT_CONCURRENCY: complete
+packages:
+  TripSplitDomain:
+    path: ../Packages/TripSplitDomain
+  TripSplitInfrastructure:
+    path: ../Packages/TripSplitInfrastructure
+  TripSplitApplication:
+    path: ../Packages/TripSplitApplication
+  TripSplitFeatures:
+    path: ../Packages/TripSplitFeatures
 targets:
   TripSplit:
     type: application
     platform: iOS
     sources: [TripSplit]
+    dependencies:
+      - package: TripSplitApplication
+        product: TripSplitApplication
+      - package: TripSplitInfrastructure
+        product: TripSplitNetworking
+      - package: TripSplitInfrastructure
+        product: TripSplitPersistence
+      - package: TripSplitInfrastructure
+        product: TripSplitSync
+      - package: TripSplitDomain
+        product: TripSplitDomain
+      - package: TripSplitFeatures
+        product: TripSplitDesignSystem
+      - package: TripSplitFeatures
+        product: TripSplitTripsUI
+      - package: TripSplitFeatures
+        product: TripSplitExpensesUI
+      - package: TripSplitFeatures
+        product: TripSplitConversionUI
+      - package: TripSplitFeatures
+        product: TripSplitOnboardingUI
+      - package: TripSplitFeatures
+        product: TripSplitAccountUI
+      - package: TripSplitFeatures
+        product: TripSplitGlobeUI
     info:
       path: Config/Info.plist
       properties:
@@ -37,16 +71,34 @@ targets:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: it.tripspl.TripSplit
         MARKETING_VERSION: '1.0'
-        CURRENT_PROJECT_VERSION: 5
+        CURRENT_PROJECT_VERSION: 6
         TRIPSPLIT_API_BASE_URL: https://api.tripspl.it
         ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
         CODE_SIGN_ENTITLEMENTS: Config/TripSplit.entitlements
   TripSplitTests:
     type: bundle.unit-test
     platform: iOS
-    sources: [TripSplitTests, DomainTests]
+    sources:
+      - ../Packages/TripSplitDomain/Tests/TripSplitDomainTests
+      - path: ../Packages/TripSplitApplication/Tests/TripSplitApplicationTests
+        excludes: [Fixtures]
+      - path: ../Packages/TripSplitApplication/Tests/TripSplitApplicationTests/Fixtures
+        type: folder
+        buildPhase: resources
     dependencies:
       - target: TripSplit
+      - package: TripSplitApplication
+        product: TripSplitApplication
+      - package: TripSplitInfrastructure
+        product: TripSplitNetworking
+      - package: TripSplitInfrastructure
+        product: TripSplitPersistence
+      - package: TripSplitInfrastructure
+        product: TripSplitSync
+      - package: TripSplitDomain
+        product: TripSplitDomain
+      - package: TripSplitApplication
+        product: TripSplitConversion
     settings:
       base:
         GENERATE_INFOPLIST_FILE: YES
