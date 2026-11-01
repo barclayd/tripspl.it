@@ -54,10 +54,13 @@ package struct BoardingPassContent: Identifiable, Hashable, Sendable {
   /// One pass per stop plus the flight home, dated by accumulating nights from `start`.
   ///
   /// `fields` supplies the second and third fields for each pass; the first is always the date.
+  /// Until `nightsKnown`, as before the day home is picked, the nights and every date after the
+  /// first leg are a dash.
   /// The trip leaves from and returns to `origin`, or a generic Home until one is picked.
   /// With no stops yet, returns a single placeholder pass asking where to.
   package static func itinerary(
-    stops: [Stop], start: String?, homeCurrency: String, origin: TripOrigin? = nil,
+    stops: [Stop], start: String?, nightsKnown: Bool = true, homeCurrency: String,
+    origin: TripOrigin? = nil,
     fields: (Int) -> [Field] = { _ in [] }
   ) -> [BoardingPassContent] {
     let home = origin?.passCode ?? "HOME"
@@ -83,9 +86,10 @@ package struct BoardingPassContent: Identifiable, Hashable, Sendable {
           id: "l\(index)\(stop.countryCode)\(stop.place)", from: previous?.passCode ?? home,
           fromName: previous?.place ?? homeName, to: stop.passCode, toName: stop.place,
           flag: stop.flag, leg: "LEG \(index + 1) OF \(total)",
-          fields: [date(day)] + fields(index), stubLabel: stop.nights == 1 ? "NIGHT" : "NIGHTS",
-          stubValue: "\(stop.nights)"))
-      day = day.map { CivilDate.adding(stop.nights, to: $0) }
+          fields: [date(day)] + fields(index),
+          stubLabel: nightsKnown && stop.nights == 1 ? "NIGHT" : "NIGHTS",
+          stubValue: nightsKnown ? "\(stop.nights)" : "—"))
+      day = nightsKnown ? day.map { CivilDate.adding(stop.nights, to: $0) } : nil
     }
     passes.append(
       BoardingPassContent(

@@ -59,6 +59,82 @@ struct OnboardingDateTests {
     #expect(draft.returnDate == "2026-12-13")
   }
 
+  @Test func aNewTripStartsWithNoDatesPicked() {
+    var draft = OnboardingDraft.newTrip()
+    draft.stops = [Destination.all[0].stop()]
+    draft.step = 1
+    #expect(draft.pickedStart == nil)
+    #expect(draft.pickedEnd == nil)
+    #expect(!draft.isPickingHome)
+    #expect(!draft.canAdvance)
+  }
+
+  @Test func tapsPickLeavingThenHomeThenStartOver() {
+    var draft = OnboardingDraft.newTrip()
+    draft.stops = [Destination.all[0].stop()]
+    draft.step = 1
+    draft.pick("2026-11-10")
+    #expect(draft.pickedStart == "2026-11-10")
+    #expect(draft.pickedEnd == nil)
+    #expect(draft.isPickingHome)
+    #expect(!draft.canAdvance)
+    // A day before leaving moves leaving instead.
+    draft.pick("2026-11-08")
+    #expect(draft.pickedStart == "2026-11-08")
+    #expect(draft.isPickingHome)
+    draft.pick("2026-11-20")
+    #expect(draft.pickedEnd == "2026-11-20")
+    #expect(draft.nights == 12)
+    #expect(draft.canAdvance)
+    draft.pick("2026-12-01")
+    #expect(draft.pickedStart == "2026-12-01")
+    #expect(draft.pickedEnd == nil)
+    #expect(!draft.canAdvance)
+  }
+
+  @Test func aLoneStopCanComeHomeTheDayItLeaves() {
+    var draft = OnboardingDraft.newTrip()
+    draft.stops = [Destination.all[0].stop()]
+    draft.step = 1
+    draft.pick("2026-11-10")
+    draft.pick("2026-11-10")
+    #expect(draft.nights == 0)
+    #expect(draft.canAdvance)
+  }
+
+  @Test func homeLeavesANightForEachStop() {
+    var draft = OnboardingDraft.newTrip()
+    draft.stops = [Destination.all[0].stop(), Destination.all[1].stop()]
+    let today = "2026-11-01"
+    #expect(!draft.canPick("2026-10-31", today: today))
+    #expect(draft.canPick("2026-11-01", today: today))
+    draft.pick("2026-11-10")
+    #expect(!draft.canPick("2026-11-11", today: today))
+    #expect(draft.canPick("2026-11-12", today: today))
+    #expect(draft.canPick("2026-11-05", today: today))
+  }
+
+  @Test func changingTheRouteKeepsThePickedDates() {
+    var draft = OnboardingDraft.newTrip()
+    draft.stops = [Destination.all[0].stop()]
+    draft.pick("2026-11-10")
+    draft.pick("2026-11-13")
+    draft.changeRoute { $0.append(Destination.all[1].stop()) }
+    #expect(draft.pickedEnd == "2026-11-13")
+    #expect(draft.nights == 3)
+    // Too short for a night in each of four places, so home is picked again.
+    draft.changeRoute { $0 += [Destination.all[2].stop(), Destination.all[3].stop()] }
+    #expect(draft.pickedStart == "2026-11-10")
+    #expect(draft.pickedEnd == nil)
+  }
+
+  @Test func aDraftLeftPastItsDayPicksItsDatesAgain() {
+    var draft = draft()
+    draft.clearDates(today: "2026-11-05")
+    #expect(draft.startsOn == "2026-11-05")
+    #expect(draft.pickedStart == nil)
+  }
+
   @Test func returnDatesSplitNightsInProportionAcrossStops() {
     var draft = draft(multiple: true)
     draft.stops.append(Destination.all[2].stop(nights: 2))
@@ -163,6 +239,7 @@ struct OnboardingDateTests {
     restored.reconcileRoute()
     #expect(restored.step == 2)
     #expect(restored.returnDate == "2026-11-07")
+    #expect(restored.hasDates)
     #expect(restored.stops.allSatisfy { $0.timeZone == nil })
     #expect(try restored.makeTrip().days.count == 7)
   }

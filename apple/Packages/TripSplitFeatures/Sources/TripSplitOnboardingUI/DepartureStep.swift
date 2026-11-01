@@ -4,15 +4,13 @@ import TripSplitDesignSystem
 import TripSplitDomain
 import TripSplitSharedUI
 
-/// Step 2: the day you set off, then the day you're home, on one calendar. "Today" is the phone's
-/// date, as you plan from where you are rather than where you're going.
+/// Step 2: the day you set off, then the day you're home, on one calendar that starts with neither
+/// picked. "Today" is the phone's date, as you plan from where you are rather than where you're
+/// going.
 struct DepartureStep: View {
   @Environment(AppModel.self) private var model
   @State private var timeZoneSelection: DestinationTimeZoneSelection?
-  @State private var picking = End.leaving
   @Environment(\.onboardingWide) private var wide
-
-  enum End { case leaving, home }
 
   private var draft: OnboardingDraft { model.onboarding }
   private var today: String { CivilDate.today(timeZone: TimeZone.current.identifier) }
@@ -29,11 +27,12 @@ struct DepartureStep: View {
     VStack(alignment: .leading, spacing: 16) {
       StepTitle("How long is your trip?", "Pick the day you set off and return")
       DepartureCalendar(
-        start: draft.startsOn, end: draft.returnDate, today: today, wide: wide,
-        isSelectable: isSelectable, hint: picking == .leaving ? "Sets the day you set off" : "Sets the day you're home"
+        start: draft.pickedStart, end: draft.pickedEnd, today: today, wide: wide,
+        isSelectable: { draft.canPick($0, today: today) },
+        hint: draft.isPickingHome ? "Sets the day you're home" : "Sets the day you set off"
       ) { date in
         Haptics.selection()
-        withAnimation(Motion.spring) { select(date) }
+        withAnimation(Motion.spring) { model.onboarding.pick(date) }
       }
       if !ambiguousStops.isEmpty {
         VStack(alignment: .leading, spacing: 10) {
@@ -53,8 +52,8 @@ struct DepartureStep: View {
         }
       }
     }
-    // A draft saved on an earlier day can't still leave in the past.
-    .onAppear { if draft.startsOn < today { model.onboarding.setDeparture(today) } }
+    // A draft saved on an earlier day can't still leave in the past, so its dates are picked again.
+    .onAppear { if draft.startsOn < today { model.onboarding.clearDates(today: today) } }
     .sheet(item: $timeZoneSelection) { selection in
       if let stop = draft.stops.first(where: { $0.id == selection.id }) {
         TimeZonePicker(
@@ -62,30 +61,6 @@ struct DepartureStep: View {
           allowedIdentifiers: DestinationTimeZones.identifiers(countryCode: stop.countryCode),
           title: stop.place, referenceDate: CivilDate.date(draft.startsOn))
       }
-    }
-  }
-
-  /// Any day from today. Picking home, it's also within a year of leaving, and leaves a night for
-  /// each stop on a longer route; a day before leaving moves the start instead.
-  private func isSelectable(_ date: String) -> Bool {
-    guard date >= today else { return false }
-    guard picking == .home, date >= draft.startsOn else { return true }
-    let nights = CivilDate.days(from: draft.startsOn, to: date)
-    return draft.tripNights.contains(nights)
-  }
-
-  /// The first tap moves the whole trip to leave that day, the next sets the day home, then it
-  /// starts over. A day before leaving moves the start instead.
-  private func select(_ date: String) {
-    switch picking {
-    case .leaving:
-      model.onboarding.setDeparture(date)
-      picking = .home
-    case .home where date < draft.startsOn:
-      model.onboarding.setDates(leaving: date, home: draft.returnDate)
-    case .home:
-      model.onboarding.setReturn(date)
-      picking = .leaving
     }
   }
 

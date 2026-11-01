@@ -299,8 +299,8 @@ public struct OnboardingView: View {
     let travelClass = OnboardingCopy.travelClass(
       draft, homePerGBP: model.indicativeRate(from: "GBP", to: draft.currency))
     var passes = BoardingPassContent.itinerary(
-      stops: draft.stops, start: draft.reached(1) ? draft.startsOn : nil,
-      homeCurrency: draft.currency,
+      stops: draft.stops, start: draft.reached(1) ? draft.pickedStart : nil,
+      nightsKnown: draft.hasDates, homeCurrency: draft.currency,
       origin: draft.origin
     ) { _ in
       [.init("PAX", "\(draft.travellers.count)"), .init("CLASS", travelClass ?? "—")]
@@ -335,8 +335,7 @@ public struct OnboardingView: View {
   private func removeStop(_ index: Int) {
     guard model.onboarding.stops.indices.contains(index) else { return }
     Haptics.lightImpact()
-    model.onboarding.stops.remove(at: index)
-    model.onboarding.reconcileRoute()
+    model.onboarding.changeRoute { $0.remove(at: index) }
   }
 
   // MARK: Steps

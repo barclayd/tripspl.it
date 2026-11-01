@@ -163,8 +163,7 @@ struct RouteStep: View {
     }
     Haptics.lightImpact()
     withAnimation(Motion.spring) {
-      model.onboarding.stops.append(destination.stop())
-      reconcile()
+      model.onboarding.changeRoute { $0.append(destination.stop()) }
     }
   }
 
@@ -173,13 +172,8 @@ struct RouteStep: View {
     else { return }
     Haptics.lightImpact()
     withAnimation(Motion.spring) {
-      model.onboarding.stops.remove(at: index)
-      reconcile()
+      model.onboarding.changeRoute { $0.remove(at: index) }
     }
-  }
-
-  private func reconcile() {
-    model.onboarding.reconcileRoute()
   }
 
   /// Looks a suggested place up, then adds it like any other chip.
