@@ -29,23 +29,23 @@ The compatibility date is `2026-10-30`: the pinned workerd binary supports that 
 
 ## Configuration and release
 
-The initial deployment is `tripsplit-api` at **https://api.tripspl.it**, in the existing Cloudflare account. D1 `tripsplit-accounts` is bound by its real ID, the initial migration is applied, the SQLite `TripRoom` namespace is provisioned and the five-minute cleanup cron is enabled. Public health and real FX lookup have been checked over HTTPS. Apple authentication remains disabled until its team/key configuration is supplied; private trip endpoints reject unauthenticated requests.
+The initial deployment is `tripsplit-api` at **https://api.tripspl.it**, in the existing Cloudflare account. D1 `tripsplit-accounts` is bound by its real ID, the initial migration is applied, the SQLite `TripRoom` namespace is provisioned and the five-minute cleanup cron is enabled. Public health and real FX lookup have been checked over HTTPS. Apple team/key configuration is deployed and the challenge endpoint responds successfully; private trip endpoints reject unauthenticated requests.
 
 The project uses the existing `bunx wrangler` login for deployment. The wrapper retrieves its credential into process memory and passes it to the project-local `cf` CLI; it never prints or saves the credential. A provided `CLOUDFLARE_API_TOKEN` takes precedence. The target account is checked explicitly.
 
 ```sh
-npm run deploy -- --dry-run
-npm run deploy
+npm run deploy -- --dry-run --secrets-file ~/.config/tripsplit/production-secrets.json
+npm run deploy -- --prebuilt --secrets-file ~/.config/tripsplit/production-secrets.json
 npm run cloud -- d1 migrations apply 20112438-d042-4b58-8dc0-5395b5c32aee --dir migrations
 ```
 
-The production session-encryption secret is stored in Cloudflare, with a protected local backup outside this repository at `~/.config/tripsplit/production-secrets.json`. Do not replace it on routine deployment. The initial Apple private-key binding is deliberately empty, so authentication fails closed. Once the actual key is available, update this protected file and the nonsecret Apple identifiers, then deploy with `--secrets-file <protected-json-file>`. Do not put secret values in command arguments or commit the file.
+The production session-encryption secret and supplied Apple Sign in with Apple key are stored in Cloudflare, with a protected local backup outside this repository at `~/.config/tripsplit/production-secrets.json`. Preserve the encryption secret on routine deployment. The configured Apple team is `R2GGK3VN2C`, key ID `422YN3K8Y9`, and native audience `it.tripspl.TripSplit`. Do not put secret values in command arguments or commit the file.
 
-Authentication deliberately fails closed until the actual Apple configuration exists. Copy `.env.example` to ignored `.dev.vars` for local secrets. Configure nonsecret production bindings in `cloudflare.config.ts` and provide secrets through the deployment's secret store:
+Authentication deliberately fails closed when required Apple configuration is missing. Copy `.env.example` to ignored `.dev.vars` for local secrets. Configure nonsecret production bindings in `cloudflare.config.ts` and provide secrets through the deployment's secret store:
 
 | Binding | Required value |
 | --- | --- |
-| `APPLE_AUDIENCE` | Enabled native Sign in with Apple bundle ID; proposed `it.tripspl.TripSplit`, verify the registered app |
+| `APPLE_AUDIENCE` | Enabled native Sign in with Apple bundle ID, `it.tripspl.TripSplit` |
 | `APPLE_TEAM_ID`, `APPLE_KEY_ID` | Actual Apple team and Sign in with Apple key identifiers |
 | `APPLE_PRIVATE_KEY` | PKCS#8 `.p8` signing key; a Worker secret |
 | `SESSION_ENCRYPTION_KEY` | Base64 of 32 random bytes for AES-256-GCM encryption of Apple grants; a Worker secret |
@@ -60,7 +60,7 @@ Generate an encryption key locally with `openssl rand -base64 32` and store it d
 
 The config binds the provisioned D1 database and custom API domain. Apply new migrations before deploying code that requires them. `cf` derives Durable Object lifecycle migrations from `exports.TripRoom`; keep the SQLite declaration on subsequent deployments. Cron must remain enabled (`*/5 * * * *`) for account cleanup and expired auth data. Logs/traces are enabled, with automatic invocation logs disabled to avoid collecting request URLs; application logs contain event names/error classes, never tokens or financial payloads.
 
-Actual Apple sign-in and associated-domain verification still require Apple's real account configuration. Deployed D1/DO point-in-time recovery has not been rehearsed. Local tests and a successful API deployment do not establish those checks.
+The HTTPS invitation origin is `https://api.tripspl.it`, with AASA app ID `R2GGK3VN2C.it.tripspl.TripSplit`. Actual Apple sign-in, the key’s primary-App-ID association and universal-link opening still need signed-device verification. Deployed D1/DO point-in-time recovery has not been rehearsed. Local tests and a successful API deployment do not establish those checks.
 
 ## API behavior
 

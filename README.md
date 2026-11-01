@@ -31,7 +31,7 @@ npm test
 npm run dev
 ```
 
-The Cloudflare API is deployed at [api.tripspl.it](https://api.tripspl.it/v1/health), with public exchange rates available before sign-in. Live shared trips still require Apple's sign-in key and associated-domain configuration. Local trip creation works without signing in. Never put credentials in the repository. Backend-specific configuration and deployment instructions live in [backend/README.md](backend/README.md).
+The Cloudflare API is deployed at [api.tripspl.it](https://api.tripspl.it/v1/health), with public exchange rates available before sign-in. Apple credentials and HTTPS invitation association are configured. Signed-device Apple sign-in and multi-user collaboration still need end-to-end verification. Local trip creation works without signing in. Never put credentials in the repository. Backend-specific configuration and deployment instructions live in [backend/README.md](backend/README.md).
 
 ## Checks
 

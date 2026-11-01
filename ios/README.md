@@ -1,6 +1,6 @@
 # TripSplit for iPhone and iPhone Duo
 
-Native SwiftUI app, iOS 26 minimum, built with Xcode 27.1. XcodeGen owns the project configuration; the generated project is included for opening directly in Xcode. No Apple team or provisioning identifier is hard-coded.
+Native SwiftUI app, iOS 26 minimum, built with Xcode 27.1. XcodeGen owns the project configuration; the generated project is included for opening directly in Xcode. The authorised Apple team is `R2GGK3VN2C`; provisioning profiles remain managed by Xcode.
 
 ```sh
 cd ios
@@ -24,13 +24,13 @@ The app opens empty. The explicit `--demo` launch argument seeds an empty store 
 xcrun simctl launch <simulator-udid> it.tripspl.TripSplit --demo
 ```
 
-The default service is `https://api.tripspl.it`, configured by `TRIPSPLIT_API_BASE_URL` in `project.yml` (origin, without `/v1`). Its health endpoint and public reference FX have been verified against the deployed Worker. Currency conversion works without signing in. Apple authentication remains unavailable until the server’s Apple credentials and audience are configured; the app reports that setup error without fabricating a session. Private trip endpoints require authentication.
+The default service is `https://api.tripspl.it`, configured by `TRIPSPLIT_API_BASE_URL` in `project.yml` (origin, without `/v1`). Its health endpoint and public reference FX have been verified against the deployed Worker. Currency conversion works without signing in. The server’s Apple credentials and audience are configured, and its challenge endpoint is live. The full signed-device sign-in flow remains to be verified. Private trip endpoints require authentication.
 
 To use another environment, override `TRIPSPLIT_API_BASE_URL` in the build settings. Clearing it leaves local trip creation, editing, manual conversion, splitting and repayment records available with an explicit cloud setup state.
 
 A Debug build accepts `--api-base-url http://127.0.0.1:8787` or `http://localhost:8787` for a local Worker. Release ignores that argument and only accepts HTTPS from build configuration. ATS has the narrow local-network setting, without arbitrary loads. This is transport configuration only; it adds no authentication bypass.
 
-For a device/TestFlight build, choose the authorised Apple team and enable Sign in with Apple for `it.tripspl.TripSplit`. The Apple entitlement is included; credentials, signing certificates, provisioning and server Apple audience/secrets are external configuration. Universal links additionally need an explicitly authorised Associated Domains entitlement and matching server AASA configuration. No domain or team prefix is invented. The fallback invitation format is `tripsplit://invite/<tripId>/<inviteId>#token=<secret>`; the bearer token stays in the URL fragment.
+The project uses team `R2GGK3VN2C` and bundle ID `it.tripspl.TripSplit`, with Sign in with Apple and `applinks:api.tripspl.it` entitlements. Xcode created an explicit development profile from the existing signed-in account. If command-line provisioning reports “No Accounts”, open this project’s Signing & Capabilities pane in Xcode so it can create or refresh its managed profile. The matching AASA is served by the Worker. Signing secrets and profiles stay outside Git. The fallback invitation format is `tripsplit://invite/<tripId>/<inviteId>#token=<secret>`; the bearer token stays in the URL fragment.
 
 Unsigned simulator builds may not have Keychain access. The nonsecret installation identity falls back to a backup-excluded cache marker. Cache loss conservatively triggers restore review. **Sessions always remain in nonsynchronising, device-bound Keychain storage; no credential fallback exists.** Native Apple authentication needs a correctly signed build and server setup to verify end to end.
 
@@ -48,9 +48,9 @@ The trip/day selection and editor drafts live above the adaptive layout. `Naviga
 
 The initial itinerary is built with stable day/leg IDs and a user-visible trip time zone. Settings allow title, budget, time zone and traveller changes. Editing the stop sequence/durations after creation is deliberately not exposed yet: it needs an explicit financial-record reassignment workflow, and the app does not silently move expenses. Current financial operations can move an individual expense between existing days/legs in its editor.
 
-## Release checks still requiring external configuration
+## Remaining release checks
 
-- Configure the server’s Apple credentials/audience, then verify signed-device Apple sign-in, token rotation/revocation, cloud multi-user invites and live collaboration.
-- Associated-domain ownership/AASA and real universal-link opening.
+- Verify signed-device Apple sign-in, token rotation/revocation, cloud multi-user invites and live collaboration; the supplied Apple key must authorise this app’s primary App ID.
+- Verify real universal-link opening after Apple fetches the association file.
 - Device ergonomics and real Duo fold/hinge behavior; simulator coverage is not device verification.
-- App Store privacy declarations, Apple signing credentials and authorised TestFlight delivery. The production Cloudflare API is deployed; authentication awaits its Apple configuration.
+- Complete the App Store Connect app record, privacy declarations and internal TestFlight delivery. A signed development build is not a distributed beta.
