@@ -3,15 +3,30 @@ import Foundation
 /// What the iPhone shares with its watch. The phone stays the source of truth;
 /// the latest context replaces the previous one.
 public struct CompanionContext: Codable, Hashable, Sendable {
-  public init(trips: [TripSnapshot], rejected: [String: String] = [:], sentAt: Date = Date()) {
+  public init(
+    trips: [TripSnapshot], rejected: [String: String] = [:], handled: [String] = [],
+    sentAt: Date = Date()
+  ) {
     self.trips = trips
     self.rejected = rejected
+    self.handled = handled
     self.sentAt = sentAt
   }
   public var trips: [TripSnapshot]
   /// Watch commands the phone could not apply, keyed by command id, with a reason to show.
   public var rejected: [String: String]
+  /// Watch commands the phone has carried out that leave no trace on a trip, such as a nudge.
+  public var handled: [String]
   public var sentAt: Date
+
+  public init(from decoder: any Decoder) throws {
+    let container = try decoder.container(keyedBy: CodingKeys.self)
+    trips = try container.decode([TripSnapshot].self, forKey: .trips)
+    rejected = try container.decode([String: String].self, forKey: .rejected)
+    // Contexts mirrored before nudges carry no handled list.
+    handled = try container.decodeIfPresent([String].self, forKey: .handled) ?? []
+    sentAt = try container.decode(Date.self, forKey: .sentAt)
+  }
 }
 
 /// The watch's copy of the phone's trips plus changes it has sent but not yet seen echoed.
@@ -33,7 +48,7 @@ public struct CompanionState: Codable, Hashable, Sendable {
   public var hasSynced: Bool { context != nil }
 
   /// Takes a newer phone context and returns the reasons for any commands it rejected.
-  /// Commands it reflects, rejects, or whose trip has gone are no longer pending.
+  /// Commands it reflects, handles, rejects, or whose trip has gone are no longer pending.
   @discardableResult
   public mutating func receive(_ incoming: CompanionContext) -> [String] {
     if let context, context.sentAt > incoming.sentAt { return [] }
@@ -42,7 +57,8 @@ public struct CompanionState: Codable, Hashable, Sendable {
     let rejected = pending.compactMap { incoming.rejected[$0.id] }
     pending.removeAll { command in
       guard let trip = trips[command.tripID] else { return true }
-      return incoming.rejected[command.id] != nil || command.isReflected(in: trip)
+      return incoming.rejected[command.id] != nil || incoming.handled.contains(command.id)
+        || command.isReflected(in: trip)
     }
     return rejected
   }
@@ -58,6 +74,8 @@ public enum CompanionCommand: Codable, Hashable, Sendable, Identifiable {
   case saveExpense(tripID: String, expense: Expense)
   case saveRepayment(tripID: String, repayment: Repayment)
   case deleteExpense(tripID: String, expenseID: String)
+  /// Asks the phone to buzz a traveller who owes you, once per trip day (`on`, yyyy-MM-dd).
+  case nudge(tripID: String, travellerID: String, on: String)
 
   /// Saving and deleting the same expense share an id, so a delete replaces a pending save.
   public var id: String {
@@ -65,12 +83,15 @@ public enum CompanionCommand: Codable, Hashable, Sendable, Identifiable {
     case .saveExpense(_, let expense): "expense:" + expense.id
     case .deleteExpense(_, let id): "expense:" + id
     case .saveRepayment(_, let repayment): "repayment:" + repayment.id
+    case .nudge(let trip, let traveller, let day): "nudge:\(trip):\(traveller):\(day)"
     }
   }
 
   public var tripID: String {
     switch self {
-    case .saveExpense(let id, _), .saveRepayment(let id, _), .deleteExpense(let id, _): id
+    case .saveExpense(let id, _), .saveRepayment(let id, _), .deleteExpense(let id, _),
+      .nudge(let id, _, _):
+      id
     }
   }
 
@@ -86,6 +107,7 @@ public enum CompanionCommand: Codable, Hashable, Sendable, Identifiable {
     case .saveRepayment(_, let repayment):
       trip.repayments.removeAll { $0.id == repayment.id }
       trip.repayments.append(repayment)
+    case .nudge: break
     }
   }
 
@@ -101,6 +123,8 @@ public enum CompanionCommand: Codable, Hashable, Sendable, Identifiable {
         $0.id == repayment.id && $0.amountMinor == repayment.amountMinor
           && $0.currency == repayment.currency
       }
+    // A nudge never shows on the trip: the phone lists it as handled instead.
+    case .nudge: false
     }
   }
 }

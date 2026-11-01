@@ -11,6 +11,8 @@ import TripSplitDomain
   private let publisher: @MainActor (CompanionContext) -> Void
   /// Recently rejected watch commands, oldest first, so the watch can explain them.
   private var rejected: [(id: String, reason: String)] = []
+  /// Recently carried-out commands that leave no trace on a trip, oldest first.
+  private var handled: [String] = []
   private var scheduled: Task<Void, Never>?
   private let retained: AnyObject?
 
@@ -29,18 +31,26 @@ import TripSplitDomain
     publisher(
       CompanionContext(
         trips: model.store.trips,
-        rejected: Dictionary(rejected.map { ($0.id, $0.reason) }, uniquingKeysWith: { $1 })))
+        rejected: Dictionary(rejected.map { ($0.id, $0.reason) }, uniquingKeysWith: { $1 }),
+        handled: handled))
   }
 
   /// Applies a change made on the watch. Re-delivered commands that are already reflected are
   /// skipped so a retry never trips the pending-operation guard.
   public func receive(_ command: CompanionCommand) async {
+    // A retry of something refused earlier, e.g. a nudge sent again once back online, starts
+    // afresh, so the old reason can't cancel it on the watch.
+    rejected.removeAll { $0.id == command.id }
     guard let trip = model.store.trip(command.tripID) else {
       reject(command, "This trip is no longer on your iPhone.")
       return
     }
-    guard !command.isReflected(in: trip) else {
+    guard !command.isReflected(in: trip), !handled.contains(command.id) else {
       publish()
+      return
+    }
+    if case .nudge(let tripID, let travellerID, _) = command {
+      await nudge(command, tripID: tripID, travellerID: travellerID, in: trip)
       return
     }
     do {
@@ -60,6 +70,7 @@ import TripSplitDomain
           .init(
             syncEpoch: trip.syncEpoch, type: "repayment.upsert", entityId: repayment.id,
             expectedRevision: nil, payload: .repayment(repayment)), tripID: tripID)
+      case .nudge: break
       }
       model.changed()
     } catch {
@@ -71,6 +82,40 @@ import TripSplitDomain
     rejected.append((command.id, reason))
     if rejected.count > 20 { rejected.removeFirst() }
     publish()
+  }
+
+  private func handle(_ command: CompanionCommand) {
+    handled.append(command.id)
+    if handled.count > 20 { handled.removeFirst() }
+    publish()
+  }
+
+  /// Sends a nudge from the watch through the API, which pushes it to the traveller's phone.
+  /// The watch already promised one per day, so a repeat the server refuses counts as done.
+  private func nudge(
+    _ command: CompanionCommand, tripID: String, travellerID: String, in trip: TripSnapshot
+  ) async {
+    let name = trip.travellers.first { $0.id == travellerID }?.name ?? "They"
+    do {
+      let result = try await model.sync.nudge(tripID: tripID, travellerID: travellerID)
+      guard result.status == .sent else {
+        reject(command, "\(name) hasn’t joined TripSplit yet, so there’s nobody to buzz.")
+        return
+      }
+      handle(command)
+    } catch let error as ServiceError {
+      switch error.code {
+      case "NUDGE_LIMIT": handle(command)
+      case "sign_in", "not_configured":
+        reject(command, "Sign in on your iPhone to nudge people.")
+      case "NOTHING_OWED": reject(command, "\(name) doesn’t owe you anything now.")
+      default: reject(command, error.localizedDescription)
+      }
+    } catch is URLError {
+      reject(command, "Your iPhone is offline, so the nudge didn’t go. Try again later.")
+    } catch {
+      reject(command, error.localizedDescription)
+    }
   }
 
   /// A reference rate for foreign-currency spends logged on the watch.
