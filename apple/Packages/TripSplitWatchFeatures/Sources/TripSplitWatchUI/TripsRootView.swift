@@ -8,6 +8,7 @@ import TripSplitWatchModel
 /// Smart Stack buttons and notifications open it at a `WatchLink`.
 public struct TripsRootView: View {
   @Environment(WatchModel.self) private var model
+  @Environment(\.isLuminanceReduced) private var dimmed
   @State private var path: [TripRoute] = []
   @State private var sheet: TripsSheet?
   private let links: WatchLinkInbox
@@ -19,7 +20,10 @@ public struct TripsRootView: View {
   public var body: some View {
     NavigationStack(path: $path) {
       Group {
-        if model.timeline.isEmpty {
+        if let moment = model.moment {
+          MomentView(moment: moment)
+            .transition(.opacity)
+        } else if model.timeline.isEmpty {
           NoTripsView()
         } else {
           TripsList(sheet: $sheet)
@@ -27,17 +31,22 @@ public struct TripsRootView: View {
       }
       .navigationDestination(for: TripRoute.self) { TripDestination(route: $0) }
       .toolbar {
-        // The wordmark sits level with the time, in the accent, as in the design.
-        ToolbarItem(placement: .topBarLeading) {
-          Text("TripSplit")
-            .watchFont(15, .black)
-            .foregroundStyle(WatchTheme.accentText)
-            .fixedSize()
-            .accessibilityAddTraits(.isHeader)
+        // The wordmark sits level with the time, in the accent, as in the design. The passport
+        // stamp and Always On leave the time on its own.
+        if !dimmed, !(model.moment?.isStamp ?? false) {
+          ToolbarItem(placement: .topBarLeading) {
+            Text("TripSplit")
+              .watchFont(15, .black)
+              .foregroundStyle(WatchTheme.accentText)
+              .fixedSize()
+              .accessibilityAddTraits(.isHeader)
+          }
         }
       }
     }
     .tint(WatchTheme.accentText)
+    // H3 · Always On: everything dims to about half, values stay readable.
+    .opacity(dimmed ? 0.55 : 1)
     .sheet(item: $sheet) { sheet in
       switch sheet {
       case .convert: QuickConvertView(model: model)
@@ -77,6 +86,7 @@ enum TripsSheet: Hashable, Identifiable {
 
 struct TripsList: View {
   @Environment(WatchModel.self) private var model
+  @Environment(\.isLuminanceReduced) private var dimmed
   @Binding var sheet: TripsSheet?
 
   var body: some View {
@@ -117,7 +127,7 @@ struct TripsList: View {
       .padding(.horizontal, 7)
     }
     .toolbar {
-      if !timeline.now.isEmpty || !timeline.upcoming.isEmpty {
+      if !dimmed, !timeline.now.isEmpty || !timeline.upcoming.isEmpty {
         ToolbarItemGroup(placement: .bottomBar) {
           Spacer()
           LogButton { sheet = .log(trip: nil) }

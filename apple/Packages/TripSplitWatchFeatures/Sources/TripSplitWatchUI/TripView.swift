@@ -47,6 +47,7 @@ struct TripView: View {
   let pages: TripPages
   @State private var page: TripPages.Page
   @State private var logging = false
+  @Environment(\.isLuminanceReduced) private var dimmed
 
   init(pages: TripPages, page: TripPages.Page? = nil) {
     self.pages = pages
@@ -61,8 +62,10 @@ struct TripView: View {
       }
     }
     .tabViewStyle(.verticalPage)
+    // H3 · Always On: the back button and log button step aside, leaving the time.
+    .toolbarVisibility(dimmed ? .hidden : .automatic, for: .navigationBar)
     .toolbar {
-      if pages.canLog {
+      if pages.canLog, !dimmed {
         ToolbarItem(placement: .topBarTrailing) {
           LogButton { logging = true }
         }
@@ -225,10 +228,16 @@ struct BudgetPage: View {
 struct BudgetRing: View {
   let fraction: Double
   private let width: CGFloat = 13
+  @Environment(\.isLuminanceReduced) private var dimmed
 
   var body: some View {
     ZStack {
-      Circle().stroke(WatchTheme.card2, lineWidth: width)
+      if dimmed {
+        // Always On: the track becomes an outline.
+        Circle().stroke(style: StrokeStyle(lineWidth: width)).stroke(WatchTheme.ink3, lineWidth: 1)
+      } else {
+        Circle().stroke(WatchTheme.card2, lineWidth: width)
+      }
       Circle()
         .trim(from: 0, to: min(fraction, 1))
         .stroke(WatchTheme.accentText, style: StrokeStyle(lineWidth: width, lineCap: .round))
