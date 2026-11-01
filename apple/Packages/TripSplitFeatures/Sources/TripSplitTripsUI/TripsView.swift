@@ -16,7 +16,9 @@ public struct TripsView: View {
   private var trips: [TripSnapshot] { model.store.trips }
   public var body: some View {
     if trips.isEmpty {
-      content
+      FirstTripView(sidebar: compact) {
+        if compact { sidebarHeader } else { header }
+      }
     } else {
       content.refreshable { await model.sync.syncAll() }
     }
@@ -25,9 +27,7 @@ public struct TripsView: View {
     ScrollView {
       VStack(alignment: .leading, spacing: 26) {
         if compact { sidebarHeader } else { header }
-        if trips.isEmpty {
-          empty
-        } else if compact {
+        if compact {
           sidebar
         } else {
           if let now = trips.first(where: { $0.phase == .now }) {
@@ -114,20 +114,6 @@ public struct TripsView: View {
   private static func flags(_ trips: [TripSnapshot]) -> [String] {
     var seen = Set<String>()
     return trips.flatMap(\.stops).map(\.flag).filter { seen.insert($0).inserted }
-  }
-  private var empty: some View {
-    VStack(alignment: .leading, spacing: 28) {
-      ZStack(alignment: .bottomTrailing) {
-        VStack(alignment: .leading, spacing: 15) {
-          Text("Your next trip").font(
-            .system(size: 43, weight: .heavy, design: .default)
-          ).tracking(-2)
-        }.padding(26).frame(maxWidth: .infinity, alignment: .leading).background(
-          Theme.surface, in: RoundedRectangle(cornerRadius: 28))
-        Text("✈️").font(.system(size: 56)).rotationEffect(.degrees(-12)).offset(x: -10, y: 28)
-      }.padding(.top, 12).padding(.bottom, 20)
-      PrimaryButton(title: "Plan your first trip", symbol: "plus") { model.showOnboarding = true }
-    }
   }
   private var sidebar: some View {
     VStack(alignment: .leading, spacing: 22) {
