@@ -68,4 +68,6 @@ xcodebuild -project apple/ios/TripSplit.xcodeproj -scheme TripSplit \
   CODE_SIGNING_ALLOWED=NO test
 ```
 
-GitHub Actions checks both the Worker and the native app. Simulator and local checks do not establish successful Apple production sign-in or installed TestFlight delivery; those require their respective environments and credentials.
+Run relevant API and Swift tests locally before delivery. Pull-request CI performs only fast API type/contract and destination-data checks; it does not repeat test suites, native builds or watchOS compilation. Merging the checked revision to `main` does not start a duplicate validation run. TestFlight's separate manual workflow performs the archive and upload.
+
+Simulator and local checks do not establish successful Apple production sign-in or installed TestFlight delivery; those require their respective environments and credentials.

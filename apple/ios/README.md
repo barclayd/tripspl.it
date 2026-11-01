@@ -3,7 +3,7 @@
 Native SwiftUI app, iOS 26 minimum, built with Xcode 27.1. XcodeGen owns the project configuration; the generated project is included for opening directly in Xcode. The authorised Apple team is `R2GGK3VN2C`; provisioning profiles remain managed by Xcode.
 
 ```sh
-cd ios
+cd apple/ios
 xcodegen generate
 xcodebuild -project TripSplit.xcodeproj -scheme TripSplit \
   -sdk iphonesimulator -destination 'generic/platform=iOS Simulator' \
@@ -21,7 +21,22 @@ Tests use the canonical money/currency fixtures in `../../api/contracts/fixtures
 
 The app is a composition shell for four local packages in `../Packages/`: `TripSplitDomain`, `TripSplitInfrastructure`, `TripSplitApplication` and `TripSplitFeatures`. Infrastructure exposes networking, persistence and sync separately. Features exposes design system, shared UI, Apple adapters and six vertical UI products. See [the architecture and dependency rules](../../docs/architecture.md#package-architecture) before adding a feature.
 
-Domain, networking, persistence, sync, application coordination and conversion are usable without iOS presentation code. Their minimum platforms are iOS 26, macOS 26 and watchOS 26. CI runs their macOS tests and compiles the application and conversion products for watchOS. Watch and Mac application interfaces remain future work.
+Domain, networking, persistence, sync, application coordination and conversion are usable without iOS presentation code. Their minimum platforms are iOS 26, macOS 26 and watchOS 26. Run macOS package tests locally; when changing shared services, also compile the affected products for watchOS. CI keeps only fast validation and does not repeat these builds or tests. Watch and Mac application interfaces remain future work.
+
+From `apple/ios/`, check the watchOS consumers with:
+
+```sh
+swift build --package-path ../Packages/TripSplitApplication \
+  --scratch-path /tmp/tripsplit-watch-packages \
+  --triple arm64_32-apple-watchos26.0 \
+  --sdk "$(xcrun --sdk watchos --show-sdk-path)" \
+  --target TripSplitApplication
+swift build --package-path ../Packages/TripSplitApplication \
+  --scratch-path /tmp/tripsplit-watch-packages \
+  --triple arm64_32-apple-watchos26.0 \
+  --sdk "$(xcrun --sdk watchos --show-sdk-path)" \
+  --target TripSplitConversion
+```
 
 ## Run and configure
 
