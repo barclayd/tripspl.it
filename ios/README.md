@@ -66,4 +66,28 @@ Quick Convert opens with the current stop's currency and the trip's home currenc
 
 ## Internal beta delivery
 
-App Store Connect app `6829340844` is named **TripSplit: Travel Budget** because “TripSplit” was already taken. The installed app name remains TripSplit. The internal group **Dan** contains only the account holder and automatically receives uploaded Xcode builds. Use the existing signed-in Xcode account: archive the `TripSplit` scheme, then choose **TestFlight Internal Only** in Organizer. Increase `CURRENT_PROJECT_VERSION` for every upload and keep its source revision recorded in the PR. Do not use the Sign in with Apple `.p8` key as an App Store Connect API key.
+App Store Connect app `6829340844` is **TripSplit: Travel Budget**; the installed name remains TripSplit. The intended internal group is **Dan**, ID `69183108-1726-4905-82c5-e3e6ecae0251`. Nonsecret release settings live in `testflight.json` alongside this README. The wrapper accepts both `ios` and `apple/ios` layouts and requires one matching project; move this config with the iOS shell.
+
+Use the shared `testflight-release` skill and tools from `~/Developer/barclayd` (`./codex/install-testflight.sh`). The normal local route is manual distribution signing and App Store Connect API authentication, with no Organizer or Safari dependency:
+
+```sh
+python3 scripts/testflight.py check
+python3 scripts/testflight.py release --dry-run
+python3 scripts/testflight.py release
+python3 scripts/testflight.py resume --receipt /private/path/release.json
+python3 scripts/testflight.py status --receipt /private/path/release.json
+```
+
+Run from a clean committed checkout. `release` runs the scheme's tests, resolves the next remote build number, unlocks the dedicated signing keychain, archives/exports an internal-only IPA, uploads it once and performs a bounded availability check. It holds a local release lock through upload and reuses `~/Library/Caches/TripSplit/TestFlightDerivedData`; do not routinely clean this cache. The build number is an archive override, not a source edit. A source change during tests/archive stops upload.
+
+Signing assets live in `~/.config/testflight/signing/tripsplit` (override with `TRIPSPLIT_SIGNING_DIR`): `AppStore.mobileprovision`, `codex-testflight.keychain-db` and `keychain-password`. API profile `codex-testflight` is selected explicitly. The distribution identity/profile must match the app and team and remain valid. The App Manager key cannot use the team's cloud-managed signing certificate, and command-line Xcode did not see the account used by Organizer; use the prepared manual identity. Do not use the Sign in with Apple key as an App Store Connect API key.
+
+Receipts and logs are private under `~/.local/state/testflight/tripsplit`. Exit 7 means Apple is still processing or enabling access. Resume the same receipt; never rerun the entire release merely to wait for processing. A receipt records source SHA, actual IPA hash, version/build, Apple build ID and verified group access. API read retries are bounded; uploads are not automatically retried.
+
+Build **1.0 (7)** proved CLI archive, manual signed export, API upload and exact-build availability checks on 1 November 2026, from source `353939ce57a6f92a560e4f4745903531f601a857`. Apple reported VALID and IN_BETA_TESTING with Dan-group access. This does not claim physical-device installation.
+
+### Hosted releases
+
+The manual `testflight.yml` GitHub Actions workflow calls the shared, commit-pinned macOS workflow. The repository's `testflight` environment contains the ASC key, exportable distribution identity/password and App Store profile as secrets. It uses a temporary keychain and removes temporary signing material afterwards. Only the release receipt is retained as an artifact.
+
+After the workflow is merged to the default branch, trigger it with `gh workflow run testflight.yml --ref main` (or an authorised branch), then follow the returned run. Hosted execution is unverified until its first successful run; the local CLI path and CI signing prepare/cleanup have been exercised. Coordinate local releases with CI—the build-number lookup is not a cross-machine reservation. Keep the caller's `uses` and `tooling-ref` on the same reviewed shared-tooling commit.
