@@ -630,12 +630,11 @@ package struct BoardingPassStack: View {
       .animation(reduceMotion ? nil : .timingCurve(0.34, 1.56, 0.64, 1, duration: 0.35), value: frontIndex)
       .accessibilityHidden(true)
       Spacer()
-      Button(fanned ? "Stack them" : "\(count) passes · swipe up to shuffle") {
-        expanded.toggle()
+      if fanned {
+        Button("Stack them") { expanded = false }
+          .font(.system(size: 12.5, weight: .heavy)).foregroundStyle(Theme.secondary)
+          .buttonStyle(.plain).accessibilityLabel("Stack passes")
       }
-      .font(.system(size: 12.5, weight: .heavy)).foregroundStyle(Theme.secondary)
-      .buttonStyle(.plain)
-      .accessibilityLabel(fanned ? "Stack passes" : "Show all \(count) passes")
     }
     .padding(.horizontal, 4).padding(.top, 10).frame(height: 32, alignment: .bottom)
   }
