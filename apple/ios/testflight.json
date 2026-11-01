@@ -1,0 +1,10 @@
+{
+  "app_id": "6829340844",
+  "bundle_id": "it.tripspl.TripSplit",
+  "team_id": "R2GGK3VN2C",
+  "group_id": "69183108-1726-4905-82c5-e3e6ecae0251",
+  "api_profile": "codex-testflight",
+  "project_candidates": ["apple/ios/TripSplit.xcodeproj", "ios/TripSplit.xcodeproj"],
+  "scheme": "TripSplit",
+  "test_destination": "platform=iOS Simulator,name=iPhone Duo,OS=27.1"
+}
