@@ -138,10 +138,12 @@ import TripSplitDomain
     try persist(envelope)
   }
   public func clearAccount(_ accountID: String) throws {
-    for (id, envelope) in envelopes where envelope.accountID == accountID {
-      try removeDocument("trip:" + id)
-      envelopes.removeValue(forKey: id)
-      try removeDocument("expense:" + id)
-    }
+    for (id, envelope) in envelopes where envelope.accountID == accountID { try removeTrip(id) }
+  }
+  /// Forgets a trip on this device, with its unsent changes and expense draft.
+  public func removeTrip(_ id: String) throws {
+    try removeDocument("trip:" + id)
+    envelopes.removeValue(forKey: id)
+    try removeDocument("expense:" + id)
   }
 }

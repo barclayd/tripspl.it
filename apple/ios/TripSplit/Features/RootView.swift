@@ -18,6 +18,8 @@ struct RootView: View {
   @State private var columns: NavigationSplitViewVisibility = .all
   @State private var preferredColumn: NavigationSplitViewColumn = .sidebar
   @State private var wide = false
+  @State private var deleting: TripSnapshot?
+  @State private var clearing: Attachment?
   var body: some View {
     @Bindable var model = model
     // The "+" tab is an action, not a destination: selecting it starts a new trip in place.
@@ -107,22 +109,33 @@ struct RootView: View {
                   }
                 }
                 if #available(iOS 27.0, *) {
-                  ToolbarOverflowMenu {
-                    Button("Edit trip", systemImage: "pencil") { model.showTripSettings = true }
-                    Button("Account & sync", systemImage: "person.crop.circle") {
-                      model.showSettings = true
-                    }
-                  }
+                  ToolbarOverflowMenu { more(trip) }
                 } else {
                   ToolbarItem {
-                    Menu("More", systemImage: "ellipsis") {
-                      Button("Edit trip", systemImage: "pencil") { model.showTripSettings = true }
-                      Button("Account & sync", systemImage: "person.crop.circle") {
-                        model.showSettings = true
-                      }
-                    }
+                    Menu("More", systemImage: "ellipsis") { more(trip) }
                   }
                 }
+              }
+            }
+            .confirmationDialog(
+              "Delete \(deleting?.name ?? "this trip")?",
+              isPresented: Binding(get: { deleting != nil }, set: { if !$0 { deleting = nil } }),
+              titleVisibility: .visible, presenting: deleting
+            ) { trip in
+              Button("Delete trip", role: .destructive) { Task { await model.deleteTrip(trip) } }
+            } message: { trip in
+              Text(
+                trip.travellers.count > 1
+                  ? "Its days and expenses go for all \(trip.travellers.count) travellers. This can’t be undone."
+                  : "Its days and expenses go too. This can’t be undone.")
+            }
+            .confirmationDialog(
+              clearTitle,
+              isPresented: Binding(get: { clearing != nil }, set: { if !$0 { clearing = nil } }),
+              titleVisibility: .visible, presenting: clearing
+            ) { attachment in
+              Button("Delete expenses", role: .destructive) {
+                if let trip = model.selectedTrip { model.clearDay(attachment, trip: trip) }
               }
             }
           }
@@ -138,6 +151,8 @@ struct RootView: View {
             if value != nil {
               preferredColumn = .detail
               if !wide { columns = .detailOnly }
+            } else {
+              preferredColumn = .sidebar
             }
           }
           .onChange(of: model.fullScreenDay) { _, full in columns = full ? .detailOnly : .all }
@@ -233,6 +248,11 @@ struct RootView: View {
           if arguments.contains("--quick-convert") {
             model.showConverter = true
           }
+          // `--confirm delete|clear` asks before deleting the trip or clearing the open day.
+          if let index = arguments.firstIndex(of: "--confirm"), arguments.indices.contains(index + 1) {
+            try? await Task.sleep(for: .seconds(1))
+            if arguments[index + 1] == "delete" { deleting = trip } else { clearing = model.selectedAttachment }
+          }
         }
       #endif
       await model.sync.syncAll()
@@ -262,6 +282,43 @@ struct RootView: View {
       }
     }
     .onOpenURL { model.inviteURL = $0 }
+  }
+}
+extension RootView {
+  /// The "…" menu: trip actions, then the open day's, then account. Destructive ones confirm first.
+  @ViewBuilder private func more(_ trip: TripSnapshot) -> some View {
+    Button("Edit trip", systemImage: "pencil") { model.showTripSettings = true }
+    if trip.role == "owner" {
+      Button("Delete trip", systemImage: "trash", role: .destructive) { deleting = trip }
+    }
+    if let attachment = model.selectedAttachment {
+      let items = trip.expenses(for: attachment)
+      Section {
+        if attachment.kind == .day {
+          Menu("Move to another day", systemImage: "calendar") {
+            ForEach(Array(trip.days.enumerated()), id: \.element.id) { index, day in
+              if day.id != attachment.id {
+                Button("Day \(index + 1) · \(CivilDate.display(day.date, format: "EEE d MMM"))") {
+                  model.moveExpenses(items, to: .init(kind: .day, id: day.id), trip: trip)
+                }
+              }
+            }
+          }
+          .disabled(items.isEmpty)
+        }
+        Button("Clear day", systemImage: "xmark.bin", role: .destructive) { clearing = attachment }
+          .disabled(items.isEmpty)
+      }
+    }
+    Section {
+      Button("Account & sync", systemImage: "person.crop.circle") { model.showSettings = true }
+    }
+  }
+
+  private var clearTitle: String {
+    guard let trip = model.selectedTrip, let clearing else { return "Clear day?" }
+    let count = trip.expenses(for: clearing).count
+    return "Delete \(count == 1 ? "the expense" : "all \(count) expenses") on this day?"
   }
 }
 struct InviteLink: Identifiable {

@@ -177,7 +177,12 @@ import TripSplitPersistence
         guard let e = store.envelopes[id], e.accountID == nil || e.accountID == account else {
           continue
         }
-        do { try await syncTrip(id, token: token, account: account) } catch {
+        do { try await syncTrip(id, token: token, account: account) } catch let error
+          as ServiceError where e.confirmed.syncEpoch != "local" && Self.revoked(error)
+        {
+          // The owner deleted the trip or took this traveller off it, so it leaves this device too.
+          do { try store.removeTrip(id) } catch { failures.append(error.localizedDescription) }
+        } catch {
           failures.append(error.localizedDescription)
         }
       }
@@ -339,6 +344,27 @@ import TripSplitPersistence
       }
       envelope = current
     } while envelope.pending.contains(where: { $0.problem == nil })
+  }
+  static func revoked(_ error: ServiceError) -> Bool {
+    error.code == "TRIP_NOT_FOUND" || error.code == "MEMBERSHIP"
+  }
+  /// Deletes a trip for every traveller on it, then forgets it here. A trip the server has
+  /// never seen only leaves this device.
+  public func deleteTrip(_ id: String) async throws {
+    guard let envelope = store.envelopes[id] else { return }
+    let local = envelope.confirmed.syncEpoch == "local"
+    if !local || envelope.createSnapshot != nil {
+      let token = try await accessToken()
+      struct Done: Decodable, Sendable { var ok: Bool }
+      do {
+        let _: Done = try await api.request("/trips/\(id)", method: "DELETE", token: token)
+      } catch let error as ServiceError
+        where error.code == "TRIP_NOT_FOUND" || local && error.code == "MEMBERSHIP"
+      {
+        // Already gone, or a create that never reached the server.
+      }
+    }
+    try store.removeTrip(id)
   }
   public func approveRestore(_ id: String) throws {
     guard var e = store.envelopes[id] else { return }

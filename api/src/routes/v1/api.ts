@@ -72,6 +72,7 @@ export function createV1Routes() {
     const { tripId, inviteId } = c.req.valid('param');
     return c.json(await executeRoom(c.env, c.get('principal'), tripId, { type: 'revokeInvite', inviteId }), 200, jsonHeaders);
   });
+  app.openapi(routes.trips.delete, async c => c.json(await executeRoom(c.env, c.get('principal'), c.req.valid('param').tripId, { type: 'delete' }), 200, jsonHeaders));
   app.openapi(routes.trips.removeMember, async c => {
     const { tripId, travellerId } = c.req.valid('param');
     return c.json(await executeRoom(c.env, c.get('principal'), tripId, { type: 'removeMember', travellerId }), 200, jsonHeaders);
