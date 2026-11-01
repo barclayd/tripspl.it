@@ -52,6 +52,7 @@
 		99E849E0A8DD38E98AE199A4 /* LogExpenseTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3764059ECA5E0D090848E9E4 /* LogExpenseTests.swift */; };
 		9FFBD1487156120971350850 /* WatchGlanceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC319D5BE19AA428E954A8BA /* WatchGlanceTests.swift */; };
 		A44B32FB1CB9500FA09241BB /* TripSplitWatchModel in Frameworks */ = {isa = PBXBuildFile; productRef = 4EFE4D5CE1388EA625856CDE /* TripSplitWatchModel */; };
+		AE5FBDE74D99671F584A8A9E /* TripSplitWatch.app in Embed Watch Content */ = {isa = PBXBuildFile; fileRef = 1C54D4353F52B8C544F3EF0B /* TripSplitWatch.app */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		B3049F4D43F57D76E1F418C1 /* TripSplitCompanionHost in Frameworks */ = {isa = PBXBuildFile; productRef = 2489E38ACC7DCF4B853B8839 /* TripSplitCompanionHost */; };
 		B661DC6E61E5B7692B42970B /* TripSplitConversionUI in Frameworks */ = {isa = PBXBuildFile; productRef = A903F2941364C0BCAED059AB /* TripSplitConversionUI */; };
 		BD1847E1E001CE97FEAE4573 /* TripSplitWatchModel in Frameworks */ = {isa = PBXBuildFile; productRef = D78D04F5FD96B239DA94249A /* TripSplitWatchModel */; };
@@ -91,9 +92,27 @@
 			remoteGlobalIDString = 0AB049A87F18AACE7B1D065F;
 			remoteInfo = TripSplit;
 		};
+		BEB11E50E35F1AED689979D3 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = BB28324ACBF0999D5F095094 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = E4C805FBAA992E08A68920FA;
+			remoteInfo = TripSplitWatch;
+		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
+		8FA83159C9520F73600EB691 /* Embed Watch Content */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "$(CONTENTS_FOLDER_PATH)/Watch";
+			dstSubfolderSpec = 16;
+			files = (
+				AE5FBDE74D99671F584A8A9E /* TripSplitWatch.app in Embed Watch Content */,
+			);
+			name = "Embed Watch Content";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		B72B2877D60FFBA4904A5913 /* Embed Foundation Extensions */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
@@ -367,10 +386,12 @@
 				AED023A51429C501E00891F4 /* Sources */,
 				330215420527B004CC88A1BF /* Resources */,
 				69C4C48C1618AA2A85E7A247 /* Frameworks */,
+				8FA83159C9520F73600EB691 /* Embed Watch Content */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				86FD13BFBBD1A4B864785E62 /* PBXTargetDependency */,
 			);
 			name = TripSplit;
 			packageProductDependencies = (
@@ -623,6 +644,11 @@
 			isa = PBXTargetDependency;
 			target = 0AB049A87F18AACE7B1D065F /* TripSplit */;
 			targetProxy = 18FD4B2A91D62984BD10D223 /* PBXContainerItemProxy */;
+		};
+		86FD13BFBBD1A4B864785E62 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = E4C805FBAA992E08A68920FA /* TripSplitWatch */;
+			targetProxy = BEB11E50E35F1AED689979D3 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 

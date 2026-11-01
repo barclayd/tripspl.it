@@ -60,6 +60,7 @@ targets:
         product: TripSplitGlobeUI
       - package: TripSplitApplication
         product: TripSplitCompanionHost
+      - target: TripSplitWatch
     info:
       path: Config/Info.plist
       properties:
