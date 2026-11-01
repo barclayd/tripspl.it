@@ -22,6 +22,9 @@ struct RootView: View {
   @State private var railed = false
   /// Where the fold runs while the Duo's half open.
   @State private var fold: CGRect?
+  /// How far down each pane's content starts, so the sidebar can start level with the pane beside.
+  @State private var sidebarTop: CGFloat = 0
+  @State private var detailTop: CGFloat = 0
   @State private var deleting: TripSnapshot?
   @State private var clearing: Attachment?
   var body: some View {
@@ -77,6 +80,10 @@ struct RootView: View {
           }
           // Only takes effect on the sidebar column's content, not on the split view itself.
           .toolbar(removing: .sidebarToggle)
+          // On the rail the sidebar gets no top inset while the pane beside keeps the rail's, so
+          // both panes start on the same line, level with the time.
+          .safeAreaPadding(.top, twoPane && railed ? max(0, detailTop - sidebarTop) : 0)
+          .onGeometryChange(for: CGFloat.self) { $0.safeAreaInsets.top } action: { sidebarTop = $0 }
         } detail: {
           NavigationStack {
             ZStack {
@@ -103,6 +110,7 @@ struct RootView: View {
             // Picking a trip in the sidebar slides it up into the pane beside.
             .animation(twoPane ? .smooth(duration: 0.5) : nil, value: model.selectedTripID)
             .pinsBar(twoPane)
+            .onGeometryChange(for: CGFloat.self) { $0.safeAreaInsets.top } action: { detailTop = $0 }
             .navigationBarBackButtonHidden(true)
             .toolbar {
               ToolbarItem(placement: .cancellationAction) {
