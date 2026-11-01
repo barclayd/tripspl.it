@@ -103,7 +103,7 @@ struct DayView: View {
                 .foregroundStyle(WatchTheme.ink3)
                 .frame(maxWidth: .infinity, alignment: .leading)
             }
-            ForEach(items) { ExpenseRow(expense: $0, pages: pages) }
+            ForEach(items) { ExpenseItem(expense: $0, pages: pages) }
           }
           .padding(.top, 14)
         }

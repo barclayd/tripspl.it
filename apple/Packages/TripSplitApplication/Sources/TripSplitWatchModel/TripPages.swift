@@ -32,6 +32,8 @@ public struct TripPages {
     return trip.phase(at: now) == .past ? [.budget, .balances] : [.budget, .balances, .days]
   }
   public var firstPage: Page { pages[0] }
+  /// Spends can be logged on a trip until it's over; a past trip is read-only on the watch.
+  public var canLog: Bool { trip.phase(at: now) != .past }
 
   public func name(_ id: String) -> String {
     id == you ? "You" : trip.travellers.first { $0.id == id }?.name ?? "Someone"

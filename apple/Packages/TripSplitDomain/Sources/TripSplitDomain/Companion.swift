@@ -57,17 +57,20 @@ public struct CompanionState: Codable, Hashable, Sendable {
 public enum CompanionCommand: Codable, Hashable, Sendable, Identifiable {
   case saveExpense(tripID: String, expense: Expense)
   case saveRepayment(tripID: String, repayment: Repayment)
+  case deleteExpense(tripID: String, expenseID: String)
 
+  /// Saving and deleting the same expense share an id, so a delete replaces a pending save.
   public var id: String {
     switch self {
     case .saveExpense(_, let expense): "expense:" + expense.id
+    case .deleteExpense(_, let id): "expense:" + id
     case .saveRepayment(_, let repayment): "repayment:" + repayment.id
     }
   }
 
   public var tripID: String {
     switch self {
-    case .saveExpense(let id, _), .saveRepayment(let id, _): id
+    case .saveExpense(let id, _), .saveRepayment(let id, _), .deleteExpense(let id, _): id
     }
   }
 
@@ -78,6 +81,8 @@ public enum CompanionCommand: Codable, Hashable, Sendable, Identifiable {
     case .saveExpense(_, let expense):
       trip.expenses.removeAll { $0.id == expense.id }
       trip.expenses.append(expense)
+    case .deleteExpense(_, let id):
+      trip.expenses.removeAll { $0.id == id }
     case .saveRepayment(_, let repayment):
       trip.repayments.removeAll { $0.id == repayment.id }
       trip.repayments.append(repayment)
@@ -89,6 +94,8 @@ public enum CompanionCommand: Codable, Hashable, Sendable, Identifiable {
     switch self {
     case .saveExpense(_, let expense):
       trip.expenses.contains { $0.matches(expense) }
+    case .deleteExpense(_, let id):
+      !trip.expenses.contains { $0.id == id }
     case .saveRepayment(_, let repayment):
       trip.repayments.contains {
         $0.id == repayment.id && $0.amountMinor == repayment.amountMinor

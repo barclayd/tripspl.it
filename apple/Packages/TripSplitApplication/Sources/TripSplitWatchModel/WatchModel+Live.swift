@@ -26,6 +26,7 @@ extension WatchModel {
         state: mirror.load(), mirror: mirror, send: send, loadQuote: loadQuote,
         loadTable: loadTable)
       session.onContext = { [weak model] in model?.receive($0) }
+      model.reachability = { session.isReachable }
       model.retain(session)
       return model
     }

@@ -36,8 +36,13 @@ public struct TripsRootView: View {
 }
 
 struct TripsList: View {
+  enum Sheet: Identifiable {
+    case convert, log
+    var id: Self { self }
+  }
+
   @Environment(WatchModel.self) private var model
-  @State private var converting = false
+  @State private var sheet: Sheet?
 
   var body: some View {
     let timeline = model.timeline
@@ -46,7 +51,7 @@ struct TripsList: View {
       VStack(alignment: .leading, spacing: 6) {
         if let trip = timeline.now.first, let conversion = model.quickConversion(for: trip) {
           Button {
-            converting = true
+            sheet = .convert
           } label: {
             ConvertCapsule(conversion: conversion)
           }
@@ -75,6 +80,36 @@ struct TripsList: View {
       }
       .padding(.horizontal, 7)
     }
-    .sheet(isPresented: $converting) { QuickConvertView(model: model) }
+    .toolbar {
+      if !timeline.now.isEmpty || !timeline.upcoming.isEmpty {
+        ToolbarItemGroup(placement: .bottomBar) {
+          Spacer()
+          LogButton { sheet = .log }
+        }
+      }
+    }
+    .sheet(item: $sheet) { sheet in
+      switch sheet {
+      case .convert: QuickConvertView(model: model)
+      case .log: LogExpenseView(model: model)
+      }
+    }
+  }
+}
+
+/// The accent "+" that opens Log expense, from Trips or inside a trip.
+struct LogButton: View {
+  let action: () -> Void
+
+  var body: some View {
+    Button(action: action) {
+      Image(systemName: "plus")
+        .font(.system(size: 17, weight: .bold))
+        .foregroundStyle(.white)
+    }
+    .buttonStyle(.glassProminent)
+    .buttonBorderShape(.circle)
+    .tint(WatchTheme.accent)
+    .accessibilityLabel("Log expense")
   }
 }
