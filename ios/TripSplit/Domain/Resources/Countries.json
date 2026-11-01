@@ -1,0 +1,3187 @@
+[
+  {
+    "code": "AD",
+    "name": "Andorra",
+    "currencies": [
+      "EUR"
+    ],
+    "latitude": 42.546245,
+    "longitude": 1.601554,
+    "aliases": [
+      "AND"
+    ]
+  },
+  {
+    "code": "AE",
+    "name": "United Arab Emirates",
+    "currencies": [
+      "AED"
+    ],
+    "latitude": 23.424076,
+    "longitude": 53.847818,
+    "aliases": [
+      "ARE",
+      "UAE",
+      "Emirates",
+      "الإمارات العربية المتحدة"
+    ]
+  },
+  {
+    "code": "AF",
+    "name": "Afghanistan",
+    "currencies": [
+      "AFN"
+    ],
+    "latitude": 33.93911,
+    "longitude": 67.709953,
+    "aliases": [
+      "AFG"
+    ]
+  },
+  {
+    "code": "AG",
+    "name": "Antigua & Barbuda",
+    "currencies": [
+      "XCD"
+    ],
+    "latitude": 17.060816,
+    "longitude": -61.796428,
+    "aliases": [
+      "ATG",
+      "Antigua and Barbuda"
+    ]
+  },
+  {
+    "code": "AI",
+    "name": "Anguilla",
+    "currencies": [
+      "XCD"
+    ],
+    "latitude": 18.220554,
+    "longitude": -63.068615,
+    "aliases": [
+      "AIA"
+    ]
+  },
+  {
+    "code": "AL",
+    "name": "Albania",
+    "currencies": [
+      "ALL"
+    ],
+    "latitude": 41.153332,
+    "longitude": 20.168331,
+    "aliases": [
+      "ALB"
+    ]
+  },
+  {
+    "code": "AM",
+    "name": "Armenia",
+    "currencies": [
+      "AMD"
+    ],
+    "latitude": 40.069099,
+    "longitude": 45.038189,
+    "aliases": [
+      "ARM"
+    ]
+  },
+  {
+    "code": "AO",
+    "name": "Angola",
+    "currencies": [
+      "AOA"
+    ],
+    "latitude": -11.202692,
+    "longitude": 17.873887,
+    "aliases": [
+      "AGO"
+    ]
+  },
+  {
+    "code": "AQ",
+    "name": "Antarctica",
+    "currencies": [],
+    "latitude": -75.250973,
+    "longitude": -0.071389,
+    "aliases": [
+      "ATA"
+    ]
+  },
+  {
+    "code": "AR",
+    "name": "Argentina",
+    "currencies": [
+      "ARS"
+    ],
+    "latitude": -38.416097,
+    "longitude": -63.616672,
+    "aliases": [
+      "ARG"
+    ]
+  },
+  {
+    "code": "AS",
+    "name": "American Samoa",
+    "currencies": [
+      "USD"
+    ],
+    "latitude": -14.270972,
+    "longitude": -170.132217,
+    "aliases": [
+      "ASM"
+    ]
+  },
+  {
+    "code": "AT",
+    "name": "Austria",
+    "currencies": [
+      "EUR"
+    ],
+    "latitude": 47.516231,
+    "longitude": 14.550072,
+    "aliases": [
+      "AUT",
+      "Österreich",
+      "Osterreich"
+    ]
+  },
+  {
+    "code": "AU",
+    "name": "Australia",
+    "currencies": [
+      "AUD"
+    ],
+    "latitude": -25.274398,
+    "longitude": 133.775136,
+    "aliases": [
+      "AUS",
+      "Oz"
+    ]
+  },
+  {
+    "code": "AW",
+    "name": "Aruba",
+    "currencies": [
+      "AWG"
+    ],
+    "latitude": 12.52111,
+    "longitude": -69.968338,
+    "aliases": [
+      "ABW"
+    ]
+  },
+  {
+    "code": "AX",
+    "name": "Åland Islands",
+    "currencies": [
+      "EUR"
+    ],
+    "latitude": 60.09726,
+    "longitude": 19.93481,
+    "aliases": [
+      "ALA",
+      "Aland Islands",
+      "Åland",
+      "Aland"
+    ]
+  },
+  {
+    "code": "AZ",
+    "name": "Azerbaijan",
+    "currencies": [
+      "AZN"
+    ],
+    "latitude": 40.143105,
+    "longitude": 47.576927,
+    "aliases": [
+      "AZE"
+    ]
+  },
+  {
+    "code": "BA",
+    "name": "Bosnia & Herzegovina",
+    "currencies": [
+      "BAM"
+    ],
+    "latitude": 43.915886,
+    "longitude": 17.679076,
+    "aliases": [
+      "BIH",
+      "Bosnia and Herzegovina",
+      "Bosnia"
+    ]
+  },
+  {
+    "code": "BB",
+    "name": "Barbados",
+    "currencies": [
+      "BBD"
+    ],
+    "latitude": 13.193887,
+    "longitude": -59.543198,
+    "aliases": [
+      "BRB"
+    ]
+  },
+  {
+    "code": "BD",
+    "name": "Bangladesh",
+    "currencies": [
+      "BDT"
+    ],
+    "latitude": 23.684994,
+    "longitude": 90.356331,
+    "aliases": [
+      "BGD"
+    ]
+  },
+  {
+    "code": "BE",
+    "name": "Belgium",
+    "currencies": [
+      "EUR"
+    ],
+    "latitude": 50.503887,
+    "longitude": 4.469936,
+    "aliases": [
+      "BEL",
+      "Belgique",
+      "België",
+      "Belgien"
+    ]
+  },
+  {
+    "code": "BF",
+    "name": "Burkina Faso",
+    "currencies": [
+      "XOF"
+    ],
+    "latitude": 12.238333,
+    "longitude": -1.561593,
+    "aliases": [
+      "BFA"
+    ]
+  },
+  {
+    "code": "BG",
+    "name": "Bulgaria",
+    "currencies": [
+      "EUR"
+    ],
+    "latitude": 42.733883,
+    "longitude": 25.48583,
+    "aliases": [
+      "BGR"
+    ]
+  },
+  {
+    "code": "BH",
+    "name": "Bahrain",
+    "currencies": [
+      "BHD"
+    ],
+    "latitude": 25.930414,
+    "longitude": 50.637772,
+    "aliases": [
+      "BHR"
+    ]
+  },
+  {
+    "code": "BI",
+    "name": "Burundi",
+    "currencies": [
+      "BIF"
+    ],
+    "latitude": -3.373056,
+    "longitude": 29.918886,
+    "aliases": [
+      "BDI"
+    ]
+  },
+  {
+    "code": "BJ",
+    "name": "Benin",
+    "currencies": [
+      "XOF"
+    ],
+    "latitude": 9.30769,
+    "longitude": 2.315834,
+    "aliases": [
+      "BEN"
+    ]
+  },
+  {
+    "code": "BL",
+    "name": "St. Barthélemy",
+    "currencies": [
+      "EUR"
+    ],
+    "latitude": 17.89618,
+    "longitude": -62.84978,
+    "aliases": [
+      "BLM",
+      "Saint Barthelemy",
+      "St. Barthelemy",
+      "Saint Barthélemy",
+      "St Barts",
+      "St Barth"
+    ]
+  },
+  {
+    "code": "BM",
+    "name": "Bermuda",
+    "currencies": [
+      "BMD"
+    ],
+    "latitude": 32.321384,
+    "longitude": -64.75737,
+    "aliases": [
+      "BMU"
+    ]
+  },
+  {
+    "code": "BN",
+    "name": "Brunei",
+    "currencies": [
+      "BND"
+    ],
+    "latitude": 4.535277,
+    "longitude": 114.727669,
+    "aliases": [
+      "BRN"
+    ]
+  },
+  {
+    "code": "BO",
+    "name": "Bolivia",
+    "currencies": [
+      "BOB"
+    ],
+    "latitude": -16.290154,
+    "longitude": -63.588653,
+    "aliases": [
+      "BOL",
+      "Plurinational State of Bolivia"
+    ]
+  },
+  {
+    "code": "BQ",
+    "name": "Caribbean Netherlands",
+    "currencies": [
+      "USD"
+    ],
+    "latitude": 12.15,
+    "longitude": -68.26667,
+    "aliases": [
+      "BES",
+      "Bonaire, Saint Eustatius and Saba",
+      "Bonaire",
+      "Sint Eustatius",
+      "Saba"
+    ]
+  },
+  {
+    "code": "BR",
+    "name": "Brazil",
+    "currencies": [
+      "BRL"
+    ],
+    "latitude": -14.235004,
+    "longitude": -51.92528,
+    "aliases": [
+      "BRA",
+      "Brasil"
+    ]
+  },
+  {
+    "code": "BS",
+    "name": "Bahamas",
+    "currencies": [
+      "BSD"
+    ],
+    "latitude": 25.03428,
+    "longitude": -77.39628,
+    "aliases": [
+      "BHS"
+    ]
+  },
+  {
+    "code": "BT",
+    "name": "Bhutan",
+    "currencies": [
+      "BTN",
+      "INR"
+    ],
+    "latitude": 27.514162,
+    "longitude": 90.433601,
+    "aliases": [
+      "BTN",
+      "Druk Yul",
+      "འབྲུག་ཡུལ"
+    ]
+  },
+  {
+    "code": "BV",
+    "name": "Bouvet Island",
+    "currencies": [
+      "NOK"
+    ],
+    "latitude": -54.423199,
+    "longitude": 3.413194,
+    "aliases": [
+      "BVT"
+    ]
+  },
+  {
+    "code": "BW",
+    "name": "Botswana",
+    "currencies": [
+      "BWP"
+    ],
+    "latitude": -22.328474,
+    "longitude": 24.684866,
+    "aliases": [
+      "BWA"
+    ]
+  },
+  {
+    "code": "BY",
+    "name": "Belarus",
+    "currencies": [
+      "BYN"
+    ],
+    "latitude": 53.709807,
+    "longitude": 27.953389,
+    "aliases": [
+      "BLR"
+    ]
+  },
+  {
+    "code": "BZ",
+    "name": "Belize",
+    "currencies": [
+      "BZD"
+    ],
+    "latitude": 17.189877,
+    "longitude": -88.49765,
+    "aliases": [
+      "BLZ"
+    ]
+  },
+  {
+    "code": "CA",
+    "name": "Canada",
+    "currencies": [
+      "CAD"
+    ],
+    "latitude": 56.130366,
+    "longitude": -106.346771,
+    "aliases": [
+      "CAN"
+    ]
+  },
+  {
+    "code": "CC",
+    "name": "Cocos (Keeling) Islands",
+    "currencies": [
+      "AUD"
+    ],
+    "latitude": -12.164165,
+    "longitude": 96.870956,
+    "aliases": [
+      "CCK",
+      "Cocos Islands"
+    ]
+  },
+  {
+    "code": "CD",
+    "name": "Congo - Kinshasa",
+    "currencies": [
+      "CDF"
+    ],
+    "latitude": -4.038333,
+    "longitude": 21.758664,
+    "aliases": [
+      "COD",
+      "Democratic Republic of the Congo",
+      "DR Congo",
+      "DRC",
+      "Congo Kinshasa",
+      "Congo (DRC)"
+    ]
+  },
+  {
+    "code": "CF",
+    "name": "Central African Republic",
+    "currencies": [
+      "XAF"
+    ],
+    "latitude": 6.611111,
+    "longitude": 20.939444,
+    "aliases": [
+      "CAF"
+    ]
+  },
+  {
+    "code": "CG",
+    "name": "Congo - Brazzaville",
+    "currencies": [
+      "XAF"
+    ],
+    "latitude": -0.228021,
+    "longitude": 15.827659,
+    "aliases": [
+      "COG",
+      "Republic of the Congo",
+      "Congo Brazzaville",
+      "Congo (Republic)"
+    ]
+  },
+  {
+    "code": "CH",
+    "name": "Switzerland",
+    "currencies": [
+      "CHF"
+    ],
+    "latitude": 46.818188,
+    "longitude": 8.227512,
+    "aliases": [
+      "CHE",
+      "Schweiz",
+      "Suisse",
+      "Svizzera"
+    ]
+  },
+  {
+    "code": "CI",
+    "name": "Côte d’Ivoire",
+    "currencies": [
+      "XOF"
+    ],
+    "latitude": 7.539989,
+    "longitude": -5.54708,
+    "aliases": [
+      "CIV",
+      "Ivory Coast",
+      "Cote d’Ivoire",
+      "Côte d'Ivoire",
+      "Cote d Ivoire"
+    ]
+  },
+  {
+    "code": "CK",
+    "name": "Cook Islands",
+    "currencies": [
+      "NZD"
+    ],
+    "latitude": -21.236736,
+    "longitude": -159.777671,
+    "aliases": [
+      "COK"
+    ]
+  },
+  {
+    "code": "CL",
+    "name": "Chile",
+    "currencies": [
+      "CLP"
+    ],
+    "latitude": -35.675147,
+    "longitude": -71.542969,
+    "aliases": [
+      "CHL"
+    ]
+  },
+  {
+    "code": "CM",
+    "name": "Cameroon",
+    "currencies": [
+      "XAF"
+    ],
+    "latitude": 7.369722,
+    "longitude": 12.354722,
+    "aliases": [
+      "CMR"
+    ]
+  },
+  {
+    "code": "CN",
+    "name": "China",
+    "currencies": [
+      "CNY"
+    ],
+    "latitude": 35.86166,
+    "longitude": 104.195397,
+    "aliases": [
+      "CHN",
+      "People's Republic of China",
+      "PRC",
+      "中国",
+      "中國"
+    ]
+  },
+  {
+    "code": "CO",
+    "name": "Colombia",
+    "currencies": [
+      "COP"
+    ],
+    "latitude": 4.570868,
+    "longitude": -74.297333,
+    "aliases": [
+      "COL"
+    ]
+  },
+  {
+    "code": "CR",
+    "name": "Costa Rica",
+    "currencies": [
+      "CRC"
+    ],
+    "latitude": 9.748917,
+    "longitude": -83.753428,
+    "aliases": [
+      "CRI"
+    ]
+  },
+  {
+    "code": "CU",
+    "name": "Cuba",
+    "currencies": [
+      "CUP"
+    ],
+    "latitude": 21.521757,
+    "longitude": -77.781167,
+    "aliases": [
+      "CUB"
+    ]
+  },
+  {
+    "code": "CV",
+    "name": "Cape Verde",
+    "currencies": [
+      "CVE"
+    ],
+    "latitude": 16.002082,
+    "longitude": -24.013197,
+    "aliases": [
+      "CPV",
+      "Cabo Verde"
+    ]
+  },
+  {
+    "code": "CW",
+    "name": "Curaçao",
+    "currencies": [
+      "XCG"
+    ],
+    "latitude": 12.12246,
+    "longitude": -68.88641,
+    "aliases": [
+      "CUW",
+      "Curacao"
+    ]
+  },
+  {
+    "code": "CX",
+    "name": "Christmas Island",
+    "currencies": [
+      "AUD"
+    ],
+    "latitude": -10.447525,
+    "longitude": 105.690449,
+    "aliases": [
+      "CXR"
+    ]
+  },
+  {
+    "code": "CY",
+    "name": "Cyprus",
+    "currencies": [
+      "EUR"
+    ],
+    "latitude": 35.126413,
+    "longitude": 33.429859,
+    "aliases": [
+      "CYP"
+    ]
+  },
+  {
+    "code": "CZ",
+    "name": "Czechia",
+    "currencies": [
+      "CZK"
+    ],
+    "latitude": 49.817492,
+    "longitude": 15.472962,
+    "aliases": [
+      "CZE",
+      "Czech Republic",
+      "Česko",
+      "Cesko"
+    ]
+  },
+  {
+    "code": "DE",
+    "name": "Germany",
+    "currencies": [
+      "EUR"
+    ],
+    "latitude": 51.165691,
+    "longitude": 10.451526,
+    "aliases": [
+      "DEU",
+      "Deutschland"
+    ]
+  },
+  {
+    "code": "DJ",
+    "name": "Djibouti",
+    "currencies": [
+      "DJF"
+    ],
+    "latitude": 11.825138,
+    "longitude": 42.590275,
+    "aliases": [
+      "DJI"
+    ]
+  },
+  {
+    "code": "DK",
+    "name": "Denmark",
+    "currencies": [
+      "DKK"
+    ],
+    "latitude": 56.26392,
+    "longitude": 9.501785,
+    "aliases": [
+      "DNK",
+      "Danmark"
+    ]
+  },
+  {
+    "code": "DM",
+    "name": "Dominica",
+    "currencies": [
+      "XCD"
+    ],
+    "latitude": 15.414999,
+    "longitude": -61.370976,
+    "aliases": [
+      "DMA"
+    ]
+  },
+  {
+    "code": "DO",
+    "name": "Dominican Republic",
+    "currencies": [
+      "DOP"
+    ],
+    "latitude": 18.735693,
+    "longitude": -70.162651,
+    "aliases": [
+      "DOM"
+    ]
+  },
+  {
+    "code": "DZ",
+    "name": "Algeria",
+    "currencies": [
+      "DZD"
+    ],
+    "latitude": 28.033886,
+    "longitude": 1.659626,
+    "aliases": [
+      "DZA"
+    ]
+  },
+  {
+    "code": "EC",
+    "name": "Ecuador",
+    "currencies": [
+      "USD"
+    ],
+    "latitude": -1.831239,
+    "longitude": -78.183406,
+    "aliases": [
+      "ECU"
+    ]
+  },
+  {
+    "code": "EE",
+    "name": "Estonia",
+    "currencies": [
+      "EUR"
+    ],
+    "latitude": 58.595272,
+    "longitude": 25.013607,
+    "aliases": [
+      "EST"
+    ]
+  },
+  {
+    "code": "EG",
+    "name": "Egypt",
+    "currencies": [
+      "EGP"
+    ],
+    "latitude": 26.820553,
+    "longitude": 30.802498,
+    "aliases": [
+      "EGY",
+      "Misr",
+      "مصر"
+    ]
+  },
+  {
+    "code": "EH",
+    "name": "Western Sahara",
+    "currencies": [
+      "MAD"
+    ],
+    "latitude": 24.215527,
+    "longitude": -12.885834,
+    "aliases": [
+      "ESH"
+    ]
+  },
+  {
+    "code": "ER",
+    "name": "Eritrea",
+    "currencies": [
+      "ERN"
+    ],
+    "latitude": 15.179384,
+    "longitude": 39.782334,
+    "aliases": [
+      "ERI"
+    ]
+  },
+  {
+    "code": "ES",
+    "name": "Spain",
+    "currencies": [
+      "EUR"
+    ],
+    "latitude": 40.463667,
+    "longitude": -3.74922,
+    "aliases": [
+      "ESP",
+      "España",
+      "Espana"
+    ]
+  },
+  {
+    "code": "ET",
+    "name": "Ethiopia",
+    "currencies": [
+      "ETB"
+    ],
+    "latitude": 9.145,
+    "longitude": 40.489673,
+    "aliases": [
+      "ETH"
+    ]
+  },
+  {
+    "code": "FI",
+    "name": "Finland",
+    "currencies": [
+      "EUR"
+    ],
+    "latitude": 61.92411,
+    "longitude": 25.748151,
+    "aliases": [
+      "FIN",
+      "Suomi"
+    ]
+  },
+  {
+    "code": "FJ",
+    "name": "Fiji",
+    "currencies": [
+      "FJD"
+    ],
+    "latitude": -16.578193,
+    "longitude": 179.414413,
+    "aliases": [
+      "FJI"
+    ]
+  },
+  {
+    "code": "FK",
+    "name": "Falkland Islands",
+    "currencies": [
+      "FKP"
+    ],
+    "latitude": -51.796253,
+    "longitude": -59.523613,
+    "aliases": [
+      "FLK",
+      "Falkland Islands (Islas Malvinas)"
+    ]
+  },
+  {
+    "code": "FM",
+    "name": "Micronesia",
+    "currencies": [
+      "USD"
+    ],
+    "latitude": 7.425554,
+    "longitude": 150.550812,
+    "aliases": [
+      "FSM"
+    ]
+  },
+  {
+    "code": "FO",
+    "name": "Faroe Islands",
+    "currencies": [
+      "DKK"
+    ],
+    "latitude": 61.892635,
+    "longitude": -6.911806,
+    "aliases": [
+      "FRO"
+    ]
+  },
+  {
+    "code": "FR",
+    "name": "France",
+    "currencies": [
+      "EUR"
+    ],
+    "latitude": 46.227638,
+    "longitude": 2.213749,
+    "aliases": [
+      "FRA",
+      "République française"
+    ]
+  },
+  {
+    "code": "GA",
+    "name": "Gabon",
+    "currencies": [
+      "XAF"
+    ],
+    "latitude": -0.803689,
+    "longitude": 11.609444,
+    "aliases": [
+      "GAB"
+    ]
+  },
+  {
+    "code": "GB",
+    "name": "United Kingdom",
+    "currencies": [
+      "GBP"
+    ],
+    "latitude": 55.378051,
+    "longitude": -3.435973,
+    "aliases": [
+      "GBR",
+      "UK",
+      "U.K.",
+      "Britain",
+      "Great Britain"
+    ]
+  },
+  {
+    "code": "GD",
+    "name": "Grenada",
+    "currencies": [
+      "XCD"
+    ],
+    "latitude": 12.262776,
+    "longitude": -61.604171,
+    "aliases": [
+      "GRD"
+    ]
+  },
+  {
+    "code": "GE",
+    "name": "Georgia",
+    "currencies": [
+      "GEL"
+    ],
+    "latitude": 42.315407,
+    "longitude": 43.356892,
+    "aliases": [
+      "GEO"
+    ]
+  },
+  {
+    "code": "GF",
+    "name": "French Guiana",
+    "currencies": [
+      "EUR"
+    ],
+    "latitude": 3.933889,
+    "longitude": -53.125782,
+    "aliases": [
+      "GUF"
+    ]
+  },
+  {
+    "code": "GG",
+    "name": "Guernsey",
+    "currencies": [
+      "GBP"
+    ],
+    "latitude": 49.465691,
+    "longitude": -2.585278,
+    "aliases": [
+      "GGY"
+    ]
+  },
+  {
+    "code": "GH",
+    "name": "Ghana",
+    "currencies": [
+      "GHS"
+    ],
+    "latitude": 7.946527,
+    "longitude": -1.023194,
+    "aliases": [
+      "GHA"
+    ]
+  },
+  {
+    "code": "GI",
+    "name": "Gibraltar",
+    "currencies": [
+      "GIP"
+    ],
+    "latitude": 36.137741,
+    "longitude": -5.345374,
+    "aliases": [
+      "GIB"
+    ]
+  },
+  {
+    "code": "GL",
+    "name": "Greenland",
+    "currencies": [
+      "DKK"
+    ],
+    "latitude": 71.706936,
+    "longitude": -42.604303,
+    "aliases": [
+      "GRL"
+    ]
+  },
+  {
+    "code": "GM",
+    "name": "Gambia",
+    "currencies": [
+      "GMD"
+    ],
+    "latitude": 13.443182,
+    "longitude": -15.310139,
+    "aliases": [
+      "GMB"
+    ]
+  },
+  {
+    "code": "GN",
+    "name": "Guinea",
+    "currencies": [
+      "GNF"
+    ],
+    "latitude": 9.945587,
+    "longitude": -9.696645,
+    "aliases": [
+      "GIN"
+    ]
+  },
+  {
+    "code": "GP",
+    "name": "Guadeloupe",
+    "currencies": [
+      "EUR"
+    ],
+    "latitude": 16.995971,
+    "longitude": -62.067641,
+    "aliases": [
+      "GLP"
+    ]
+  },
+  {
+    "code": "GQ",
+    "name": "Equatorial Guinea",
+    "currencies": [
+      "XAF"
+    ],
+    "latitude": 1.650801,
+    "longitude": 10.267895,
+    "aliases": [
+      "GNQ"
+    ]
+  },
+  {
+    "code": "GR",
+    "name": "Greece",
+    "currencies": [
+      "EUR"
+    ],
+    "latitude": 39.074208,
+    "longitude": 21.824312,
+    "aliases": [
+      "GRC",
+      "Hellas",
+      "Ελλάδα"
+    ]
+  },
+  {
+    "code": "GS",
+    "name": "South Georgia & South Sandwich Islands",
+    "currencies": [
+      "GBP"
+    ],
+    "latitude": -54.429579,
+    "longitude": -36.587909,
+    "aliases": [
+      "SGS",
+      "South Georgia and the South Sandwich Islands"
+    ]
+  },
+  {
+    "code": "GT",
+    "name": "Guatemala",
+    "currencies": [
+      "GTQ"
+    ],
+    "latitude": 15.783471,
+    "longitude": -90.230759,
+    "aliases": [
+      "GTM"
+    ]
+  },
+  {
+    "code": "GU",
+    "name": "Guam",
+    "currencies": [
+      "USD"
+    ],
+    "latitude": 13.444304,
+    "longitude": 144.793731,
+    "aliases": [
+      "GUM"
+    ]
+  },
+  {
+    "code": "GW",
+    "name": "Guinea-Bissau",
+    "currencies": [
+      "XOF"
+    ],
+    "latitude": 11.803749,
+    "longitude": -15.180413,
+    "aliases": [
+      "GNB"
+    ]
+  },
+  {
+    "code": "GY",
+    "name": "Guyana",
+    "currencies": [
+      "GYD"
+    ],
+    "latitude": 4.860416,
+    "longitude": -58.93018,
+    "aliases": [
+      "GUY"
+    ]
+  },
+  {
+    "code": "HK",
+    "name": "Hong Kong SAR China",
+    "currencies": [
+      "HKD"
+    ],
+    "latitude": 22.396428,
+    "longitude": 114.109497,
+    "aliases": [
+      "HKG",
+      "Hong Kong",
+      "Hong Kong SAR",
+      "香港"
+    ]
+  },
+  {
+    "code": "HM",
+    "name": "Heard Island & McDonald Islands",
+    "currencies": [
+      "AUD"
+    ],
+    "latitude": -53.08181,
+    "longitude": 73.504158,
+    "aliases": [
+      "HMD",
+      "Heard Island and McDonald Islands",
+      "Heard & McDonald Islands"
+    ]
+  },
+  {
+    "code": "HN",
+    "name": "Honduras",
+    "currencies": [
+      "HNL"
+    ],
+    "latitude": 15.199999,
+    "longitude": -86.241905,
+    "aliases": [
+      "HND"
+    ]
+  },
+  {
+    "code": "HR",
+    "name": "Croatia",
+    "currencies": [
+      "EUR"
+    ],
+    "latitude": 45.1,
+    "longitude": 15.2,
+    "aliases": [
+      "HRV",
+      "Hrvatska"
+    ]
+  },
+  {
+    "code": "HT",
+    "name": "Haiti",
+    "currencies": [
+      "HTG",
+      "USD"
+    ],
+    "latitude": 18.971187,
+    "longitude": -72.285215,
+    "aliases": [
+      "HTI"
+    ]
+  },
+  {
+    "code": "HU",
+    "name": "Hungary",
+    "currencies": [
+      "HUF"
+    ],
+    "latitude": 47.162494,
+    "longitude": 19.503304,
+    "aliases": [
+      "HUN",
+      "Magyarország",
+      "Magyarorszag"
+    ]
+  },
+  {
+    "code": "ID",
+    "name": "Indonesia",
+    "currencies": [
+      "IDR"
+    ],
+    "latitude": -0.789275,
+    "longitude": 113.921327,
+    "aliases": [
+      "IDN"
+    ]
+  },
+  {
+    "code": "IE",
+    "name": "Ireland",
+    "currencies": [
+      "EUR"
+    ],
+    "latitude": 53.41291,
+    "longitude": -8.24389,
+    "aliases": [
+      "IRL",
+      "Éire",
+      "Eire"
+    ]
+  },
+  {
+    "code": "IL",
+    "name": "Israel",
+    "currencies": [
+      "ILS"
+    ],
+    "latitude": 31.046051,
+    "longitude": 34.851612,
+    "aliases": [
+      "ISR",
+      "ישראל"
+    ]
+  },
+  {
+    "code": "IM",
+    "name": "Isle of Man",
+    "currencies": [
+      "GBP"
+    ],
+    "latitude": 54.236107,
+    "longitude": -4.548056,
+    "aliases": [
+      "IMN"
+    ]
+  },
+  {
+    "code": "IN",
+    "name": "India",
+    "currencies": [
+      "INR"
+    ],
+    "latitude": 20.593684,
+    "longitude": 78.96288,
+    "aliases": [
+      "IND",
+      "Bharat",
+      "भारत"
+    ]
+  },
+  {
+    "code": "IO",
+    "name": "British Indian Ocean Territory",
+    "currencies": [
+      "USD"
+    ],
+    "latitude": -6.343194,
+    "longitude": 71.876519,
+    "aliases": [
+      "IOT",
+      "Chagos Archipelago"
+    ]
+  },
+  {
+    "code": "IQ",
+    "name": "Iraq",
+    "currencies": [
+      "IQD"
+    ],
+    "latitude": 33.223191,
+    "longitude": 43.679291,
+    "aliases": [
+      "IRQ"
+    ]
+  },
+  {
+    "code": "IR",
+    "name": "Iran",
+    "currencies": [
+      "IRR"
+    ],
+    "latitude": 32.427908,
+    "longitude": 53.688046,
+    "aliases": [
+      "IRN",
+      "Persia",
+      "ایران"
+    ]
+  },
+  {
+    "code": "IS",
+    "name": "Iceland",
+    "currencies": [
+      "ISK"
+    ],
+    "latitude": 64.963051,
+    "longitude": -19.020835,
+    "aliases": [
+      "ISL",
+      "Ísland",
+      "Island"
+    ]
+  },
+  {
+    "code": "IT",
+    "name": "Italy",
+    "currencies": [
+      "EUR"
+    ],
+    "latitude": 41.87194,
+    "longitude": 12.56738,
+    "aliases": [
+      "ITA",
+      "Italia"
+    ]
+  },
+  {
+    "code": "JE",
+    "name": "Jersey",
+    "currencies": [
+      "GBP"
+    ],
+    "latitude": 49.214439,
+    "longitude": -2.13125,
+    "aliases": [
+      "JEY"
+    ]
+  },
+  {
+    "code": "JM",
+    "name": "Jamaica",
+    "currencies": [
+      "JMD"
+    ],
+    "latitude": 18.109581,
+    "longitude": -77.297508,
+    "aliases": [
+      "JAM"
+    ]
+  },
+  {
+    "code": "JO",
+    "name": "Jordan",
+    "currencies": [
+      "JOD"
+    ],
+    "latitude": 30.585164,
+    "longitude": 36.238414,
+    "aliases": [
+      "JOR"
+    ]
+  },
+  {
+    "code": "JP",
+    "name": "Japan",
+    "currencies": [
+      "JPY"
+    ],
+    "latitude": 36.204824,
+    "longitude": 138.252924,
+    "aliases": [
+      "JPN",
+      "Nippon",
+      "Nihon",
+      "日本"
+    ]
+  },
+  {
+    "code": "KE",
+    "name": "Kenya",
+    "currencies": [
+      "KES"
+    ],
+    "latitude": -0.023559,
+    "longitude": 37.906193,
+    "aliases": [
+      "KEN"
+    ]
+  },
+  {
+    "code": "KG",
+    "name": "Kyrgyzstan",
+    "currencies": [
+      "KGS"
+    ],
+    "latitude": 41.20438,
+    "longitude": 74.766098,
+    "aliases": [
+      "KGZ"
+    ]
+  },
+  {
+    "code": "KH",
+    "name": "Cambodia",
+    "currencies": [
+      "KHR"
+    ],
+    "latitude": 12.565679,
+    "longitude": 104.990963,
+    "aliases": [
+      "KHM"
+    ]
+  },
+  {
+    "code": "KI",
+    "name": "Kiribati",
+    "currencies": [
+      "AUD"
+    ],
+    "latitude": -3.370417,
+    "longitude": -168.734039,
+    "aliases": [
+      "KIR"
+    ]
+  },
+  {
+    "code": "KM",
+    "name": "Comoros",
+    "currencies": [
+      "KMF"
+    ],
+    "latitude": -11.875001,
+    "longitude": 43.872219,
+    "aliases": [
+      "COM"
+    ]
+  },
+  {
+    "code": "KN",
+    "name": "St. Kitts & Nevis",
+    "currencies": [
+      "XCD"
+    ],
+    "latitude": 17.357822,
+    "longitude": -62.782998,
+    "aliases": [
+      "KNA",
+      "Saint Kitts and Nevis"
+    ]
+  },
+  {
+    "code": "KP",
+    "name": "North Korea",
+    "currencies": [
+      "KPW"
+    ],
+    "latitude": 40.339852,
+    "longitude": 127.510093,
+    "aliases": [
+      "PRK",
+      "DPRK",
+      "Democratic People's Republic of Korea",
+      "조선"
+    ]
+  },
+  {
+    "code": "KR",
+    "name": "South Korea",
+    "currencies": [
+      "KRW"
+    ],
+    "latitude": 35.907757,
+    "longitude": 127.766922,
+    "aliases": [
+      "KOR",
+      "Republic of Korea",
+      "Korea",
+      "대한민국",
+      "한국"
+    ]
+  },
+  {
+    "code": "KW",
+    "name": "Kuwait",
+    "currencies": [
+      "KWD"
+    ],
+    "latitude": 29.31166,
+    "longitude": 47.481766,
+    "aliases": [
+      "KWT"
+    ]
+  },
+  {
+    "code": "KY",
+    "name": "Cayman Islands",
+    "currencies": [
+      "KYD"
+    ],
+    "latitude": 19.513469,
+    "longitude": -80.566956,
+    "aliases": [
+      "CYM"
+    ]
+  },
+  {
+    "code": "KZ",
+    "name": "Kazakhstan",
+    "currencies": [
+      "KZT"
+    ],
+    "latitude": 48.019573,
+    "longitude": 66.923684,
+    "aliases": [
+      "KAZ"
+    ]
+  },
+  {
+    "code": "LA",
+    "name": "Laos",
+    "currencies": [
+      "LAK"
+    ],
+    "latitude": 19.85627,
+    "longitude": 102.495496,
+    "aliases": [
+      "LAO",
+      "Lao PDR",
+      "Lao People's Democratic Republic"
+    ]
+  },
+  {
+    "code": "LB",
+    "name": "Lebanon",
+    "currencies": [
+      "LBP"
+    ],
+    "latitude": 33.854721,
+    "longitude": 35.862285,
+    "aliases": [
+      "LBN"
+    ]
+  },
+  {
+    "code": "LC",
+    "name": "St. Lucia",
+    "currencies": [
+      "XCD"
+    ],
+    "latitude": 13.909444,
+    "longitude": -60.978893,
+    "aliases": [
+      "LCA",
+      "Saint Lucia"
+    ]
+  },
+  {
+    "code": "LI",
+    "name": "Liechtenstein",
+    "currencies": [
+      "CHF"
+    ],
+    "latitude": 47.166,
+    "longitude": 9.555373,
+    "aliases": [
+      "LIE"
+    ]
+  },
+  {
+    "code": "LK",
+    "name": "Sri Lanka",
+    "currencies": [
+      "LKR"
+    ],
+    "latitude": 7.873054,
+    "longitude": 80.771797,
+    "aliases": [
+      "LKA",
+      "Ceylon"
+    ]
+  },
+  {
+    "code": "LR",
+    "name": "Liberia",
+    "currencies": [
+      "LRD"
+    ],
+    "latitude": 6.428055,
+    "longitude": -9.429499,
+    "aliases": [
+      "LBR"
+    ]
+  },
+  {
+    "code": "LS",
+    "name": "Lesotho",
+    "currencies": [
+      "ZAR",
+      "LSL"
+    ],
+    "latitude": -29.609988,
+    "longitude": 28.233608,
+    "aliases": [
+      "LSO"
+    ]
+  },
+  {
+    "code": "LT",
+    "name": "Lithuania",
+    "currencies": [
+      "EUR"
+    ],
+    "latitude": 55.169438,
+    "longitude": 23.881275,
+    "aliases": [
+      "LTU"
+    ]
+  },
+  {
+    "code": "LU",
+    "name": "Luxembourg",
+    "currencies": [
+      "EUR"
+    ],
+    "latitude": 49.815273,
+    "longitude": 6.129583,
+    "aliases": [
+      "LUX"
+    ]
+  },
+  {
+    "code": "LV",
+    "name": "Latvia",
+    "currencies": [
+      "EUR"
+    ],
+    "latitude": 56.879635,
+    "longitude": 24.603189,
+    "aliases": [
+      "LVA"
+    ]
+  },
+  {
+    "code": "LY",
+    "name": "Libya",
+    "currencies": [
+      "LYD"
+    ],
+    "latitude": 26.3351,
+    "longitude": 17.228331,
+    "aliases": [
+      "LBY"
+    ]
+  },
+  {
+    "code": "MA",
+    "name": "Morocco",
+    "currencies": [
+      "MAD"
+    ],
+    "latitude": 31.791702,
+    "longitude": -7.09262,
+    "aliases": [
+      "MAR",
+      "Maroc",
+      "المغرب"
+    ]
+  },
+  {
+    "code": "MC",
+    "name": "Monaco",
+    "currencies": [
+      "EUR"
+    ],
+    "latitude": 43.750298,
+    "longitude": 7.412841,
+    "aliases": [
+      "MCO"
+    ]
+  },
+  {
+    "code": "MD",
+    "name": "Moldova",
+    "currencies": [
+      "MDL"
+    ],
+    "latitude": 47.411631,
+    "longitude": 28.369885,
+    "aliases": [
+      "MDA"
+    ]
+  },
+  {
+    "code": "ME",
+    "name": "Montenegro",
+    "currencies": [
+      "EUR"
+    ],
+    "latitude": 42.708678,
+    "longitude": 19.37439,
+    "aliases": [
+      "MNE"
+    ]
+  },
+  {
+    "code": "MF",
+    "name": "St. Martin",
+    "currencies": [
+      "EUR"
+    ],
+    "latitude": 18.06819,
+    "longitude": -63.08302,
+    "aliases": [
+      "MAF",
+      "Saint Martin",
+      "St Martin"
+    ]
+  },
+  {
+    "code": "MG",
+    "name": "Madagascar",
+    "currencies": [
+      "MGA"
+    ],
+    "latitude": -18.766947,
+    "longitude": 46.869107,
+    "aliases": [
+      "MDG"
+    ]
+  },
+  {
+    "code": "MH",
+    "name": "Marshall Islands",
+    "currencies": [
+      "USD"
+    ],
+    "latitude": 7.131474,
+    "longitude": 171.184478,
+    "aliases": [
+      "MHL"
+    ]
+  },
+  {
+    "code": "MK",
+    "name": "North Macedonia",
+    "currencies": [
+      "MKD"
+    ],
+    "latitude": 41.608635,
+    "longitude": 21.745275,
+    "aliases": [
+      "MKD"
+    ]
+  },
+  {
+    "code": "ML",
+    "name": "Mali",
+    "currencies": [
+      "XOF"
+    ],
+    "latitude": 17.570692,
+    "longitude": -3.996166,
+    "aliases": [
+      "MLI"
+    ]
+  },
+  {
+    "code": "MM",
+    "name": "Myanmar (Burma)",
+    "currencies": [
+      "MMK"
+    ],
+    "latitude": 21.913965,
+    "longitude": 95.956223,
+    "aliases": [
+      "MMR",
+      "Myanmar",
+      "Burma",
+      "မြန်မာ"
+    ]
+  },
+  {
+    "code": "MN",
+    "name": "Mongolia",
+    "currencies": [
+      "MNT"
+    ],
+    "latitude": 46.862496,
+    "longitude": 103.846656,
+    "aliases": [
+      "MNG"
+    ]
+  },
+  {
+    "code": "MO",
+    "name": "Macao SAR China",
+    "currencies": [
+      "MOP"
+    ],
+    "latitude": 22.198745,
+    "longitude": 113.543873,
+    "aliases": [
+      "MAC",
+      "Macao",
+      "Macau SAR",
+      "澳門",
+      "澳门"
+    ]
+  },
+  {
+    "code": "MP",
+    "name": "Northern Mariana Islands",
+    "currencies": [
+      "USD"
+    ],
+    "latitude": 17.33083,
+    "longitude": 145.38469,
+    "aliases": [
+      "MNP"
+    ]
+  },
+  {
+    "code": "MQ",
+    "name": "Martinique",
+    "currencies": [
+      "EUR"
+    ],
+    "latitude": 14.641528,
+    "longitude": -61.024174,
+    "aliases": [
+      "MTQ"
+    ]
+  },
+  {
+    "code": "MR",
+    "name": "Mauritania",
+    "currencies": [
+      "MRU"
+    ],
+    "latitude": 21.00789,
+    "longitude": -10.940835,
+    "aliases": [
+      "MRT"
+    ]
+  },
+  {
+    "code": "MS",
+    "name": "Montserrat",
+    "currencies": [
+      "XCD"
+    ],
+    "latitude": 16.742498,
+    "longitude": -62.187366,
+    "aliases": [
+      "MSR"
+    ]
+  },
+  {
+    "code": "MT",
+    "name": "Malta",
+    "currencies": [
+      "EUR"
+    ],
+    "latitude": 35.937496,
+    "longitude": 14.375416,
+    "aliases": [
+      "MLT"
+    ]
+  },
+  {
+    "code": "MU",
+    "name": "Mauritius",
+    "currencies": [
+      "MUR"
+    ],
+    "latitude": -20.348404,
+    "longitude": 57.552152,
+    "aliases": [
+      "MUS"
+    ]
+  },
+  {
+    "code": "MV",
+    "name": "Maldives",
+    "currencies": [
+      "MVR"
+    ],
+    "latitude": 3.202778,
+    "longitude": 73.22068,
+    "aliases": [
+      "MDV"
+    ]
+  },
+  {
+    "code": "MW",
+    "name": "Malawi",
+    "currencies": [
+      "MWK"
+    ],
+    "latitude": -13.254308,
+    "longitude": 34.301525,
+    "aliases": [
+      "MWI"
+    ]
+  },
+  {
+    "code": "MX",
+    "name": "Mexico",
+    "currencies": [
+      "MXN"
+    ],
+    "latitude": 23.634501,
+    "longitude": -102.552784,
+    "aliases": [
+      "MEX",
+      "México"
+    ]
+  },
+  {
+    "code": "MY",
+    "name": "Malaysia",
+    "currencies": [
+      "MYR"
+    ],
+    "latitude": 4.210484,
+    "longitude": 101.975766,
+    "aliases": [
+      "MYS"
+    ]
+  },
+  {
+    "code": "MZ",
+    "name": "Mozambique",
+    "currencies": [
+      "MZN"
+    ],
+    "latitude": -18.665695,
+    "longitude": 35.529562,
+    "aliases": [
+      "MOZ"
+    ]
+  },
+  {
+    "code": "NA",
+    "name": "Namibia",
+    "currencies": [
+      "NAD",
+      "ZAR"
+    ],
+    "latitude": -22.95764,
+    "longitude": 18.49041,
+    "aliases": [
+      "NAM"
+    ]
+  },
+  {
+    "code": "NC",
+    "name": "New Caledonia",
+    "currencies": [
+      "XPF"
+    ],
+    "latitude": -20.904305,
+    "longitude": 165.618042,
+    "aliases": [
+      "NCL"
+    ]
+  },
+  {
+    "code": "NE",
+    "name": "Niger",
+    "currencies": [
+      "XOF"
+    ],
+    "latitude": 17.607789,
+    "longitude": 8.081666,
+    "aliases": [
+      "NER"
+    ]
+  },
+  {
+    "code": "NF",
+    "name": "Norfolk Island",
+    "currencies": [
+      "AUD"
+    ],
+    "latitude": -29.040835,
+    "longitude": 167.954712,
+    "aliases": [
+      "NFK"
+    ]
+  },
+  {
+    "code": "NG",
+    "name": "Nigeria",
+    "currencies": [
+      "NGN"
+    ],
+    "latitude": 9.081999,
+    "longitude": 8.675277,
+    "aliases": [
+      "NGA"
+    ]
+  },
+  {
+    "code": "NI",
+    "name": "Nicaragua",
+    "currencies": [
+      "NIO"
+    ],
+    "latitude": 12.865416,
+    "longitude": -85.207229,
+    "aliases": [
+      "NIC"
+    ]
+  },
+  {
+    "code": "NL",
+    "name": "Netherlands",
+    "currencies": [
+      "EUR"
+    ],
+    "latitude": 52.132633,
+    "longitude": 5.291266,
+    "aliases": [
+      "NLD",
+      "The Netherlands",
+      "Holland",
+      "Nederland"
+    ]
+  },
+  {
+    "code": "NO",
+    "name": "Norway",
+    "currencies": [
+      "NOK"
+    ],
+    "latitude": 60.472024,
+    "longitude": 8.468946,
+    "aliases": [
+      "NOR",
+      "Norge",
+      "Noreg"
+    ]
+  },
+  {
+    "code": "NP",
+    "name": "Nepal",
+    "currencies": [
+      "NPR"
+    ],
+    "latitude": 28.394857,
+    "longitude": 84.124008,
+    "aliases": [
+      "NPL",
+      "नेपाल"
+    ]
+  },
+  {
+    "code": "NR",
+    "name": "Nauru",
+    "currencies": [
+      "AUD"
+    ],
+    "latitude": -0.522778,
+    "longitude": 166.931503,
+    "aliases": [
+      "NRU",
+      "Naoero"
+    ]
+  },
+  {
+    "code": "NU",
+    "name": "Niue",
+    "currencies": [
+      "NZD"
+    ],
+    "latitude": -19.054445,
+    "longitude": -169.867233,
+    "aliases": [
+      "NIU"
+    ]
+  },
+  {
+    "code": "NZ",
+    "name": "New Zealand",
+    "currencies": [
+      "NZD"
+    ],
+    "latitude": -40.900557,
+    "longitude": 174.885971,
+    "aliases": [
+      "NZL",
+      "Aotearoa",
+      "Aotearoa New Zealand"
+    ]
+  },
+  {
+    "code": "OM",
+    "name": "Oman",
+    "currencies": [
+      "OMR"
+    ],
+    "latitude": 21.512583,
+    "longitude": 55.923255,
+    "aliases": [
+      "OMN"
+    ]
+  },
+  {
+    "code": "PA",
+    "name": "Panama",
+    "currencies": [
+      "PAB",
+      "USD"
+    ],
+    "latitude": 8.537981,
+    "longitude": -80.782127,
+    "aliases": [
+      "PAN"
+    ]
+  },
+  {
+    "code": "PE",
+    "name": "Peru",
+    "currencies": [
+      "PEN"
+    ],
+    "latitude": -9.189967,
+    "longitude": -75.015152,
+    "aliases": [
+      "PER",
+      "Perú"
+    ]
+  },
+  {
+    "code": "PF",
+    "name": "French Polynesia",
+    "currencies": [
+      "XPF"
+    ],
+    "latitude": -17.679742,
+    "longitude": -149.406843,
+    "aliases": [
+      "PYF"
+    ]
+  },
+  {
+    "code": "PG",
+    "name": "Papua New Guinea",
+    "currencies": [
+      "PGK"
+    ],
+    "latitude": -6.314993,
+    "longitude": 143.95555,
+    "aliases": [
+      "PNG"
+    ]
+  },
+  {
+    "code": "PH",
+    "name": "Philippines",
+    "currencies": [
+      "PHP"
+    ],
+    "latitude": 12.879721,
+    "longitude": 121.774017,
+    "aliases": [
+      "PHL"
+    ]
+  },
+  {
+    "code": "PK",
+    "name": "Pakistan",
+    "currencies": [
+      "PKR"
+    ],
+    "latitude": 30.375321,
+    "longitude": 69.345116,
+    "aliases": [
+      "PAK"
+    ]
+  },
+  {
+    "code": "PL",
+    "name": "Poland",
+    "currencies": [
+      "PLN"
+    ],
+    "latitude": 51.919438,
+    "longitude": 19.145136,
+    "aliases": [
+      "POL",
+      "Polska"
+    ]
+  },
+  {
+    "code": "PM",
+    "name": "St. Pierre & Miquelon",
+    "currencies": [
+      "EUR"
+    ],
+    "latitude": 46.941936,
+    "longitude": -56.27111,
+    "aliases": [
+      "SPM",
+      "Saint Pierre and Miquelon"
+    ]
+  },
+  {
+    "code": "PN",
+    "name": "Pitcairn Islands",
+    "currencies": [
+      "NZD"
+    ],
+    "latitude": -24.703615,
+    "longitude": -127.439308,
+    "aliases": [
+      "PCN",
+      "Pitcairn"
+    ]
+  },
+  {
+    "code": "PR",
+    "name": "Puerto Rico",
+    "currencies": [
+      "USD"
+    ],
+    "latitude": 18.220833,
+    "longitude": -66.590149,
+    "aliases": [
+      "PRI"
+    ]
+  },
+  {
+    "code": "PS",
+    "name": "Palestinian Territories",
+    "currencies": [
+      "ILS",
+      "JOD"
+    ],
+    "latitude": 31.952162,
+    "longitude": 35.233154,
+    "aliases": [
+      "PSE",
+      "Palestinian Territory",
+      "Palestine",
+      "فلسطين"
+    ]
+  },
+  {
+    "code": "PT",
+    "name": "Portugal",
+    "currencies": [
+      "EUR"
+    ],
+    "latitude": 39.399872,
+    "longitude": -8.224454,
+    "aliases": [
+      "PRT",
+      "República Portuguesa"
+    ]
+  },
+  {
+    "code": "PW",
+    "name": "Palau",
+    "currencies": [
+      "USD"
+    ],
+    "latitude": 7.51498,
+    "longitude": 134.58252,
+    "aliases": [
+      "PLW"
+    ]
+  },
+  {
+    "code": "PY",
+    "name": "Paraguay",
+    "currencies": [
+      "PYG"
+    ],
+    "latitude": -23.442503,
+    "longitude": -58.443832,
+    "aliases": [
+      "PRY"
+    ]
+  },
+  {
+    "code": "QA",
+    "name": "Qatar",
+    "currencies": [
+      "QAR"
+    ],
+    "latitude": 25.354826,
+    "longitude": 51.183884,
+    "aliases": [
+      "QAT"
+    ]
+  },
+  {
+    "code": "RE",
+    "name": "Réunion",
+    "currencies": [
+      "EUR"
+    ],
+    "latitude": -21.115141,
+    "longitude": 55.536384,
+    "aliases": [
+      "REU",
+      "Reunion"
+    ]
+  },
+  {
+    "code": "RO",
+    "name": "Romania",
+    "currencies": [
+      "RON"
+    ],
+    "latitude": 45.943161,
+    "longitude": 24.96676,
+    "aliases": [
+      "ROU",
+      "România"
+    ]
+  },
+  {
+    "code": "RS",
+    "name": "Serbia",
+    "currencies": [
+      "RSD"
+    ],
+    "latitude": 44.016521,
+    "longitude": 21.005859,
+    "aliases": [
+      "SRB"
+    ]
+  },
+  {
+    "code": "RU",
+    "name": "Russia",
+    "currencies": [
+      "RUB"
+    ],
+    "latitude": 61.52401,
+    "longitude": 105.318756,
+    "aliases": [
+      "RUS",
+      "Russian Federation",
+      "Россия",
+      "Rossiya"
+    ]
+  },
+  {
+    "code": "RW",
+    "name": "Rwanda",
+    "currencies": [
+      "RWF"
+    ],
+    "latitude": -1.940278,
+    "longitude": 29.873888,
+    "aliases": [
+      "RWA"
+    ]
+  },
+  {
+    "code": "SA",
+    "name": "Saudi Arabia",
+    "currencies": [
+      "SAR"
+    ],
+    "latitude": 23.885942,
+    "longitude": 45.079162,
+    "aliases": [
+      "SAU",
+      "KSA",
+      "Saudi",
+      "السعودية"
+    ]
+  },
+  {
+    "code": "SB",
+    "name": "Solomon Islands",
+    "currencies": [
+      "SBD"
+    ],
+    "latitude": -9.64571,
+    "longitude": 160.156194,
+    "aliases": [
+      "SLB"
+    ]
+  },
+  {
+    "code": "SC",
+    "name": "Seychelles",
+    "currencies": [
+      "SCR"
+    ],
+    "latitude": -4.679574,
+    "longitude": 55.491977,
+    "aliases": [
+      "SYC"
+    ]
+  },
+  {
+    "code": "SD",
+    "name": "Sudan",
+    "currencies": [
+      "SDG"
+    ],
+    "latitude": 12.862807,
+    "longitude": 30.217636,
+    "aliases": [
+      "SDN"
+    ]
+  },
+  {
+    "code": "SE",
+    "name": "Sweden",
+    "currencies": [
+      "SEK"
+    ],
+    "latitude": 60.128161,
+    "longitude": 18.643501,
+    "aliases": [
+      "SWE",
+      "Sverige"
+    ]
+  },
+  {
+    "code": "SG",
+    "name": "Singapore",
+    "currencies": [
+      "SGD"
+    ],
+    "latitude": 1.352083,
+    "longitude": 103.819836,
+    "aliases": [
+      "SGP"
+    ]
+  },
+  {
+    "code": "SH",
+    "name": "St. Helena, Ascension & Tristan da Cunha",
+    "currencies": [
+      "SHP"
+    ],
+    "latitude": -24.143474,
+    "longitude": -10.030696,
+    "aliases": [
+      "SHN",
+      "Saint Helena",
+      "St. Helena"
+    ]
+  },
+  {
+    "code": "SI",
+    "name": "Slovenia",
+    "currencies": [
+      "EUR"
+    ],
+    "latitude": 46.151241,
+    "longitude": 14.995463,
+    "aliases": [
+      "SVN"
+    ]
+  },
+  {
+    "code": "SJ",
+    "name": "Svalbard & Jan Mayen",
+    "currencies": [
+      "NOK"
+    ],
+    "latitude": 77.553604,
+    "longitude": 23.670272,
+    "aliases": [
+      "SJM",
+      "Svalbard and Jan Mayen"
+    ]
+  },
+  {
+    "code": "SK",
+    "name": "Slovakia",
+    "currencies": [
+      "EUR"
+    ],
+    "latitude": 48.669026,
+    "longitude": 19.699024,
+    "aliases": [
+      "SVK",
+      "Slovensko"
+    ]
+  },
+  {
+    "code": "SL",
+    "name": "Sierra Leone",
+    "currencies": [
+      "SLE"
+    ],
+    "latitude": 8.460555,
+    "longitude": -11.779889,
+    "aliases": [
+      "SLE"
+    ]
+  },
+  {
+    "code": "SM",
+    "name": "San Marino",
+    "currencies": [
+      "EUR"
+    ],
+    "latitude": 43.94236,
+    "longitude": 12.457777,
+    "aliases": [
+      "SMR"
+    ]
+  },
+  {
+    "code": "SN",
+    "name": "Senegal",
+    "currencies": [
+      "XOF"
+    ],
+    "latitude": 14.497401,
+    "longitude": -14.452362,
+    "aliases": [
+      "SEN"
+    ]
+  },
+  {
+    "code": "SO",
+    "name": "Somalia",
+    "currencies": [
+      "SOS"
+    ],
+    "latitude": 5.152149,
+    "longitude": 46.199616,
+    "aliases": [
+      "SOM"
+    ]
+  },
+  {
+    "code": "SR",
+    "name": "Suriname",
+    "currencies": [
+      "SRD"
+    ],
+    "latitude": 3.919305,
+    "longitude": -56.027783,
+    "aliases": [
+      "SUR"
+    ]
+  },
+  {
+    "code": "SS",
+    "name": "South Sudan",
+    "currencies": [
+      "SSP"
+    ],
+    "latitude": 4.85165,
+    "longitude": 31.58247,
+    "aliases": [
+      "SSD"
+    ]
+  },
+  {
+    "code": "ST",
+    "name": "São Tomé & Príncipe",
+    "currencies": [
+      "STN"
+    ],
+    "latitude": 0.18636,
+    "longitude": 6.613081,
+    "aliases": [
+      "STP",
+      "Sao Tome and Principe",
+      "Sao Tome & Principe"
+    ]
+  },
+  {
+    "code": "SV",
+    "name": "El Salvador",
+    "currencies": [
+      "USD"
+    ],
+    "latitude": 13.794185,
+    "longitude": -88.89653,
+    "aliases": [
+      "SLV"
+    ]
+  },
+  {
+    "code": "SX",
+    "name": "Sint Maarten",
+    "currencies": [
+      "XCG"
+    ],
+    "latitude": 18.026,
+    "longitude": -63.04582,
+    "aliases": [
+      "SXM",
+      "St Maarten"
+    ]
+  },
+  {
+    "code": "SY",
+    "name": "Syria",
+    "currencies": [
+      "SYP"
+    ],
+    "latitude": 34.802075,
+    "longitude": 38.996815,
+    "aliases": [
+      "SYR"
+    ]
+  },
+  {
+    "code": "SZ",
+    "name": "Eswatini",
+    "currencies": [
+      "SZL"
+    ],
+    "latitude": -26.522503,
+    "longitude": 31.465866,
+    "aliases": [
+      "SWZ",
+      "Swaziland"
+    ]
+  },
+  {
+    "code": "TC",
+    "name": "Turks & Caicos Islands",
+    "currencies": [
+      "USD"
+    ],
+    "latitude": 21.694025,
+    "longitude": -71.797928,
+    "aliases": [
+      "TCA",
+      "Turks and Caicos Islands"
+    ]
+  },
+  {
+    "code": "TD",
+    "name": "Chad",
+    "currencies": [
+      "XAF"
+    ],
+    "latitude": 15.454166,
+    "longitude": 18.732207,
+    "aliases": [
+      "TCD"
+    ]
+  },
+  {
+    "code": "TF",
+    "name": "French Southern and Antarctic Lands",
+    "currencies": [
+      "EUR"
+    ],
+    "latitude": -49.280366,
+    "longitude": 69.348557,
+    "aliases": [
+      "ATF",
+      "French Southern Territories"
+    ]
+  },
+  {
+    "code": "TG",
+    "name": "Togo",
+    "currencies": [
+      "XOF"
+    ],
+    "latitude": 8.619543,
+    "longitude": 0.824782,
+    "aliases": [
+      "TGO"
+    ]
+  },
+  {
+    "code": "TH",
+    "name": "Thailand",
+    "currencies": [
+      "THB"
+    ],
+    "latitude": 15.870032,
+    "longitude": 100.992541,
+    "aliases": [
+      "THA",
+      "Siam",
+      "ประเทศไทย"
+    ]
+  },
+  {
+    "code": "TJ",
+    "name": "Tajikistan",
+    "currencies": [
+      "TJS"
+    ],
+    "latitude": 38.861034,
+    "longitude": 71.276093,
+    "aliases": [
+      "TJK"
+    ]
+  },
+  {
+    "code": "TK",
+    "name": "Tokelau",
+    "currencies": [
+      "NZD"
+    ],
+    "latitude": -8.967363,
+    "longitude": -171.855881,
+    "aliases": [
+      "TKL"
+    ]
+  },
+  {
+    "code": "TL",
+    "name": "Timor-Leste",
+    "currencies": [
+      "USD"
+    ],
+    "latitude": -8.874217,
+    "longitude": 125.727539,
+    "aliases": [
+      "TLS",
+      "Timor Leste",
+      "East Timor"
+    ]
+  },
+  {
+    "code": "TM",
+    "name": "Turkmenistan",
+    "currencies": [
+      "TMT"
+    ],
+    "latitude": 38.969719,
+    "longitude": 59.556278,
+    "aliases": [
+      "TKM"
+    ]
+  },
+  {
+    "code": "TN",
+    "name": "Tunisia",
+    "currencies": [
+      "TND"
+    ],
+    "latitude": 33.886917,
+    "longitude": 9.537499,
+    "aliases": [
+      "TUN"
+    ]
+  },
+  {
+    "code": "TO",
+    "name": "Tonga",
+    "currencies": [
+      "TOP"
+    ],
+    "latitude": -21.178986,
+    "longitude": -175.198242,
+    "aliases": [
+      "TON"
+    ]
+  },
+  {
+    "code": "TR",
+    "name": "Türkiye",
+    "currencies": [
+      "TRY"
+    ],
+    "latitude": 38.963745,
+    "longitude": 35.243322,
+    "aliases": [
+      "TUR",
+      "Turkey",
+      "Turkiye"
+    ]
+  },
+  {
+    "code": "TT",
+    "name": "Trinidad & Tobago",
+    "currencies": [
+      "TTD"
+    ],
+    "latitude": 10.691803,
+    "longitude": -61.222503,
+    "aliases": [
+      "TTO",
+      "Trinidad and Tobago"
+    ]
+  },
+  {
+    "code": "TV",
+    "name": "Tuvalu",
+    "currencies": [
+      "AUD"
+    ],
+    "latitude": -7.109535,
+    "longitude": 177.64933,
+    "aliases": [
+      "TUV"
+    ]
+  },
+  {
+    "code": "TW",
+    "name": "Taiwan",
+    "currencies": [
+      "TWD"
+    ],
+    "latitude": 23.69781,
+    "longitude": 120.960515,
+    "aliases": [
+      "TWN",
+      "Taiwan ROC",
+      "Formosa",
+      "臺灣",
+      "台灣"
+    ]
+  },
+  {
+    "code": "TZ",
+    "name": "Tanzania",
+    "currencies": [
+      "TZS"
+    ],
+    "latitude": -6.369028,
+    "longitude": 34.888822,
+    "aliases": [
+      "TZA"
+    ]
+  },
+  {
+    "code": "UA",
+    "name": "Ukraine",
+    "currencies": [
+      "UAH"
+    ],
+    "latitude": 48.379433,
+    "longitude": 31.16558,
+    "aliases": [
+      "UKR",
+      "Україна",
+      "Ukraina"
+    ]
+  },
+  {
+    "code": "UG",
+    "name": "Uganda",
+    "currencies": [
+      "UGX"
+    ],
+    "latitude": 1.373333,
+    "longitude": 32.290275,
+    "aliases": [
+      "UGA"
+    ]
+  },
+  {
+    "code": "UM",
+    "name": "U.S. Outlying Islands",
+    "currencies": [
+      "USD"
+    ],
+    "latitude": 5.875,
+    "longitude": -162.057,
+    "aliases": [
+      "UMI",
+      "United States Minor Outlying Islands"
+    ]
+  },
+  {
+    "code": "US",
+    "name": "United States",
+    "currencies": [
+      "USD"
+    ],
+    "latitude": 37.09024,
+    "longitude": -95.712891,
+    "aliases": [
+      "USA",
+      "U.S.A.",
+      "United States of America",
+      "America",
+      "US"
+    ]
+  },
+  {
+    "code": "UY",
+    "name": "Uruguay",
+    "currencies": [
+      "UYU"
+    ],
+    "latitude": -32.522779,
+    "longitude": -55.765835,
+    "aliases": [
+      "URY"
+    ]
+  },
+  {
+    "code": "UZ",
+    "name": "Uzbekistan",
+    "currencies": [
+      "UZS"
+    ],
+    "latitude": 41.377491,
+    "longitude": 64.585262,
+    "aliases": [
+      "UZB"
+    ]
+  },
+  {
+    "code": "VA",
+    "name": "Vatican City",
+    "currencies": [
+      "EUR"
+    ],
+    "latitude": 41.902916,
+    "longitude": 12.453389,
+    "aliases": [
+      "VAT",
+      "Vatican",
+      "Holy See"
+    ]
+  },
+  {
+    "code": "VC",
+    "name": "St. Vincent & Grenadines",
+    "currencies": [
+      "XCD"
+    ],
+    "latitude": 12.984305,
+    "longitude": -61.287228,
+    "aliases": [
+      "VCT",
+      "Saint Vincent and the Grenadines"
+    ]
+  },
+  {
+    "code": "VE",
+    "name": "Venezuela",
+    "currencies": [
+      "VES"
+    ],
+    "latitude": 6.42375,
+    "longitude": -66.58973,
+    "aliases": [
+      "VEN",
+      "Bolivarian Republic of Venezuela"
+    ]
+  },
+  {
+    "code": "VG",
+    "name": "British Virgin Islands",
+    "currencies": [
+      "USD"
+    ],
+    "latitude": 18.420695,
+    "longitude": -64.639968,
+    "aliases": [
+      "VGB"
+    ]
+  },
+  {
+    "code": "VI",
+    "name": "U.S. Virgin Islands",
+    "currencies": [
+      "USD"
+    ],
+    "latitude": 18.335765,
+    "longitude": -64.896335,
+    "aliases": [
+      "VIR"
+    ]
+  },
+  {
+    "code": "VN",
+    "name": "Vietnam",
+    "currencies": [
+      "VND"
+    ],
+    "latitude": 14.058324,
+    "longitude": 108.277199,
+    "aliases": [
+      "VNM",
+      "Viet Nam",
+      "Việt Nam"
+    ]
+  },
+  {
+    "code": "VU",
+    "name": "Vanuatu",
+    "currencies": [
+      "VUV"
+    ],
+    "latitude": -15.376706,
+    "longitude": 166.959158,
+    "aliases": [
+      "VUT"
+    ]
+  },
+  {
+    "code": "WF",
+    "name": "Wallis & Futuna",
+    "currencies": [
+      "XPF"
+    ],
+    "latitude": -13.768752,
+    "longitude": -177.156097,
+    "aliases": [
+      "WLF",
+      "Wallis and Futuna"
+    ]
+  },
+  {
+    "code": "WS",
+    "name": "Samoa",
+    "currencies": [
+      "WST"
+    ],
+    "latitude": -13.759029,
+    "longitude": -172.104629,
+    "aliases": [
+      "WSM"
+    ]
+  },
+  {
+    "code": "XK",
+    "name": "Kosovo",
+    "currencies": [
+      "EUR"
+    ],
+    "latitude": 42.602636,
+    "longitude": 20.902977,
+    "aliases": [
+      "XKX",
+      "Kosova",
+      "Kosovë",
+      "Косово"
+    ]
+  },
+  {
+    "code": "YE",
+    "name": "Yemen",
+    "currencies": [
+      "YER"
+    ],
+    "latitude": 15.552727,
+    "longitude": 48.516388,
+    "aliases": [
+      "YEM"
+    ]
+  },
+  {
+    "code": "YT",
+    "name": "Mayotte",
+    "currencies": [
+      "EUR"
+    ],
+    "latitude": -12.8275,
+    "longitude": 45.166244,
+    "aliases": [
+      "MYT"
+    ]
+  },
+  {
+    "code": "ZA",
+    "name": "South Africa",
+    "currencies": [
+      "ZAR"
+    ],
+    "latitude": -30.559482,
+    "longitude": 22.937506,
+    "aliases": [
+      "ZAF",
+      "RSA"
+    ]
+  },
+  {
+    "code": "ZM",
+    "name": "Zambia",
+    "currencies": [
+      "ZMW"
+    ],
+    "latitude": -13.133897,
+    "longitude": 27.849332,
+    "aliases": [
+      "ZMB"
+    ]
+  },
+  {
+    "code": "ZW",
+    "name": "Zimbabwe",
+    "currencies": [
+      "ZWG",
+      "USD"
+    ],
+    "latitude": -19.015438,
+    "longitude": 29.154857,
+    "aliases": [
+      "ZWE"
+    ]
+  }
+]

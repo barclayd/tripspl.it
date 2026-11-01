@@ -99,6 +99,12 @@ struct SettingsView: View {
         if let message { Section { Text(message).foregroundStyle(Theme.bad) } }
         Section {
           LabeledContent("Version", value: "1.0")
+          NavigationLink("Place data & acknowledgements") {
+            ScrollView {
+              Text(DestinationData.acknowledgements).font(.footnote).textSelection(.enabled)
+                .padding()
+            }.navigationTitle("Place data").navigationBarTitleDisplayMode(.inline)
+          }
           Text("TripSplit does not move money. Repayments record transfers you make elsewhere.")
             .font(.caption)
         }

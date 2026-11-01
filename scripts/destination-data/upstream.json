@@ -1,0 +1,35 @@
+{
+  "asOf": "2026-11-01",
+  "cldrRelease": "49",
+  "cldrCommit": "96e54b273d2da4ec6fbad350ba19ff23fa24a588",
+  "cldrReleaseURL": "https://github.com/unicode-org/cldr/releases/tag/release-49",
+  "geonamesCities15000Sha256": "aa6bd0f3eebf6352de806583d382f22d2da57808df7b3a3b6bc19519f9977a6c",
+  "googleDSPLCommit": "db79dad685276dbf98ca44b875d1481bc240c5c1",
+  "geonamesRetrievedOn": "2026-11-01",
+  "geonamesCountryCountBeforeExclusions": 252,
+  "geonamesExcludedObsoleteCodes": [
+    "AN",
+    "CS"
+  ],
+  "geonamesCapitalFeatureCount": 241,
+  "sourceURLs": {
+    "countryInfo": "https://download.geonames.org/export/dump/countryInfo.txt",
+    "cities15000": "https://download.geonames.org/export/dump/cities15000.zip",
+    "readme": "https://download.geonames.org/export/dump/readme.txt",
+    "countryCentres": "https://raw.githubusercontent.com/google/dspl/db79dad685276dbf98ca44b875d1481bc240c5c1/samples/google/canonical/countries.csv",
+    "dsplLicense": "https://raw.githubusercontent.com/google/dspl/db79dad685276dbf98ca44b875d1481bc240c5c1/LICENSE",
+    "cldrCurrencyData": "https://raw.githubusercontent.com/unicode-org/cldr/96e54b273d2da4ec6fbad350ba19ff23fa24a588/common/supplemental/supplementalData.xml",
+    "cldrEnglishNames": "https://raw.githubusercontent.com/unicode-org/cldr/96e54b273d2da4ec6fbad350ba19ff23fa24a588/common/main/en.xml",
+    "unicodeLicense": "https://raw.githubusercontent.com/unicode-org/cldr/96e54b273d2da4ec6fbad350ba19ff23fa24a588/LICENSE",
+    "ccBy4License": "https://creativecommons.org/licenses/by/4.0/legalcode.txt",
+    "supplementalFeatures": [
+      "https://sws.geonames.org/1650535/about.rdf",
+      "https://sws.geonames.org/2657928/about.rdf",
+      "https://sws.geonames.org/6204696/about.rdf",
+      "https://sws.geonames.org/5854968/about.rdf",
+      "https://sws.geonames.org/252919/about.rdf",
+      "https://sws.geonames.org/3183130/about.rdf"
+    ]
+  },
+  "cldrReleasePublishedAt": "2026-10-21T22:13:30Z"
+}

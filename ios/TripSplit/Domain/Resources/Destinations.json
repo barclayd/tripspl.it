@@ -1,0 +1,5188 @@
+[
+  {
+    "id": "geonames-2267057",
+    "name": "Lisbon",
+    "countryCode": "PT",
+    "latitude": 38.7223,
+    "longitude": -9.1393,
+    "aliases": [
+      "Lisboa"
+    ]
+  },
+  {
+    "id": "geonames-2735943",
+    "name": "Porto",
+    "countryCode": "PT",
+    "latitude": 41.1579,
+    "longitude": -8.6291,
+    "aliases": [
+      "Oporto"
+    ]
+  },
+  {
+    "id": "geonames-2510911",
+    "name": "Seville",
+    "countryCode": "ES",
+    "latitude": 37.3891,
+    "longitude": -5.9845,
+    "aliases": [
+      "Sevilla",
+      "Séville"
+    ]
+  },
+  {
+    "id": "geonames-3128760",
+    "name": "Barcelona",
+    "countryCode": "ES",
+    "latitude": 41.3874,
+    "longitude": 2.1686,
+    "aliases": []
+  },
+  {
+    "id": "geonames-2988507",
+    "name": "Paris",
+    "countryCode": "FR",
+    "latitude": 48.8566,
+    "longitude": 2.3522,
+    "aliases": [
+      "París",
+      "Parîs"
+    ]
+  },
+  {
+    "id": "geonames-3169070",
+    "name": "Rome",
+    "countryCode": "IT",
+    "latitude": 41.9028,
+    "longitude": 12.4964,
+    "aliases": [
+      "Roma",
+      "Romë"
+    ]
+  },
+  {
+    "id": "geonames-1850147",
+    "name": "Tokyo",
+    "countryCode": "JP",
+    "latitude": 35.6762,
+    "longitude": 139.6503,
+    "aliases": [
+      "Tokio",
+      "東京",
+      "東京都",
+      "东京",
+      "Tókýó",
+      "Tōkyō"
+    ]
+  },
+  {
+    "id": "geonames-1857910",
+    "name": "Kyoto",
+    "countryCode": "JP",
+    "latitude": 35.0116,
+    "longitude": 135.7681,
+    "aliases": [
+      "京都",
+      "京都市",
+      "きょうとし",
+      "キョウト",
+      "Kyōto"
+    ]
+  },
+  {
+    "id": "geonames-2643743",
+    "name": "London",
+    "countryCode": "GB",
+    "latitude": 51.5074,
+    "longitude": -0.1278,
+    "aliases": []
+  },
+  {
+    "id": "geonames-5128581",
+    "name": "New York",
+    "countryCode": "US",
+    "latitude": 40.7128,
+    "longitude": -74.006,
+    "aliases": [
+      "New York City",
+      "NYC"
+    ]
+  },
+  {
+    "id": "geonames-2147714",
+    "name": "Sydney",
+    "countryCode": "AU",
+    "latitude": -33.8688,
+    "longitude": 151.2093,
+    "aliases": []
+  },
+  {
+    "id": "geonames-1609350",
+    "name": "Bangkok",
+    "countryCode": "TH",
+    "latitude": 13.7563,
+    "longitude": 100.5018,
+    "aliases": [
+      "Krung Thep",
+      "กรุงเทพมหานคร",
+      "กรุงเทพ",
+      "กรุงเทพฯ",
+      "Bangkòk"
+    ]
+  },
+  {
+    "id": "geonames-1650535",
+    "name": "Bali",
+    "countryCode": "ID",
+    "latitude": -8.4095,
+    "longitude": 115.1889,
+    "aliases": []
+  },
+  {
+    "id": "geonames-1581130",
+    "name": "Hanoi",
+    "countryCode": "VN",
+    "latitude": 21.0278,
+    "longitude": 105.8342,
+    "aliases": [
+      "Hà Nội",
+      "Ha Noi",
+      "Hanoí",
+      "Hanoï",
+      "Hanòi",
+      "Hanói",
+      "hano'i",
+      "Ḥanoi"
+    ]
+  },
+  {
+    "id": "geonames-2542997",
+    "name": "Marrakesh",
+    "countryCode": "MA",
+    "latitude": 31.6295,
+    "longitude": -7.9811,
+    "aliases": [
+      "Marrakech",
+      "مراكش",
+      "مراکش"
+    ]
+  },
+  {
+    "id": "geonames-264371",
+    "name": "Athens",
+    "countryCode": "GR",
+    "latitude": 37.9838,
+    "longitude": 23.7275,
+    "aliases": [
+      "Athina",
+      "Αθήνα",
+      "Αθηνα"
+    ]
+  },
+  {
+    "id": "geonames-2657928",
+    "name": "Zermatt",
+    "countryCode": "CH",
+    "latitude": 46.0207,
+    "longitude": 7.7491,
+    "aliases": []
+  },
+  {
+    "id": "geonames-6173331",
+    "name": "Vancouver",
+    "countryCode": "CA",
+    "latitude": 49.2827,
+    "longitude": -123.1207,
+    "aliases": []
+  },
+  {
+    "id": "geonames-3530597",
+    "name": "Mexico City",
+    "countryCode": "MX",
+    "latitude": 19.4326,
+    "longitude": -99.1332,
+    "aliases": [
+      "Ciudad de México",
+      "Ciudad de Mexico",
+      "CDMX"
+    ]
+  },
+  {
+    "id": "geonames-1835848",
+    "name": "Seoul",
+    "countryCode": "KR",
+    "latitude": 37.5665,
+    "longitude": 126.978,
+    "aliases": [
+      "서울",
+      "서울특별시",
+      "경성",
+      "Séoul"
+    ]
+  },
+  {
+    "id": "geonames-292223",
+    "name": "Dubai",
+    "countryCode": "AE",
+    "latitude": 25.2048,
+    "longitude": 55.2708,
+    "aliases": [
+      "دبي",
+      "دبى",
+      "Dubaï",
+      "Dubái",
+      "du bai",
+      "duba'i"
+    ]
+  },
+  {
+    "id": "geonames-2193733",
+    "name": "Auckland",
+    "countryCode": "NZ",
+    "latitude": -36.8509,
+    "longitude": 174.7645,
+    "aliases": [
+      "Tāmaki Makaurau",
+      "Tamaki Makaurau"
+    ]
+  },
+  {
+    "id": "geonames-1668341",
+    "name": "Taipei",
+    "countryCode": "TW",
+    "latitude": 25.05306,
+    "longitude": 121.52639,
+    "aliases": [
+      "Taipei City",
+      "Taipeh",
+      "臺北",
+      "台北",
+      "臺北市",
+      "台北市",
+      "T'ai-pei",
+      "Taipéi",
+      "T’ai-pei",
+      "ta'ipe'i"
+    ]
+  },
+  {
+    "id": "geonames-1668399",
+    "name": "Taichung",
+    "countryCode": "TW",
+    "latitude": 24.1469,
+    "longitude": 120.6839,
+    "aliases": [
+      "Taichung City",
+      "Taizhong",
+      "臺中",
+      "台中",
+      "臺中市",
+      "台中市"
+    ]
+  },
+  {
+    "id": "geonames-1673820",
+    "name": "Kaohsiung",
+    "countryCode": "TW",
+    "latitude": 22.61626,
+    "longitude": 120.31333,
+    "aliases": [
+      "Kaohsiung City",
+      "Gaoxiong",
+      "Takao",
+      "高雄",
+      "高雄市",
+      "高雄巿",
+      "Kao-hsiung"
+    ]
+  },
+  {
+    "id": "geonames-1668355",
+    "name": "Tainan",
+    "countryCode": "TW",
+    "latitude": 22.99259,
+    "longitude": 120.20507,
+    "aliases": [
+      "Tainan City",
+      "臺南",
+      "台南",
+      "臺南市",
+      "台南市",
+      "T'ai-nan",
+      "Táinán",
+      "T’ai-nan",
+      "tai nan"
+    ]
+  },
+  {
+    "id": "geonames-3041563",
+    "name": "Andorra la Vella",
+    "countryCode": "AD",
+    "latitude": 42.50779,
+    "longitude": 1.52109,
+    "aliases": []
+  },
+  {
+    "id": "geonames-292968",
+    "name": "Abu Dhabi",
+    "countryCode": "AE",
+    "latitude": 24.45118,
+    "longitude": 54.39696,
+    "aliases": [
+      "أبو ظبي",
+      "أبوظبي",
+      "ابوظبی",
+      "abudhabi"
+    ]
+  },
+  {
+    "id": "geonames-1138958",
+    "name": "Kabul",
+    "countryCode": "AF",
+    "latitude": 34.52813,
+    "longitude": 69.17233,
+    "aliases": [
+      "Kabúl",
+      "Kabûl",
+      "Kábul"
+    ]
+  },
+  {
+    "id": "geonames-3576022",
+    "name": "Saint John’s",
+    "countryCode": "AG",
+    "latitude": 17.12096,
+    "longitude": -61.84329,
+    "aliases": [
+      "Saint John's"
+    ]
+  },
+  {
+    "id": "geonames-3573374",
+    "name": "The Valley",
+    "countryCode": "AI",
+    "latitude": 18.21704,
+    "longitude": -63.05783,
+    "aliases": []
+  },
+  {
+    "id": "geonames-3183875",
+    "name": "Tirana",
+    "countryCode": "AL",
+    "latitude": 41.32744,
+    "longitude": 19.81866,
+    "aliases": [
+      "Tiran-a",
+      "Tirāna",
+      "Tírana",
+      "Tîrana"
+    ]
+  },
+  {
+    "id": "geonames-616052",
+    "name": "Yerevan",
+    "countryCode": "AM",
+    "latitude": 40.17765,
+    "longitude": 44.5126,
+    "aliases": [
+      "Երևան",
+      "Yerêvan",
+      "Yèrèvan",
+      "Yérévan"
+    ]
+  },
+  {
+    "id": "geonames-2240449",
+    "name": "Luanda",
+    "countryCode": "AO",
+    "latitude": -8.83682,
+    "longitude": 13.23432,
+    "aliases": [
+      "Lúanda",
+      "lu an da",
+      "lu'anda"
+    ]
+  },
+  {
+    "id": "geonames-3435910",
+    "name": "Buenos Aires",
+    "countryCode": "AR",
+    "latitude": -34.61315,
+    "longitude": -58.37723,
+    "aliases": [
+      "Buenos Airės",
+      "Buenos-Aires",
+      "Búenos Aíres",
+      "buenosaires"
+    ]
+  },
+  {
+    "id": "geonames-5881576",
+    "name": "Pago Pago",
+    "countryCode": "AS",
+    "latitude": -14.27806,
+    "longitude": -170.7025,
+    "aliases": [
+      "Pago-Pago",
+      "PagoPago",
+      "Pagó Pagó"
+    ]
+  },
+  {
+    "id": "geonames-2761369",
+    "name": "Vienna",
+    "countryCode": "AT",
+    "latitude": 48.20849,
+    "longitude": 16.37208,
+    "aliases": [
+      "Wien"
+    ]
+  },
+  {
+    "id": "geonames-2172517",
+    "name": "Canberra",
+    "countryCode": "AU",
+    "latitude": -35.28346,
+    "longitude": 149.12807,
+    "aliases": []
+  },
+  {
+    "id": "geonames-3577154",
+    "name": "Oranjestad",
+    "countryCode": "AW",
+    "latitude": 12.52398,
+    "longitude": -70.02703,
+    "aliases": []
+  },
+  {
+    "id": "geonames-3041732",
+    "name": "Mariehamn",
+    "countryCode": "AX",
+    "latitude": 60.09726,
+    "longitude": 19.93481,
+    "aliases": []
+  },
+  {
+    "id": "geonames-587084",
+    "name": "Baku",
+    "countryCode": "AZ",
+    "latitude": 40.37767,
+    "longitude": 49.89201,
+    "aliases": [
+      "Bakú",
+      "Bakû",
+      "Bakü",
+      "ba ku"
+    ]
+  },
+  {
+    "id": "geonames-3191281",
+    "name": "Sarajevo",
+    "countryCode": "BA",
+    "latitude": 43.84864,
+    "longitude": 18.35644,
+    "aliases": [
+      "Sarajevó",
+      "Sarajèvo"
+    ]
+  },
+  {
+    "id": "geonames-3374036",
+    "name": "Bridgetown",
+    "countryCode": "BB",
+    "latitude": 13.10732,
+    "longitude": -59.62021,
+    "aliases": []
+  },
+  {
+    "id": "geonames-1185241",
+    "name": "Dhaka",
+    "countryCode": "BD",
+    "latitude": 23.7104,
+    "longitude": 90.40744,
+    "aliases": [
+      "ঢাকা",
+      "Dháka",
+      "Dhâkâ"
+    ]
+  },
+  {
+    "id": "geonames-2800866",
+    "name": "Brussels",
+    "countryCode": "BE",
+    "latitude": 50.85045,
+    "longitude": 4.34878,
+    "aliases": [
+      "Bruxelles",
+      "Brussel"
+    ]
+  },
+  {
+    "id": "geonames-2357048",
+    "name": "Ouagadougou",
+    "countryCode": "BF",
+    "latitude": 12.36566,
+    "longitude": -1.53388,
+    "aliases": []
+  },
+  {
+    "id": "geonames-727011",
+    "name": "Sofia",
+    "countryCode": "BG",
+    "latitude": 42.69751,
+    "longitude": 23.32415,
+    "aliases": [
+      "Софи",
+      "Сафія",
+      "Sofiä",
+      "Sofía",
+      "Sòfia",
+      "Sófia",
+      "Sófía",
+      "sofi'a"
+    ]
+  },
+  {
+    "id": "geonames-290340",
+    "name": "Manama",
+    "countryCode": "BH",
+    "latitude": 26.22787,
+    "longitude": 50.58565,
+    "aliases": [
+      "mnamہ",
+      "منامه",
+      "Manáma",
+      "Manāma",
+      "Mänamä"
+    ]
+  },
+  {
+    "id": "geonames-426272",
+    "name": "Gitega",
+    "countryCode": "BI",
+    "latitude": -3.42708,
+    "longitude": 29.92463,
+    "aliases": []
+  },
+  {
+    "id": "geonames-2392087",
+    "name": "Porto-Novo",
+    "countryCode": "BJ",
+    "latitude": 6.49646,
+    "longitude": 2.60359,
+    "aliases": [
+      "Porto Novo",
+      "Portonovo",
+      "Pôrto-Novo"
+    ]
+  },
+  {
+    "id": "geonames-3579132",
+    "name": "Gustavia",
+    "countryCode": "BL",
+    "latitude": 17.89618,
+    "longitude": -62.84978,
+    "aliases": [
+      "Gustávia"
+    ]
+  },
+  {
+    "id": "geonames-3573197",
+    "name": "Hamilton",
+    "countryCode": "BM",
+    "latitude": 32.2949,
+    "longitude": -64.78303,
+    "aliases": []
+  },
+  {
+    "id": "geonames-1820906",
+    "name": "Bandar Seri Begawan",
+    "countryCode": "BN",
+    "latitude": 4.89035,
+    "longitude": 114.94006,
+    "aliases": []
+  },
+  {
+    "id": "geonames-3903987",
+    "name": "Sucre",
+    "countryCode": "BO",
+    "latitude": -19.03332,
+    "longitude": -65.26274,
+    "aliases": []
+  },
+  {
+    "id": "geonames-3513563",
+    "name": "Kralendijk",
+    "countryCode": "BQ",
+    "latitude": 12.15,
+    "longitude": -68.26667,
+    "aliases": []
+  },
+  {
+    "id": "geonames-3469058",
+    "name": "Brasília",
+    "countryCode": "BR",
+    "latitude": -15.77972,
+    "longitude": -47.92972,
+    "aliases": [
+      "Brasilia",
+      "Brasilía",
+      "Bràsílíà",
+      "brasili'a"
+    ]
+  },
+  {
+    "id": "geonames-3571824",
+    "name": "Nassau",
+    "countryCode": "BS",
+    "latitude": 25.05823,
+    "longitude": -77.34306,
+    "aliases": []
+  },
+  {
+    "id": "geonames-1252416",
+    "name": "Thimphu",
+    "countryCode": "BT",
+    "latitude": 27.46609,
+    "longitude": 89.64191,
+    "aliases": [
+      "thim phu"
+    ]
+  },
+  {
+    "id": "geonames-933773",
+    "name": "Gaborone",
+    "countryCode": "BW",
+    "latitude": -24.65451,
+    "longitude": 25.90859,
+    "aliases": [
+      "Gaboróne"
+    ]
+  },
+  {
+    "id": "geonames-625144",
+    "name": "Minsk",
+    "countryCode": "BY",
+    "latitude": 53.90019,
+    "longitude": 27.56653,
+    "aliases": [
+      "Минск",
+      "Мінск",
+      "Mins'k",
+      "Mińsk",
+      "Mînsk"
+    ]
+  },
+  {
+    "id": "geonames-3582672",
+    "name": "Belmopan",
+    "countryCode": "BZ",
+    "latitude": 17.25376,
+    "longitude": -88.76401,
+    "aliases": [
+      "Bel'mopan",
+      "Belmopán",
+      "Belmópan",
+      "Bèlmopan"
+    ]
+  },
+  {
+    "id": "geonames-6094817",
+    "name": "Ottawa",
+    "countryCode": "CA",
+    "latitude": 45.41117,
+    "longitude": -75.69812,
+    "aliases": []
+  },
+  {
+    "id": "geonames-7304591",
+    "name": "West Island",
+    "countryCode": "CC",
+    "latitude": -12.15681,
+    "longitude": 96.82251,
+    "aliases": []
+  },
+  {
+    "id": "geonames-2314302",
+    "name": "Kinshasa",
+    "countryCode": "CD",
+    "latitude": -4.32758,
+    "longitude": 15.31357,
+    "aliases": []
+  },
+  {
+    "id": "geonames-2389853",
+    "name": "Bangui",
+    "countryCode": "CF",
+    "latitude": 4.36122,
+    "longitude": 18.55496,
+    "aliases": []
+  },
+  {
+    "id": "geonames-2260535",
+    "name": "Brazzaville",
+    "countryCode": "CG",
+    "latitude": -4.26613,
+    "longitude": 15.28318,
+    "aliases": []
+  },
+  {
+    "id": "geonames-2661552",
+    "name": "Bern",
+    "countryCode": "CH",
+    "latitude": 46.94809,
+    "longitude": 7.44744,
+    "aliases": []
+  },
+  {
+    "id": "geonames-2279755",
+    "name": "Yamoussoukro",
+    "countryCode": "CI",
+    "latitude": 6.82055,
+    "longitude": -5.27674,
+    "aliases": []
+  },
+  {
+    "id": "geonames-4035715",
+    "name": "Avarua",
+    "countryCode": "CK",
+    "latitude": -21.2075,
+    "longitude": -159.77546,
+    "aliases": [
+      "Avarúa"
+    ]
+  },
+  {
+    "id": "geonames-3871336",
+    "name": "Santiago",
+    "countryCode": "CL",
+    "latitude": -33.45694,
+    "longitude": -70.64827,
+    "aliases": []
+  },
+  {
+    "id": "geonames-2220957",
+    "name": "Yaoundé",
+    "countryCode": "CM",
+    "latitude": 3.86667,
+    "longitude": 11.51667,
+    "aliases": [
+      "Yaounde"
+    ]
+  },
+  {
+    "id": "geonames-1816670",
+    "name": "Beijing",
+    "countryCode": "CN",
+    "latitude": 39.9075,
+    "longitude": 116.39723,
+    "aliases": [
+      "Peking",
+      "北京",
+      "北京市",
+      "Běijīng",
+      "bei jing"
+    ]
+  },
+  {
+    "id": "geonames-3688689",
+    "name": "Bogotá",
+    "countryCode": "CO",
+    "latitude": 4.60971,
+    "longitude": -74.08175,
+    "aliases": [
+      "Bogota",
+      "Bogotà",
+      "Bógóta"
+    ]
+  },
+  {
+    "id": "geonames-3621849",
+    "name": "San José",
+    "countryCode": "CR",
+    "latitude": 9.93388,
+    "longitude": -84.08489,
+    "aliases": [
+      "San Jose"
+    ]
+  },
+  {
+    "id": "geonames-3553478",
+    "name": "Havana",
+    "countryCode": "CU",
+    "latitude": 23.13302,
+    "longitude": -82.38304,
+    "aliases": []
+  },
+  {
+    "id": "geonames-3374333",
+    "name": "Praia",
+    "countryCode": "CV",
+    "latitude": 14.93152,
+    "longitude": -23.51254,
+    "aliases": [
+      "pra'i'a"
+    ]
+  },
+  {
+    "id": "geonames-3513090",
+    "name": "Willemstad",
+    "countryCode": "CW",
+    "latitude": 12.12246,
+    "longitude": -68.88641,
+    "aliases": [
+      "willems tad"
+    ]
+  },
+  {
+    "id": "geonames-2078127",
+    "name": "Flying Fish Cove",
+    "countryCode": "CX",
+    "latitude": -10.42172,
+    "longitude": 105.67912,
+    "aliases": []
+  },
+  {
+    "id": "geonames-146268",
+    "name": "Nicosia",
+    "countryCode": "CY",
+    "latitude": 35.17284,
+    "longitude": 33.35397,
+    "aliases": [
+      "Λευκωσία",
+      "Λευκωσίαν",
+      "Nicosìa",
+      "Nicòsia",
+      "Nicósia"
+    ]
+  },
+  {
+    "id": "geonames-3067696",
+    "name": "Prague",
+    "countryCode": "CZ",
+    "latitude": 50.08804,
+    "longitude": 14.42076,
+    "aliases": [
+      "Praha"
+    ]
+  },
+  {
+    "id": "geonames-2950159",
+    "name": "Berlin",
+    "countryCode": "DE",
+    "latitude": 52.52437,
+    "longitude": 13.41053,
+    "aliases": [
+      "Berlín",
+      "Berlîn",
+      "Bèrlîn"
+    ]
+  },
+  {
+    "id": "geonames-223817",
+    "name": "Djibouti",
+    "countryCode": "DJ",
+    "latitude": 11.58901,
+    "longitude": 43.14503,
+    "aliases": []
+  },
+  {
+    "id": "geonames-2618425",
+    "name": "Copenhagen",
+    "countryCode": "DK",
+    "latitude": 55.67594,
+    "longitude": 12.56553,
+    "aliases": [
+      "København",
+      "Kobenhavn"
+    ]
+  },
+  {
+    "id": "geonames-3575635",
+    "name": "Roseau",
+    "countryCode": "DM",
+    "latitude": 15.30174,
+    "longitude": -61.38808,
+    "aliases": []
+  },
+  {
+    "id": "geonames-3492908",
+    "name": "Santo Domingo",
+    "countryCode": "DO",
+    "latitude": 18.47186,
+    "longitude": -69.89232,
+    "aliases": [
+      "Santo-Domingo"
+    ]
+  },
+  {
+    "id": "geonames-2507480",
+    "name": "Algiers",
+    "countryCode": "DZ",
+    "latitude": 36.73225,
+    "longitude": 3.08746,
+    "aliases": [
+      "ئالجىر",
+      "الجیرز"
+    ]
+  },
+  {
+    "id": "geonames-3652462",
+    "name": "Quito",
+    "countryCode": "EC",
+    "latitude": -0.22985,
+    "longitude": -78.52495,
+    "aliases": []
+  },
+  {
+    "id": "geonames-588409",
+    "name": "Tallinn",
+    "countryCode": "EE",
+    "latitude": 59.43696,
+    "longitude": 24.75353,
+    "aliases": []
+  },
+  {
+    "id": "geonames-360630",
+    "name": "Cairo",
+    "countryCode": "EG",
+    "latitude": 30.06263,
+    "longitude": 31.24967,
+    "aliases": [
+      "Al Qahirah",
+      "القاهرة",
+      "قاهره",
+      "قاہرہ",
+      "Caïro"
+    ]
+  },
+  {
+    "id": "geonames-343300",
+    "name": "Asmara",
+    "countryCode": "ER",
+    "latitude": 15.33805,
+    "longitude": 38.93184,
+    "aliases": [
+      "አስመራ",
+      "ኣስመራ"
+    ]
+  },
+  {
+    "id": "geonames-3117735",
+    "name": "Madrid",
+    "countryCode": "ES",
+    "latitude": 40.4165,
+    "longitude": -3.70256,
+    "aliases": [
+      "Madríd",
+      "Madrîd"
+    ]
+  },
+  {
+    "id": "geonames-344979",
+    "name": "Addis Ababa",
+    "countryCode": "ET",
+    "latitude": 9.02497,
+    "longitude": 38.74689,
+    "aliases": [
+      "አዲስ አበባ",
+      "Addis Abäba"
+    ]
+  },
+  {
+    "id": "geonames-658225",
+    "name": "Helsinki",
+    "countryCode": "FI",
+    "latitude": 60.16952,
+    "longitude": 24.93545,
+    "aliases": [
+      "Hel'sinki",
+      "Helsînkî",
+      "Hèlsinki",
+      "Ḥélsinki"
+    ]
+  },
+  {
+    "id": "geonames-2198148",
+    "name": "Suva",
+    "countryCode": "FJ",
+    "latitude": -18.13683,
+    "longitude": 178.42531,
+    "aliases": []
+  },
+  {
+    "id": "geonames-3426691",
+    "name": "Stanley",
+    "countryCode": "FK",
+    "latitude": -51.69382,
+    "longitude": -57.85701,
+    "aliases": []
+  },
+  {
+    "id": "geonames-2081986",
+    "name": "Palikir",
+    "countryCode": "FM",
+    "latitude": 6.92477,
+    "longitude": 158.16109,
+    "aliases": [
+      "Pálikír",
+      "pa liki r"
+    ]
+  },
+  {
+    "id": "geonames-2611396",
+    "name": "Tórshavn",
+    "countryCode": "FO",
+    "latitude": 62.00973,
+    "longitude": -6.77164,
+    "aliases": [
+      "Torshavn"
+    ]
+  },
+  {
+    "id": "geonames-2399697",
+    "name": "Libreville",
+    "countryCode": "GA",
+    "latitude": 0.39241,
+    "longitude": 9.45356,
+    "aliases": []
+  },
+  {
+    "id": "geonames-3579925",
+    "name": "Saint George's",
+    "countryCode": "GD",
+    "latitude": 12.05288,
+    "longitude": -61.75226,
+    "aliases": [
+      "Saint George.s",
+      "Saint-Georges"
+    ]
+  },
+  {
+    "id": "geonames-611717",
+    "name": "Tbilisi",
+    "countryCode": "GE",
+    "latitude": 41.69143,
+    "longitude": 44.83412,
+    "aliases": [
+      "ქართი",
+      "თბილისი"
+    ]
+  },
+  {
+    "id": "geonames-3382160",
+    "name": "Cayenne",
+    "countryCode": "GF",
+    "latitude": 4.9381,
+    "longitude": -52.33455,
+    "aliases": []
+  },
+  {
+    "id": "geonames-3042287",
+    "name": "Saint Peter Port",
+    "countryCode": "GG",
+    "latitude": 49.45981,
+    "longitude": -2.53527,
+    "aliases": []
+  },
+  {
+    "id": "geonames-2306104",
+    "name": "Accra",
+    "countryCode": "GH",
+    "latitude": 5.55602,
+    "longitude": -0.1969,
+    "aliases": []
+  },
+  {
+    "id": "geonames-2411585",
+    "name": "Gibraltar",
+    "countryCode": "GI",
+    "latitude": 36.14474,
+    "longitude": -5.35257,
+    "aliases": [
+      "Gibraltár",
+      "Gíbraltar"
+    ]
+  },
+  {
+    "id": "geonames-3421319",
+    "name": "Nuuk",
+    "countryCode": "GL",
+    "latitude": 64.18347,
+    "longitude": -51.72157,
+    "aliases": []
+  },
+  {
+    "id": "geonames-2413876",
+    "name": "Banjul",
+    "countryCode": "GM",
+    "latitude": 13.45274,
+    "longitude": -16.57803,
+    "aliases": []
+  },
+  {
+    "id": "geonames-2422465",
+    "name": "Conakry",
+    "countryCode": "GN",
+    "latitude": 9.53795,
+    "longitude": -13.67729,
+    "aliases": []
+  },
+  {
+    "id": "geonames-3579732",
+    "name": "Basse-Terre",
+    "countryCode": "GP",
+    "latitude": 15.99714,
+    "longitude": -61.73214,
+    "aliases": [
+      "Basse Terre"
+    ]
+  },
+  {
+    "id": "geonames-12226438",
+    "name": "Ciudad de la Paz",
+    "countryCode": "GQ",
+    "latitude": 1.5925,
+    "longitude": 10.82361,
+    "aliases": []
+  },
+  {
+    "id": "geonames-3426466",
+    "name": "Grytviken",
+    "countryCode": "GS",
+    "latitude": -54.28111,
+    "longitude": -36.5092,
+    "aliases": []
+  },
+  {
+    "id": "geonames-3598132",
+    "name": "Guatemala City",
+    "countryCode": "GT",
+    "latitude": 14.64072,
+    "longitude": -90.51327,
+    "aliases": []
+  },
+  {
+    "id": "geonames-4044012",
+    "name": "Hagåtña",
+    "countryCode": "GU",
+    "latitude": 13.47567,
+    "longitude": 144.74886,
+    "aliases": [
+      "Hagatna"
+    ]
+  },
+  {
+    "id": "geonames-2374775",
+    "name": "Bissau",
+    "countryCode": "GW",
+    "latitude": 11.86357,
+    "longitude": -15.59767,
+    "aliases": [
+      "bis'sa'u"
+    ]
+  },
+  {
+    "id": "geonames-3378644",
+    "name": "Georgetown",
+    "countryCode": "GY",
+    "latitude": 6.80448,
+    "longitude": -58.15527,
+    "aliases": []
+  },
+  {
+    "id": "geonames-1819729",
+    "name": "Hong Kong",
+    "countryCode": "HK",
+    "latitude": 22.27832,
+    "longitude": 114.17469,
+    "aliases": [
+      "香港",
+      "Hongkong",
+      "Hồng Kông"
+    ]
+  },
+  {
+    "id": "geonames-3600949",
+    "name": "Tegucigalpa",
+    "countryCode": "HN",
+    "latitude": 14.0818,
+    "longitude": -87.20681,
+    "aliases": [
+      "Tègucigalpa"
+    ]
+  },
+  {
+    "id": "geonames-3186886",
+    "name": "Zagreb",
+    "countryCode": "HR",
+    "latitude": 45.81444,
+    "longitude": 15.97798,
+    "aliases": [
+      "Zagrèb",
+      "Zagréb",
+      "Żagreb"
+    ]
+  },
+  {
+    "id": "geonames-3718426",
+    "name": "Port-au-Prince",
+    "countryCode": "HT",
+    "latitude": 18.54349,
+    "longitude": -72.33881,
+    "aliases": [
+      "Port au Prince"
+    ]
+  },
+  {
+    "id": "geonames-3054643",
+    "name": "Budapest",
+    "countryCode": "HU",
+    "latitude": 47.49835,
+    "longitude": 19.04045,
+    "aliases": [
+      "Budapeşt",
+      "Budapešt",
+      "Budapešť",
+      "Budapèst",
+      "Bùdapest",
+      "Búdapest"
+    ]
+  },
+  {
+    "id": "geonames-1642911",
+    "name": "Jakarta",
+    "countryCode": "ID",
+    "latitude": -6.21462,
+    "longitude": 106.84513,
+    "aliases": []
+  },
+  {
+    "id": "geonames-2964574",
+    "name": "Dublin",
+    "countryCode": "IE",
+    "latitude": 53.33306,
+    "longitude": -6.24889,
+    "aliases": [
+      "Dublín",
+      "Dublîn",
+      "Düblin"
+    ]
+  },
+  {
+    "id": "geonames-3042237",
+    "name": "Douglas",
+    "countryCode": "IM",
+    "latitude": 54.15,
+    "longitude": -4.48333,
+    "aliases": []
+  },
+  {
+    "id": "geonames-1261481",
+    "name": "New Delhi",
+    "countryCode": "IN",
+    "latitude": 28.62137,
+    "longitude": 77.2148,
+    "aliases": [
+      "Delhi",
+      "नई दिल्ली",
+      "নয়া দিল্লী",
+      "புது தில்லி"
+    ]
+  },
+  {
+    "id": "geonames-98182",
+    "name": "Baghdad",
+    "countryCode": "IQ",
+    "latitude": 33.34058,
+    "longitude": 44.40088,
+    "aliases": [
+      "بغداد",
+      "بەغداد",
+      "Baghdād"
+    ]
+  },
+  {
+    "id": "geonames-112931",
+    "name": "Tehran",
+    "countryCode": "IR",
+    "latitude": 35.69439,
+    "longitude": 51.42151,
+    "aliases": [
+      "تهران",
+      "تهرون"
+    ]
+  },
+  {
+    "id": "geonames-3413829",
+    "name": "Reykjavík",
+    "countryCode": "IS",
+    "latitude": 64.13548,
+    "longitude": -21.89541,
+    "aliases": [
+      "Reykjavik"
+    ]
+  },
+  {
+    "id": "geonames-3042091",
+    "name": "Saint Helier",
+    "countryCode": "JE",
+    "latitude": 49.18804,
+    "longitude": -2.10491,
+    "aliases": [
+      "Saint-Helier",
+      "Saint-Hélier"
+    ]
+  },
+  {
+    "id": "geonames-3489854",
+    "name": "Kingston",
+    "countryCode": "JM",
+    "latitude": 17.99702,
+    "longitude": -76.79358,
+    "aliases": []
+  },
+  {
+    "id": "geonames-250441",
+    "name": "Amman",
+    "countryCode": "JO",
+    "latitude": 31.95522,
+    "longitude": 35.94503,
+    "aliases": [
+      "امان",
+      "عمان",
+      "'Amman",
+      "Ammán",
+      "Ammān",
+      "am'man",
+      "‘Ammān"
+    ]
+  },
+  {
+    "id": "geonames-184745",
+    "name": "Nairobi",
+    "countryCode": "KE",
+    "latitude": -1.28333,
+    "longitude": 36.81667,
+    "aliases": [
+      "Nairobî",
+      "Nairòbi",
+      "Nairóbi",
+      "Naíróbí",
+      "na'irobi"
+    ]
+  },
+  {
+    "id": "geonames-1528675",
+    "name": "Bishkek",
+    "countryCode": "KG",
+    "latitude": 42.87,
+    "longitude": 74.59,
+    "aliases": []
+  },
+  {
+    "id": "geonames-1821306",
+    "name": "Phnom Penh",
+    "countryCode": "KH",
+    "latitude": 11.56245,
+    "longitude": 104.91601,
+    "aliases": [
+      "ភនពេញ",
+      "ភ្នំពេញ",
+      "Phnom Pénh",
+      "Phnom-Penh",
+      "Phnompenh",
+      "Phnôm Pênh"
+    ]
+  },
+  {
+    "id": "geonames-2110257",
+    "name": "Tarawa",
+    "countryCode": "KI",
+    "latitude": 1.3278,
+    "longitude": 172.97696,
+    "aliases": []
+  },
+  {
+    "id": "geonames-921772",
+    "name": "Moroni",
+    "countryCode": "KM",
+    "latitude": -11.70216,
+    "longitude": 43.25506,
+    "aliases": [
+      "Moròni",
+      "Móróní",
+      "mo ro ni"
+    ]
+  },
+  {
+    "id": "geonames-3575551",
+    "name": "Basseterre",
+    "countryCode": "KN",
+    "latitude": 17.2955,
+    "longitude": -62.72499,
+    "aliases": []
+  },
+  {
+    "id": "geonames-1871859",
+    "name": "Pyongyang",
+    "countryCode": "KP",
+    "latitude": 39.03385,
+    "longitude": 125.75432,
+    "aliases": [
+      "평양",
+      "평양시",
+      "P'yongyang",
+      "P'yŏngyang",
+      "Pyöngyang",
+      "pyon'gyang"
+    ]
+  },
+  {
+    "id": "geonames-285787",
+    "name": "Kuwait City",
+    "countryCode": "KW",
+    "latitude": 29.367,
+    "longitude": 47.97429,
+    "aliases": [
+      "اَلْكُوَيْت",
+      "مدينة الكويت"
+    ]
+  },
+  {
+    "id": "geonames-3580661",
+    "name": "George Town",
+    "countryCode": "KY",
+    "latitude": 19.2866,
+    "longitude": -81.37436,
+    "aliases": [
+      "Georgetown"
+    ]
+  },
+  {
+    "id": "geonames-1526273",
+    "name": "Astana",
+    "countryCode": "KZ",
+    "latitude": 51.1801,
+    "longitude": 71.44598,
+    "aliases": [
+      "Astanà",
+      "Astaná"
+    ]
+  },
+  {
+    "id": "geonames-1651944",
+    "name": "Vientiane",
+    "countryCode": "LA",
+    "latitude": 17.96667,
+    "longitude": 102.6,
+    "aliases": [
+      "ວຽງຈນ",
+      "ວຽງຈັນ"
+    ]
+  },
+  {
+    "id": "geonames-276781",
+    "name": "Beirut",
+    "countryCode": "LB",
+    "latitude": 33.89332,
+    "longitude": 35.50157,
+    "aliases": [
+      "بيروت",
+      "بیروت",
+      "Beirút",
+      "Beirût"
+    ]
+  },
+  {
+    "id": "geonames-3576812",
+    "name": "Castries",
+    "countryCode": "LC",
+    "latitude": 13.9957,
+    "longitude": -61.00614,
+    "aliases": []
+  },
+  {
+    "id": "geonames-3042030",
+    "name": "Vaduz",
+    "countryCode": "LI",
+    "latitude": 47.14151,
+    "longitude": 9.52154,
+    "aliases": []
+  },
+  {
+    "id": "geonames-1248991",
+    "name": "Colombo",
+    "countryCode": "LK",
+    "latitude": 6.93548,
+    "longitude": 79.84868,
+    "aliases": [
+      "කොළඹ",
+      "ෙකාළඹ",
+      "கொழும்பு"
+    ]
+  },
+  {
+    "id": "geonames-2274895",
+    "name": "Monrovia",
+    "countryCode": "LR",
+    "latitude": 6.30054,
+    "longitude": -10.7969,
+    "aliases": [
+      "Monròvia",
+      "Monróvia",
+      "Monróvía"
+    ]
+  },
+  {
+    "id": "geonames-932505",
+    "name": "Maseru",
+    "countryCode": "LS",
+    "latitude": -29.31667,
+    "longitude": 27.48333,
+    "aliases": [
+      "Maserú",
+      "ma se ru"
+    ]
+  },
+  {
+    "id": "geonames-593116",
+    "name": "Vilnius",
+    "countryCode": "LT",
+    "latitude": 54.68916,
+    "longitude": 25.2798,
+    "aliases": [
+      "Vilníus",
+      "Vílnius"
+    ]
+  },
+  {
+    "id": "geonames-2960316",
+    "name": "Luxembourg",
+    "countryCode": "LU",
+    "latitude": 49.60982,
+    "longitude": 6.13268,
+    "aliases": []
+  },
+  {
+    "id": "geonames-456172",
+    "name": "Riga",
+    "countryCode": "LV",
+    "latitude": 56.946,
+    "longitude": 24.10589,
+    "aliases": [
+      "Ríga",
+      "Rīga"
+    ]
+  },
+  {
+    "id": "geonames-2210247",
+    "name": "Tripoli",
+    "countryCode": "LY",
+    "latitude": 32.88743,
+    "longitude": 13.18733,
+    "aliases": [
+      "ترابلس",
+      "طرابلس",
+      "Trìpoli",
+      "Trípoli",
+      "Trípólí"
+    ]
+  },
+  {
+    "id": "geonames-2538475",
+    "name": "Rabat",
+    "countryCode": "MA",
+    "latitude": 34.01325,
+    "longitude": -6.83255,
+    "aliases": [
+      "ربات",
+      "رباط",
+      "Rabāt",
+      "raba t"
+    ]
+  },
+  {
+    "id": "geonames-2993458",
+    "name": "Monaco",
+    "countryCode": "MC",
+    "latitude": 43.73718,
+    "longitude": 7.42145,
+    "aliases": [
+      "Mònaco",
+      "Mónaco"
+    ]
+  },
+  {
+    "id": "geonames-618426",
+    "name": "Chisinau",
+    "countryCode": "MD",
+    "latitude": 47.00902,
+    "longitude": 28.85938,
+    "aliases": [
+      "Chişinău",
+      "Chișinău"
+    ]
+  },
+  {
+    "id": "geonames-3193044",
+    "name": "Podgorica",
+    "countryCode": "ME",
+    "latitude": 42.44124,
+    "longitude": 19.26309,
+    "aliases": [
+      "Podgòrica"
+    ]
+  },
+  {
+    "id": "geonames-3578851",
+    "name": "Marigot",
+    "countryCode": "MF",
+    "latitude": 18.06819,
+    "longitude": -63.08302,
+    "aliases": []
+  },
+  {
+    "id": "geonames-1070940",
+    "name": "Antananarivo",
+    "countryCode": "MG",
+    "latitude": -18.91368,
+    "longitude": 47.53613,
+    "aliases": [
+      "Antananarívó"
+    ]
+  },
+  {
+    "id": "geonames-2113779",
+    "name": "Majuro",
+    "countryCode": "MH",
+    "latitude": 7.08971,
+    "longitude": 171.38027,
+    "aliases": []
+  },
+  {
+    "id": "geonames-785842",
+    "name": "Skopje",
+    "countryCode": "MK",
+    "latitude": 41.99646,
+    "longitude": 21.43141,
+    "aliases": [
+      "Скопе",
+      "Скоп'е",
+      "Skopjė"
+    ]
+  },
+  {
+    "id": "geonames-2460596",
+    "name": "Bamako",
+    "countryCode": "ML",
+    "latitude": 12.60915,
+    "longitude": -7.97522,
+    "aliases": [
+      "Bamakó"
+    ]
+  },
+  {
+    "id": "geonames-6611854",
+    "name": "Nay Pyi Taw",
+    "countryCode": "MM",
+    "latitude": 19.745,
+    "longitude": 96.12972,
+    "aliases": [
+      "Naypyitaw"
+    ]
+  },
+  {
+    "id": "geonames-2028462",
+    "name": "Ulan Bator",
+    "countryCode": "MN",
+    "latitude": 47.90771,
+    "longitude": 106.88324,
+    "aliases": [
+      "Уланбатар",
+      "Ұlanbatyr",
+      "Ulan-Bator",
+      "Ulanbator",
+      "Ulán Bator",
+      "Ulán Bátor",
+      "Ulánbátor",
+      "Úlan Bator"
+    ]
+  },
+  {
+    "id": "geonames-1821274",
+    "name": "Macau",
+    "countryCode": "MO",
+    "latitude": 22.20056,
+    "longitude": 113.54611,
+    "aliases": [
+      "Macao",
+      "澳門",
+      "澳门"
+    ]
+  },
+  {
+    "id": "geonames-7828758",
+    "name": "Saipan",
+    "countryCode": "MP",
+    "latitude": 15.21233,
+    "longitude": 145.7545,
+    "aliases": []
+  },
+  {
+    "id": "geonames-3570675",
+    "name": "Fort-de-France",
+    "countryCode": "MQ",
+    "latitude": 14.60365,
+    "longitude": -61.07418,
+    "aliases": [
+      "Fort de France",
+      "Fôrt-de-France"
+    ]
+  },
+  {
+    "id": "geonames-2377450",
+    "name": "Nouakchott",
+    "countryCode": "MR",
+    "latitude": 18.08581,
+    "longitude": -15.9785,
+    "aliases": []
+  },
+  {
+    "id": "geonames-3578069",
+    "name": "Plymouth",
+    "countryCode": "MS",
+    "latitude": 16.70555,
+    "longitude": -62.21292,
+    "aliases": []
+  },
+  {
+    "id": "geonames-2562305",
+    "name": "Valletta",
+    "countryCode": "MT",
+    "latitude": 35.89968,
+    "longitude": 14.5148,
+    "aliases": []
+  },
+  {
+    "id": "geonames-934154",
+    "name": "Port Louis",
+    "countryCode": "MU",
+    "latitude": -20.16194,
+    "longitude": 57.49889,
+    "aliases": [
+      "Port-Louis"
+    ]
+  },
+  {
+    "id": "geonames-1282027",
+    "name": "Male",
+    "countryCode": "MV",
+    "latitude": 4.17521,
+    "longitude": 73.50916,
+    "aliases": [
+      "Malé",
+      "Malė"
+    ]
+  },
+  {
+    "id": "geonames-927967",
+    "name": "Lilongwe",
+    "countryCode": "MW",
+    "latitude": -13.96692,
+    "longitude": 33.78725,
+    "aliases": []
+  },
+  {
+    "id": "geonames-1735161",
+    "name": "Kuala Lumpur",
+    "countryCode": "MY",
+    "latitude": 3.1412,
+    "longitude": 101.68653,
+    "aliases": [
+      "KL",
+      "吉隆坡",
+      "Kuala-Lumpur",
+      "Kúala Lúmpúr"
+    ]
+  },
+  {
+    "id": "geonames-1040652",
+    "name": "Maputo",
+    "countryCode": "MZ",
+    "latitude": -25.96553,
+    "longitude": 32.58322,
+    "aliases": [
+      "Mapútó",
+      "ma pu to"
+    ]
+  },
+  {
+    "id": "geonames-3352136",
+    "name": "Windhoek",
+    "countryCode": "NA",
+    "latitude": -22.55941,
+    "longitude": 17.08323,
+    "aliases": []
+  },
+  {
+    "id": "geonames-2139521",
+    "name": "Nouméa",
+    "countryCode": "NC",
+    "latitude": -22.27407,
+    "longitude": 166.44884,
+    "aliases": [
+      "Noumea"
+    ]
+  },
+  {
+    "id": "geonames-2440485",
+    "name": "Niamey",
+    "countryCode": "NE",
+    "latitude": 13.51366,
+    "longitude": 2.1098,
+    "aliases": [
+      "Níamey"
+    ]
+  },
+  {
+    "id": "geonames-2161314",
+    "name": "Kingston",
+    "countryCode": "NF",
+    "latitude": -29.05459,
+    "longitude": 167.96628,
+    "aliases": []
+  },
+  {
+    "id": "geonames-2352778",
+    "name": "Abuja",
+    "countryCode": "NG",
+    "latitude": 9.05785,
+    "longitude": 7.49508,
+    "aliases": [
+      "Abùjá"
+    ]
+  },
+  {
+    "id": "geonames-3617763",
+    "name": "Managua",
+    "countryCode": "NI",
+    "latitude": 12.13282,
+    "longitude": -86.2504,
+    "aliases": [
+      "Managûa",
+      "Manágua",
+      "ma na gua",
+      "managu'a"
+    ]
+  },
+  {
+    "id": "geonames-2759794",
+    "name": "Amsterdam",
+    "countryCode": "NL",
+    "latitude": 52.37403,
+    "longitude": 4.88969,
+    "aliases": [
+      "Amstérdam",
+      "Àmsterdam",
+      "Ámsterdam"
+    ]
+  },
+  {
+    "id": "geonames-3143244",
+    "name": "Oslo",
+    "countryCode": "NO",
+    "latitude": 59.91273,
+    "longitude": 10.74609,
+    "aliases": [
+      "Osló",
+      "Òslo",
+      "Ósló"
+    ]
+  },
+  {
+    "id": "geonames-1283240",
+    "name": "Kathmandu",
+    "countryCode": "NP",
+    "latitude": 27.70169,
+    "longitude": 85.3206,
+    "aliases": [
+      "काठमाडौँ",
+      "काठमांडू",
+      "काठमाडौं",
+      "Káthmandu",
+      "Káthmándú"
+    ]
+  },
+  {
+    "id": "geonames-7626461",
+    "name": "Yaren",
+    "countryCode": "NR",
+    "latitude": -0.55085,
+    "longitude": 166.9252,
+    "aliases": [
+      "Yarèn",
+      "ya ren"
+    ]
+  },
+  {
+    "id": "geonames-4036284",
+    "name": "Alofi",
+    "countryCode": "NU",
+    "latitude": -19.05294,
+    "longitude": -169.91957,
+    "aliases": []
+  },
+  {
+    "id": "geonames-2179537",
+    "name": "Wellington",
+    "countryCode": "NZ",
+    "latitude": -41.28664,
+    "longitude": 174.77557,
+    "aliases": [
+      "Te Whanganui-a-Tara"
+    ]
+  },
+  {
+    "id": "geonames-287286",
+    "name": "Muscat",
+    "countryCode": "OM",
+    "latitude": 23.58413,
+    "longitude": 58.40778,
+    "aliases": [
+      "مسقط",
+      "مۇسكات"
+    ]
+  },
+  {
+    "id": "geonames-3703443",
+    "name": "Panama City",
+    "countryCode": "PA",
+    "latitude": 8.9936,
+    "longitude": -79.51973,
+    "aliases": []
+  },
+  {
+    "id": "geonames-3936456",
+    "name": "Lima",
+    "countryCode": "PE",
+    "latitude": -12.04318,
+    "longitude": -77.02824,
+    "aliases": [
+      "Líma",
+      "Lîma",
+      "li ma"
+    ]
+  },
+  {
+    "id": "geonames-4033936",
+    "name": "Papeete",
+    "countryCode": "PF",
+    "latitude": -17.5347,
+    "longitude": -149.56843,
+    "aliases": [
+      "Pape'ete",
+      "Papeetė",
+      "Pape’ete"
+    ]
+  },
+  {
+    "id": "geonames-2088122",
+    "name": "Port Moresby",
+    "countryCode": "PG",
+    "latitude": -9.47723,
+    "longitude": 147.15089,
+    "aliases": []
+  },
+  {
+    "id": "geonames-1701668",
+    "name": "Manila",
+    "countryCode": "PH",
+    "latitude": 14.6042,
+    "longitude": 120.9822,
+    "aliases": [
+      "Maníla",
+      "ma ni la"
+    ]
+  },
+  {
+    "id": "geonames-1176615",
+    "name": "Islamabad",
+    "countryCode": "PK",
+    "latitude": 33.72148,
+    "longitude": 73.04329,
+    "aliases": [
+      "إسلام آباد",
+      "ئیسلاماباد",
+      "Islàmabad",
+      "Islámábád",
+      "Islāmābād",
+      "Îslamabad",
+      "İslamabad"
+    ]
+  },
+  {
+    "id": "geonames-756135",
+    "name": "Warsaw",
+    "countryCode": "PL",
+    "latitude": 52.22977,
+    "longitude": 21.01178,
+    "aliases": [
+      "Warszawa"
+    ]
+  },
+  {
+    "id": "geonames-3424934",
+    "name": "Saint-Pierre",
+    "countryCode": "PM",
+    "latitude": 46.77914,
+    "longitude": -56.1773,
+    "aliases": [
+      "Saint Pierre"
+    ]
+  },
+  {
+    "id": "geonames-4030723",
+    "name": "Adamstown",
+    "countryCode": "PN",
+    "latitude": -25.06597,
+    "longitude": -130.10147,
+    "aliases": [
+      "Adams Town"
+    ]
+  },
+  {
+    "id": "geonames-4568127",
+    "name": "San Juan",
+    "countryCode": "PR",
+    "latitude": 18.46633,
+    "longitude": -66.10572,
+    "aliases": []
+  },
+  {
+    "id": "geonames-8063361",
+    "name": "Ngerulmud",
+    "countryCode": "PW",
+    "latitude": 7.50077,
+    "longitude": 134.6238,
+    "aliases": []
+  },
+  {
+    "id": "geonames-3439389",
+    "name": "Asunción",
+    "countryCode": "PY",
+    "latitude": -25.28646,
+    "longitude": -57.647,
+    "aliases": [
+      "Asuncion"
+    ]
+  },
+  {
+    "id": "geonames-290030",
+    "name": "Doha",
+    "countryCode": "QA",
+    "latitude": 25.28545,
+    "longitude": 51.53096,
+    "aliases": [
+      "دوحه",
+      "دوحہ",
+      "Do'ha",
+      "Doḥa",
+      "do ha"
+    ]
+  },
+  {
+    "id": "geonames-935264",
+    "name": "Saint-Denis",
+    "countryCode": "RE",
+    "latitude": -20.88231,
+    "longitude": 55.4504,
+    "aliases": []
+  },
+  {
+    "id": "geonames-683506",
+    "name": "Bucharest",
+    "countryCode": "RO",
+    "latitude": 44.43225,
+    "longitude": 26.10626,
+    "aliases": []
+  },
+  {
+    "id": "geonames-792680",
+    "name": "Belgrade",
+    "countryCode": "RS",
+    "latitude": 44.80401,
+    "longitude": 20.46513,
+    "aliases": [
+      "Белград",
+      "Београд",
+      "Bèlgrade"
+    ]
+  },
+  {
+    "id": "geonames-524901",
+    "name": "Moscow",
+    "countryCode": "RU",
+    "latitude": 55.75204,
+    "longitude": 37.61781,
+    "aliases": [
+      "Муско",
+      "Məskəү"
+    ]
+  },
+  {
+    "id": "geonames-202061",
+    "name": "Kigali",
+    "countryCode": "RW",
+    "latitude": -1.94995,
+    "longitude": 30.05885,
+    "aliases": [
+      "Kígalí"
+    ]
+  },
+  {
+    "id": "geonames-108410",
+    "name": "Riyadh",
+    "countryCode": "SA",
+    "latitude": 24.68773,
+    "longitude": 46.72185,
+    "aliases": [
+      "رياض",
+      "ریاض"
+    ]
+  },
+  {
+    "id": "geonames-2108502",
+    "name": "Honiara",
+    "countryCode": "SB",
+    "latitude": -9.43333,
+    "longitude": 159.95,
+    "aliases": []
+  },
+  {
+    "id": "geonames-241131",
+    "name": "Victoria",
+    "countryCode": "SC",
+    "latitude": -4.62001,
+    "longitude": 55.45501,
+    "aliases": [
+      "Victòria"
+    ]
+  },
+  {
+    "id": "geonames-379252",
+    "name": "Khartoum",
+    "countryCode": "SD",
+    "latitude": 15.55177,
+    "longitude": 32.53241,
+    "aliases": [
+      "خرطوم",
+      "خارطوم"
+    ]
+  },
+  {
+    "id": "geonames-2673730",
+    "name": "Stockholm",
+    "countryCode": "SE",
+    "latitude": 59.32938,
+    "longitude": 18.06871,
+    "aliases": []
+  },
+  {
+    "id": "geonames-1880252",
+    "name": "Singapore",
+    "countryCode": "SG",
+    "latitude": 1.28967,
+    "longitude": 103.85007,
+    "aliases": []
+  },
+  {
+    "id": "geonames-3370903",
+    "name": "Jamestown",
+    "countryCode": "SH",
+    "latitude": -15.92488,
+    "longitude": -5.71816,
+    "aliases": []
+  },
+  {
+    "id": "geonames-3196359",
+    "name": "Ljubljana",
+    "countryCode": "SI",
+    "latitude": 46.05108,
+    "longitude": 14.50513,
+    "aliases": []
+  },
+  {
+    "id": "geonames-2729907",
+    "name": "Longyearbyen",
+    "countryCode": "SJ",
+    "latitude": 78.22334,
+    "longitude": 15.64689,
+    "aliases": []
+  },
+  {
+    "id": "geonames-3060972",
+    "name": "Bratislava",
+    "countryCode": "SK",
+    "latitude": 48.14816,
+    "longitude": 17.10674,
+    "aliases": [
+      "Bratîslava"
+    ]
+  },
+  {
+    "id": "geonames-2409306",
+    "name": "Freetown",
+    "countryCode": "SL",
+    "latitude": 8.48714,
+    "longitude": -13.2356,
+    "aliases": []
+  },
+  {
+    "id": "geonames-3168070",
+    "name": "San Marino",
+    "countryCode": "SM",
+    "latitude": 43.93667,
+    "longitude": 12.44639,
+    "aliases": [
+      "San Maríno",
+      "San Marínó",
+      "San-Marino",
+      "Sanmarino",
+      "Sanmarīno",
+      "san ma ri no"
+    ]
+  },
+  {
+    "id": "geonames-2253354",
+    "name": "Dakar",
+    "countryCode": "SN",
+    "latitude": 14.6937,
+    "longitude": -17.44406,
+    "aliases": []
+  },
+  {
+    "id": "geonames-53654",
+    "name": "Mogadishu",
+    "countryCode": "SO",
+    "latitude": 2.03711,
+    "longitude": 45.34375,
+    "aliases": []
+  },
+  {
+    "id": "geonames-3383330",
+    "name": "Paramaribo",
+    "countryCode": "SR",
+    "latitude": 5.86638,
+    "longitude": -55.16682,
+    "aliases": [
+      "Paramaribô",
+      "Paramaríbó",
+      "pa rama ri bo"
+    ]
+  },
+  {
+    "id": "geonames-373303",
+    "name": "Juba",
+    "countryCode": "SS",
+    "latitude": 4.85165,
+    "longitude": 31.58247,
+    "aliases": []
+  },
+  {
+    "id": "geonames-2410763",
+    "name": "São Tomé",
+    "countryCode": "ST",
+    "latitude": 0.33756,
+    "longitude": 6.7299,
+    "aliases": [
+      "Sao Tome",
+      "Sao Tomé",
+      "sa'o tome"
+    ]
+  },
+  {
+    "id": "geonames-3583361",
+    "name": "San Salvador",
+    "countryCode": "SV",
+    "latitude": 13.68935,
+    "longitude": -89.18718,
+    "aliases": [
+      "San-Sal'vador",
+      "San-Salvador"
+    ]
+  },
+  {
+    "id": "geonames-3513392",
+    "name": "Philipsburg",
+    "countryCode": "SX",
+    "latitude": 18.026,
+    "longitude": -63.04582,
+    "aliases": []
+  },
+  {
+    "id": "geonames-170654",
+    "name": "Damascus",
+    "countryCode": "SY",
+    "latitude": 33.5102,
+    "longitude": 36.29128,
+    "aliases": [
+      "دمشق",
+      "د مشق"
+    ]
+  },
+  {
+    "id": "geonames-934985",
+    "name": "Mbabane",
+    "countryCode": "SZ",
+    "latitude": -26.31667,
+    "longitude": 31.13333,
+    "aliases": [
+      "Mbabanė"
+    ]
+  },
+  {
+    "id": "geonames-3576994",
+    "name": "Cockburn Town",
+    "countryCode": "TC",
+    "latitude": 21.46122,
+    "longitude": -71.14188,
+    "aliases": []
+  },
+  {
+    "id": "geonames-2427123",
+    "name": "N'Djamena",
+    "countryCode": "TD",
+    "latitude": 12.10672,
+    "longitude": 15.0444,
+    "aliases": [
+      "Ndjamena",
+      "N’Djamena",
+      "N’Dj·amèna"
+    ]
+  },
+  {
+    "id": "geonames-1546102",
+    "name": "Port-aux-Français",
+    "countryCode": "TF",
+    "latitude": -49.34916,
+    "longitude": 70.21937,
+    "aliases": [
+      "Port-aux-Francais"
+    ]
+  },
+  {
+    "id": "geonames-2365267",
+    "name": "Lomé",
+    "countryCode": "TG",
+    "latitude": 6.12874,
+    "longitude": 1.22154,
+    "aliases": [
+      "Lome",
+      "Lomė"
+    ]
+  },
+  {
+    "id": "geonames-1221874",
+    "name": "Dushanbe",
+    "countryCode": "TJ",
+    "latitude": 38.53575,
+    "longitude": 68.77905,
+    "aliases": [
+      "Dušhanbe"
+    ]
+  },
+  {
+    "id": "geonames-1645457",
+    "name": "Dili",
+    "countryCode": "TL",
+    "latitude": -8.55861,
+    "longitude": 125.57361,
+    "aliases": [
+      "Díli",
+      "di li"
+    ]
+  },
+  {
+    "id": "geonames-162183",
+    "name": "Ashgabat",
+    "countryCode": "TM",
+    "latitude": 37.95,
+    "longitude": 58.38333,
+    "aliases": []
+  },
+  {
+    "id": "geonames-2464470",
+    "name": "Tunis",
+    "countryCode": "TN",
+    "latitude": 36.81897,
+    "longitude": 10.16579,
+    "aliases": [
+      "تونس",
+      "توونس",
+      "Tùnis",
+      "Túnis",
+      "Tûnis",
+      "Tünis"
+    ]
+  },
+  {
+    "id": "geonames-4032402",
+    "name": "Nuku‘alofa",
+    "countryCode": "TO",
+    "latitude": -21.13683,
+    "longitude": -175.20114,
+    "aliases": [
+      "Nuku'alofa",
+      "Nuku`alofa",
+      "Nukualofa",
+      "Nuku’alofa"
+    ]
+  },
+  {
+    "id": "geonames-323786",
+    "name": "Ankara",
+    "countryCode": "TR",
+    "latitude": 39.91987,
+    "longitude": 32.85427,
+    "aliases": []
+  },
+  {
+    "id": "geonames-3573890",
+    "name": "Port of Spain",
+    "countryCode": "TT",
+    "latitude": 10.66668,
+    "longitude": -61.51889,
+    "aliases": [
+      "Port-of-Spain"
+    ]
+  },
+  {
+    "id": "geonames-2110394",
+    "name": "Funafuti",
+    "countryCode": "TV",
+    "latitude": -8.52425,
+    "longitude": 179.19417,
+    "aliases": []
+  },
+  {
+    "id": "geonames-160196",
+    "name": "Dodoma",
+    "countryCode": "TZ",
+    "latitude": -6.17221,
+    "longitude": 35.73947,
+    "aliases": [
+      "Dódóma",
+      "do do ma"
+    ]
+  },
+  {
+    "id": "geonames-703448",
+    "name": "Kyiv",
+    "countryCode": "UA",
+    "latitude": 50.45466,
+    "longitude": 30.5238,
+    "aliases": [
+      "Кейӳ",
+      "Киев"
+    ]
+  },
+  {
+    "id": "geonames-232422",
+    "name": "Kampala",
+    "countryCode": "UG",
+    "latitude": 0.31628,
+    "longitude": 32.58219,
+    "aliases": [
+      "kam pa la"
+    ]
+  },
+  {
+    "id": "geonames-4140963",
+    "name": "Washington",
+    "countryCode": "US",
+    "latitude": 38.89511,
+    "longitude": -77.03637,
+    "aliases": [
+      "Washington DC",
+      "Washington D.C.",
+      "DC"
+    ]
+  },
+  {
+    "id": "geonames-3441575",
+    "name": "Montevideo",
+    "countryCode": "UY",
+    "latitude": -34.90328,
+    "longitude": -56.18816,
+    "aliases": [
+      "Montevídeó",
+      "montevide'o"
+    ]
+  },
+  {
+    "id": "geonames-1512569",
+    "name": "Tashkent",
+    "countryCode": "UZ",
+    "latitude": 41.26465,
+    "longitude": 69.21627,
+    "aliases": []
+  },
+  {
+    "id": "geonames-6691831",
+    "name": "Vatican City",
+    "countryCode": "VA",
+    "latitude": 41.90268,
+    "longitude": 12.45414,
+    "aliases": []
+  },
+  {
+    "id": "geonames-3577887",
+    "name": "Kingstown",
+    "countryCode": "VC",
+    "latitude": 13.15527,
+    "longitude": -61.22742,
+    "aliases": []
+  },
+  {
+    "id": "geonames-3646738",
+    "name": "Caracas",
+    "countryCode": "VE",
+    "latitude": 10.48801,
+    "longitude": -66.87919,
+    "aliases": []
+  },
+  {
+    "id": "geonames-3577430",
+    "name": "Road Town",
+    "countryCode": "VG",
+    "latitude": 18.42693,
+    "longitude": -64.62079,
+    "aliases": []
+  },
+  {
+    "id": "geonames-4795467",
+    "name": "Charlotte Amalie",
+    "countryCode": "VI",
+    "latitude": 18.3419,
+    "longitude": -64.9307,
+    "aliases": []
+  },
+  {
+    "id": "geonames-2135171",
+    "name": "Port-Vila",
+    "countryCode": "VU",
+    "latitude": -17.73648,
+    "longitude": 168.31366,
+    "aliases": [
+      "Port Vila"
+    ]
+  },
+  {
+    "id": "geonames-4034821",
+    "name": "Mata-Utu",
+    "countryCode": "WF",
+    "latitude": -13.28163,
+    "longitude": -176.17453,
+    "aliases": [
+      "Mata Utu",
+      "Mata'utu",
+      "Matautu",
+      "Matâutu"
+    ]
+  },
+  {
+    "id": "geonames-4035413",
+    "name": "Apia",
+    "countryCode": "WS",
+    "latitude": -13.83333,
+    "longitude": -171.76666,
+    "aliases": [
+      "Apía",
+      "api'a"
+    ]
+  },
+  {
+    "id": "geonames-786714",
+    "name": "Pristina",
+    "countryCode": "XK",
+    "latitude": 42.67272,
+    "longitude": 21.16688,
+    "aliases": [
+      "Pristína",
+      "Priştina",
+      "Priština",
+      "Priștina",
+      "Prìstina"
+    ]
+  },
+  {
+    "id": "geonames-71137",
+    "name": "Sanaa",
+    "countryCode": "YE",
+    "latitude": 15.35452,
+    "longitude": 44.20646,
+    "aliases": [
+      "صنعاء",
+      "Sana'a",
+      "Sana'a'",
+      "Sanaà",
+      "Sanaá",
+      "Şana‘ā'"
+    ]
+  },
+  {
+    "id": "geonames-921815",
+    "name": "Mamoudzou",
+    "countryCode": "YT",
+    "latitude": -12.78234,
+    "longitude": 45.22878,
+    "aliases": []
+  },
+  {
+    "id": "geonames-964137",
+    "name": "Pretoria",
+    "countryCode": "ZA",
+    "latitude": -25.74486,
+    "longitude": 28.18783,
+    "aliases": [
+      "Pretoriä",
+      "Pretoría",
+      "Pretòria",
+      "Pretória"
+    ]
+  },
+  {
+    "id": "geonames-909137",
+    "name": "Lusaka",
+    "countryCode": "ZM",
+    "latitude": -15.40669,
+    "longitude": 28.28713,
+    "aliases": [
+      "Lúsaka",
+      "Lûsaka",
+      "lu sa ka"
+    ]
+  },
+  {
+    "id": "geonames-890299",
+    "name": "Harare",
+    "countryCode": "ZW",
+    "latitude": -17.82772,
+    "longitude": 31.05337,
+    "aliases": [
+      "Hararė"
+    ]
+  },
+  {
+    "id": "geonames-2548885",
+    "name": "Fes",
+    "countryCode": "MA",
+    "latitude": 34.03313,
+    "longitude": -5.00028,
+    "aliases": [
+      "Fez",
+      "فاس",
+      "Fès"
+    ]
+  },
+  {
+    "id": "geonames-360502",
+    "name": "Luxor",
+    "countryCode": "EG",
+    "latitude": 25.69893,
+    "longitude": 32.6421,
+    "aliases": [
+      "اقصر",
+      "لکسر",
+      "Lúxor"
+    ]
+  },
+  {
+    "id": "geonames-3369157",
+    "name": "Cape Town",
+    "countryCode": "ZA",
+    "latitude": -33.92584,
+    "longitude": 18.42322,
+    "aliases": [
+      "Kaapstad",
+      "iKapa"
+    ]
+  },
+  {
+    "id": "geonames-186301",
+    "name": "Mombasa",
+    "countryCode": "KE",
+    "latitude": -4.05466,
+    "longitude": 39.66359,
+    "aliases": [
+      "Mombása"
+    ]
+  },
+  {
+    "id": "geonames-148730",
+    "name": "Zanzibar",
+    "countryCode": "TZ",
+    "latitude": -6.16394,
+    "longitude": 39.19793,
+    "aliases": [
+      "Zanzibar City",
+      "Stone Town",
+      "Zanzibár",
+      "Zanzíbar"
+    ]
+  },
+  {
+    "id": "geonames-233508",
+    "name": "Entebbe",
+    "countryCode": "UG",
+    "latitude": 0.05621,
+    "longitude": 32.47949,
+    "aliases": []
+  },
+  {
+    "id": "geonames-336014",
+    "name": "Gonder",
+    "countryCode": "ET",
+    "latitude": 12.6,
+    "longitude": 37.46667,
+    "aliases": [
+      "ጎንደር ከተማ"
+    ]
+  },
+  {
+    "id": "geonames-2298890",
+    "name": "Kumasi",
+    "countryCode": "GH",
+    "latitude": 6.68848,
+    "longitude": -1.62443,
+    "aliases": []
+  },
+  {
+    "id": "geonames-2332459",
+    "name": "Lagos",
+    "countryCode": "NG",
+    "latitude": 6.45407,
+    "longitude": 3.39467,
+    "aliases": []
+  },
+  {
+    "id": "geonames-2246452",
+    "name": "Saint-Louis",
+    "countryCode": "SN",
+    "latitude": 16.01793,
+    "longitude": -16.48962,
+    "aliases": [
+      "Saint Louis"
+    ]
+  },
+  {
+    "id": "geonames-2464915",
+    "name": "Sousse",
+    "countryCode": "TN",
+    "latitude": 35.82539,
+    "longitude": 10.63699,
+    "aliases": [
+      "swsہ",
+      "سوسة"
+    ]
+  },
+  {
+    "id": "geonames-2485926",
+    "name": "Oran",
+    "countryCode": "DZ",
+    "latitude": 35.69906,
+    "longitude": -0.63588,
+    "aliases": [
+      "وهران",
+      "وہران",
+      "Orán"
+    ]
+  },
+  {
+    "id": "geonames-1045114",
+    "name": "Inhambane",
+    "countryCode": "MZ",
+    "latitude": -23.865,
+    "longitude": 35.38333,
+    "aliases": []
+  },
+  {
+    "id": "geonames-3352844",
+    "name": "Swakopmund",
+    "countryCode": "NA",
+    "latitude": -22.67842,
+    "longitude": 14.52663,
+    "aliases": []
+  },
+  {
+    "id": "geonames-910111",
+    "name": "Livingstone",
+    "countryCode": "ZM",
+    "latitude": -17.84194,
+    "longitude": 25.85425,
+    "aliases": []
+  },
+  {
+    "id": "geonames-879431",
+    "name": "Victoria Falls",
+    "countryCode": "ZW",
+    "latitude": -17.93285,
+    "longitude": 25.83066,
+    "aliases": []
+  },
+  {
+    "id": "geonames-2553604",
+    "name": "Casablanca",
+    "countryCode": "MA",
+    "latitude": 33.58831,
+    "longitude": -7.61138,
+    "aliases": [
+      "أنفا",
+      "دارالبیضا"
+    ]
+  },
+  {
+    "id": "geonames-359792",
+    "name": "Aswān",
+    "countryCode": "EG",
+    "latitude": 24.09082,
+    "longitude": 32.89942,
+    "aliases": [
+      "Aswan",
+      "أسوان",
+      "اسوان",
+      "Aswán",
+      "Aswân"
+    ]
+  },
+  {
+    "id": "geonames-993800",
+    "name": "Johannesburg",
+    "countryCode": "ZA",
+    "latitude": -26.20227,
+    "longitude": 28.04363,
+    "aliases": [
+      "Joburg",
+      "Jozi"
+    ]
+  },
+  {
+    "id": "geonames-161325",
+    "name": "Arusha",
+    "countryCode": "TZ",
+    "latitude": -3.36667,
+    "longitude": 36.68333,
+    "aliases": []
+  },
+  {
+    "id": "geonames-233114",
+    "name": "Jinja",
+    "countryCode": "UG",
+    "latitude": 0.43902,
+    "longitude": 33.20317,
+    "aliases": []
+  },
+  {
+    "id": "geonames-332288",
+    "name": "Lalibela",
+    "countryCode": "ET",
+    "latitude": 12.03219,
+    "longitude": 39.04756,
+    "aliases": [
+      "ላሊበላ",
+      "Lalībela"
+    ]
+  },
+  {
+    "id": "geonames-745044",
+    "name": "Istanbul",
+    "countryCode": "TR",
+    "latitude": 41.01384,
+    "longitude": 28.94966,
+    "aliases": [
+      "İstanbul",
+      "Constantinople",
+      "Istanbúl"
+    ]
+  },
+  {
+    "id": "geonames-615532",
+    "name": "Batumi",
+    "countryCode": "GE",
+    "latitude": 41.64077,
+    "longitude": 41.6306,
+    "aliases": [
+      "ბათუმი",
+      "Bat'umi"
+    ]
+  },
+  {
+    "id": "geonames-616635",
+    "name": "Gyumri",
+    "countryCode": "AM",
+    "latitude": 40.79305,
+    "longitude": 43.84635,
+    "aliases": [
+      "Գիմրի",
+      "Գիւմրի"
+    ]
+  },
+  {
+    "id": "geonames-1853909",
+    "name": "Osaka",
+    "countryCode": "JP",
+    "latitude": 34.69379,
+    "longitude": 135.50107,
+    "aliases": [
+      "大阪",
+      "大阪市",
+      "おおさかし",
+      "Ósaka",
+      "Ōsaka"
+    ]
+  },
+  {
+    "id": "geonames-1796236",
+    "name": "Shanghai",
+    "countryCode": "CN",
+    "latitude": 31.22222,
+    "longitude": 121.45806,
+    "aliases": [
+      "上海",
+      "上海市",
+      "Shang-hai",
+      "Shànghǎi",
+      "shang hai"
+    ]
+  },
+  {
+    "id": "geonames-1838524",
+    "name": "Busan",
+    "countryCode": "KR",
+    "latitude": 35.10168,
+    "longitude": 129.03004,
+    "aliases": [
+      "Pusan",
+      "부산",
+      "부산시",
+      "Busán"
+    ]
+  },
+  {
+    "id": "geonames-1153671",
+    "name": "Chiang Mai",
+    "countryCode": "TH",
+    "latitude": 18.79038,
+    "longitude": 98.98468,
+    "aliases": [
+      "เชียงใหม่",
+      "แม่ริม เชียงใหม่",
+      "Chiangmai"
+    ]
+  },
+  {
+    "id": "geonames-1566083",
+    "name": "Ho Chi Minh City",
+    "countryCode": "VN",
+    "latitude": 10.82302,
+    "longitude": 106.62965,
+    "aliases": [
+      "Saigon",
+      "Sài Gòn",
+      "Hồ Chí Minh"
+    ]
+  },
+  {
+    "id": "geonames-1822214",
+    "name": "Siem Reap",
+    "countryCode": "KH",
+    "latitude": 13.36179,
+    "longitude": 103.86056,
+    "aliases": [
+      "សៀមរាប",
+      "ក្រុងសៀមរាប",
+      "Siem-Reap",
+      "Siemreap"
+    ]
+  },
+  {
+    "id": "geonames-1655559",
+    "name": "Luang Prabang",
+    "countryCode": "LA",
+    "latitude": 19.8933,
+    "longitude": 102.1525,
+    "aliases": [
+      "ຫລວງພະບາງ",
+      "ເມືອງຫຼວງພະບາງ",
+      "Luang-Prabang",
+      "Luangprabang"
+    ]
+  },
+  {
+    "id": "geonames-1622846",
+    "name": "Ubud",
+    "countryCode": "ID",
+    "latitude": -8.5098,
+    "longitude": 115.2654,
+    "aliases": []
+  },
+  {
+    "id": "geonames-1735106",
+    "name": "George Town",
+    "countryCode": "MY",
+    "latitude": 5.41123,
+    "longitude": 100.33543,
+    "aliases": [
+      "Georgetown",
+      "Penang",
+      "槟城",
+      "檳城"
+    ]
+  },
+  {
+    "id": "geonames-1717512",
+    "name": "Cebu City",
+    "countryCode": "PH",
+    "latitude": 10.31672,
+    "longitude": 123.89071,
+    "aliases": []
+  },
+  {
+    "id": "geonames-1275339",
+    "name": "Mumbai",
+    "countryCode": "IN",
+    "latitude": 19.07283,
+    "longitude": 72.88261,
+    "aliases": [
+      "Bombay",
+      "मुंबई",
+      "बम्बई",
+      "মুম্বই",
+      "মুম্বাই",
+      "Mumbaî",
+      "mumba'i"
+    ]
+  },
+  {
+    "id": "geonames-1282898",
+    "name": "Pokhara",
+    "countryCode": "NP",
+    "latitude": 28.26689,
+    "longitude": 83.96851,
+    "aliases": [
+      "पोखरा",
+      "पोखरा गाविस"
+    ]
+  },
+  {
+    "id": "geonames-1241622",
+    "name": "Kandy",
+    "countryCode": "LK",
+    "latitude": 7.2906,
+    "longitude": 80.6336,
+    "aliases": [
+      "මහනවර",
+      "මහනුවර",
+      "கண்டி"
+    ]
+  },
+  {
+    "id": "geonames-1205733",
+    "name": "Chattogram",
+    "countryCode": "BD",
+    "latitude": 22.3384,
+    "longitude": 91.83168,
+    "aliases": [
+      "চট্টগ্রাম"
+    ]
+  },
+  {
+    "id": "geonames-1172451",
+    "name": "Lahore",
+    "countryCode": "PK",
+    "latitude": 31.558,
+    "longitude": 74.35071,
+    "aliases": [
+      "لہور",
+      "lwہwr",
+      "Lâhore"
+    ]
+  },
+  {
+    "id": "geonames-292672",
+    "name": "Sharjah",
+    "countryCode": "AE",
+    "latitude": 25.3342,
+    "longitude": 55.41221,
+    "aliases": [
+      "شارجه",
+      "شارجہ"
+    ]
+  },
+  {
+    "id": "geonames-286621",
+    "name": "Şalālah",
+    "countryCode": "OM",
+    "latitude": 17.01505,
+    "longitude": 54.09237,
+    "aliases": [
+      "Salalah",
+      "slalہ",
+      "سلالة"
+    ]
+  },
+  {
+    "id": "geonames-105343",
+    "name": "Jeddah",
+    "countryCode": "SA",
+    "latitude": 21.49012,
+    "longitude": 39.18624,
+    "aliases": [
+      "جدة",
+      "جده"
+    ]
+  },
+  {
+    "id": "geonames-281184",
+    "name": "Jerusalem",
+    "countryCode": "IL",
+    "latitude": 31.76904,
+    "longitude": 35.21633,
+    "aliases": [
+      "שלם",
+      "יבוס",
+      "qۇds",
+      "قُدس",
+      "Jerusalèm",
+      "Jerusalém",
+      "Jerúsalem",
+      "Jérusalem"
+    ]
+  },
+  {
+    "id": "geonames-250774",
+    "name": "Aqaba",
+    "countryCode": "JO",
+    "latitude": 29.52667,
+    "longitude": 35.00778,
+    "aliases": [
+      "عقبه",
+      "العقبة",
+      "`Aqaba"
+    ]
+  },
+  {
+    "id": "geonames-1216265",
+    "name": "Samarkand",
+    "countryCode": "UZ",
+    "latitude": 39.65456,
+    "longitude": 66.96445,
+    "aliases": []
+  },
+  {
+    "id": "geonames-1526384",
+    "name": "Almaty",
+    "countryCode": "KZ",
+    "latitude": 43.25249,
+    "longitude": 76.9115,
+    "aliases": [
+      "Almatý"
+    ]
+  },
+  {
+    "id": "geonames-323777",
+    "name": "Antalya",
+    "countryCode": "TR",
+    "latitude": 36.90812,
+    "longitude": 30.69556,
+    "aliases": []
+  },
+  {
+    "id": "geonames-613607",
+    "name": "Kutaisi",
+    "countryCode": "GE",
+    "latitude": 42.26791,
+    "longitude": 42.69459,
+    "aliases": [
+      "ქუთაისი",
+      "Kutaïsi"
+    ]
+  },
+  {
+    "id": "geonames-1862415",
+    "name": "Hiroshima",
+    "countryCode": "JP",
+    "latitude": 34.4,
+    "longitude": 132.45,
+    "aliases": [
+      "広島",
+      "広島市",
+      "ひろしま",
+      "ひろしまし"
+    ]
+  },
+  {
+    "id": "geonames-1790630",
+    "name": "Xi’an",
+    "countryCode": "CN",
+    "latitude": 34.25833,
+    "longitude": 108.92861,
+    "aliases": [
+      "Xi'an",
+      "Xian",
+      "西安",
+      "西安市",
+      "Xī'ān",
+      "xi an"
+    ]
+  },
+  {
+    "id": "geonames-1846266",
+    "name": "Jeju City",
+    "countryCode": "KR",
+    "latitude": 33.50972,
+    "longitude": 126.52194,
+    "aliases": [
+      "Jeju",
+      "Cheju",
+      "제주",
+      "제주시"
+    ]
+  },
+  {
+    "id": "geonames-1151254",
+    "name": "Phuket",
+    "countryCode": "TH",
+    "latitude": 7.89059,
+    "longitude": 98.3981,
+    "aliases": [
+      "ภูเก็ต",
+      "เทศบาลนครภูเก็ต"
+    ]
+  },
+  {
+    "id": "geonames-1580541",
+    "name": "Hoi An",
+    "countryCode": "VN",
+    "latitude": 15.87944,
+    "longitude": 108.335,
+    "aliases": [
+      "Hội An",
+      "Hôi An",
+      "hoian"
+    ]
+  },
+  {
+    "id": "geonames-1831797",
+    "name": "Battambang",
+    "countryCode": "KH",
+    "latitude": 13.10271,
+    "longitude": 103.19822,
+    "aliases": [
+      "ករងបាតដបង",
+      "ក្រុងបាត់ដំបង"
+    ]
+  },
+  {
+    "id": "geonames-1655087",
+    "name": "Vang Vieng",
+    "countryCode": "LA",
+    "latitude": 18.9235,
+    "longitude": 102.44784,
+    "aliases": []
+  },
+  {
+    "id": "geonames-1621177",
+    "name": "Yogyakarta",
+    "countryCode": "ID",
+    "latitude": -7.80139,
+    "longitude": 110.36472,
+    "aliases": []
+  },
+  {
+    "id": "geonames-1734759",
+    "name": "Malacca",
+    "countryCode": "MY",
+    "latitude": 2.196,
+    "longitude": 102.2405,
+    "aliases": []
+  },
+  {
+    "id": "geonames-1692685",
+    "name": "Puerto Princesa",
+    "countryCode": "PH",
+    "latitude": 9.73917,
+    "longitude": 118.73528,
+    "aliases": []
+  },
+  {
+    "id": "geonames-1269515",
+    "name": "Jaipur",
+    "countryCode": "IN",
+    "latitude": 26.91962,
+    "longitude": 75.78781,
+    "aliases": [
+      "जयपुर",
+      "जयपूर",
+      "জয়পুর",
+      "জয়পুৰ"
+    ]
+  },
+  {
+    "id": "geonames-1246294",
+    "name": "Galle",
+    "countryCode": "LK",
+    "latitude": 6.0461,
+    "longitude": 80.2103,
+    "aliases": [
+      "ගාල්ල",
+      "காலி"
+    ]
+  },
+  {
+    "id": "geonames-1174872",
+    "name": "Karachi",
+    "countryCode": "PK",
+    "latitude": 24.8608,
+    "longitude": 67.0104,
+    "aliases": [
+      "کراچی",
+      "کراچۍ",
+      "Karâchi",
+      "Karāchi"
+    ]
+  },
+  {
+    "id": "geonames-109223",
+    "name": "Madinah",
+    "countryCode": "SA",
+    "latitude": 24.46861,
+    "longitude": 39.61417,
+    "aliases": [
+      "مدينه",
+      "مدینه",
+      "ma di nah"
+    ]
+  },
+  {
+    "id": "geonames-293397",
+    "name": "Tel Aviv",
+    "countryCode": "IL",
+    "latitude": 32.08088,
+    "longitude": 34.78057,
+    "aliases": [
+      "תל אביב",
+      "תל אביב-יפו",
+      "تلاویو",
+      "تل آویو",
+      "Tel Avív",
+      "Tel'-Aviv",
+      "Tel-Aviv"
+    ]
+  },
+  {
+    "id": "geonames-1217662",
+    "name": "Bukhara",
+    "countryCode": "UZ",
+    "latitude": 39.77026,
+    "longitude": 64.43069,
+    "aliases": [
+      "Bukharà"
+    ]
+  },
+  {
+    "id": "geonames-311046",
+    "name": "İzmir",
+    "countryCode": "TR",
+    "latitude": 38.41273,
+    "longitude": 27.13838,
+    "aliases": [
+      "Izmir"
+    ]
+  },
+  {
+    "id": "geonames-1855612",
+    "name": "Nara",
+    "countryCode": "JP",
+    "latitude": 34.68505,
+    "longitude": 135.80485,
+    "aliases": [
+      "奈良",
+      "Nara-shi",
+      "奈良市",
+      "ならし",
+      "narashi"
+    ]
+  },
+  {
+    "id": "geonames-1815286",
+    "name": "Chengdu",
+    "countryCode": "CN",
+    "latitude": 30.66667,
+    "longitude": 104.06667,
+    "aliases": [
+      "成都",
+      "天府",
+      "Chengdú"
+    ]
+  },
+  {
+    "id": "geonames-1843564",
+    "name": "Incheon",
+    "countryCode": "KR",
+    "latitude": 37.45646,
+    "longitude": 126.70515,
+    "aliases": [
+      "Inchon",
+      "인천",
+      "인천시",
+      "İncheon"
+    ]
+  },
+  {
+    "id": "geonames-1607532",
+    "name": "Phra Nakhon Si Ayutthaya",
+    "countryCode": "TH",
+    "latitude": 14.35167,
+    "longitude": 100.57739,
+    "aliases": [
+      "พระนครศรีอยุธยา",
+      "เทศบาลนครพระนครศรีอยุธยา"
+    ]
+  },
+  {
+    "id": "geonames-1583992",
+    "name": "Da Nang",
+    "countryCode": "VN",
+    "latitude": 16.06778,
+    "longitude": 108.22083,
+    "aliases": [
+      "Đà Nẵng",
+      "Danang"
+    ]
+  },
+  {
+    "id": "geonames-1650357",
+    "name": "Bandung",
+    "countryCode": "ID",
+    "latitude": -6.92222,
+    "longitude": 107.60694,
+    "aliases": [
+      "ban dung"
+    ]
+  },
+  {
+    "id": "geonames-1733432",
+    "name": "Kota Kinabalu",
+    "countryCode": "MY",
+    "latitude": 5.9749,
+    "longitude": 116.0724,
+    "aliases": [
+      "Kota-Kinabalu",
+      "kotakinabalu"
+    ]
+  },
+  {
+    "id": "geonames-1728930",
+    "name": "Baguio",
+    "countryCode": "PH",
+    "latitude": 16.41639,
+    "longitude": 120.59306,
+    "aliases": [
+      "bagu'i'o"
+    ]
+  },
+  {
+    "id": "geonames-1279259",
+    "name": "Agra",
+    "countryCode": "IN",
+    "latitude": 27.18333,
+    "longitude": 78.01667,
+    "aliases": [
+      "आगरा",
+      "आग्रा",
+      "আগ্রা",
+      "ஆக்ரா",
+      "Āgrā"
+    ]
+  },
+  {
+    "id": "geonames-104515",
+    "name": "Makkah",
+    "countryCode": "SA",
+    "latitude": 21.42664,
+    "longitude": 39.82563,
+    "aliases": [
+      "مكة",
+      "مكه",
+      "mak kah"
+    ]
+  },
+  {
+    "id": "geonames-294801",
+    "name": "Haifa",
+    "countryCode": "IL",
+    "latitude": 32.81303,
+    "longitude": 34.99928,
+    "aliases": [
+      "חפה",
+      "חיפה",
+      "حيفا",
+      "حیفا",
+      "Haífa",
+      "Haïfa",
+      "hai fa"
+    ]
+  },
+  {
+    "id": "geonames-1513604",
+    "name": "Xiva",
+    "countryCode": "UZ",
+    "latitude": 41.38555,
+    "longitude": 60.36408,
+    "aliases": []
+  },
+  {
+    "id": "geonames-320995",
+    "name": "Bodrum",
+    "countryCode": "TR",
+    "latitude": 37.03833,
+    "longitude": 27.42917,
+    "aliases": []
+  },
+  {
+    "id": "geonames-1860243",
+    "name": "Kanazawa",
+    "countryCode": "JP",
+    "latitude": 36.6,
+    "longitude": 136.61667,
+    "aliases": [
+      "金沢",
+      "金沢市",
+      "かなざわ",
+      "かなざわし"
+    ]
+  },
+  {
+    "id": "geonames-1809858",
+    "name": "Guangzhou",
+    "countryCode": "CN",
+    "latitude": 23.11667,
+    "longitude": 113.25,
+    "aliases": [
+      "Canton",
+      "广州",
+      "廣州",
+      "広州",
+      "Guǎngzhōu",
+      "guang zhou"
+    ]
+  },
+  {
+    "id": "geonames-1674504",
+    "name": "Hualien City",
+    "countryCode": "TW",
+    "latitude": 23.97694,
+    "longitude": 121.60444,
+    "aliases": [
+      "Hualien",
+      "花蓮",
+      "花莲",
+      "花蓮市"
+    ]
+  },
+  {
+    "id": "geonames-1841603",
+    "name": "Gyeongju",
+    "countryCode": "KR",
+    "latitude": 35.84278,
+    "longitude": 129.21167,
+    "aliases": [
+      "경주시"
+    ]
+  },
+  {
+    "id": "geonames-1152633",
+    "name": "Krabi",
+    "countryCode": "TH",
+    "latitude": 8.07257,
+    "longitude": 98.91052,
+    "aliases": [
+      "กระบี่",
+      "เมืองกระบี่"
+    ]
+  },
+  {
+    "id": "geonames-1580240",
+    "name": "Huế",
+    "countryCode": "VN",
+    "latitude": 16.4619,
+    "longitude": 107.59546,
+    "aliases": [
+      "Hue",
+      "Hué"
+    ]
+  },
+  {
+    "id": "geonames-1625822",
+    "name": "Surabaya",
+    "countryCode": "ID",
+    "latitude": -7.24917,
+    "longitude": 112.75083,
+    "aliases": [
+      "sura ba ya"
+    ]
+  },
+  {
+    "id": "geonames-1735634",
+    "name": "Kuching",
+    "countryCode": "MY",
+    "latitude": 1.55,
+    "longitude": 110.33333,
+    "aliases": [
+      "ku ching"
+    ]
+  },
+  {
+    "id": "geonames-1715348",
+    "name": "Davao",
+    "countryCode": "PH",
+    "latitude": 7.07306,
+    "longitude": 125.61278,
+    "aliases": [
+      "Davaó",
+      "dava'o"
+    ]
+  },
+  {
+    "id": "geonames-1253405",
+    "name": "Varanasi",
+    "countryCode": "IN",
+    "latitude": 25.31668,
+    "longitude": 83.01041,
+    "aliases": [
+      "Benares",
+      "Banaras",
+      "वाराणसी",
+      "काशी",
+      "বারানসি",
+      "வாரணாசி",
+      "Vârânasî",
+      "Vārānasi"
+    ]
+  },
+  {
+    "id": "geonames-295277",
+    "name": "Eilat",
+    "countryCode": "IL",
+    "latitude": 29.55805,
+    "longitude": 34.94821,
+    "aliases": [
+      "אילת",
+      "آيلة",
+      "أيلة",
+      "Éilat"
+    ]
+  },
+  {
+    "id": "geonames-314967",
+    "name": "Fethiye",
+    "countryCode": "TR",
+    "latitude": 36.64038,
+    "longitude": 29.12758,
+    "aliases": []
+  },
+  {
+    "id": "geonames-1863967",
+    "name": "Fukuoka",
+    "countryCode": "JP",
+    "latitude": 33.6,
+    "longitude": 130.41667,
+    "aliases": [
+      "福岡",
+      "福岡市",
+      "ふくおか",
+      "ふくおかし"
+    ]
+  },
+  {
+    "id": "geonames-1795565",
+    "name": "Shenzhen",
+    "countryCode": "CN",
+    "latitude": 22.54554,
+    "longitude": 114.0683,
+    "aliases": [
+      "深圳",
+      "宝安",
+      "寶安",
+      "Shēnzhèn",
+      "shen zhen"
+    ]
+  },
+  {
+    "id": "geonames-1668295",
+    "name": "Taitung",
+    "countryCode": "TW",
+    "latitude": 22.75991,
+    "longitude": 121.14457,
+    "aliases": [
+      "臺東",
+      "台東",
+      "T'ai-tung",
+      "T’ai-tung"
+    ]
+  },
+  {
+    "id": "geonames-1153669",
+    "name": "Chiang Rai",
+    "countryCode": "TH",
+    "latitude": 19.90858,
+    "longitude": 99.8325,
+    "aliases": [
+      "เชียงราย",
+      "เทศบาลนครเชียงราย",
+      "Chiang-Rai"
+    ]
+  },
+  {
+    "id": "geonames-1572151",
+    "name": "Nha Trang",
+    "countryCode": "VN",
+    "latitude": 12.24507,
+    "longitude": 109.19432,
+    "aliases": []
+  },
+  {
+    "id": "geonames-1214520",
+    "name": "Medan",
+    "countryCode": "ID",
+    "latitude": 3.58333,
+    "longitude": 98.66667,
+    "aliases": [
+      "me dan"
+    ]
+  },
+  {
+    "id": "geonames-1732752",
+    "name": "Johor Bahru",
+    "countryCode": "MY",
+    "latitude": 1.4655,
+    "longitude": 103.7578,
+    "aliases": []
+  },
+  {
+    "id": "geonames-1253986",
+    "name": "Udaipur",
+    "countryCode": "IN",
+    "latitude": 24.58584,
+    "longitude": 73.71346,
+    "aliases": [
+      "उदयपुर",
+      "उदयपूर",
+      "উদয়পুর",
+      "உதயப்பூர்"
+    ]
+  },
+  {
+    "id": "geonames-2128295",
+    "name": "Sapporo",
+    "countryCode": "JP",
+    "latitude": 43.06667,
+    "longitude": 141.35,
+    "aliases": [
+      "札幌",
+      "札幌市",
+      "さっぽろ",
+      "さっぽろし"
+    ]
+  },
+  {
+    "id": "geonames-1808926",
+    "name": "Hangzhou",
+    "countryCode": "CN",
+    "latitude": 30.29365,
+    "longitude": 120.16142,
+    "aliases": [
+      "杭州",
+      "杭州市",
+      "hang zhou"
+    ]
+  },
+  {
+    "id": "geonames-1678228",
+    "name": "Keelung",
+    "countryCode": "TW",
+    "latitude": 25.13089,
+    "longitude": 121.74094,
+    "aliases": [
+      "基隆",
+      "基隆市"
+    ]
+  },
+  {
+    "id": "geonames-1153269",
+    "name": "Hua Hin",
+    "countryCode": "TH",
+    "latitude": 12.57065,
+    "longitude": 99.95876,
+    "aliases": [
+      "อำเภอหัวหิน",
+      "หัวหิน-ปราณบุรี",
+      "Huahin"
+    ]
+  },
+  {
+    "id": "geonames-2650225",
+    "name": "Edinburgh",
+    "countryCode": "GB",
+    "latitude": 55.95206,
+    "longitude": -3.19648,
+    "aliases": []
+  },
+  {
+    "id": "geonames-2964180",
+    "name": "Galway",
+    "countryCode": "IE",
+    "latitude": 53.27245,
+    "longitude": -9.05095,
+    "aliases": []
+  },
+  {
+    "id": "geonames-2990440",
+    "name": "Nice",
+    "countryCode": "FR",
+    "latitude": 43.70313,
+    "longitude": 7.26608,
+    "aliases": []
+  },
+  {
+    "id": "geonames-3176959",
+    "name": "Florence",
+    "countryCode": "IT",
+    "latitude": 43.77925,
+    "longitude": 11.24626,
+    "aliases": [
+      "Firenze"
+    ]
+  },
+  {
+    "id": "geonames-2509954",
+    "name": "Valencia",
+    "countryCode": "ES",
+    "latitude": 39.47391,
+    "longitude": -0.37966,
+    "aliases": [
+      "València",
+      "Valéncia",
+      "Valência"
+    ]
+  },
+  {
+    "id": "geonames-2268339",
+    "name": "Faro",
+    "countryCode": "PT",
+    "latitude": 37.01869,
+    "longitude": -7.92716,
+    "aliases": []
+  },
+  {
+    "id": "geonames-2867714",
+    "name": "Munich",
+    "countryCode": "DE",
+    "latitude": 48.13743,
+    "longitude": 11.57549,
+    "aliases": [
+      "München",
+      "Munchen",
+      "Múnich"
+    ]
+  },
+  {
+    "id": "geonames-2747891",
+    "name": "Rotterdam",
+    "countryCode": "NL",
+    "latitude": 51.9225,
+    "longitude": 4.47917,
+    "aliases": [
+      "Rottérdam"
+    ]
+  },
+  {
+    "id": "geonames-2800931",
+    "name": "Brugge",
+    "countryCode": "BE",
+    "latitude": 51.20892,
+    "longitude": 3.22424,
+    "aliases": [
+      "Brügge"
+    ]
+  },
+  {
+    "id": "geonames-2657896",
+    "name": "Zürich",
+    "countryCode": "CH",
+    "latitude": 47.36667,
+    "longitude": 8.55,
+    "aliases": [
+      "Zuerich",
+      "Zurich",
+      "Zúrich"
+    ]
+  },
+  {
+    "id": "geonames-2766824",
+    "name": "Salzburg",
+    "countryCode": "AT",
+    "latitude": 47.79941,
+    "longitude": 13.04399,
+    "aliases": []
+  },
+  {
+    "id": "geonames-3078610",
+    "name": "Brno",
+    "countryCode": "CZ",
+    "latitude": 49.19522,
+    "longitude": 16.60796,
+    "aliases": []
+  },
+  {
+    "id": "geonames-734077",
+    "name": "Thessaloníki",
+    "countryCode": "GR",
+    "latitude": 40.64072,
+    "longitude": 22.93493,
+    "aliases": [
+      "Thessaloniki",
+      "Σαλονίκη",
+      "Σαλονικη"
+    ]
+  },
+  {
+    "id": "geonames-3190261",
+    "name": "Split",
+    "countryCode": "HR",
+    "latitude": 43.50891,
+    "longitude": 16.43915,
+    "aliases": []
+  },
+  {
+    "id": "geonames-3195506",
+    "name": "Maribor",
+    "countryCode": "SI",
+    "latitude": 46.55583,
+    "longitude": 15.64593,
+    "aliases": []
+  },
+  {
+    "id": "geonames-3161732",
+    "name": "Bergen",
+    "countryCode": "NO",
+    "latitude": 60.39299,
+    "longitude": 5.32415,
+    "aliases": []
+  },
+  {
+    "id": "geonames-2711537",
+    "name": "Gothenburg",
+    "countryCode": "SE",
+    "latitude": 57.70716,
+    "longitude": 11.96679,
+    "aliases": [
+      "Göteborg",
+      "Goteborg"
+    ]
+  },
+  {
+    "id": "geonames-638936",
+    "name": "Rovaniemi",
+    "countryCode": "FI",
+    "latitude": 66.49897,
+    "longitude": 25.68867,
+    "aliases": []
+  },
+  {
+    "id": "geonames-2624652",
+    "name": "Århus",
+    "countryCode": "DK",
+    "latitude": 56.15674,
+    "longitude": 10.21076,
+    "aliases": [
+      "Arhus"
+    ]
+  },
+  {
+    "id": "geonames-2633274",
+    "name": "Akureyri",
+    "countryCode": "IS",
+    "latitude": 65.68353,
+    "longitude": -18.0878,
+    "aliases": [
+      "Aküreyri"
+    ]
+  },
+  {
+    "id": "geonames-3094802",
+    "name": "Kraków",
+    "countryCode": "PL",
+    "latitude": 50.06143,
+    "longitude": 19.93658,
+    "aliases": [
+      "Krakow",
+      "Cracow"
+    ]
+  },
+  {
+    "id": "geonames-721472",
+    "name": "Debrecen",
+    "countryCode": "HU",
+    "latitude": 47.53167,
+    "longitude": 21.62444,
+    "aliases": []
+  },
+  {
+    "id": "geonames-683844",
+    "name": "Braşov",
+    "countryCode": "RO",
+    "latitude": 45.64861,
+    "longitude": 25.60613,
+    "aliases": [
+      "Brasov",
+      "Brašov",
+      "Brașov"
+    ]
+  },
+  {
+    "id": "geonames-588335",
+    "name": "Tartu",
+    "countryCode": "EE",
+    "latitude": 58.38062,
+    "longitude": 26.72509,
+    "aliases": []
+  },
+  {
+    "id": "geonames-457954",
+    "name": "Liepāja",
+    "countryCode": "LV",
+    "latitude": 56.50474,
+    "longitude": 21.01085,
+    "aliases": [
+      "Liepaja"
+    ]
+  },
+  {
+    "id": "geonames-598316",
+    "name": "Kaunas",
+    "countryCode": "LT",
+    "latitude": 54.90156,
+    "longitude": 23.90909,
+    "aliases": []
+  },
+  {
+    "id": "geonames-3203106",
+    "name": "Budva",
+    "countryCode": "ME",
+    "latitude": 42.28721,
+    "longitude": 18.83922,
+    "aliases": []
+  },
+  {
+    "id": "geonames-363243",
+    "name": "Sarandë",
+    "countryCode": "AL",
+    "latitude": 39.87534,
+    "longitude": 20.00477,
+    "aliases": [
+      "Sarande",
+      "Sarandė"
+    ]
+  },
+  {
+    "id": "geonames-3194360",
+    "name": "Novi Sad",
+    "countryCode": "RS",
+    "latitude": 45.25167,
+    "longitude": 19.83694,
+    "aliases": [
+      "Нови Сад",
+      "Нови-Сад",
+      "Novi-Sad",
+      "Novî Sad"
+    ]
+  },
+  {
+    "id": "geonames-3194828",
+    "name": "Mostar",
+    "countryCode": "BA",
+    "latitude": 43.34333,
+    "longitude": 17.80806,
+    "aliases": []
+  },
+  {
+    "id": "geonames-498817",
+    "name": "Saint Petersburg",
+    "countryCode": "RU",
+    "latitude": 59.93863,
+    "longitude": 30.31413,
+    "aliases": [
+      "СПб",
+      "Питер"
+    ]
+  },
+  {
+    "id": "geonames-702550",
+    "name": "Lviv",
+    "countryCode": "UA",
+    "latitude": 49.83826,
+    "longitude": 24.02324,
+    "aliases": [
+      "Лвов",
+      "Лавов",
+      "L'viv"
+    ]
+  },
+  {
+    "id": "geonames-2643123",
+    "name": "Manchester",
+    "countryCode": "GB",
+    "latitude": 53.48095,
+    "longitude": -2.23743,
+    "aliases": [
+      "Manchéstér",
+      "Mánchester"
+    ]
+  },
+  {
+    "id": "geonames-2965140",
+    "name": "Cork",
+    "countryCode": "IE",
+    "latitude": 51.89797,
+    "longitude": -8.47061,
+    "aliases": []
+  },
+  {
+    "id": "geonames-2996944",
+    "name": "Lyon",
+    "countryCode": "FR",
+    "latitude": 45.74906,
+    "longitude": 4.84789,
+    "aliases": []
+  },
+  {
+    "id": "geonames-3164603",
+    "name": "Venice",
+    "countryCode": "IT",
+    "latitude": 45.43713,
+    "longitude": 12.33265,
+    "aliases": [
+      "Venezia"
+    ]
+  },
+  {
+    "id": "geonames-2517117",
+    "name": "Granada",
+    "countryCode": "ES",
+    "latitude": 37.18817,
+    "longitude": -3.60667,
+    "aliases": []
+  },
+  {
+    "id": "geonames-2740637",
+    "name": "Coimbra",
+    "countryCode": "PT",
+    "latitude": 40.20686,
+    "longitude": -8.41996,
+    "aliases": [
+      "Coímbra",
+      "Coïmbra"
+    ]
+  },
+  {
+    "id": "geonames-2911298",
+    "name": "Hamburg",
+    "countryCode": "DE",
+    "latitude": 53.55073,
+    "longitude": 9.99302,
+    "aliases": [
+      "Hambûrg"
+    ]
+  },
+  {
+    "id": "geonames-2745912",
+    "name": "Utrecht",
+    "countryCode": "NL",
+    "latitude": 52.09083,
+    "longitude": 5.12222,
+    "aliases": []
+  },
+  {
+    "id": "geonames-2797656",
+    "name": "Gent",
+    "countryCode": "BE",
+    "latitude": 51.05,
+    "longitude": 3.71667,
+    "aliases": []
+  },
+  {
+    "id": "geonames-2660646",
+    "name": "Geneva",
+    "countryCode": "CH",
+    "latitude": 46.20222,
+    "longitude": 6.14569,
+    "aliases": []
+  },
+  {
+    "id": "geonames-2775220",
+    "name": "Innsbruck",
+    "countryCode": "AT",
+    "latitude": 47.26266,
+    "longitude": 11.39454,
+    "aliases": [
+      "İnnsbruck"
+    ]
+  },
+  {
+    "id": "geonames-260114",
+    "name": "Chaniá",
+    "countryCode": "GR",
+    "latitude": 35.51124,
+    "longitude": 24.02921,
+    "aliases": [
+      "Chania",
+      "Χανιά",
+      "Χανίων"
+    ]
+  },
+  {
+    "id": "geonames-3201047",
+    "name": "Dubrovnik",
+    "countryCode": "HR",
+    "latitude": 42.64125,
+    "longitude": 18.10909,
+    "aliases": [
+      "Dubrovník",
+      "Dùbrōvnik"
+    ]
+  },
+  {
+    "id": "geonames-3133895",
+    "name": "Tromsø",
+    "countryCode": "NO",
+    "latitude": 69.6489,
+    "longitude": 18.95508,
+    "aliases": [
+      "Tromso",
+      "Troms'o",
+      "Tromsö"
+    ]
+  },
+  {
+    "id": "geonames-2692969",
+    "name": "Malmö",
+    "countryCode": "SE",
+    "latitude": 55.60587,
+    "longitude": 13.00073,
+    "aliases": [
+      "Malmoe",
+      "Malmo",
+      "Malm'o"
+    ]
+  },
+  {
+    "id": "geonames-633679",
+    "name": "Turku",
+    "countryCode": "FI",
+    "latitude": 60.45148,
+    "longitude": 22.26869,
+    "aliases": [
+      "Turkù",
+      "tu rku"
+    ]
+  },
+  {
+    "id": "geonames-3099434",
+    "name": "Gdańsk",
+    "countryCode": "PL",
+    "latitude": 54.35227,
+    "longitude": 18.64912,
+    "aliases": [
+      "Gdansk",
+      "Gdan'sk",
+      "Gdans'k",
+      "Gdaňsk"
+    ]
+  },
+  {
+    "id": "geonames-3046526",
+    "name": "Pécs",
+    "countryCode": "HU",
+    "latitude": 46.07617,
+    "longitude": 18.22814,
+    "aliases": [
+      "Pecs"
+    ]
+  },
+  {
+    "id": "geonames-681290",
+    "name": "Cluj-Napoca",
+    "countryCode": "RO",
+    "latitude": 46.76667,
+    "longitude": 23.6,
+    "aliases": []
+  },
+  {
+    "id": "geonames-3186084",
+    "name": "Berat",
+    "countryCode": "AL",
+    "latitude": 40.70583,
+    "longitude": 19.95222,
+    "aliases": []
+  },
+  {
+    "id": "geonames-551487",
+    "name": "Kazan",
+    "countryCode": "RU",
+    "latitude": 55.78874,
+    "longitude": 49.12214,
+    "aliases": [
+      "Озаҥ",
+      "Казан",
+      "Kazan'",
+      "Kazan’",
+      "Kazań",
+      "Kazaň",
+      "Kazán"
+    ]
+  },
+  {
+    "id": "geonames-698740",
+    "name": "Odesa",
+    "countryCode": "UA",
+    "latitude": 46.48572,
+    "longitude": 30.74383,
+    "aliases": [
+      "Адэса",
+      "Одеса",
+      "Oděsa"
+    ]
+  },
+  {
+    "id": "geonames-2644210",
+    "name": "Liverpool",
+    "countryCode": "GB",
+    "latitude": 53.41058,
+    "longitude": -2.97794,
+    "aliases": []
+  },
+  {
+    "id": "geonames-2995469",
+    "name": "Marseille",
+    "countryCode": "FR",
+    "latitude": 43.29695,
+    "longitude": 5.38107,
+    "aliases": []
+  },
+  {
+    "id": "geonames-3173435",
+    "name": "Milan",
+    "countryCode": "IT",
+    "latitude": 45.46427,
+    "longitude": 9.18951,
+    "aliases": [
+      "Milano",
+      "Milán",
+      "mi lan"
+    ]
+  },
+  {
+    "id": "geonames-2514256",
+    "name": "Málaga",
+    "countryCode": "ES",
+    "latitude": 36.72016,
+    "longitude": -4.42034,
+    "aliases": [
+      "Malaga",
+      "Màlaga"
+    ]
+  },
+  {
+    "id": "geonames-2267827",
+    "name": "Funchal",
+    "countryCode": "PT",
+    "latitude": 32.66568,
+    "longitude": -16.92547,
+    "aliases": []
+  },
+  {
+    "id": "geonames-2886242",
+    "name": "Köln",
+    "countryCode": "DE",
+    "latitude": 50.93333,
+    "longitude": 6.95,
+    "aliases": [
+      "Koeln",
+      "Koln",
+      "K'oln",
+      "Kol'n"
+    ]
+  },
+  {
+    "id": "geonames-2747373",
+    "name": "The Hague",
+    "countryCode": "NL",
+    "latitude": 52.07667,
+    "longitude": 4.29861,
+    "aliases": [
+      "Den Haag",
+      "'s-Gravenhage"
+    ]
+  },
+  {
+    "id": "geonames-2803138",
+    "name": "Antwerp",
+    "countryCode": "BE",
+    "latitude": 51.22047,
+    "longitude": 4.40026,
+    "aliases": [
+      "Antwerpen",
+      "Antwérp"
+    ]
+  },
+  {
+    "id": "geonames-2659811",
+    "name": "Luzern",
+    "countryCode": "CH",
+    "latitude": 47.05048,
+    "longitude": 8.30635,
+    "aliases": []
+  },
+  {
+    "id": "geonames-2778067",
+    "name": "Graz",
+    "countryCode": "AT",
+    "latitude": 47.06733,
+    "longitude": 15.44197,
+    "aliases": [
+      "Gráz"
+    ]
+  },
+  {
+    "id": "geonames-5368361",
+    "name": "Los Angeles",
+    "countryCode": "US",
+    "latitude": 34.05223,
+    "longitude": -118.24368,
+    "aliases": [
+      "LA",
+      "L.A.",
+      "Los Ángeles"
+    ]
+  },
+  {
+    "id": "geonames-6167865",
+    "name": "Toronto",
+    "countryCode": "CA",
+    "latitude": 43.70643,
+    "longitude": -79.39864,
+    "aliases": [
+      "Torontó"
+    ]
+  },
+  {
+    "id": "geonames-3531673",
+    "name": "Cancún",
+    "countryCode": "MX",
+    "latitude": 21.17429,
+    "longitude": -86.84656,
+    "aliases": [
+      "Cancun"
+    ]
+  },
+  {
+    "id": "geonames-3623076",
+    "name": "Liberia",
+    "countryCode": "CR",
+    "latitude": 10.63517,
+    "longitude": -85.43779,
+    "aliases": []
+  },
+  {
+    "id": "geonames-3536729",
+    "name": "Santiago de Cuba",
+    "countryCode": "CU",
+    "latitude": 20.02287,
+    "longitude": -75.82171,
+    "aliases": [
+      "Santiago de Cúba"
+    ]
+  },
+  {
+    "id": "geonames-3489460",
+    "name": "Montego Bay",
+    "countryCode": "JM",
+    "latitude": 18.47116,
+    "longitude": -77.91883,
+    "aliases": []
+  },
+  {
+    "id": "geonames-3494242",
+    "name": "Punta Cana",
+    "countryCode": "DO",
+    "latitude": 18.58182,
+    "longitude": -68.40431,
+    "aliases": []
+  },
+  {
+    "id": "geonames-3599699",
+    "name": "Antigua Guatemala",
+    "countryCode": "GT",
+    "latitude": 14.55636,
+    "longitude": -90.7332,
+    "aliases": [
+      "Antigua-Guatemala"
+    ]
+  },
+  {
+    "id": "geonames-3581164",
+    "name": "San Pedro",
+    "countryCode": "BZ",
+    "latitude": 17.91598,
+    "longitude": -87.9659,
+    "aliases": [
+      "San-Pedro"
+    ]
+  },
+  {
+    "id": "geonames-5391959",
+    "name": "San Francisco",
+    "countryCode": "US",
+    "latitude": 37.77493,
+    "longitude": -122.41942,
+    "aliases": [
+      "SF"
+    ]
+  },
+  {
+    "id": "geonames-6077243",
+    "name": "Montréal",
+    "countryCode": "CA",
+    "latitude": 45.50884,
+    "longitude": -73.58781,
+    "aliases": [
+      "Montreal",
+      "Mont-real"
+    ]
+  },
+  {
+    "id": "geonames-3522507",
+    "name": "Oaxaca",
+    "countryCode": "MX",
+    "latitude": 17.06025,
+    "longitude": -96.72544,
+    "aliases": []
+  },
+  {
+    "id": "geonames-3534915",
+    "name": "Trinidad",
+    "countryCode": "CU",
+    "latitude": 21.79956,
+    "longitude": -79.98349,
+    "aliases": []
+  },
+  {
+    "id": "geonames-3489239",
+    "name": "Ocho Rios",
+    "countryCode": "JM",
+    "latitude": 18.4076,
+    "longitude": -77.10312,
+    "aliases": [
+      "Ocho Ríos",
+      "Ocho-Rios"
+    ]
+  },
+  {
+    "id": "geonames-3595725",
+    "name": "Flores",
+    "countryCode": "GT",
+    "latitude": 16.92258,
+    "longitude": -89.89941,
+    "aliases": []
+  },
+  {
+    "id": "geonames-5506956",
+    "name": "Las Vegas",
+    "countryCode": "US",
+    "latitude": 36.17497,
+    "longitude": -115.13722,
+    "aliases": [
+      "Las-Vegas"
+    ]
+  },
+  {
+    "id": "geonames-6325494",
+    "name": "Québec",
+    "countryCode": "CA",
+    "latitude": 46.81228,
+    "longitude": -71.21454,
+    "aliases": [
+      "Quebec",
+      "Quebec City",
+      "Ville de Québec"
+    ]
+  },
+  {
+    "id": "geonames-4005539",
+    "name": "Guadalajara",
+    "countryCode": "MX",
+    "latitude": 20.67738,
+    "longitude": -103.34749,
+    "aliases": []
+  },
+  {
+    "id": "geonames-4887398",
+    "name": "Chicago",
+    "countryCode": "US",
+    "latitude": 41.85003,
+    "longitude": -87.65005,
+    "aliases": []
+  },
+  {
+    "id": "geonames-6174041",
+    "name": "Victoria",
+    "countryCode": "CA",
+    "latitude": 48.4359,
+    "longitude": -123.35155,
+    "aliases": [
+      "Victòria"
+    ]
+  },
+  {
+    "id": "geonames-3523349",
+    "name": "Mérida",
+    "countryCode": "MX",
+    "latitude": 20.967,
+    "longitude": -89.62318,
+    "aliases": [
+      "Merida"
+    ]
+  },
+  {
+    "id": "geonames-4164138",
+    "name": "Miami",
+    "countryCode": "US",
+    "latitude": 25.77427,
+    "longitude": -80.19366,
+    "aliases": []
+  },
+  {
+    "id": "geonames-5913490",
+    "name": "Calgary",
+    "countryCode": "CA",
+    "latitude": 51.05011,
+    "longitude": -114.08529,
+    "aliases": []
+  },
+  {
+    "id": "geonames-3991328",
+    "name": "Puerto Vallarta",
+    "countryCode": "MX",
+    "latitude": 20.617,
+    "longitude": -105.23018,
+    "aliases": []
+  },
+  {
+    "id": "geonames-4930956",
+    "name": "Boston",
+    "countryCode": "US",
+    "latitude": 42.35843,
+    "longitude": -71.05977,
+    "aliases": []
+  },
+  {
+    "id": "geonames-6324729",
+    "name": "Halifax",
+    "countryCode": "CA",
+    "latitude": 44.64269,
+    "longitude": -63.57688,
+    "aliases": []
+  },
+  {
+    "id": "geonames-3521342",
+    "name": "Playa del Carmen",
+    "countryCode": "MX",
+    "latitude": 20.6274,
+    "longitude": -87.07987,
+    "aliases": []
+  },
+  {
+    "id": "geonames-5809844",
+    "name": "Seattle",
+    "countryCode": "US",
+    "latitude": 47.60621,
+    "longitude": -122.33207,
+    "aliases": []
+  },
+  {
+    "id": "geonames-3521081",
+    "name": "Puebla",
+    "countryCode": "MX",
+    "latitude": 19.04778,
+    "longitude": -98.20723,
+    "aliases": [
+      "pu'ebla"
+    ]
+  },
+  {
+    "id": "geonames-4167147",
+    "name": "Orlando",
+    "countryCode": "US",
+    "latitude": 28.53834,
+    "longitude": -81.37924,
+    "aliases": []
+  },
+  {
+    "id": "geonames-3985344",
+    "name": "San Miguel de Allende",
+    "countryCode": "MX",
+    "latitude": 20.91528,
+    "longitude": -100.74389,
+    "aliases": []
+  },
+  {
+    "id": "geonames-4335045",
+    "name": "New Orleans",
+    "countryCode": "US",
+    "latitude": 29.95465,
+    "longitude": -90.07507,
+    "aliases": []
+  },
+  {
+    "id": "geonames-3515040",
+    "name": "Tulum",
+    "countryCode": "MX",
+    "latitude": 20.21173,
+    "longitude": -87.46325,
+    "aliases": []
+  },
+  {
+    "id": "geonames-5856195",
+    "name": "Honolulu",
+    "countryCode": "US",
+    "latitude": 21.30694,
+    "longitude": -157.85833,
+    "aliases": [
+      "Honolulú",
+      "Honolúlú"
+    ]
+  },
+  {
+    "id": "geonames-5391811",
+    "name": "San Diego",
+    "countryCode": "US",
+    "latitude": 32.71571,
+    "longitude": -117.16472,
+    "aliases": [
+      "San-Diego",
+      "sandiego"
+    ]
+  },
+  {
+    "id": "geonames-3451190",
+    "name": "Rio de Janeiro",
+    "countryCode": "BR",
+    "latitude": -22.90642,
+    "longitude": -43.18223,
+    "aliases": [
+      "Rio",
+      "Rio-de-janeiro",
+      "Río de Janeiro",
+      "riodejaneiro"
+    ]
+  },
+  {
+    "id": "geonames-3844421",
+    "name": "Mendoza",
+    "countryCode": "AR",
+    "latitude": -32.88946,
+    "longitude": -68.84582,
+    "aliases": []
+  },
+  {
+    "id": "geonames-3868626",
+    "name": "Valparaíso",
+    "countryCode": "CL",
+    "latitude": -33.036,
+    "longitude": -71.62963,
+    "aliases": [
+      "Valparaiso",
+      "Val'paraiso",
+      "valpara'iso"
+    ]
+  },
+  {
+    "id": "geonames-3941584",
+    "name": "Cusco",
+    "countryCode": "PE",
+    "latitude": -13.53188,
+    "longitude": -71.96701,
+    "aliases": [
+      "Cuzco",
+      "Qosqo"
+    ]
+  },
+  {
+    "id": "geonames-3674962",
+    "name": "Medellín",
+    "countryCode": "CO",
+    "latitude": 6.245,
+    "longitude": -75.57151,
+    "aliases": [
+      "Medellin"
+    ]
+  },
+  {
+    "id": "geonames-3657509",
+    "name": "Guayaquil",
+    "countryCode": "EC",
+    "latitude": -2.19616,
+    "longitude": -79.88621,
+    "aliases": []
+  },
+  {
+    "id": "geonames-3911925",
+    "name": "La Paz",
+    "countryCode": "BO",
+    "latitude": -16.5,
+    "longitude": -68.15,
+    "aliases": [
+      "lapaz"
+    ]
+  },
+  {
+    "id": "geonames-3448439",
+    "name": "São Paulo",
+    "countryCode": "BR",
+    "latitude": -23.5475,
+    "longitude": -46.63611,
+    "aliases": [
+      "Sao Paulo",
+      "sa'o pa'ulo",
+      "sa'o paulo"
+    ]
+  },
+  {
+    "id": "geonames-3860259",
+    "name": "Córdoba",
+    "countryCode": "AR",
+    "latitude": -31.40648,
+    "longitude": -64.18853,
+    "aliases": [
+      "Cordoba",
+      "Còrdoba"
+    ]
+  },
+  {
+    "id": "geonames-3868121",
+    "name": "Viña del Mar",
+    "countryCode": "CL",
+    "latitude": -33.02457,
+    "longitude": -71.55183,
+    "aliases": [
+      "Vina del Mar"
+    ]
+  },
+  {
+    "id": "geonames-3947322",
+    "name": "Arequipa",
+    "countryCode": "PE",
+    "latitude": -16.39899,
+    "longitude": -71.53747,
+    "aliases": []
+  },
+  {
+    "id": "geonames-3687238",
+    "name": "Cartagena",
+    "countryCode": "CO",
+    "latitude": 10.39817,
+    "longitude": -75.49328,
+    "aliases": []
+  },
+  {
+    "id": "geonames-3658666",
+    "name": "Cuenca",
+    "countryCode": "EC",
+    "latitude": -2.8953,
+    "longitude": -78.9963,
+    "aliases": []
+  },
+  {
+    "id": "geonames-3450554",
+    "name": "Salvador",
+    "countryCode": "BR",
+    "latitude": -12.97563,
+    "longitude": -38.49096,
+    "aliases": [
+      "Sal'vador"
+    ]
+  },
+  {
+    "id": "geonames-3838233",
+    "name": "Salta",
+    "countryCode": "AR",
+    "latitude": -24.80645,
+    "longitude": -65.41999,
+    "aliases": [
+      "Sal'ta"
+    ]
+  },
+  {
+    "id": "geonames-3874787",
+    "name": "Punta Arenas",
+    "countryCode": "CL",
+    "latitude": -53.16282,
+    "longitude": -70.90922,
+    "aliases": [
+      "Punta-Arenas"
+    ]
+  },
+  {
+    "id": "geonames-3931276",
+    "name": "Puno",
+    "countryCode": "PE",
+    "latitude": -15.84003,
+    "longitude": -70.02198,
+    "aliases": [
+      "pu no"
+    ]
+  },
+  {
+    "id": "geonames-3687925",
+    "name": "Cali",
+    "countryCode": "CO",
+    "latitude": 3.43054,
+    "longitude": -76.5199,
+    "aliases": [
+      "Cáli"
+    ]
+  },
+  {
+    "id": "geonames-3390760",
+    "name": "Recife",
+    "countryCode": "BR",
+    "latitude": -8.05389,
+    "longitude": -34.88111,
+    "aliases": []
+  },
+  {
+    "id": "geonames-7647007",
+    "name": "San Carlos de Bariloche",
+    "countryCode": "AR",
+    "latitude": -41.14557,
+    "longitude": -71.30822,
+    "aliases": []
+  },
+  {
+    "id": "geonames-3696183",
+    "name": "Iquitos",
+    "countryCode": "PE",
+    "latitude": -3.74814,
+    "longitude": -73.2529,
+    "aliases": []
+  },
+  {
+    "id": "geonames-3668605",
+    "name": "Santa Marta",
+    "countryCode": "CO",
+    "latitude": 11.23855,
+    "longitude": -74.19427,
+    "aliases": [
+      "Santa-Marta"
+    ]
+  },
+  {
+    "id": "geonames-3399415",
+    "name": "Fortaleza",
+    "countryCode": "BR",
+    "latitude": -3.71722,
+    "longitude": -38.54306,
+    "aliases": []
+  },
+  {
+    "id": "geonames-3833367",
+    "name": "Ushuaia",
+    "countryCode": "AR",
+    "latitude": -54.81084,
+    "longitude": -68.31591,
+    "aliases": [
+      "Ushuaïa"
+    ]
+  },
+  {
+    "id": "geonames-3463237",
+    "name": "Florianópolis",
+    "countryCode": "BR",
+    "latitude": -27.59667,
+    "longitude": -48.54917,
+    "aliases": [
+      "Florianopolis"
+    ]
+  },
+  {
+    "id": "geonames-3663517",
+    "name": "Manaus",
+    "countryCode": "BR",
+    "latitude": -3.10194,
+    "longitude": -60.025,
+    "aliases": []
+  },
+  {
+    "id": "geonames-3463030",
+    "name": "Foz do Iguaçu",
+    "countryCode": "BR",
+    "latitude": -25.54778,
+    "longitude": -54.58806,
+    "aliases": [
+      "Foz do Iguacu"
+    ]
+  },
+  {
+    "id": "geonames-3838583",
+    "name": "Rosario",
+    "countryCode": "AR",
+    "latitude": -32.94682,
+    "longitude": -60.63932,
+    "aliases": [
+      "Rosário",
+      "rosari'o"
+    ]
+  },
+  {
+    "id": "geonames-3904906",
+    "name": "Santa Cruz de la Sierra",
+    "countryCode": "BO",
+    "latitude": -17.78629,
+    "longitude": -63.18117,
+    "aliases": []
+  },
+  {
+    "id": "geonames-3172394",
+    "name": "Naples",
+    "countryCode": "IT",
+    "latitude": 40.85216,
+    "longitude": 14.26811,
+    "aliases": [
+      "Napoli",
+      "Naplés"
+    ]
+  },
+  {
+    "id": "geonames-252919",
+    "name": "Santorini",
+    "countryCode": "GR",
+    "latitude": 36.40572,
+    "longitude": 25.45682,
+    "aliases": [
+      "Thira",
+      "Thera",
+      "Santorin",
+      "Σαντορίνη",
+      "Θήρα",
+      "Νησί Θήρα",
+      "Santoríni"
+    ]
+  },
+  {
+    "id": "geonames-3689147",
+    "name": "Barranquilla",
+    "countryCode": "CO",
+    "latitude": 10.96854,
+    "longitude": -74.78132,
+    "aliases": []
+  },
+  {
+    "id": "geonames-3183130",
+    "name": "Amalfi",
+    "countryCode": "IT",
+    "latitude": 40.6349,
+    "longitude": 14.60238,
+    "aliases": []
+  },
+  {
+    "id": "geonames-2158177",
+    "name": "Melbourne",
+    "countryCode": "AU",
+    "latitude": -37.814,
+    "longitude": 144.96332,
+    "aliases": []
+  },
+  {
+    "id": "geonames-6204696",
+    "name": "Queenstown",
+    "countryCode": "NZ",
+    "latitude": -45.03023,
+    "longitude": 168.66271,
+    "aliases": [
+      "Tāhuna",
+      "Tahuna"
+    ]
+  },
+  {
+    "id": "geonames-2202064",
+    "name": "Nadi",
+    "countryCode": "FJ",
+    "latitude": -17.80309,
+    "longitude": 177.41617,
+    "aliases": []
+  },
+  {
+    "id": "geonames-2172797",
+    "name": "Cairns",
+    "countryCode": "AU",
+    "latitude": -16.92366,
+    "longitude": 145.76613,
+    "aliases": []
+  },
+  {
+    "id": "geonames-2192362",
+    "name": "Christchurch",
+    "countryCode": "NZ",
+    "latitude": -43.53333,
+    "longitude": 172.63333,
+    "aliases": [
+      "Ōtautahi",
+      "Otautahi"
+    ]
+  },
+  {
+    "id": "geonames-2174003",
+    "name": "Brisbane",
+    "countryCode": "AU",
+    "latitude": -27.46794,
+    "longitude": 153.02809,
+    "aliases": []
+  },
+  {
+    "id": "geonames-6241325",
+    "name": "Rotorua",
+    "countryCode": "NZ",
+    "latitude": -38.13874,
+    "longitude": 176.24516,
+    "aliases": []
+  },
+  {
+    "id": "geonames-2063523",
+    "name": "Perth",
+    "countryCode": "AU",
+    "latitude": -31.95224,
+    "longitude": 115.8614,
+    "aliases": []
+  },
+  {
+    "id": "geonames-2191562",
+    "name": "Dunedin",
+    "countryCode": "NZ",
+    "latitude": -45.87416,
+    "longitude": 170.50361,
+    "aliases": []
+  }
+]

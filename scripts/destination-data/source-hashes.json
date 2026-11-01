@@ -1,0 +1,17 @@
+{
+  "sources/cc-by-4.0.txt": "9ba9550ad48438d0836ddab3da480b3b69ffa0aac7b7878b5a0039e7ab429411",
+  "sources/cldr-en.xml": "f8cbf26964d0e349fc96d9e5a56292edcbaab25c8e64177ca4f111773dfb79cf",
+  "sources/cldr-supplementalData.xml": "745150ec1408d50e1a272b65654a5dd645f3e60f5cc2898b576f725b28538d1a",
+  "sources/country-centres.csv": "1bef6d229f833b6ec31bd92bf80977ddf36da1e18b76f0047a1ed3e06915a4a5",
+  "sources/dspl-license.txt": "17642d9f5b2e82d565ad40255275ccc80e1857bf751cad49b682b8b6ff4f8573",
+  "sources/geonames-1650535.rdf": "689d835ee3726a962fe980955656f1776b8482d86c32bb108be1d4fcd1d95e4d",
+  "sources/geonames-252919.rdf": "0f97d9bd1a7c91c9c671ec840c855f226e9458924d3ae0e5936dcc14e3cc82c4",
+  "sources/geonames-2657928.rdf": "9bc7c4401db7fca0fc1e3c0cb2ce7f9fc1de0beaa89a89ccb32376fffdcd8aa1",
+  "sources/geonames-3183130.rdf": "9d31366d2b444cbe86c7b24ee03d8a707f403b76e1c0f7b1e2abcdc62025a019",
+  "sources/geonames-5854968.rdf": "79211e9d66543e0b4abe72548fd6ae09dbd37238bc4265a52abb6ff8ba95db9e",
+  "sources/geonames-6204696.rdf": "d5e7b51e18f96b77eceba7e2cd7dc8c7cea0fb7d09ea46079a7432bc78608f60",
+  "sources/geonames-countryInfo.txt": "5c710efde90ee4cca15001c9f6a97ae7a74c7020b365504913ddc3afeb6d3671",
+  "sources/geonames-readme.txt": "b1957379b6c1242c700c98ac9a8aa0a09f56c3c0a50ee72175527005f48ef2c5",
+  "sources/geonames-selected.json": "5f58ff64b56829730ad3bdf68a2de306c2e0386ec9db081d59ea727e3eba77bd",
+  "sources/unicode-license.txt": "65eb33419e22a297550a811b5b535f5e532f9a7e0114b516c0ea18afd53c3804"
+}

@@ -7,82 +7,106 @@ struct Destination: Identifiable, Hashable, Sendable {
   var currency: String
   var latitude: Double
   var longitude: Double
-  var id: String { countryCode + city }
+  var catalogID: String? = nil
+  var aliases: [String] = []
+  var isCountry = false
+  var detail: String? = nil
+  var id: String { catalogID ?? "\(countryCode):\(isCountry ? "country" : "place"):\(city)" }
   var flag: String { countryCode.flag }
+  var currencies: [String] { CountryMetadata.country(countryCode)?.currencies ?? [] }
+  var requiresCurrencySelection: Bool { currency.isEmpty }
+  var secondaryLabel: String {
+    if isCountry { return "Country" }
+    let context = detail?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
+    return context.isEmpty ? country : context
+  }
+
   func stop(nights: Int = 3) -> Stop {
     .init(
-      countryCode: countryCode, place: city, nights: nights, currency: currency, latitude: latitude,
-      longitude: longitude)
+      countryCode: countryCode, place: city, nights: nights, currency: currency,
+      latitude: latitude, longitude: longitude)
   }
-  static let all: [Destination] = [
+
+  /// The first entries retain the original demo itinerary's order.
+  static let all: [Destination] = {
+    let places = DestinationData.decode([Place].self, file: "Destinations")
+    return places.map { place in
+      guard let country = CountryMetadata.country(place.countryCode) else {
+        preconditionFailure("Destination country is absent from the bundled catalogue")
+      }
+      return Destination(
+        countryCode: country.code, country: country.name, city: place.name,
+        currency: country.defaultCurrency ?? "", latitude: place.latitude,
+        longitude: place.longitude, catalogID: place.id, aliases: place.aliases)
+    } + CountryMetadata.all.map(makeCountry)
+  }()
+
+  static var suggestions: [Destination] { Array(all.prefix(12)) }
+  static func country(_ code: String) -> Destination? {
+    CountryMetadata.country(code).map(makeCountry)
+  }
+
+  /// Exact names and aliases precede prefixes; country-name matches include their cities.
+  static func search(_ query: String, limit: Int = 40) -> [Destination] {
+    let query = normalise(query)
+    guard !query.isEmpty else { return Array(suggestions.prefix(max(0, limit))) }
+    let tokens = query.split(separator: " ").map(String.init)
+    return index.compactMap { entry -> (Int, Int, Destination)? in
+      let score: Int
+      if entry.names.contains(query) {
+        score = entry.destination.isCountry ? 0 : 1
+      } else if entry.names.contains(where: { $0.hasPrefix(query) }) {
+        score = 2
+      } else if entry.names.contains(where: { $0.contains(query) }) {
+        score = 3
+      } else if tokens.allSatisfy({ token in entry.fields.contains { $0.contains(token) } }) {
+        score = 4
+      } else {
+        return nil
+      }
+      return (score, entry.order, entry.destination)
+    }.sorted { $0.0 == $1.0 ? $0.1 < $1.1 : $0.0 < $1.0 }
+      .prefix(max(0, limit)).map(\.2)
+  }
+
+  static func normalise(_ text: String) -> String {
+    text.folding(
+      options: [.caseInsensitive, .diacriticInsensitive, .widthInsensitive],
+      locale: Locale(identifier: "en_US_POSIX")
+    )
+    .components(separatedBy: .alphanumerics.inverted).filter { !$0.isEmpty }.joined(separator: " ")
+  }
+
+  private static func makeCountry(_ country: CountryMetadata.Country) -> Destination {
     .init(
-      countryCode: "PT", country: "Portugal", city: "Lisbon", currency: "EUR", latitude: 38.7223,
-      longitude: -9.1393),
-    .init(
-      countryCode: "PT", country: "Portugal", city: "Porto", currency: "EUR", latitude: 41.1579,
-      longitude: -8.6291),
-    .init(
-      countryCode: "ES", country: "Spain", city: "Seville", currency: "EUR", latitude: 37.3891,
-      longitude: -5.9845),
-    .init(
-      countryCode: "ES", country: "Spain", city: "Barcelona", currency: "EUR", latitude: 41.3874,
-      longitude: 2.1686),
-    .init(
-      countryCode: "FR", country: "France", city: "Paris", currency: "EUR", latitude: 48.8566,
-      longitude: 2.3522),
-    .init(
-      countryCode: "IT", country: "Italy", city: "Rome", currency: "EUR", latitude: 41.9028,
-      longitude: 12.4964),
-    .init(
-      countryCode: "JP", country: "Japan", city: "Tokyo", currency: "JPY", latitude: 35.6762,
-      longitude: 139.6503),
-    .init(
-      countryCode: "JP", country: "Japan", city: "Kyoto", currency: "JPY", latitude: 35.0116,
-      longitude: 135.7681),
-    .init(
-      countryCode: "GB", country: "United Kingdom", city: "London", currency: "GBP",
-      latitude: 51.5074, longitude: -0.1278),
-    .init(
-      countryCode: "US", country: "United States", city: "New York", currency: "USD",
-      latitude: 40.7128, longitude: -74.006),
-    .init(
-      countryCode: "AU", country: "Australia", city: "Sydney", currency: "AUD", latitude: -33.8688,
-      longitude: 151.2093),
-    .init(
-      countryCode: "TH", country: "Thailand", city: "Bangkok", currency: "THB", latitude: 13.7563,
-      longitude: 100.5018),
-    .init(
-      countryCode: "ID", country: "Indonesia", city: "Bali", currency: "IDR", latitude: -8.4095,
-      longitude: 115.1889),
-    .init(
-      countryCode: "VN", country: "Vietnam", city: "Hanoi", currency: "VND", latitude: 21.0278,
-      longitude: 105.8342),
-    .init(
-      countryCode: "MA", country: "Morocco", city: "Marrakesh", currency: "MAD", latitude: 31.6295,
-      longitude: -7.9811),
-    .init(
-      countryCode: "GR", country: "Greece", city: "Athens", currency: "EUR", latitude: 37.9838,
-      longitude: 23.7275),
-    .init(
-      countryCode: "CH", country: "Switzerland", city: "Zermatt", currency: "CHF",
-      latitude: 46.0207, longitude: 7.7491),
-    .init(
-      countryCode: "CA", country: "Canada", city: "Vancouver", currency: "CAD", latitude: 49.2827,
-      longitude: -123.1207),
-    .init(
-      countryCode: "MX", country: "Mexico", city: "Mexico City", currency: "MXN", latitude: 19.4326,
-      longitude: -99.1332),
-    .init(
-      countryCode: "KR", country: "South Korea", city: "Seoul", currency: "KRW", latitude: 37.5665,
-      longitude: 126.978),
-    .init(
-      countryCode: "AE", country: "United Arab Emirates", city: "Dubai", currency: "AED",
-      latitude: 25.2048, longitude: 55.2708),
-    .init(
-      countryCode: "NZ", country: "New Zealand", city: "Auckland", currency: "NZD",
-      latitude: -36.8509, longitude: 174.7645),
-  ]
+      countryCode: country.code, country: country.name, city: country.name,
+      currency: country.defaultCurrency ?? "", latitude: country.latitude,
+      longitude: country.longitude, catalogID: "country:" + country.code,
+      aliases: country.searchNames, isCountry: true)
+  }
+  private struct Place: Decodable {
+    var id: String
+    var name: String
+    var countryCode: String
+    var latitude: Double
+    var longitude: Double
+    var aliases: [String]
+  }
+  private struct Entry: Sendable {
+    var destination: Destination
+    var order: Int
+    var names: [String]
+    var fields: [String]
+  }
+  private static let index: [Entry] = all.enumerated().map { order, destination in
+    let names = ([destination.city] + destination.aliases).map(normalise)
+    let country = CountryMetadata.country(destination.countryCode)
+    return Entry(
+      destination: destination, order: order, names: names,
+      fields: names + (country?.searchNames ?? [destination.country]).map(normalise))
+  }
 }
+
 struct OnboardingDraft: Codable, Equatable, Sendable {
   var createdTripID: String?
   var step = 0
