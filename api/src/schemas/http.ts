@@ -19,6 +19,10 @@ export const syncResponseSchema = z.object({
   results: z.array(operationResultSchema),
 }).openapi('SyncResponse');
 export const fxQuoteSchema = z.object({ id: z.string(), from: z.string(), to: z.string(), rate: z.string(), requestedDate: z.string(), rateDate: z.string(), source: z.string() }).openapi('FXQuote');
+export const fxTableSchema = z.object({
+  base: z.string(), requestedDate: z.string(), rateDate: z.string(), source: z.string(),
+  rates: z.record(z.string(), z.string()).openapi({ description: 'Exact decimal rate from the base to each supported currency, including the base itself.' }),
+}).openapi('FXTable');
 export const tripListSchema = z.object({ trips: z.array(snapshotSchema), nextCursor: z.string().nullable() }).openapi('TripList');
 export const deletionPendingSchema = z.object({ status: z.literal('pending') }).openapi('DeletionPending');
 export const liveHintSchema = z.object({ type: z.literal('changed'), revision: z.number(), syncEpoch: z.string() }).openapi('LiveHint');
@@ -29,6 +33,10 @@ export const tripListQuerySchema = z.object({ cursor: firstQueryValue.optional()
 export const fxQuerySchema = z.object({
   from: firstQueryValue.default('').openapi({ param: { required: true }, description: 'Supported source currency code. The first value is used when repeated.' }),
   to: firstQueryValue.default('').openapi({ param: { required: true }, description: 'Supported target currency code. The first value is used when repeated.' }),
+  date: firstQueryValue.default('').openapi({ param: { required: true }, description: 'Requested Gregorian civil date (YYYY-MM-DD). The first value is used when repeated.' }),
+});
+export const fxTableQuerySchema = z.object({
+  base: firstQueryValue.default('').openapi({ param: { required: true }, description: 'Supported base currency code. The first value is used when repeated.' }),
   date: firstQueryValue.default('').openapi({ param: { required: true }, description: 'Requested Gregorian civil date (YYYY-MM-DD). The first value is used when repeated.' }),
 });
 

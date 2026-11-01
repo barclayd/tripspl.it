@@ -21,7 +21,7 @@ import TripSplitWatchUI
         .task(id: scenePhase) {
           guard scenePhase == .active else { return }
           model.now = Date()
-          await model.refreshLocalRate()
+          await model.refreshRates()
         }
     }
   }

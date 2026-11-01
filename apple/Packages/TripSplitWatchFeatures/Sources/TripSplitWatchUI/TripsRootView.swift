@@ -36,6 +36,7 @@ public struct TripsRootView: View {
 
 struct TripsList: View {
   @Environment(WatchModel.self) private var model
+  @State private var converting = false
 
   var body: some View {
     let timeline = model.timeline
@@ -43,7 +44,13 @@ struct TripsList: View {
     ScrollView {
       VStack(alignment: .leading, spacing: 6) {
         if let trip = timeline.now.first, let conversion = model.quickConversion(for: trip) {
-          ConvertCapsule(conversion: conversion)
+          Button {
+            converting = true
+          } label: {
+            ConvertCapsule(conversion: conversion)
+          }
+          .buttonStyle(.plain)
+          .accessibilityHint("Opens quick convert")
         }
         ForEach(timeline.now) { trip in
           NowCard(trip: trip, now: model.now)
@@ -61,5 +68,6 @@ struct TripsList: View {
       }
       .padding(.horizontal, 7)
     }
+    .sheet(isPresented: $converting) { QuickConvertView(model: model) }
   }
 }

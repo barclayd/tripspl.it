@@ -1,7 +1,7 @@
 import { OpenAPIHono } from '@hono/zod-openapi';
 import { authenticateUser, authRateLimit } from '../../middleware/auth';
 import { appleSignIn, challenge, deleteAccount, logout, processDeletions, refresh } from '../../services/auth';
-import { getFX } from '../../services/fx';
+import { getFX, getFXTable } from '../../services/fx';
 import { createTrip, executeRoom, listTrips } from '../../services/trips';
 import type { HonoEnvironment } from '../../types/hono';
 import { assert } from '../../utils/errors';
@@ -26,6 +26,10 @@ export function createV1Routes() {
   app.openapi(routes.fx, async c => {
     const { from, to, date } = c.req.valid('query');
     return c.json(await getFX(c.env, from, to, date), 200, jsonHeaders);
+  });
+  app.openapi(routes.fxRates, async c => {
+    const { base, date } = c.req.valid('query');
+    return c.json(await getFXTable(base, date), 200, jsonHeaders);
   });
 
   app.use('*', authenticateUser);

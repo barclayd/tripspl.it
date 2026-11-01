@@ -2,7 +2,7 @@ import { createRoute } from '@hono/zod-openapi';
 import { appleConfigured, fxRateLimit } from '../../middleware/auth';
 import { boundedJSON } from '../../middleware/json';
 import { appleSignInSchema, challengeSchema, emptyBodySchema, refreshTokenSchema, sessionSchema, userSchema } from '../../schemas/auth';
-import { acceptInviteSchema, createTripSchema, deletionPendingSchema, errorResponses, fxQuerySchema, fxQuoteSchema, invitationSchema, inviteParamsSchema, inviteSchema, jsonBody, jsonResponse, memberParamsSchema, okSchema, syncResponseSchema, tripListQuerySchema, tripListSchema, tripParamsSchema } from '../../schemas/http';
+import { acceptInviteSchema, createTripSchema, deletionPendingSchema, errorResponses, fxQuerySchema, fxQuoteSchema, fxTableQuerySchema, fxTableSchema, invitationSchema, inviteParamsSchema, inviteSchema, jsonBody, jsonResponse, memberParamsSchema, okSchema, syncResponseSchema, tripListQuerySchema, tripListSchema, tripParamsSchema } from '../../schemas/http';
 import { snapshotSchema, syncSchema } from '../../schemas/trip';
 
 const security = [{ bearerAuth: [] }];
@@ -16,6 +16,7 @@ export const routes = {
     logout: createRoute({ method: 'post', path: '/auth/logout', security, middleware: [boundedJSON(1024)], request: { body: jsonBody(refreshTokenSchema) }, responses: { 200: jsonResponse(okSchema, 'Session revoked.'), ...errorResponses } }),
   },
   fx: createRoute({ method: 'get', path: '/fx', middleware: [fxRateLimit], request: { query: fxQuerySchema }, responses: { 200: jsonResponse(fxQuoteSchema, 'Immutable reference quote with exact decimal rate.'), ...errorResponses } }),
+  fxRates: createRoute({ method: 'get', path: '/fx/rates', middleware: [fxRateLimit], request: { query: fxTableQuerySchema }, responses: { 200: jsonResponse(fxTableSchema, 'Indicative reference rates from one base, for display-only conversions between any pair.'), ...errorResponses } }),
   me: {
     get: createRoute({ method: 'get', path: '/me', security, responses: { 200: jsonResponse(userSchema, 'Current account.'), ...errorResponses } }),
     delete: createRoute({ method: 'delete', path: '/me', security, middleware: [boundedJSON(1024)], request: { body: jsonBody(emptyBodySchema) }, responses: { 202: jsonResponse(deletionPendingSchema, 'Durable account deletion queued.'), ...errorResponses } }),

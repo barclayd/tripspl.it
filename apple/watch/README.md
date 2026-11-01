@@ -31,7 +31,7 @@ The iPhone stays the source of truth. `WatchCompanionHost` (in `TripSplitApplica
 
 Changes made on the watch are `CompanionCommand`s sent with `transferUserInfo`. The watch overlays them on its trips until the phone's next context reflects them. The phone applies them through the same local store, pending-operation queue and sync as its own edits, skips re-delivered commands, and returns any it cannot apply in `CompanionContext.rejected` with a reason to show.
 
-Quick conversions use the API's reference rate for today's stop currency, cached per pair, falling back to the latest rate recorded on an expense.
+Quick convert (C) dials an amount between today's stop currency and home with the Crown, or any pair the wearer picks. Rates come from the API's daily reference table (`GET /v1/fx/rates`), cached per base currency and refreshed when the app becomes active, so any two listed currencies convert offline through the base. A fresher per-pair quote wins over the table, and the latest rate recorded on an expense is the last fallback. The last pair and amount are remembered between launches.
 
 ## Delivery
 

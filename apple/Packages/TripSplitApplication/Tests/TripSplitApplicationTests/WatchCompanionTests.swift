@@ -123,4 +123,114 @@ import TripSplitWatchModel
     #expect(quick?.amount == 1000)
     #expect(quick?.converted == 520)
   }
+
+  @Test func watchModelPrefersTheFreshestQuoteOrTable() throws {
+    let model = WatchModel()
+    model.cache(
+      FXTable(
+        base: "GBP", requestedDate: "2026-10-01", rateDate: "2026-10-01", source: "Test",
+        rates: ["GBP": "1", "EUR": "1.16", "USD": "1.33"]))
+    #expect(model.convert(5000, from: "USD", to: "EUR") == 4361)
+    model.cache(
+      FXQuote(
+        id: "q", from: "EUR", to: "GBP", rate: "0.9", requestedDate: "2026-10-02",
+        rateDate: "2026-10-02", source: "Test"))
+    #expect(model.rate(from: "EUR", to: "GBP") == "0.9")
+    model.cache(
+      FXTable(
+        base: "GBP", requestedDate: "2026-10-03", rateDate: "2026-10-03", source: "Test",
+        rates: ["GBP": "1", "EUR": "1.25"]))
+    #expect(model.rate(from: "EUR", to: "GBP") == "0.8")
+    #expect(model.rate(from: "USD", to: "GBP") == nil)
+    #expect(model.convertibleCurrencies == ["EUR", "GBP"])
+  }
+  @Test func refreshRatesFallsBackToAQuoteWithoutATable() async throws {
+    var trip = try trip()
+    trip.stops[0].currency = "EUR"
+    trip.homeCurrency = "GBP"
+    struct Unavailable: Error {}
+    let quote = FXQuote(
+      id: "q", from: "EUR", to: "GBP", rate: "0.86", requestedDate: "2026-10-01",
+      rateDate: "2026-10-01", source: "Test")
+    let offline = WatchModel(
+      state: .init(context: .init(trips: [trip])), loadQuote: { _, _, _ in quote },
+      loadTable: { _, _ in throw Unavailable() })
+    offline.now = CivilDate.date(trip.startsOn).addingTimeInterval(12 * 3600)
+    await offline.refreshRates()
+    #expect(offline.tables.isEmpty)
+    #expect(offline.rate(from: "EUR", to: "GBP") == "0.86")
+    let online = WatchModel(
+      state: .init(context: .init(trips: [trip])),
+      loadTable: { base, date in
+        FXTable(base: base, requestedDate: date, rateDate: date, source: "Test", rates: ["EUR": "1.16"])
+      })
+    await online.refreshRates()
+    #expect(online.tables["GBP"]?.rates["EUR"] == "1.16")
+  }
+  @Test func quickConvertFollowsTheTripUntilAPairIsChosen() throws {
+    let convert = QuickConvert(model: try WatchModel.demo())
+    #expect(convert.pair == .init(from: "EUR", to: "GBP"))
+    #expect(convert.amount == 10)
+    #expect(convert.result == 862)
+    convert.amount = 24
+    #expect(convert.result == 2069)
+    #expect(convert.rateLine == "€1 = £0.86")
+    convert.swap()
+    #expect(convert.pair == .init(from: "GBP", to: "EUR"))
+    #expect(convert.isFlipped && !convert.isCustom)
+    convert.choose("USD", for: .from)
+    #expect(convert.pair == .init(from: "USD", to: "EUR"))
+    #expect(convert.isCustom)
+    convert.amount = 50
+    #expect(convert.result == 4361)
+    #expect(convert.rateLine == "$1 = €0.87")
+    #expect(convert.changed?.side == .from && convert.changed?.count == 1)
+    convert.choose("EUR", for: .from)
+    #expect(convert.pair == .init(from: "EUR", to: "USD"))
+    convert.choose("GBP", for: .to)
+    #expect(convert.pair == .init(from: "EUR", to: "GBP"))
+    #expect(!convert.isCustom && !convert.isFlipped)
+    convert.choose("CHF", for: .to)
+    convert.resetToTrip()
+    #expect(convert.pair == .init(from: "EUR", to: "GBP"))
+    #expect(convert.model.convertMemory.recents.prefix(3) == ["CHF", "GBP", "EUR"])
+  }
+  @Test func quickConvertCyclesTripCurrenciesThenEverythingElse() throws {
+    let convert = QuickConvert(model: try WatchModel.demo())
+    convert.focus = .from
+    #expect(convert.cycleItems.prefix(2) == [.currency("EUR"), .currency("JPY")])
+    #expect(convert.cycleItems.last == .all)
+    #expect(!convert.cycleItems.contains(.currency("GBP")))
+    #expect(convert.cycleDetent == 0)
+    #expect(!convert.turn(to: 1))
+    #expect(convert.pair == .init(from: "JPY", to: "GBP"))
+    #expect(convert.scale == 100)
+    #expect(convert.rateLine == "¥100 = £0.50")
+    #expect(convert.turn(to: convert.cycleItems.count - 1))
+    convert.focus = nil
+    #expect(convert.model.convertMemory.recents == ["JPY"])
+    #expect(convert.quickPicks(for: .from) == ["EUR", "JPY"])
+    convert.dial(to: 23)
+    #expect(convert.amount == 2400)
+    #expect(convert.amountDetent == 23)
+  }
+  @Test func amountLadderStepsInOnesFivesThenTens() {
+    #expect(
+      [0, 49, 50, 79, 80, 1059, 5000].map(AmountLadder.value(at:))
+        == [1, 50, 55, 200, 210, 10_000, 10_000])
+    #expect(
+      [Decimal(string: "24.5")!, 0.5, 55, 57, 200, 10_000, 99_999].map(AmountLadder.index(for:))
+        == [23, 0, 50, 50, 79, 1059, 1059])
+  }
+  @Test func watchCurrenciesUseTheTripsCountryForSharedCurrencies() throws {
+    let convert = QuickConvert(model: try WatchModel.demo())
+    #expect(convert.currency("EUR").flag == "🇵🇹")
+    #expect(convert.currency("JPY").flag == "🇯🇵")
+    #expect(WatchCurrency(code: "EUR").flag == "🇪🇺")
+    #expect(WatchCurrency(code: "USD").label == "$ USD")
+    #expect(WatchCurrency(code: "AUD").label == "A$ AUD")
+    #expect(WatchCurrency(code: "CHF").label == "CHF")
+    #expect(WatchCurrency.format(2140, "CHF") == "CHF\u{a0}21.40")
+    #expect(WatchCurrency.format(5000, "AUD", compact: true) == "A$50")
+  }
 }
