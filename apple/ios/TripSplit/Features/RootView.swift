@@ -15,40 +15,62 @@ struct RootView: View {
   static let newTripTab = 2
   @Environment(AppModel.self) private var model
   @Environment(\.scenePhase) private var scenePhase
-  @State private var columns: NavigationSplitViewVisibility = .all
-  @State private var preferredColumn: NavigationSplitViewColumn = .sidebar
-  @State private var wide = false
+  @Environment(\.horizontalSizeClass) private var sizeClass
+  @Environment(\.accessibilityReduceMotion) private var reduceMotion
+  @State private var landscape = false
+  /// Whether the bar runs down the side as the Duo's rail, which then carries the screen's actions.
+  @State private var railed = false
   @State private var deleting: TripSnapshot?
   @State private var clearing: Attachment?
   var body: some View {
     @Bindable var model = model
-    // The "+" tab is an action, not a destination: selecting it starts a new trip in place.
+    // The "+" tab is an action, not a destination: it starts a new trip, or on the Duo's rail adds to the open one.
     TabView(
       selection: Binding(
         get: { model.selectedTab },
         set: { tab in
-          if tab == RootView.newTripTab {
-            model.showOnboarding = true
-          } else {
+          if tab != RootView.newTripTab {
             model.selectedTab = tab
+          } else if addsToTrip, let trip = model.selectedTrip {
+            model.editExpense(trip: trip, attachment: model.selectedAttachment ?? trip.currentAttachment)
+          } else {
+            model.showOnboarding = true
           }
         })
     ) {
       Tab("Trips", systemImage: "suitcase", value: 0) {
-        NavigationSplitView(columnVisibility: $columns, preferredCompactColumn: $preferredColumn) {
+        NavigationSplitView(
+          columnVisibility: Binding(
+            get: { twoPane && model.fullScreenDay && model.selectedAttachment != nil ? .detailOnly : .all },
+            set: { if twoPane && model.selectedAttachment != nil { model.fullScreenDay = $0 == .detailOnly } }),
+          // Derived from the selection, so folding or unfolding the Duo lands on the same screen.
+          preferredCompactColumn: Binding(
+            get: { model.selectedTripID == nil ? .sidebar : .detail },
+            set: {
+              if $0 == .sidebar {
+                model.selectedTripID = nil
+                model.selectedAttachment = nil
+              }
+            })
+        ) {
+          let tripBeside = twoPane && model.selectedAttachment != nil
           ZStack {
-            TripsView(compact: wide).opacity(model.selectedAttachment == nil ? 1 : 0)
-              .allowsHitTesting(model.selectedAttachment == nil).accessibilityHidden(
-                model.selectedAttachment != nil)
-            if let trip = model.selectedTrip, model.selectedAttachment != nil {
+            TripsView(compact: twoPane).opacity(tripBeside ? 0 : 1)
+              .allowsHitTesting(!tripBeside).accessibilityHidden(tripBeside)
+            if tripBeside, let trip = model.selectedTrip {
               TripDetailView(tripID: trip.id, compact: true)
             }
-          }.navigationSplitViewColumnWidth(min: 300, ideal: 340, max: 360).navigationTitle(
-            model.selectedAttachment == nil ? "Trips" : model.selectedTrip?.name ?? "Trip"
-          )
-          // The phone's trips root draws its own large header.
-          .toolbar(
-            !wide && model.selectedAttachment == nil ? .hidden : .automatic, for: .navigationBar)
+          }
+          .navigationSplitViewColumnWidth(min: 300, ideal: 340, max: 360)
+          .navigationTitle("")
+          // Each pane draws its own header, so the bar only shows to hold the rail.
+          .toolbar(railed ? .automatic : .hidden, for: .navigationBar)
+          .toolbar {
+            // Abroad on a trip under way, converting stays one tap from the trips list too.
+            if railed && model.selectedTripID == nil && model.store.trips.contains(where: \.showsHomeConverter) {
+              convertItem { model.showConverter = true }
+            }
+          }
         } detail: {
           NavigationStack {
             ZStack {
@@ -57,55 +79,58 @@ struct RootView: View {
                 TripDetailView(tripID: trip.id).opacity(model.selectedAttachment == nil ? 1 : 0)
                   .allowsHitTesting(model.selectedAttachment == nil).accessibilityHidden(
                     model.selectedAttachment != nil)
+                  .id(trip.id)
+                  .transition(
+                    reduceMotion
+                      ? .opacity
+                      : .asymmetric(insertion: .offset(y: 28).combined(with: .opacity), removal: .opacity))
                 if let attachment = model.selectedAttachment {
-                  DayView(tripID: trip.id, attachment: attachment, showsPaneControls: wide)
+                  DayView(tripID: trip.id, attachment: attachment, showsPaneControls: twoPane)
                 }
               } else {
                 ContentUnavailableView(
                   "Select a trip", systemImage: "airplane")
               }
             }
+            // Picking a trip in the sidebar slides it up into the pane beside.
+            .animation(twoPane ? .smooth(duration: 0.5) : nil, value: model.selectedTripID)
+            .pinsBar(twoPane)
             .navigationBarBackButtonHidden(true)
             .toolbar {
               ToolbarItem(placement: .cancellationAction) {
-                if model.selectedTripID != nil {
+                // In two panes the Day floats its own close, so Back only stays at the top of the rail.
+                if twoPane ? railed && model.selectedAttachment != nil : model.selectedTripID != nil {
                   Button("Back", systemImage: "chevron.backward") {
                     if model.selectedAttachment != nil {
                       model.selectedAttachment = nil
+                      model.fullScreenDay = false
                     } else {
                       model.selectedTripID = nil
-                      preferredColumn = .sidebar
                     }
                   }
                 }
               }
               if let trip = model.selectedTrip {
-                if model.selectedAttachment == nil {
+                // On the rail, the "+" tab adds the expense instead.
+                if !railed && model.selectedAttachment == nil {
                   ToolbarItem(placement: .primaryAction) {
                     Button("Add expense", systemImage: "plus") {
-                      model.editExpense(
-                        trip: trip, attachment: model.selectedAttachment ?? trip.currentAttachment)
+                      model.editExpense(trip: trip, attachment: trip.currentAttachment)
                     }
                   }
+                }
+                if let attachment = model.selectedAttachment {
+                  if railed && trip.isAbroad(attachment) {
+                    convertItem { model.showConverter = true }
+                  }
+                } else if !railed || trip.showsHomeConverter {
+                  convertItem { model.showConverter = true }
                 }
                 if model.selectedAttachment == nil {
-                  if #available(iOS 27.0, *) {
-                    ToolbarItem {
-                      Button("Quick convert", systemImage: "arrow.left.arrow.right") {
-                        model.showConverter = true
-                      }
-                    }.visibilityPriority(.high)
-                  } else {
-                    ToolbarItem {
-                      Button("Quick convert", systemImage: "arrow.left.arrow.right") {
-                        model.showConverter = true
-                      }
+                  ToolbarItem {
+                    Button("Share trip", systemImage: "square.and.arrow.up") {
+                      model.showTripSettings = true
                     }
-                  }
-                }
-                ToolbarItem {
-                  Button("Share trip", systemImage: "square.and.arrow.up") {
-                    model.showTripSettings = true
                   }
                 }
                 if #available(iOS 27.0, *) {
@@ -139,29 +164,19 @@ struct RootView: View {
               }
             }
           }
-        }.navigationSplitViewStyle(.balanced)
-          .onGeometryChange(for: Bool.self) {
-            $0.size.width >= 700
-          } action: {
-            wide = $0
-            columns =
-              $0 && !model.fullScreenDay ? .all : model.selectedTripID == nil ? .all : .detailOnly
-          }
-          .onChange(of: model.selectedTripID) { _, value in
-            if value != nil {
-              preferredColumn = .detail
-              if !wide { columns = .detailOnly }
-            } else {
-              preferredColumn = .sidebar
-            }
-          }
-          .onChange(of: model.fullScreenDay) { _, full in columns = full ? .detailOnly : .all }
+        }
+        .navigationSplitViewStyle(.balanced)
+        .toolbar(removing: .sidebarToggle)
+        // Two panes only when unfolded on its side; otherwise one, capped in width.
+        .environment(\.horizontalSizeClass, twoPane ? .regular : .compact)
       }
       Tab("Globe", systemImage: "globe", value: 1) { NavigationStack { GlobeView() } }
-      Tab("New trip", systemImage: "plus", value: RootView.newTripTab, role: .search) {
+      Tab(addsToTrip ? addTitle : "New trip", systemImage: "plus", value: RootView.newTripTab, role: .search) {
         Color.clear
       }
     }
+    .readVerticalRail($railed)
+    .onGeometryChange(for: Bool.self) { $0.size.width > $0.size.height } action: { landscape = $0 }
     // The globe sits in dark space, so the tab bar and its sheets go dark with it.
     .preferredColorScheme(model.selectedTab == 1 ? .dark : nil)
     .sheet(isPresented: $model.showSettings) { SettingsView().trailingSheet() }
@@ -172,7 +187,7 @@ struct RootView: View {
       ExpenseEditor().trailingSheet()
     }
     .sheet(isPresented: $model.showConverter) {
-      if let trip = model.selectedTrip {
+      if let trip = model.selectedTrip ?? model.store.trips.first(where: \.showsHomeConverter) {
         ConvertView(tripID: trip.id, attachment: model.selectedAttachment ?? trip.currentAttachment)
           .trailingSheet()
       }
@@ -194,6 +209,15 @@ struct RootView: View {
     .task {
       #if DEBUG
         // Opens a demo trip straight away so simulator screenshots can reach trip screens.
+        // `--landscape` turns the device on its side, for the Duo's tent and two pane layouts.
+        if ProcessInfo.processInfo.arguments.contains("--landscape"),
+          let scene = UIApplication.shared.connectedScenes.first as? UIWindowScene
+        {
+          try? await Task.sleep(for: .milliseconds(300))
+          scene.requestGeometryUpdate(.iOS(interfaceOrientations: .landscapeRight)) { error in
+            print("Couldn’t turn to landscape: \(error.localizedDescription)")
+          }
+        }
         if ProcessInfo.processInfo.arguments.contains("--open-trip") {
           let trips = model.store.trips
           model.selectedTripID = (trips.first { $0.phase == .now } ?? trips.first)?.id
@@ -285,6 +309,29 @@ struct RootView: View {
   }
 }
 extension RootView {
+  /// Unfolded on its side: the Duo's two panes, or an iPad in landscape.
+  private var twoPane: Bool { sizeClass == .regular && landscape }
+
+  /// On the rail, "+" adds to the trip on screen rather than starting a new one.
+  private var addsToTrip: Bool { railed && model.selectedTab == 0 && model.selectedTrip != nil }
+
+  private var addTitle: String {
+    model.selectedAttachment?.kind == .leg ? "Add travel" : "Add expense"
+  }
+
+  /// Quick convert, kept on the rail ahead of share and "…" while there's room.
+  @ToolbarContentBuilder private func convertItem(_ action: @escaping () -> Void) -> some ToolbarContent {
+    if #available(iOS 27.0, *) {
+      ToolbarItem {
+        Button("Quick convert", systemImage: "arrow.left.arrow.right", action: action)
+      }.visibilityPriority(.high)
+    } else {
+      ToolbarItem {
+        Button("Quick convert", systemImage: "arrow.left.arrow.right", action: action)
+      }
+    }
+  }
+
   /// The "…" menu: trip actions, then the open day's, then account. Destructive ones confirm first.
   @ViewBuilder private func more(_ trip: TripSnapshot) -> some View {
     Button("Edit trip", systemImage: "pencil") { model.showTripSettings = true }

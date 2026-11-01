@@ -453,7 +453,15 @@ extension View {
       self
     }
   }
-  @ViewBuilder package func readVerticalRail(_ binding: Binding<Bool>) -> some View {
+  /// Keeps the bar in place while two panes show, so the rail doesn't shift as either scrolls.
+  @ViewBuilder public func pinsBar(_ pinned: Bool) -> some View {
+    if #available(iOS 27.0, *) {
+      self.toolbarMinimizationBehavior(pinned ? .never : .automatic, for: .navigationBar)
+    } else {
+      self
+    }
+  }
+  @ViewBuilder public func readVerticalRail(_ binding: Binding<Bool>) -> some View {
     if #available(iOS 27.1, *) {
       self.background { VerticalRailReader(isVertical: binding) }
     } else {

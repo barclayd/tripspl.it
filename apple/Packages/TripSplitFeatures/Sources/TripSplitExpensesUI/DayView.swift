@@ -13,11 +13,15 @@ public struct DayView: View {
     self.showsPaneControls = showsPaneControls
   }
   @Environment(AppModel.self) private var model
+  @Environment(\.horizontalSizeClass) private var sizeClass
   var tripID: String
   var attachment: Attachment
+  /// Two panes show, so the day floats its own Close and Full screen buttons.
   var showsPaneControls = false
   @State private var usesVerticalRail = false
-  @State private var tent = false
+  @State private var landscape = false
+  /// Tent: compact width but wider than tall, so the summary and list sit side by side.
+  private var tent: Bool { sizeClass == .compact && landscape }
   /// Expenses already on screen, so one that arrives from the sheet can flash.
   @State private var seen: Set<String>?
   @State private var fresh: Set<String> = []
@@ -41,10 +45,11 @@ public struct DayView: View {
         .pagePadding().padding(.bottom, 18)
       }
       .background(Theme.background)
+      .scrollEdgeEffectHidden(showsPaneControls, for: .top)
       .onGeometryChange(for: Bool.self) {
-        $0.size.width > $0.size.height && $0.size.width < 700
+        $0.size.width > $0.size.height
       } action: {
-        tent = $0
+        landscape = $0
       }
       .safeAreaInset(edge: .bottom, spacing: 0) {
         if !usesVerticalRail { actions(trip) }
@@ -52,7 +57,10 @@ public struct DayView: View {
       .safeAreaInset(edge: .top) {
         if showsPaneControls {
           HStack {
-            Button("Close day", systemImage: "xmark") { model.selectedAttachment = nil }
+            Button("Close day", systemImage: "xmark") {
+              model.selectedAttachment = nil
+              model.fullScreenDay = false
+            }
             Spacer()
             Button(
               model.fullScreenDay ? "Show trip alongside" : "Full screen",
@@ -61,20 +69,6 @@ public struct DayView: View {
             ) { model.fullScreenDay.toggle() }
           }
           .labelStyle(.iconOnly).buttonStyle(.glass).padding(.horizontal, 20).padding(.vertical, 4)
-        }
-      }
-      .toolbar {
-        if usesVerticalRail {
-          ToolbarItem(placement: .primaryAction) {
-            Button(addTitle, systemImage: "plus") {
-              model.editExpense(trip: trip, attachment: attachment)
-            }
-          }
-          ToolbarItem {
-            Button("Quick convert", systemImage: "arrow.left.arrow.right") {
-              model.showConverter = true
-            }
-          }
         }
       }
       .onChange(of: items.map(\.id), initial: true) { _, ids in noticeNew(ids) }
@@ -314,11 +308,8 @@ public struct DayView: View {
 
   /// Quick convert for a foreign stop, then the main add button, over a fade.
   private func actions(_ trip: TripSnapshot) -> some View {
-    let foreign =
-      attachment.kind == .day
-      && (trip.stop(for: attachment).map { $0.currency != trip.homeCurrency } ?? false)
-    return HStack(spacing: 10) {
-      if foreign {
+    HStack(spacing: 10) {
+      if trip.isAbroad(attachment) {
         Button {
           model.showConverter = true
         } label: {

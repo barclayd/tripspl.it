@@ -7,6 +7,12 @@ extension TripSnapshot {
     return stop.currency != homeCurrency
   }
 
+  /// A day at a stop that spends another currency, where converting earns a place in the rail.
+  public func isAbroad(_ attachment: Attachment) -> Bool {
+    guard attachment.kind == .day, let stop = stop(for: attachment) else { return false }
+    return stop.currency != homeCurrency
+  }
+
   public func showsHomeConverter(on date: String) -> Bool {
     guard phase(on: date) == .now,
       let day = days.first(where: { $0.date == date }),
