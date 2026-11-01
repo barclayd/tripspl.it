@@ -177,7 +177,7 @@ public struct TripSettingsView: View {
               TextField("Whole-trip budget", text: $budget).keyboardType(.decimalPad)
             }
             Text(
-              "Itinerary dates and home currency stay fixed after creation."
+              "Home currency stays fixed after creation."
             ).font(.footnote).foregroundStyle(.secondary)
           }.disabled(trip.role != "owner")
           Section("Destination time zones") {

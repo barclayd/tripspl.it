@@ -36,6 +36,13 @@ export const expenseSchema = z.strictObject({ id, revision, attachment: z.strict
 export const repaymentSchema = z.strictObject({ id, revision, fromTravellerId: id, toTravellerId: id, amountMinor: positiveAmount, currency, paidOn: civil, conversion, note: z.string().max(500) }).openapi('Repayment');
 const settingsFields = z.strictObject({ name: shortText, startsOn: civil, timeZone: z.string().max(100).refine(value => { try { new Intl.DateTimeFormat('en', { timeZone: value }); return true; } catch { return false; } }), homeCurrency: currency, budgetMinor: amount, origin: originSchema.optional(), stops: z.array(stopSchema).min(1).max(30), days: z.array(daySchema).min(1).max(400), legs: z.array(legSchema).max(100) });
 export const settingsSchema = settingsFields.openapi('TripSettings');
+export const rescheduleSchema = z.strictObject({
+  startsOn: civil,
+  stops: z.array(z.strictObject({ id, nights: z.number().int().min(0).max(365) }).openapi('StopNights')).min(1).max(30),
+  days: z.array(daySchema).min(1).max(400),
+  legs: z.array(legSchema).max(100),
+  moves: z.array(z.strictObject({ fromDayId: id, toDayId: id }).openapi('DayMove')).max(400),
+}).openapi('TripReschedule', { description: 'New dates for a trip: its first day, the nights at each of its stops in order, and the days and legs that follow from them. Legs keep their IDs and only change date and day. Every day that leaves the trip names a kept day in `moves`, which its expenses move to, including ones added elsewhere since.' });
 export const snapshotSchema = settingsFields.extend({ id, revision, syncEpoch: z.string().min(1).max(128), ownerTravellerId: id, currentTravellerId: id, role: z.enum(['owner', 'member']), travellers: z.array(travellerSchema).min(1).max(40), expenses: z.array(expenseSchema).max(10000), repayments: z.array(repaymentSchema).max(10000), archived: z.boolean(), updatedAt: z.iso.datetime() }).openapi('TripSnapshot');
 const common = { id, syncEpoch: z.string().min(1).max(128), entityId: id };
 export const operationSchema = z.discriminatedUnion('type', [
@@ -45,6 +52,7 @@ export const operationSchema = z.discriminatedUnion('type', [
   z.strictObject({ ...common, type: z.literal('repayment.delete'), expectedRevision: revision, payload: z.null() }).openapi('RepaymentDeleteOperation'),
   z.strictObject({ ...common, type: z.literal('traveller.upsert'), expectedRevision: revision.nullable(), payload: travellerSchema }).openapi('TravellerUpsertOperation'),
   z.strictObject({ ...common, type: z.literal('trip.update'), expectedRevision: revision, payload: settingsSchema }).openapi('TripUpdateOperation'),
+  z.strictObject({ ...common, type: z.literal('trip.reschedule'), expectedRevision: revision, payload: rescheduleSchema }).openapi('TripRescheduleOperation'),
   z.strictObject({ ...common, type: z.literal('trip.archive'), expectedRevision: revision, payload: z.strictObject({ archived: z.boolean() }) }).openapi('TripArchiveOperation'),
 ]).openapi('Operation');
 export const syncSchema = z.strictObject({ cursor: revision.nullable(), syncEpoch: z.string().max(128).nullable(), operations: z.array(operationSchema).max(50) }).openapi('SyncRequest');

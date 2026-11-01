@@ -475,6 +475,7 @@ public struct Operation: Codable, Identifiable, Hashable, Sendable {
     case repayment(Repayment)
     case traveller(Traveller)
     case settings(TripSettings)
+    case reschedule(TripReschedule)
     case archive(Bool)
     case none
     public init(from decoder: Decoder) throws {
@@ -489,6 +490,8 @@ public struct Operation: Codable, Identifiable, Hashable, Sendable {
         self = .settings(v)
       } else if let v = try? c.decode(Traveller.self) {
         self = .traveller(v)
+      } else if let v = try? c.decode(TripReschedule.self) {
+        self = .reschedule(v)
       } else {
         self = .archive(try c.decode([String: Bool].self)["archived"] ?? false)
       }
@@ -500,6 +503,7 @@ public struct Operation: Codable, Identifiable, Hashable, Sendable {
       case .repayment(let v): try c.encode(v)
       case .traveller(let v): try c.encode(v)
       case .settings(let v): try c.encode(v)
+      case .reschedule(let v): try c.encode(v)
       case .archive(let v): try c.encode(["archived": v])
       case .none: try c.encodeNil()
       }
@@ -539,6 +543,22 @@ public struct Operation: Codable, Identifiable, Hashable, Sendable {
       trip.stops = v.stops
       trip.days = v.days
       trip.legs = v.legs
+    case .reschedule(let v):
+      trip.startsOn = v.startsOn
+      let nights = Dictionary(v.stops.map { ($0.id, $0.nights) }, uniquingKeysWith: { first, _ in first })
+      for index in trip.stops.indices {
+        if let value = nights[trip.stops[index].id] { trip.stops[index].nights = value }
+      }
+      trip.days = v.days
+      trip.legs = v.legs
+      // Expenses on a day that leaves go where the reschedule says, as the server moves them.
+      let moves = Dictionary(
+        v.moves.map { ($0.fromDayId, $0.toDayId) }, uniquingKeysWith: { first, _ in first })
+      for index in trip.expenses.indices where trip.expenses[index].attachment.kind == .day {
+        if let day = moves[trip.expenses[index].attachment.id] {
+          trip.expenses[index].attachment.id = day
+        }
+      }
     case .archive(let v): trip.archived = v
     case .none:
       if type == "expense.delete" { trip.expenses.removeAll { $0.id == entityId } }

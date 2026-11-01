@@ -75,6 +75,7 @@ export function verifyContract(document: Contract): void {
     { ...common, type: 'repayment.delete', expectedRevision: 1, payload: null },
     { ...common, type: 'traveller.upsert', expectedRevision: null, payload: trip.travellers[0]! },
     { ...common, type: 'trip.update', expectedRevision: 1, payload: settings },
+    { ...common, type: 'trip.reschedule', expectedRevision: 1, payload: { startsOn: settings.startsOn, stops: settings.stops.map(({ id, nights }) => ({ id, nights })), days: settings.days, legs: settings.legs, moves: [] } },
     { ...common, type: 'trip.archive', expectedRevision: 1, payload: { archived: true } },
   ];
   for (const operation of operations) {

@@ -7,6 +7,8 @@ import TripSplitDomain
 struct DeparturesBoard: View {
   var trips: [TripSnapshot]
   @Environment(AppModel.self) private var model
+  /// The page's scheme, outside the board's own dark one.
+  @Environment(\.colorScheme) private var colorScheme
   @State private var narrow = false
 
   /// The trip under way first, then upcoming trips by departure date.
@@ -32,7 +34,7 @@ struct DeparturesBoard: View {
           }
           .buttonStyle(BoardRowStyle())
           .accessibilityLabel(label(trip))
-          .tripActions(trip)
+          .tripActions(trip, colorScheme: colorScheme)
         }
         Button {
           model.showOnboarding = true

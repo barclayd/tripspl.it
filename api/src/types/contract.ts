@@ -2,7 +2,7 @@
 import type { z } from '@hono/zod-openapi';
 import type { challengeSchema, sessionSchema, userSchema } from '../schemas/auth';
 import type { createTripSchema, deletionPendingSchema, errorSchema, fxQuoteSchema, fxTableSchema, invitationSchema, liveHintSchema, nudgeResultSchema, okSchema, operationResultSchema, syncResponseSchema, tripListSchema } from '../schemas/http';
-import type { amount, categorySchema, civil, conversionSchema, currency, daySchema, expenseSchema, id, legSchema, operationSchema, repaymentSchema, settingsSchema, snapshotSchema, stopSchema, syncSchema, travellerSchema } from '../schemas/trip';
+import type { amount, categorySchema, civil, conversionSchema, currency, daySchema, expenseSchema, id, legSchema, operationSchema, repaymentSchema, rescheduleSchema, settingsSchema, snapshotSchema, stopSchema, syncSchema, travellerSchema } from '../schemas/trip';
 
 export type ID = z.infer<typeof id>;
 export type CivilDate = z.infer<typeof civil>;
@@ -17,6 +17,7 @@ export type Conversion = z.infer<typeof conversionSchema>;
 export type Expense = z.infer<typeof expenseSchema>;
 export type Repayment = z.infer<typeof repaymentSchema>;
 export type TripSettings = z.infer<typeof settingsSchema>;
+export type TripReschedule = z.infer<typeof rescheduleSchema>;
 export type TripSnapshot = z.infer<typeof snapshotSchema>;
 export type Operation = z.infer<typeof operationSchema>;
 export type OperationResult = z.infer<typeof operationResultSchema>;

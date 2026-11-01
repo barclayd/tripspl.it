@@ -136,6 +136,7 @@ package struct SyncReviewView: View {
     case .repayment: "Repayment"
     case .traveller(let t): t.name
     case .settings: "Trip settings"
+    case .reschedule: "New dates"
     case .archive: "Trip archive"
     case .none: "Delete item"
     }

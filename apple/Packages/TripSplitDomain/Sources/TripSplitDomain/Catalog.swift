@@ -238,7 +238,7 @@ public struct OnboardingDraft: Codable, Equatable, Sendable {
   public static let maximumStops = 6
   public static let maximumTravellers = 8
   /// The longest trip the itinerary and the API accept, in nights.
-  public static let maximumNights = 365
+  public static let maximumNights = Itinerary.maximumNights
   /// The budget suggested per person per day, in pounds, before converting to the home currency.
   public static let suggestedDailySpendGBP = 75
 
@@ -258,13 +258,9 @@ public struct OnboardingDraft: Codable, Equatable, Sendable {
   public var days: Int { nights + 1 }
   public var returnDate: String { CivilDate.adding(nights, to: startsOn) }
   /// A lone stop can be a day trip; every stop on a longer route needs at least a night.
-  public var nightRange: ClosedRange<Int> {
-    (stops.count > 1 ? 1 : 0)...Self.maximumNights
-  }
+  public var nightRange: ClosedRange<Int> { Itinerary.nightRange(stops: stops.count) }
   /// The shortest and longest trip the route allows: a night per stop on a longer route.
-  public var tripNights: ClosedRange<Int> {
-    (stops.count > 1 ? stops.count : 0)...Self.maximumNights
-  }
+  public var tripNights: ClosedRange<Int> { Itinerary.tripNights(stops: stops.count) }
   /// Every step in the order they're asked. Drafts are saved by step number, so leaving from (8)
   /// slots in after where without renumbering, and step 7 (a since-removed return date step) is
   /// gone: where, leaving from, when, how long, who, home currency, budget, then done.
@@ -298,26 +294,7 @@ public struct OnboardingDraft: Codable, Equatable, Sendable {
   public mutating func setReturn(_ date: String) {
     let total = min(
       max(CivilDate.days(from: startsOn, to: date), tripNights.lowerBound), tripNights.upperBound)
-    let current = nights
-    let shares = stops.map { stop in
-      current > 0 ? Double(total) * Double(stop.nights) / Double(current) : Double(total) / Double(stops.count)
-    }
-    let floor = nightRange.lowerBound
-    var split = shares.map { max(floor, Int($0.rounded(.down))) }
-    // Hands any nights left over to the stops that lost the most to rounding, earliest first.
-    let byRemainder = shares.indices.sorted {
-      (shares[$0] - shares[$0].rounded(.down), -$0) > (shares[$1] - shares[$1].rounded(.down), -$1)
-    }
-    var spare = total - split.reduce(0, +)
-    for index in byRemainder where spare > 0 {
-      split[index] += 1
-      spare -= 1
-    }
-    // A minimum of a night each can overshoot; takes the excess back from the longest stays.
-    while spare < 0, let index = split.indices.filter({ split[$0] > floor }).max(by: { split[$0] < split[$1] }) {
-      split[index] -= 1
-      spare += 1
-    }
+    let split = Itinerary.split(total, across: stops.map(\.nights), floor: nightRange.lowerBound)
     for index in stops.indices { stops[index].nights = split[index] }
   }
   /// Sets both ends of the trip at once, as tapping a day before the start while picking home does.
@@ -407,32 +384,12 @@ public struct OnboardingDraft: Codable, Equatable, Sendable {
       stops.allSatisfy({ (0...Self.maximumNights).contains($0.nights) }), nights <= Self.maximumNights,
       stops.count == 1 || stops.allSatisfy({ $0.nights > 0 })
     else { throw MoneyError.invalid }
-    var days: [TripDay] = []
-    var legs: [TravelLeg] = []
-    var offset = 0
-    for (index, stop) in stops.enumerated() {
-      let day = CivilDate.adding(offset, to: startsOn)
-      for i in 0..<stop.nights {
-        days.append(.init(date: CivilDate.adding(offset + i, to: startsOn), stopId: stop.id))
-      }
-      legs.append(
-        .init(
-          kind: index == 0 ? .outbound : .transfer, date: day,
-          fromStopId: index == 0 ? nil : stops[index - 1].id, toStopId: stop.id,
-          dayId: days.last(where: { $0.date == day })?.id))
-      offset += stop.nights
-    }
-    let lastDate = CivilDate.adding(offset, to: startsOn)
-    days.append(.init(date: lastDate, stopId: stops.last!.id))
-    legs.append(
-      .init(
-        kind: .return, date: lastDate, fromStopId: stops.last!.id, toStopId: nil,
-        dayId: days.last?.id))
+    let layout = ItineraryLayout(startsOn: startsOn, stops: stops)
     return TripSnapshot(
       name: tripName, startsOn: startsOn, timeZone: stops.first?.resolvedTimeZone ?? timeZone,
       homeCurrency: currency,
       budgetMinor: String(try Money.parse(budget, currency: currency)), origin: origin,
       ownerTravellerId: owner.id, currentTravellerId: owner.id, travellers: travellers,
-      stops: stops, days: days, legs: legs)
+      stops: stops, days: layout.days, legs: layout.legs())
   }
 }

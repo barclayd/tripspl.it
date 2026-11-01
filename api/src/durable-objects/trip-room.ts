@@ -1,5 +1,5 @@
 import { DurableObject } from 'cloudflare:workers';
-import type { Expense, Invitation, LiveHint, NudgeResult, Operation, OperationResult, Repayment, Success, SyncRequest, SyncResponse, Traveller, TripSnapshot } from '../types/contract';
+import type { Expense, Invitation, LiveHint, NudgeResult, Operation, OperationResult, Repayment, Success, SyncRequest, SyncResponse, Traveller, TripReschedule, TripSnapshot } from '../types/contract';
 import { AppError, assert, errorResponse } from '../utils/errors';
 import { canonical, randomToken, sha256 } from '../utils/crypto';
 import { normalizeConversion, normalizeRecords } from '../services/fx';
@@ -124,6 +124,35 @@ export class TripRoom extends DurableObject<Env> {
       trip[table].forEach((item, index) => this.ctx.storage.sql.exec(`INSERT INTO ${table}(id,position,data) VALUES(?,?,?)`, item.id, index, JSON.stringify(item)));
     }
   }
+  /** What a reschedule changes, for the audit log. */
+  private dates(trip: TripSnapshot): Pick<TripSnapshot, 'startsOn' | 'days' | 'legs'> & { nights: Record<string, number> } {
+    return { startsOn: trip.startsOn, nights: Object.fromEntries(trip.stops.map(stop => [stop.id, stop.nights])), days: trip.days, legs: trip.legs };
+  }
+  /**
+   * Moves a trip to new dates without changing where it goes. Days keep their IDs, so their
+   * expenses move with them; a day that leaves the trip hands its expenses to the kept day the
+   * client chose, including any it hadn't seen yet. Returns the IDs of the expenses it moved.
+   */
+  private reschedule(trip: TripSnapshot, payload: TripReschedule): string[] {
+    assert(payload.stops.length === trip.stops.length && payload.stops.every((stop, index) => stop.id === trip.stops[index]!.id), 'RESCHEDULE', 'Rescheduling keeps the trip’s stops in order. Change them in trip settings.');
+    const legs = new Map(trip.legs.map(leg => [leg.id, leg]));
+    assert(payload.legs.length === trip.legs.length && payload.legs.every(leg => { const old = legs.get(leg.id); return old?.kind === leg.kind && old.fromStopId === leg.fromStopId && old.toStopId === leg.toStopId; }), 'RESCHEDULE', 'Rescheduling only moves the trip’s legs to new dates.');
+    const kept = new Set(payload.days.map(day => day.id)), dropped = trip.days.filter(day => !kept.has(day.id));
+    const moves = new Map(payload.moves.map(move => [move.fromDayId, move.toDayId]));
+    assert(moves.size === payload.moves.length && moves.size === dropped.length && dropped.every(day => kept.has(moves.get(day.id) ?? '')), 'DAY_MOVES', 'Every day that leaves the trip must name a kept day for its expenses.');
+    const nights = new Map(payload.stops.map(stop => [stop.id, stop.nights]));
+    Object.assign(trip, { startsOn: payload.startsOn, stops: trip.stops.map(stop => ({ ...stop, nights: nights.get(stop.id)! })), days: payload.days, legs: payload.legs });
+    const moved: Expense[] = [];
+    trip.expenses = trip.expenses.map(expense => {
+      const target = expense.attachment.kind === 'day' ? moves.get(expense.attachment.id) : undefined;
+      if (target === undefined) return expense;
+      const value = { ...expense, attachment: { kind: 'day' as const, id: target }, revision: expense.revision + 1 };
+      moved.push(value); return value;
+    });
+    validateTrip(trip); this.writeItinerary(trip);
+    for (const expense of moved) this.writeEntity('expense', expense);
+    return moved.map(expense => expense.id);
+  }
   private meta(trip: TripSnapshot): Meta {
     const { travellers: _travellers, expenses: _expenses, repayments: _repayments, stops: _stops, days: _days, legs: _legs, currentTravellerId: _current, role: _role, ...meta } = trip;
     return meta;
@@ -226,10 +255,14 @@ export class TripRoom extends DurableObject<Env> {
       }
       assert(trip.homeCurrency === before.homeCurrency, 'REVISION_CONFLICT', 'Trip currency changed. Refresh before editing.', 409);
       let previous: unknown = null, after: unknown = null;
-      if (operation.type === 'trip.update' || operation.type === 'trip.archive') {
+      if (operation.type === 'trip.update' || operation.type === 'trip.archive' || operation.type === 'trip.reschedule') {
         assert(operation.entityId === trip.id && operation.expectedRevision === trip.revision, 'REVISION_CONFLICT', 'Trip settings changed on another device.', 409);
         previous = this.meta(trip);
-        if (operation.type === 'trip.update') {
+        if (operation.type === 'trip.reschedule') {
+          previous = this.dates(trip);
+          const moved = this.reschedule(trip, operation.payload);
+          after = { ...this.dates(trip), movedExpenseIds: moved };
+        } else if (operation.type === 'trip.update') {
           assert(operation.payload.homeCurrency === trip.homeCurrency || trip.expenses.length + trip.repayments.length === 0, 'HOME_CURRENCY_LOCKED', 'Reporting currency cannot change after financial records are added.');
           // Stable IDs protect existing financial attachments. Date shifts require explicit record edits.
           for (const expense of trip.expenses) {
@@ -249,7 +282,7 @@ export class TripRoom extends DurableObject<Env> {
           Object.assign(trip, operation.payload, { stops });
           validateTrip(trip); this.writeItinerary(trip);
         } else trip.archived = operation.payload.archived;
-        after = this.meta(trip);
+        if (operation.type !== 'trip.reschedule') after = this.meta(trip);
       } else {
         const [kind, action] = operation.type.split('.') as ['expense' | 'repayment' | 'traveller', 'upsert' | 'delete'];
         const row = this.ctx.storage.sql.exec<Entity>('SELECT * FROM entities WHERE kind=? AND id=?', kind, operation.entityId).toArray()[0];
