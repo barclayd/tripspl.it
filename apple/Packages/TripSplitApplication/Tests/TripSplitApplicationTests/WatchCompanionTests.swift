@@ -3,10 +3,10 @@ import Testing
 import TripSplitCompanion
 import TripSplitCompanionHost
 import TripSplitDomain
-import TripSplitWatchModel
 
 @testable import TripSplitApplication
 @testable import TripSplitPersistence
+@testable import TripSplitWatchModel
 
 @Suite(.serialized) @MainActor struct WatchCompanionTests {
   func trip() throws -> TripSnapshot {
@@ -90,6 +90,72 @@ import TripSplitWatchModel
     state.queue(.deleteExpense(tripID: trip.id, expenseID: spend.id))
     #expect(state.pending.count == 1)
     #expect(state.trips[0].expenses.isEmpty)
+  }
+
+  @Test func nudgesAreOnePerPersonPerTripDayAndLeaveNoTrace() throws {
+    let trip = try trip()
+    let command = CompanionCommand.nudge(tripID: trip.id, travellerID: "b", on: "2026-11-01")
+    #expect(command.id == "nudge:\(trip.id):b:2026-11-01")
+    #expect(command.tripID == trip.id)
+    #expect(!command.isReflected(in: trip))
+    var state = CompanionState(context: .init(trips: [trip]))
+    state.queue(command)
+    #expect(state.pending.count == 1)
+    #expect(state.trips == [trip])
+    // Carried out, though nothing on the trip shows it.
+    #expect(state.receive(.init(trips: [trip], handled: [command.id])).isEmpty)
+    #expect(state.pending.isEmpty)
+  }
+
+  @Test func contextsFromBeforeNudgesStillDecode() throws {
+    let trip = try trip()
+    let context = CompanionContext(trips: [trip], handled: ["nudge:x"])
+    var json = try #require(
+      JSONSerialization.jsonObject(with: JSONEncoder().encode(context)) as? [String: Any])
+    json["handled"] = nil
+    let old = try JSONDecoder().decode(
+      CompanionContext.self, from: JSONSerialization.data(withJSONObject: json))
+    #expect(old.handled.isEmpty)
+    #expect(old.trips == [trip])
+  }
+
+  @Test func watchRemembersTodaysNudgesUntilThePhoneRefusesOne() throws {
+    let directory = URL.temporaryDirectory.appending(path: UUID().uuidString)
+    defer { try? FileManager.default.removeItem(at: directory) }
+    let mirror = CompanionMirror(directory: directory)
+    let trip = try trip()
+    var sent: [CompanionCommand] = []
+    let model = WatchModel(mirror: mirror, send: { sent.append($0) })
+    model.receive(.init(trips: [trip], sentAt: Date(timeIntervalSince1970: 1)))
+    model.now = CivilDate.date(trip.startsOn).addingTimeInterval(43_200)
+    let day = CivilDate.string(model.now, timeZone: trip.timeZone)
+    model.nudges.sent = ["nudge:old:b:2000-01-01"]
+
+    #expect(!model.hasNudged("b", in: trip))
+    model.nudge("b", in: trip)
+    model.nudge("b", in: trip)
+    #expect(sent == [.nudge(tripID: trip.id, travellerID: "b", on: day)])
+    #expect(model.hasNudged("b", in: trip))
+    #expect(!model.hasNudged("c", in: trip))
+    // Older days are forgotten, and the rest outlives a relaunch.
+    #expect(model.nudges.sent == [sent[0].id])
+    #expect(mirror.read(NudgeMemory.self, key: "nudges")?.sent == [sent[0].id])
+
+    // Sent: the button stays greyed for the rest of the day.
+    model.receive(.init(trips: [trip], handled: [sent[0].id], sentAt: Date(timeIntervalSince1970: 2)))
+    #expect(model.pendingCount == 0)
+    #expect(model.hasNudged("b", in: trip))
+
+    // Refused: the reason shows and Nudge comes back.
+    model.nudge("c", in: trip)
+    let refused = sent[1].id
+    model.receive(
+      .init(
+        trips: [trip], rejected: [refused: "Cara hasn’t joined TripSplit yet."],
+        sentAt: Date(timeIntervalSince1970: 3)))
+    #expect(model.message == "Cara hasn’t joined TripSplit yet.")
+    #expect(!model.hasNudged("c", in: trip))
+    #expect(model.hasNudged("b", in: trip))
   }
 
   @Test func hostQueuesRepayments() async throws {

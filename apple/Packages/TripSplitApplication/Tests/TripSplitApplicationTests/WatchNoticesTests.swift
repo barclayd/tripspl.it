@@ -126,6 +126,9 @@ import TripSplitDomain
     #expect(WatchNotice.link(kind: .eveningWrap, action: tap, userInfo: info) == .day(trip: "t", day: "d"))
     #expect(WatchNotice.link(kind: .eveningWrap, action: tap, userInfo: ["trip": "t"]) == .trip("t", page: .today))
     #expect(WatchNotice.link(kind: .landed, action: tap, userInfo: [:]) == nil)
+    // A nudge pushed from the API opens who owes who.
+    #expect(WatchNotice.link(kind: .nudge, action: tap, userInfo: ["trip": "t", "traveller": "a"]) == .trip("t", page: .balances))
+    #expect(WatchNotice.Kind(category: "tripsplit.nudge") == .nudge)
   }
 
   @Test func categoriesRoundTrip() {

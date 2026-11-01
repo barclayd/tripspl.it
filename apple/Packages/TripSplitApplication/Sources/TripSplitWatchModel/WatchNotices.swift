@@ -2,11 +2,14 @@ import Foundation
 import TripSplitDomain
 
 /// A local notification the watch schedules from the trips it holds: H1 Landed on the first day
-/// in a new country, and the optional H2 Evening wrap at 21:30 each trip day.
+/// in a new country, and the optional H2 Evening wrap at 21:30 each trip day. Nudges arrive as
+/// pushes on the phone instead, and the watch only shows them.
 public struct WatchNotice: Hashable, Sendable {
   public enum Kind: String, CaseIterable, Sendable {
     case landed
     case eveningWrap = "evening-wrap"
+    /// Someone on the trip asked you to pay them back, pushed by the API to your phone.
+    case nudge
 
     /// The notification category, which picks the actions and the long look.
     public var category: String { "tripsplit." + rawValue }
@@ -33,6 +36,7 @@ public struct WatchNotice: Hashable, Sendable {
       switch kind {
       case .landed: [.convert]
       case .eveningWrap: [.log, .day]
+      case .nudge: []
       }
     }
   }
@@ -56,11 +60,12 @@ public struct WatchNotice: Hashable, Sendable {
   }
 
   /// Where a button opens the app. Tapping the notice itself opens quick convert after a
-  /// landing, and the day after an evening wrap.
+  /// landing, the day after an evening wrap, and who owes who after a nudge.
   public static func link(
     kind: Kind, action: String, userInfo: [AnyHashable: Any]
   ) -> WatchLink? {
     guard let trip = userInfo["trip"] as? String else { return nil }
+    if kind == .nudge { return .trip(trip, page: .balances) }
     let day = userInfo["day"] as? String
     switch Action(rawValue: action) ?? (kind == .landed ? .convert : .day) {
     case .convert: return .localConvert(trip: trip)

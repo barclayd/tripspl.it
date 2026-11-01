@@ -14,7 +14,7 @@ struct MomentView: View {
       case .arrived:
         FirstTripView(trip: trip) { dismiss() }
       case .stamped:
-        TripDoneView(wrapUp: TripWrapUp(pages: model.pages(for: trip))) { dismiss() }
+        TripDoneView(pages: model.pages(for: trip)) { dismiss() }
       }
     }
   }
@@ -115,14 +115,50 @@ struct BoardingPass: View {
 /// H5 · Trip's done. The trip's stamp thuds onto a passport page with what it came to and who
 /// still owes. The trip then sits in Been there.
 struct TripDoneView: View {
-  let wrapUp: TripWrapUp
+  let pages: TripPages
   let done: () -> Void
+  @Environment(WatchModel.self) private var model
   @Environment(\.accessibilityReduceMotion) private var reduceMotion
   @State private var phase = Phase.raised
+  /// What the debtor owed you when you nudged them, while E3 Nudged shows.
+  @State private var nudged: String?
 
   enum Phase { case raised, struck, settled }
 
+  private var wrapUp: TripWrapUp { TripWrapUp(pages: pages) }
+
   var body: some View {
+    if let nudged, let debtor = wrapUp.debtor {
+      NudgedView(pages: pages, travellerID: debtor.id, amount: nudged, done: done)
+        .transition(.opacity)
+    } else {
+      stamped.transition(.opacity)
+    }
+  }
+
+  /// Leads with Nudge for whoever owes you the most, keeping Done to move on without one.
+  @ViewBuilder private var actions: some View {
+    if let debtor = wrapUp.debtor, let owed = pages.owedToYou(by: debtor.id) {
+      NudgeButton(name: debtor.name, nudged: model.hasNudged(debtor.id, in: pages.trip), height: 42) {
+        model.nudge(debtor.id, in: pages.trip)
+        withAnimation(.easeInOut(duration: 0.3)) { nudged = owed }
+      }
+      .padding(.top, 10)
+      Button(action: done) {
+        Text("Done").watchFont(15, .black)
+      }
+      .buttonStyle(.capsule)
+      .padding(.top, 6)
+    } else {
+      Button(action: done) {
+        Text("Done").watchFont(16, .black)
+      }
+      .buttonStyle(PrimaryButtonStyle(height: 42))
+      .padding(.top, 10)
+    }
+  }
+
+  private var stamped: some View {
     ScrollView {
       VStack(spacing: 0) {
         ZStack {
@@ -144,11 +180,7 @@ struct TripDoneView: View {
           .foregroundStyle(WatchTheme.ink2)
           .multilineTextAlignment(.center)
           .padding(.top, 2)
-        Button(action: done) {
-          Text("Done").watchFont(16, .black)
-        }
-        .buttonStyle(PrimaryButtonStyle(height: 42))
-        .padding(.top, 10)
+        actions
       }
       .padding(.horizontal, 4)
     }

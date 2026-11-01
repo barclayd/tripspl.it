@@ -40,5 +40,6 @@ import WidgetKit
     WKNotificationScene(controller: NoticeController.self, category: WatchNotice.Kind.landed.category)
     WKNotificationScene(
       controller: NoticeController.self, category: WatchNotice.Kind.eveningWrap.category)
+    WKNotificationScene(controller: NoticeController.self, category: WatchNotice.Kind.nudge.category)
   }
 }

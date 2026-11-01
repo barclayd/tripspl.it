@@ -26,6 +26,10 @@ import TripSplitDomain
   public internal(set) var moments: MomentsMemory {
     didSet { try? mirror?.write(moments, key: "moments") }
   }
+  /// Who's been nudged from this watch, so each person gets one a day.
+  public internal(set) var nudges: NudgeMemory {
+    didSet { try? mirror?.write(nudges, key: "nudges") }
+  }
   /// A short message for the user, such as a change the phone could not apply.
   public var message: String?
   /// The instant the UI treats as now. Refreshed when the app becomes active.
@@ -60,6 +64,7 @@ import TripSplitDomain
     // A watch that already has trips has had its welcome.
     moments =
       mirror?.read(MomentsMemory.self, key: "moments") ?? .init(welcomed: !state.trips.isEmpty)
+    nudges = mirror?.read(NudgeMemory.self, key: "nudges") ?? .init()
   }
 
   public var trips: [TripSnapshot] { state.trips }
@@ -75,7 +80,10 @@ import TripSplitDomain
 
   public func receive(_ context: CompanionContext) {
     let hadTrips = !trips.isEmpty
+    let waiting = state.pending.map(\.id)
     let reasons = state.receive(context)
+    let left = Set(state.pending.map(\.id))
+    forgetNudges(waiting.filter { context.rejected[$0] != nil && !left.contains($0) })
     welcomeIfFirst(hadTrips: hadTrips)
     if let reason = reasons.last { message = reason }
     persist()

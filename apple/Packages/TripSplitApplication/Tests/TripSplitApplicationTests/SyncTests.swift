@@ -1,5 +1,6 @@
 import Foundation
 import Testing
+import TripSplitCompanionHost
 import TripSplitDomain
 import TripSplitNetworking
 
@@ -41,6 +42,10 @@ final class SyncServer: @unchecked Sendable {
   /// Set once the owner deletes the trip: every trip route then answers 404.
   var deleted = false
   var deletes = 0
+  /// How the API answers a nudge: a status code and its JSON.
+  var nudgeReply = (200, #"{"status":"sent","nudgedOn":"2026-11-01"}"#)
+  /// Nudges and device changes, with their bodies.
+  var calls: [(method: String, path: String, body: Data)] = []
   init(snapshot: TripSnapshot) { self.snapshot = snapshot }
   func handle(_ request: URLRequest) throws -> (Int, Data) {
     lock.lock()
@@ -55,6 +60,11 @@ final class SyncServer: @unchecked Sendable {
       return (200, try JSONEncoder().encode(session))
     }
     if request.url!.path.hasSuffix("/auth/logout") { return (200, Data("{\"ok\":true}".utf8)) }
+    if request.url!.path.hasSuffix("/nudges") || request.url!.path.hasSuffix("/me/devices") {
+      calls.append((request.httpMethod ?? "GET", request.url!.path, body(request)))
+      if request.url!.path.hasSuffix("/nudges") { return (nudgeReply.0, Data(nudgeReply.1.utf8)) }
+      return (200, Data("{\"ok\":true}".utf8))
+    }
     if request.httpMethod == "DELETE", request.url!.path.hasSuffix("/trips/\(snapshot.id)") {
       deletes += 1
       deleted = true
@@ -157,6 +167,81 @@ final class SyncServer: @unchecked Sendable {
     let tokens = try await [first, second]
     #expect(tokens == ["rotated-access", "rotated-access"])
     #expect(server.refreshCount == 1)
+  }
+  @Test func pushTokenWaitsForSignInAndGoesWithSignOut() async throws {
+    let (_, sync, server, _) = try fixture(count: 0)
+    let device = PushDevice(token: String(repeating: "ab", count: 32), environment: .sandbox)
+    let session = sync.session
+    sync.session = nil
+    try await sync.registerDevice(device)
+    #expect(server.calls.isEmpty)
+    sync.session = session
+    try await sync.registerDevice(device)
+    let registered = try #require(server.calls.last)
+    #expect(registered.method == "POST")
+    #expect(registered.path == "/v1/me/devices")
+    #expect(try JSONDecoder().decode(PushDevice.self, from: registered.body) == device)
+    try await sync.signOut()
+    let removed = try #require(server.calls.last)
+    #expect(removed.method == "DELETE")
+    #expect(removed.path == "/v1/me/devices")
+    #expect(try JSONDecoder().decode([String: String].self, from: removed.body) == ["token": device.token])
+    #expect(server.requests.last?.url?.path == "/v1/auth/logout")
+  }
+  @Test func nudgesGoThroughTheAPI() async throws {
+    let (_, sync, server, trip) = try fixture(count: 0)
+    let result = try await sync.nudge(tripID: trip.id, travellerID: "b")
+    #expect(result == NudgeResult(status: .sent, nudgedOn: "2026-11-01"))
+    let call = try #require(server.calls.last)
+    #expect(call.method == "POST")
+    #expect(call.path == "/v1/trips/\(trip.id)/nudges")
+    #expect(try JSONDecoder().decode([String: String].self, from: call.body) == ["travellerId": "b"])
+    server.nudgeReply = (429, #"{"error":{"code":"NUDGE_LIMIT","message":"Already nudged today."}}"#)
+    await #expect {
+      _ = try await sync.nudge(tripID: trip.id, travellerID: "b")
+    } throws: { ($0 as? ServiceError)?.code == "NUDGE_LIMIT" }
+  }
+  /// The phone relays a watch nudge, and tells the watch whether it went.
+  @Test func hostRelaysWatchNudges() async throws {
+    let (store, sync, server, trip) = try fixture(count: 0)
+    let traveller = trip.ownerTravellerId
+    var published: [CompanionContext] = []
+    let host = WatchCompanionHost(model: AppModel(store: store, sync: sync)) { published.append($0) }
+    func nudge(_ day: String) -> CompanionCommand {
+      .nudge(tripID: trip.id, travellerID: traveller, on: day)
+    }
+
+    await host.receive(nudge("2026-11-01"))
+    #expect(published.last?.handled == [nudge("2026-11-01").id])
+    #expect(server.calls.count == 1)
+    // A redelivered transfer isn't sent twice.
+    await host.receive(nudge("2026-11-01"))
+    #expect(server.calls.count == 1)
+
+    // The server's daily limit counts as done: the watch already showed it as sent.
+    server.nudgeReply = (429, #"{"error":{"code":"NUDGE_LIMIT","message":"Already nudged today."}}"#)
+    await host.receive(nudge("2026-11-02"))
+    #expect(published.last?.handled.contains(nudge("2026-11-02").id) == true)
+
+    server.nudgeReply = (200, #"{"status":"notJoined","nudgedOn":"2026-11-03"}"#)
+    await host.receive(nudge("2026-11-03"))
+    #expect(published.last?.rejected[nudge("2026-11-03").id]?.contains("hasn’t joined TripSplit") == true)
+
+    server.nudgeReply = (409, #"{"error":{"code":"NOTHING_OWED","message":"Nothing owed."}}"#)
+    await host.receive(nudge("2026-11-04"))
+    #expect(published.last?.rejected[nudge("2026-11-04").id]?.contains("doesn’t owe you") == true)
+
+    // Retried once it can go: the old reason is dropped so it can't cancel the retry.
+    server.nudgeReply = (200, #"{"status":"sent","nudgedOn":"2026-11-04"}"#)
+    await host.receive(nudge("2026-11-04"))
+    #expect(published.last?.rejected[nudge("2026-11-04").id] == nil)
+    #expect(published.last?.handled.contains(nudge("2026-11-04").id) == true)
+
+    // Signed out with the trip still on the phone, e.g. one not yet shared.
+    sync.session = nil
+    store.activeAccountID = "account"
+    await host.receive(nudge("2026-11-05"))
+    #expect(published.last?.rejected[nudge("2026-11-05").id] == "Sign in on your iPhone to nudge people.")
   }
   @Test func expiredIdleSessionRefreshesBeforeLogout() async throws {
     let (_, sync, server, _) = try fixture(count: 0)

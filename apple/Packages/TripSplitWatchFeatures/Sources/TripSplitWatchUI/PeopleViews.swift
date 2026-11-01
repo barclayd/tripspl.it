@@ -173,12 +173,33 @@ struct PersonView: View {
   @Environment(WatchModel.self) private var model
   let pages: TripPages
   let travellerID: String
+  /// What they owed you when you nudged them, while E3 Nudged shows.
+  @State private var nudged: String?
 
   var body: some View {
-    let person = pages.person(travellerID)
     let traveller = pages.traveller(travellerID)
     let isYou = travellerID == pages.you
-    ScrollView {
+    Group {
+      if let nudged {
+        NudgedView(pages: pages, travellerID: travellerID, amount: nudged) {
+          withAnimation(.easeInOut(duration: 0.3)) { self.nudged = nil }
+        }
+        .transition(.opacity)
+      } else {
+        summary.transition(.opacity)
+      }
+    }
+    .navigationBarBackButtonHidden(nudged != nil)
+    .containerBackground(
+      traveller?.wash(isYou: isYou) ?? WatchTheme.wash, for: .navigation)
+  }
+
+  /// E2 · Person: what's between them and you, with Nudge when they owe you and Mark paid.
+  private var summary: some View {
+    let person = pages.person(travellerID)
+    // Only someone who owes you can be nudged, and only about what's between the two of you.
+    let owed = person.settlement?.from == travellerID ? pages.owedToYou(by: travellerID) : nil
+    return ScrollView {
       VStack(spacing: 0) {
         PersonAvatar(pages: pages, id: travellerID, size: 46)
         Text(person.headline)
@@ -193,11 +214,20 @@ struct PersonView: View {
             .multilineTextAlignment(.center)
             .padding(.top, 3)
         }
+        if let owed {
+          NudgeButton(
+            name: pages.name(travellerID), nudged: model.hasNudged(travellerID, in: pages.trip)
+          ) {
+            model.nudge(travellerID, in: pages.trip)
+            withAnimation(.easeInOut(duration: 0.3)) { nudged = owed }
+          }
+          .padding(.top, 14)
+        }
         if let settlement = person.settlement {
           MarkPaidButton(amount: WatchCurrency.whole(settlement.amount, pages.currency)) {
             model.markPaid(settlement, in: pages.trip)
           }
-          .padding(.top, 14)
+          .padding(.top, owed == nil ? 14 : 6)
           // A fresh confirm step for each transfer, so a new balance never inherits a half-tap.
           .id(settlement)
         }
@@ -205,8 +235,6 @@ struct PersonView: View {
       .frame(maxWidth: .infinity)
       .animation(.snappy, value: person)
     }
-    .containerBackground(
-      traveller?.wash(isYou: isYou) ?? WatchTheme.wash, for: .navigation)
   }
 }
 

@@ -24,6 +24,8 @@ import TripSplitPersistence
   @ObservationIgnored private let sessionWriter: @MainActor (Session) throws -> Void
   @ObservationIgnored private var liveTask: Task<Void, Never>?
   @ObservationIgnored private var liveSocket: URLSessionWebSocketTask?
+  /// This phone's APNs registration, sent to the account so nudges reach it.
+  @ObservationIgnored public private(set) var pushDevice: PushDevice?
   public init(
     store: LocalStore, api: APIClient = APIClient(),
     sessionWriter: (@MainActor (Session) throws -> Void)? = nil
@@ -124,6 +126,7 @@ import TripSplitPersistence
       try saveSession(newSession)
       self.challenge = nil
       message = nil
+      if let pushDevice { try? await registerDevice(pushDevice) }
       await syncAll()
     } catch {
       message = error.localizedDescription
@@ -419,7 +422,12 @@ import TripSplitPersistence
     sessionVersion &+= 1
     defer { endingSession = false }
     struct Body: Encodable, Sendable { var refreshToken: String }
-    struct OK: Decodable, Sendable { var ok: Bool }
+    // Stops nudges for this account reaching the phone. Logout revokes the session either way.
+    if let pushDevice {
+      struct Device: Encodable, Sendable { var token: String }
+      let _: OK? = try? await api.request(
+        "/me/devices", method: "DELETE", body: Device(token: pushDevice.token), token: token)
+    }
     do {
       let _: OK = try await api.request(
         "/auth/logout", method: "POST", body: Body(refreshToken: session.refreshToken), token: token
@@ -466,6 +474,22 @@ import TripSplitPersistence
     guard accountID == session?.user.id, !endingSession else { throw CancellationError() }
     return invite
   }
+  /// Buzzes a traveller who owes you, at most once per trip day.
+  public func nudge(tripID: String, travellerID: String) async throws -> NudgeResult {
+    let token = try await accessToken()
+    struct Body: Encodable, Sendable { var travellerId: String }
+    return try await api.request(
+      "/trips/\(tripID)/nudges", method: "POST", body: Body(travellerId: travellerID), token: token
+    )
+  }
+  /// Remembers this phone's APNs token and links it to the signed-in account, if any. Signing in
+  /// later links it then.
+  public func registerDevice(_ device: PushDevice) async throws {
+    pushDevice = device
+    guard configured, session != nil else { return }
+    let token = try await accessToken()
+    let _: OK = try await api.request("/me/devices", method: "POST", body: device, token: token)
+  }
   public func acceptInvite(tripID: String, inviteID: String, token secret: String) async throws
     -> TripSnapshot
   {
@@ -481,3 +505,4 @@ import TripSplitPersistence
     return trip
   }
 }
+private struct OK: Decodable, Sendable { var ok: Bool }
