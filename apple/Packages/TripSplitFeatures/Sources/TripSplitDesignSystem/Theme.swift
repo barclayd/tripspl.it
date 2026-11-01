@@ -443,8 +443,15 @@ package struct CategoryIcon: View {
 // MARK: - Platform
 
 extension View {
-  @ViewBuilder public func trailingSheet() -> some View {
-    if #available(iOS 27.1, *) { self.presentationPlacement(.trailing) } else { self }
+  /// Open, the sheet sits beside what opened it. Its own rail started under the status bar there
+  /// (Close hidden, Save half covered on 27.1), so it keeps its bars inside the sheet and stops below
+  /// the status bar instead. Closed, the sheet keeps the rail.
+  @ViewBuilder public func trailingSheet(open: Bool) -> some View {
+    if #available(iOS 27.1, *) {
+      self.presentationPlacement(.trailing).toolbarVerticalBehavior(open ? .disabled : .automatic)
+    } else {
+      self
+    }
   }
   /// When a Live Activity squeezes the rail, a task-led screen keeps its actions and shrinks the
   /// tab bar; a navigation-led one keeps the tabs and sends its actions to "…" first.

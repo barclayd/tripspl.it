@@ -10,22 +10,24 @@ import TripSplitSync
 /// Quick convert: type a price you can see, read it back in the other currency and against a
 /// day's budget, then hand it off as a new expense for that day.
 public struct ConvertView: View {
-  public init(tripID: String, attachment: Attachment) {
+  /// `tent` comes from the presenting window: the sheet's own size class and shape can't tell a
+  /// tent from the Duo's trailing sheet, which is compact and wider than tall too.
+  public init(tripID: String, attachment: Attachment, tent: Bool = false) {
     self.tripID = tripID
     self.attachment = attachment
+    self.tent = tent
   }
   @Environment(AppModel.self) private var app
   @Environment(\.dismiss) private var dismiss
   @Environment(\.accessibilityReduceMotion) private var reduceMotion
-  @Environment(\.horizontalSizeClass) private var sizeClass
   var tripID: String
   var attachment: Attachment
+  /// Tent: read from arm's length on a counter, so the keypad fills the height.
+  var tent: Bool
   @State private var conversion: ConversionModel?
   @State private var picking: ConversionSide?
   @State private var size = CGSize.zero
   private var wide: Bool { size.width >= 590 }
-  /// Tent: compact width but wider than tall, read from arm's length on a counter.
-  private var tent: Bool { sizeClass == .compact && size.width > size.height }
   @State private var verticalRail = false
   @State private var swapTurns = 0.0
   @State private var handingOff = false

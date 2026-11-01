@@ -220,7 +220,9 @@ struct DepartureCalendar: View {
               Circle().strokeBorder(Theme.tertiary, lineWidth: 1.5)
             }
           }
-          .frame(width: cellHeight - 4, height: cellHeight - 4).scaleEffect(isStart ? 1.08 : 1)
+          // Shrinks with a narrow column, so two months side by side fit beside the open Duo's sidebar.
+          .aspectRatio(1, contentMode: .fit).frame(maxWidth: cellHeight - 4, maxHeight: cellHeight - 4)
+          .scaleEffect(isStart ? 1.08 : 1)
         Text("\(day)")
           .typeface(15, isStart || isEnd ? .heavy : .bold, relativeTo: .body, maximum: 1.25)
           .monospacedDigit()
