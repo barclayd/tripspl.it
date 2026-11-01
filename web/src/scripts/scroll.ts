@@ -8,6 +8,18 @@ const gbp = (v: number) =>
 
 type Progress = Record<string, number>;
 
+// Hero beats, in viewport heights scrolled into the section (its height in Hero.astro covers them all).
+const HERO = {
+  tear: [0, 0.92], // title page tears open
+  fan: [0.55, 1.84], // phone rises, passes fan out
+  handover: [2.6, 0.85], // fan scrolls up and away while Japan scrolls in, 1:1 with the page
+  solo: [3.55, 1.45], // Japan has settled: chips, then expense rows
+} as const;
+const beat = (s: number, [start, length]: readonly [number, number]) => clamp((s - start) / length);
+
+/** Japan expense rows: when each starts dropping in (solo progress) and what it costs. */
+type SoloRow = { start: number; cost: number };
+
 // The title page (globe and torn paper) is visible until the hero has torn fully open.
 let titleOpen = true;
 const titleListeners = new Set<(open: boolean) => void>();
@@ -19,15 +31,9 @@ export function onTitleVisibility(cb: (open: boolean) => void) {
 }
 
 /** Text values bound to [data-bind] and [data-bind-style] elements. */
-function values(p: Progress, heroB: number): Record<string, string> {
-  const soloSpent = (
-    [
-      [2.5, 1180],
-      [3.5, 96],
-      [4.5, 140],
-      [5.5, 85],
-    ] as const
-  ).reduce((sum, [k, v]) => sum + (heroB * 7 - k >= 0.6 ? v : 0), 0);
+function values(p: Progress, heroB: number, soloRows: SoloRow[]): Record<string, string> {
+  // A row's cost comes off once it has mostly landed (60% of its 0.16 drop, matching Hero.astro).
+  const soloSpent = soloRows.reduce((sum, r) => sum + (heroB - r.start >= 0.096 ? r.cost : 0), 0);
   const soloLeft = 5000 - soloSpent;
 
   const groupP = Math.min(1, (p.group ?? 0) * 1.4);
@@ -110,6 +116,10 @@ export function initScroll() {
   const binds = [...document.querySelectorAll<HTMLElement>('[data-bind]')];
   const styleBinds = [...document.querySelectorAll<HTMLElement>('[data-bind-style]')];
   const receipt = document.querySelector<HTMLElement>('[data-rc]');
+  const soloRows = [...document.querySelectorAll<HTMLElement>('[data-cost]')].map((el) => ({
+    start: Number(el.dataset.start),
+    cost: Number(el.dataset.cost),
+  }));
 
   let frame = 0;
   const set = (el: HTMLElement, name: string, v: string) => {
@@ -138,8 +148,11 @@ export function initScroll() {
         const narrow = vw < 700;
         const ps = narrow ? Math.min(0.56, (vw - 36) / 680) : clamp((vw - 380) / 680, 0.55, 1);
         const phS = narrow ? Math.min(0.62, (vh - 330) / 620) : 1;
-        const t = Math.min(1, v / 0.2);
-        heroB = clamp((v - 0.6) / 0.36);
+        const s = Math.max(0, -r.top) / vh;
+        const t = beat(s, HERO.tear);
+        const h = beat(s, HERO.handover);
+        const travel = HERO.handover[1] * vh;
+        heroB = beat(s, HERO.solo);
         set(el, '--pscale', ps.toFixed(3));
         set(el, '--phS', phS.toFixed(3));
         set(el, '--px', `${(narrow ? 170 * ps + 4 : 170 + 170 * ps).toFixed(1)}px`);
@@ -147,7 +160,10 @@ export function initScroll() {
         set(el, '--fitB', clamp((vh - 90) / 560, 0.55, 1).toFixed(3));
         set(el, '--t', t.toFixed(4));
         set(el, '--te', (t ** 1.7).toFixed(4));
-        set(el, '--a', clamp((v - 0.12) / 0.4).toFixed(4));
+        set(el, '--a', beat(s, HERO.fan).toFixed(4));
+        set(el, '--h', h.toFixed(4));
+        set(el, '--travel', `${travel.toFixed(1)}px`);
+        set(el, '--hy', `${(h * travel).toFixed(1)}px`);
         set(el, '--b', heroB.toFixed(4));
         const open = t < 1;
         if (open !== titleOpen) {
@@ -157,7 +173,7 @@ export function initScroll() {
       }
     }
 
-    const vals = values(p, heroB);
+    const vals = values(p, heroB, soloRows);
     for (const el of binds) {
       const key = el.dataset.bind;
       const text = key ? vals[key] : undefined;
