@@ -10,6 +10,8 @@ enum Ink {
   static let stub = Color(hex: 0x3A3639)
   static let rule = Color(hex: 0x4A4447)
   static let logText = Color(hex: 0xC3195A)
+  /// The marker on an open ring, white so it reads against any ring colour.
+  static let marker = Color.white
 
   static func level(_ level: WatchGlance.Level) -> Color {
     switch level {
