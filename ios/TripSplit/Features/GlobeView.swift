@@ -63,10 +63,7 @@ struct GlobeView: View {
             stat("Countries", "\(Set(trips.flatMap { $0.stops.map(\.countryCode) }).count)")
             Spacer()
             stat("Trips", "\(trips.count)")
-            Spacer()
-            stat("Memories", "∞")
           }
-          if trips.isEmpty { Text("Your world starts with your first trip.").font(.subheadline) }
         }
         ScrollView(.horizontal, showsIndicators: false) {
           HStack {

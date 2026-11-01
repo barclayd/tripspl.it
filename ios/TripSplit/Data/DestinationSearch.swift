@@ -70,7 +70,8 @@ import Observation
           countryCode: country.code, country: country.name, city: name,
           currency: country.defaultCurrency ?? "", latitude: coordinate.latitude,
           longitude: coordinate.longitude, catalogID: id, isCountry: isCountry,
-          detail: item.addressRepresentations?.cityWithContext(.full) ?? country.name)
+          detail: item.addressRepresentations?.cityWithContext(.full) ?? country.name,
+          timeZone: item.timeZone?.identifier)
       }
       if matches.isEmpty {
         error =

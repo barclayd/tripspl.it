@@ -2,7 +2,7 @@ TripSplit offline destination data — attribution and licences
 Catalogue snapshot: 2026-11-01. This is a curated search catalogue, not a tourism ranking.
 
 GEONAMES
-Geographical names, country/territory codes, destination coordinates and source aliases © GeoNames contributors.
+Geographical names, country/territory codes, destination coordinates, time-zone identifiers and source aliases © GeoNames contributors.
 Source: https://www.geonames.org/ — https://download.geonames.org/export/dump/
 Licence: Creative Commons Attribution 4.0 International (CC BY 4.0).
 Changes by TripSplit: selection of 500 destinations, bounded/curated search aliases, English display names,
@@ -507,3 +507,15 @@ dealings in these Data Files or Software without prior written
 authorization of the copyright holder.
 
 SPDX-License-Identifier: Unicode-3.0
+
+
+IANA TIME ZONE DATABASE 2026f — COUNTRY TIME-ZONE SCOPE AND ALIASES
+Source: https://data.iana.org/time-zones/tzdb-2026f/
+Country choices combine zone.tab and zone1970.tab, with equivalent backward links deduplicated.
+These source tables and backward links are in the public domain. The tzdb licence follows.
+
+Unless specified below, all files in the tz code and data (including
+this LICENSE file) are in the public domain.
+
+If the files date.c, newstrftime.3, and strftime.c are present, they
+contain material derived from BSD and use the BSD 3-clause license.

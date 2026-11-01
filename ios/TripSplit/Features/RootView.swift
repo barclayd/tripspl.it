@@ -33,8 +33,7 @@ struct RootView: View {
                 }
               } else {
                 ContentUnavailableView(
-                  "A little adventure?", systemImage: "airplane",
-                  description: Text("Pick a trip, or start planning your next one."))
+                  "Select a trip", systemImage: "airplane")
               }
             }
             .navigationBarBackButtonHidden(true)

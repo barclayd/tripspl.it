@@ -365,7 +365,7 @@ struct ReceiptView: View {
         ).offset(y: printed || reduceMotion ? 9 : -400)
       }.frame(height: 420, alignment: .top).clipped()
       Text("Saved on this device").font(.caption).foregroundStyle(Theme.secondary)
-      Button("Lovely. Keep exploring", action: close).buttonStyle(.borderedProminent)
+      Button("Done", action: close).buttonStyle(.borderedProminent)
       Spacer(minLength: 12)
     }.padding(20).frame(maxWidth: .infinity).onAppear {
       withAnimation(reduceMotion ? nil : .easeOut(duration: 1.2)) { printed = true }

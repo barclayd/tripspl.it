@@ -5,7 +5,7 @@ export type MinorUnits = string;
 export type CurrencyCode = string;
 export type Category = 'food' | 'coffee' | 'stay' | 'activity' | 'transport' | 'shopping' | 'flight' | 'train' | 'taxi' | 'other';
 export interface Traveller { id: ID; name: string; hue: number; archived: boolean; revision: number }
-export interface Stop { id: ID; countryCode: string; place: string; nights: number; currency: CurrencyCode; latitude: number; longitude: number }
+export interface Stop { id: ID; countryCode: string; place: string; nights: number; currency: CurrencyCode; latitude: number; longitude: number; timeZone?: string }
 export interface TripDay { id: ID; date: CivilDate; stopId: ID }
 export interface TravelLeg { id: ID; kind: 'outbound' | 'transfer' | 'return'; date: CivilDate; fromStopId: ID | null; toStopId: ID | null; dayId: ID | null }
 export interface Conversion {

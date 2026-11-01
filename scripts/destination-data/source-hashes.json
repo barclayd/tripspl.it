@@ -1,6 +1,7 @@
 {
   "sources/cc-by-4.0.txt": "9ba9550ad48438d0836ddab3da480b3b69ffa0aac7b7878b5a0039e7ab429411",
   "sources/cldr-en.xml": "f8cbf26964d0e349fc96d9e5a56292edcbaab25c8e64177ca4f111773dfb79cf",
+  "sources/cldr-metaZones.xml": "fa705a0568667008789e1b865c10982f33b56cddbb3d428da2546decca75e5d4",
   "sources/cldr-supplementalData.xml": "745150ec1408d50e1a272b65654a5dd645f3e60f5cc2898b576f725b28538d1a",
   "sources/country-centres.csv": "1bef6d229f833b6ec31bd92bf80977ddf36da1e18b76f0047a1ed3e06915a4a5",
   "sources/dspl-license.txt": "17642d9f5b2e82d565ad40255275ccc80e1857bf751cad49b682b8b6ff4f8573",
@@ -13,5 +14,12 @@
   "sources/geonames-countryInfo.txt": "5c710efde90ee4cca15001c9f6a97ae7a74c7020b365504913ddc3afeb6d3671",
   "sources/geonames-readme.txt": "b1957379b6c1242c700c98ac9a8aa0a09f56c3c0a50ee72175527005f48ef2c5",
   "sources/geonames-selected.json": "5f58ff64b56829730ad3bdf68a2de306c2e0386ec9db081d59ea727e3eba77bd",
+  "sources/geonames-supplemental-time-zones.tsv": "2ac8bb3f34b8871589669fcf6fcd86ecb8554ab3db247c9835d133b3ecf94317",
+  "sources/geonames-time-zones.json": "208c683e1650269ab1c6c8c7dbdac835fc7b3348020e9bb869219458445e0a0e",
+  "sources/iana-LICENSE": "0613408568889f5739e5ae252b722a2659c02002839ad970a63dc5e9174b27cf",
+  "sources/iana-backward": "b8296b9ef1ece72d813878132c0f17e2c52b26af6004eeb9c37d049b64cd9401",
+  "sources/iana-version": "9f9a9e6bfd18cd6a0a4d65764931072577edcbb731981a068ef52bba6615b1de",
+  "sources/iana-zone.tab": "e2e8e31c4e10f44576c79345e76060591dbb3eef6ce14e006afc8a373caa9593",
+  "sources/iana-zone1970.tab": "5f23781702bf51408ff1581daa109ab3b9257fb433b1554e579d92172892c0cf",
   "sources/unicode-license.txt": "65eb33419e22a297550a811b5b535f5e532f9a7e0114b516c0ea18afd53c3804"
 }

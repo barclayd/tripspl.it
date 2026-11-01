@@ -1,0 +1,5669 @@
+{
+  "version": "2026f",
+  "countries": [
+    {
+      "countryCode": "AD",
+      "identifiers": [
+        "Europe/Andorra"
+      ],
+      "defaultIdentifier": "Europe/Andorra",
+      "defaultSource": "Only scoped IANA/CLDR zone"
+    },
+    {
+      "countryCode": "AE",
+      "identifiers": [
+        "Asia/Dubai"
+      ],
+      "defaultIdentifier": "Asia/Dubai",
+      "defaultSource": "Only scoped IANA/CLDR zone"
+    },
+    {
+      "countryCode": "AF",
+      "identifiers": [
+        "Asia/Kabul"
+      ],
+      "defaultIdentifier": "Asia/Kabul",
+      "defaultSource": "Only scoped IANA/CLDR zone"
+    },
+    {
+      "countryCode": "AG",
+      "identifiers": [
+        "America/Antigua"
+      ],
+      "defaultIdentifier": "America/Antigua",
+      "defaultSource": "Only scoped IANA/CLDR zone"
+    },
+    {
+      "countryCode": "AI",
+      "identifiers": [
+        "America/Anguilla"
+      ],
+      "defaultIdentifier": "America/Anguilla",
+      "defaultSource": "Only scoped IANA/CLDR zone"
+    },
+    {
+      "countryCode": "AL",
+      "identifiers": [
+        "Europe/Tirane"
+      ],
+      "defaultIdentifier": "Europe/Tirane",
+      "defaultSource": "Only scoped IANA/CLDR zone"
+    },
+    {
+      "countryCode": "AM",
+      "identifiers": [
+        "Asia/Yerevan"
+      ],
+      "defaultIdentifier": "Asia/Yerevan",
+      "defaultSource": "Only scoped IANA/CLDR zone"
+    },
+    {
+      "countryCode": "AO",
+      "identifiers": [
+        "Africa/Luanda"
+      ],
+      "defaultIdentifier": "Africa/Luanda",
+      "defaultSource": "Only scoped IANA/CLDR zone"
+    },
+    {
+      "countryCode": "AQ",
+      "identifiers": [
+        "Antarctica/Casey",
+        "Antarctica/Davis",
+        "Antarctica/DumontDUrville",
+        "Antarctica/Mawson",
+        "Antarctica/McMurdo",
+        "Antarctica/Palmer",
+        "Antarctica/Rothera",
+        "Antarctica/Syowa",
+        "Antarctica/Troll",
+        "Antarctica/Vostok",
+        "Asia/Singapore"
+      ]
+    },
+    {
+      "countryCode": "AR",
+      "identifiers": [
+        "America/Argentina/Buenos_Aires",
+        "America/Argentina/Catamarca",
+        "America/Argentina/Cordoba",
+        "America/Argentina/Jujuy",
+        "America/Argentina/La_Rioja",
+        "America/Argentina/Mendoza",
+        "America/Argentina/Rio_Gallegos",
+        "America/Argentina/Salta",
+        "America/Argentina/San_Juan",
+        "America/Argentina/San_Luis",
+        "America/Argentina/Tucuman",
+        "America/Argentina/Ushuaia"
+      ],
+      "defaultIdentifier": "America/Argentina/Buenos_Aires",
+      "defaultSource": "GeoNames capital: Buenos Aires (3435910)"
+    },
+    {
+      "countryCode": "AS",
+      "identifiers": [
+        "Pacific/Pago_Pago"
+      ],
+      "defaultIdentifier": "Pacific/Pago_Pago",
+      "defaultSource": "Only scoped IANA/CLDR zone"
+    },
+    {
+      "countryCode": "AT",
+      "identifiers": [
+        "Europe/Vienna"
+      ],
+      "defaultIdentifier": "Europe/Vienna",
+      "defaultSource": "Only scoped IANA/CLDR zone"
+    },
+    {
+      "countryCode": "AU",
+      "identifiers": [
+        "Antarctica/Macquarie",
+        "Asia/Tokyo",
+        "Australia/Adelaide",
+        "Australia/Brisbane",
+        "Australia/Broken_Hill",
+        "Australia/Darwin",
+        "Australia/Eucla",
+        "Australia/Hobart",
+        "Australia/Lindeman",
+        "Australia/Lord_Howe",
+        "Australia/Melbourne",
+        "Australia/Perth",
+        "Australia/Sydney"
+      ],
+      "defaultIdentifier": "Australia/Sydney",
+      "defaultSource": "GeoNames capital: Canberra (2172517)"
+    },
+    {
+      "countryCode": "AW",
+      "identifiers": [
+        "America/Aruba"
+      ],
+      "defaultIdentifier": "America/Aruba",
+      "defaultSource": "Only scoped IANA/CLDR zone"
+    },
+    {
+      "countryCode": "AX",
+      "identifiers": [
+        "Europe/Mariehamn"
+      ],
+      "defaultIdentifier": "Europe/Mariehamn",
+      "defaultSource": "Only scoped IANA/CLDR zone"
+    },
+    {
+      "countryCode": "AZ",
+      "identifiers": [
+        "Asia/Baku"
+      ],
+      "defaultIdentifier": "Asia/Baku",
+      "defaultSource": "Only scoped IANA/CLDR zone"
+    },
+    {
+      "countryCode": "BA",
+      "identifiers": [
+        "Europe/Sarajevo"
+      ],
+      "defaultIdentifier": "Europe/Sarajevo",
+      "defaultSource": "Only scoped IANA/CLDR zone"
+    },
+    {
+      "countryCode": "BB",
+      "identifiers": [
+        "America/Barbados"
+      ],
+      "defaultIdentifier": "America/Barbados",
+      "defaultSource": "Only scoped IANA/CLDR zone"
+    },
+    {
+      "countryCode": "BD",
+      "identifiers": [
+        "Asia/Dhaka"
+      ],
+      "defaultIdentifier": "Asia/Dhaka",
+      "defaultSource": "Only scoped IANA/CLDR zone"
+    },
+    {
+      "countryCode": "BE",
+      "identifiers": [
+        "Europe/Brussels"
+      ],
+      "defaultIdentifier": "Europe/Brussels",
+      "defaultSource": "Only scoped IANA/CLDR zone"
+    },
+    {
+      "countryCode": "BF",
+      "identifiers": [
+        "Africa/Ouagadougou"
+      ],
+      "defaultIdentifier": "Africa/Ouagadougou",
+      "defaultSource": "Only scoped IANA/CLDR zone"
+    },
+    {
+      "countryCode": "BG",
+      "identifiers": [
+        "Europe/Sofia"
+      ],
+      "defaultIdentifier": "Europe/Sofia",
+      "defaultSource": "Only scoped IANA/CLDR zone"
+    },
+    {
+      "countryCode": "BH",
+      "identifiers": [
+        "Asia/Bahrain"
+      ],
+      "defaultIdentifier": "Asia/Bahrain",
+      "defaultSource": "Only scoped IANA/CLDR zone"
+    },
+    {
+      "countryCode": "BI",
+      "identifiers": [
+        "Africa/Bujumbura"
+      ],
+      "defaultIdentifier": "Africa/Bujumbura",
+      "defaultSource": "Only scoped IANA/CLDR zone"
+    },
+    {
+      "countryCode": "BJ",
+      "identifiers": [
+        "Africa/Porto-Novo"
+      ],
+      "defaultIdentifier": "Africa/Porto-Novo",
+      "defaultSource": "Only scoped IANA/CLDR zone"
+    },
+    {
+      "countryCode": "BL",
+      "identifiers": [
+        "America/St_Barthelemy"
+      ],
+      "defaultIdentifier": "America/St_Barthelemy",
+      "defaultSource": "Only scoped IANA/CLDR zone"
+    },
+    {
+      "countryCode": "BM",
+      "identifiers": [
+        "Atlantic/Bermuda"
+      ],
+      "defaultIdentifier": "Atlantic/Bermuda",
+      "defaultSource": "Only scoped IANA/CLDR zone"
+    },
+    {
+      "countryCode": "BN",
+      "identifiers": [
+        "Asia/Brunei"
+      ],
+      "defaultIdentifier": "Asia/Brunei",
+      "defaultSource": "Only scoped IANA/CLDR zone"
+    },
+    {
+      "countryCode": "BO",
+      "identifiers": [
+        "America/La_Paz"
+      ],
+      "defaultIdentifier": "America/La_Paz",
+      "defaultSource": "Only scoped IANA/CLDR zone"
+    },
+    {
+      "countryCode": "BQ",
+      "identifiers": [
+        "America/Kralendijk"
+      ],
+      "defaultIdentifier": "America/Kralendijk",
+      "defaultSource": "Only scoped IANA/CLDR zone"
+    },
+    {
+      "countryCode": "BR",
+      "identifiers": [
+        "America/Araguaina",
+        "America/Bahia",
+        "America/Belem",
+        "America/Boa_Vista",
+        "America/Campo_Grande",
+        "America/Cuiaba",
+        "America/Eirunepe",
+        "America/Fortaleza",
+        "America/Maceio",
+        "America/Manaus",
+        "America/Noronha",
+        "America/Porto_Velho",
+        "America/Recife",
+        "America/Rio_Branco",
+        "America/Santarem",
+        "America/Sao_Paulo"
+      ],
+      "defaultIdentifier": "America/Sao_Paulo",
+      "defaultSource": "GeoNames capital: Brasília (3469058)"
+    },
+    {
+      "countryCode": "BS",
+      "identifiers": [
+        "America/Nassau"
+      ],
+      "defaultIdentifier": "America/Nassau",
+      "defaultSource": "Only scoped IANA/CLDR zone"
+    },
+    {
+      "countryCode": "BT",
+      "identifiers": [
+        "Asia/Thimphu"
+      ],
+      "defaultIdentifier": "Asia/Thimphu",
+      "defaultSource": "Only scoped IANA/CLDR zone"
+    },
+    {
+      "countryCode": "BV",
+      "identifiers": []
+    },
+    {
+      "countryCode": "BW",
+      "identifiers": [
+        "Africa/Gaborone"
+      ],
+      "defaultIdentifier": "Africa/Gaborone",
+      "defaultSource": "Only scoped IANA/CLDR zone"
+    },
+    {
+      "countryCode": "BY",
+      "identifiers": [
+        "Europe/Minsk"
+      ],
+      "defaultIdentifier": "Europe/Minsk",
+      "defaultSource": "Only scoped IANA/CLDR zone"
+    },
+    {
+      "countryCode": "BZ",
+      "identifiers": [
+        "America/Belize"
+      ],
+      "defaultIdentifier": "America/Belize",
+      "defaultSource": "Only scoped IANA/CLDR zone"
+    },
+    {
+      "countryCode": "CA",
+      "identifiers": [
+        "America/Atikokan",
+        "America/Blanc-Sablon",
+        "America/Cambridge_Bay",
+        "America/Creston",
+        "America/Dawson",
+        "America/Dawson_Creek",
+        "America/Edmonton",
+        "America/Fort_Nelson",
+        "America/Glace_Bay",
+        "America/Goose_Bay",
+        "America/Halifax",
+        "America/Inuvik",
+        "America/Iqaluit",
+        "America/Moncton",
+        "America/Rankin_Inlet",
+        "America/Regina",
+        "America/Resolute",
+        "America/St_Johns",
+        "America/Swift_Current",
+        "America/Toronto",
+        "America/Vancouver",
+        "America/Whitehorse",
+        "America/Winnipeg"
+      ],
+      "defaultIdentifier": "America/Toronto",
+      "defaultSource": "GeoNames capital: Ottawa (6094817)"
+    },
+    {
+      "countryCode": "CC",
+      "identifiers": [
+        "Indian/Cocos"
+      ],
+      "defaultIdentifier": "Indian/Cocos",
+      "defaultSource": "Only scoped IANA/CLDR zone"
+    },
+    {
+      "countryCode": "CD",
+      "identifiers": [
+        "Africa/Kinshasa",
+        "Africa/Lubumbashi"
+      ],
+      "defaultIdentifier": "Africa/Kinshasa",
+      "defaultSource": "GeoNames capital: Kinshasa (2314302)"
+    },
+    {
+      "countryCode": "CF",
+      "identifiers": [
+        "Africa/Bangui"
+      ],
+      "defaultIdentifier": "Africa/Bangui",
+      "defaultSource": "Only scoped IANA/CLDR zone"
+    },
+    {
+      "countryCode": "CG",
+      "identifiers": [
+        "Africa/Brazzaville"
+      ],
+      "defaultIdentifier": "Africa/Brazzaville",
+      "defaultSource": "Only scoped IANA/CLDR zone"
+    },
+    {
+      "countryCode": "CH",
+      "identifiers": [
+        "Europe/Zurich"
+      ],
+      "defaultIdentifier": "Europe/Zurich",
+      "defaultSource": "Only scoped IANA/CLDR zone"
+    },
+    {
+      "countryCode": "CI",
+      "identifiers": [
+        "Africa/Abidjan"
+      ],
+      "defaultIdentifier": "Africa/Abidjan",
+      "defaultSource": "Only scoped IANA/CLDR zone"
+    },
+    {
+      "countryCode": "CK",
+      "identifiers": [
+        "Pacific/Rarotonga"
+      ],
+      "defaultIdentifier": "Pacific/Rarotonga",
+      "defaultSource": "Only scoped IANA/CLDR zone"
+    },
+    {
+      "countryCode": "CL",
+      "identifiers": [
+        "America/Coyhaique",
+        "America/Punta_Arenas",
+        "America/Santiago",
+        "Pacific/Easter"
+      ],
+      "defaultIdentifier": "America/Santiago",
+      "defaultSource": "GeoNames capital: Santiago (3871336)"
+    },
+    {
+      "countryCode": "CM",
+      "identifiers": [
+        "Africa/Douala"
+      ],
+      "defaultIdentifier": "Africa/Douala",
+      "defaultSource": "Only scoped IANA/CLDR zone"
+    },
+    {
+      "countryCode": "CN",
+      "identifiers": [
+        "Asia/Shanghai",
+        "Asia/Urumqi"
+      ],
+      "defaultIdentifier": "Asia/Shanghai",
+      "defaultSource": "GeoNames capital: Beijing (1816670)"
+    },
+    {
+      "countryCode": "CO",
+      "identifiers": [
+        "America/Bogota"
+      ],
+      "defaultIdentifier": "America/Bogota",
+      "defaultSource": "Only scoped IANA/CLDR zone"
+    },
+    {
+      "countryCode": "CR",
+      "identifiers": [
+        "America/Costa_Rica"
+      ],
+      "defaultIdentifier": "America/Costa_Rica",
+      "defaultSource": "Only scoped IANA/CLDR zone"
+    },
+    {
+      "countryCode": "CU",
+      "identifiers": [
+        "America/Havana"
+      ],
+      "defaultIdentifier": "America/Havana",
+      "defaultSource": "Only scoped IANA/CLDR zone"
+    },
+    {
+      "countryCode": "CV",
+      "identifiers": [
+        "Atlantic/Cape_Verde"
+      ],
+      "defaultIdentifier": "Atlantic/Cape_Verde",
+      "defaultSource": "Only scoped IANA/CLDR zone"
+    },
+    {
+      "countryCode": "CW",
+      "identifiers": [
+        "America/Curacao"
+      ],
+      "defaultIdentifier": "America/Curacao",
+      "defaultSource": "Only scoped IANA/CLDR zone"
+    },
+    {
+      "countryCode": "CX",
+      "identifiers": [
+        "Indian/Christmas"
+      ],
+      "defaultIdentifier": "Indian/Christmas",
+      "defaultSource": "Only scoped IANA/CLDR zone"
+    },
+    {
+      "countryCode": "CY",
+      "identifiers": [
+        "Asia/Famagusta",
+        "Asia/Nicosia"
+      ],
+      "defaultIdentifier": "Asia/Nicosia",
+      "defaultSource": "GeoNames capital: Nicosia (146268)"
+    },
+    {
+      "countryCode": "CZ",
+      "identifiers": [
+        "Europe/Prague"
+      ],
+      "defaultIdentifier": "Europe/Prague",
+      "defaultSource": "Only scoped IANA/CLDR zone"
+    },
+    {
+      "countryCode": "DE",
+      "identifiers": [
+        "Europe/Berlin",
+        "Europe/Busingen"
+      ],
+      "defaultIdentifier": "Europe/Berlin",
+      "defaultSource": "GeoNames capital: Berlin (2950159)"
+    },
+    {
+      "countryCode": "DJ",
+      "identifiers": [
+        "Africa/Djibouti"
+      ],
+      "defaultIdentifier": "Africa/Djibouti",
+      "defaultSource": "Only scoped IANA/CLDR zone"
+    },
+    {
+      "countryCode": "DK",
+      "identifiers": [
+        "Europe/Copenhagen"
+      ],
+      "defaultIdentifier": "Europe/Copenhagen",
+      "defaultSource": "Only scoped IANA/CLDR zone"
+    },
+    {
+      "countryCode": "DM",
+      "identifiers": [
+        "America/Dominica"
+      ],
+      "defaultIdentifier": "America/Dominica",
+      "defaultSource": "Only scoped IANA/CLDR zone"
+    },
+    {
+      "countryCode": "DO",
+      "identifiers": [
+        "America/Santo_Domingo"
+      ],
+      "defaultIdentifier": "America/Santo_Domingo",
+      "defaultSource": "Only scoped IANA/CLDR zone"
+    },
+    {
+      "countryCode": "DZ",
+      "identifiers": [
+        "Africa/Algiers"
+      ],
+      "defaultIdentifier": "Africa/Algiers",
+      "defaultSource": "Only scoped IANA/CLDR zone"
+    },
+    {
+      "countryCode": "EC",
+      "identifiers": [
+        "America/Guayaquil",
+        "Pacific/Galapagos"
+      ],
+      "defaultIdentifier": "America/Guayaquil",
+      "defaultSource": "GeoNames capital: Quito (3652462)"
+    },
+    {
+      "countryCode": "EE",
+      "identifiers": [
+        "Europe/Tallinn"
+      ],
+      "defaultIdentifier": "Europe/Tallinn",
+      "defaultSource": "Only scoped IANA/CLDR zone"
+    },
+    {
+      "countryCode": "EG",
+      "identifiers": [
+        "Africa/Cairo"
+      ],
+      "defaultIdentifier": "Africa/Cairo",
+      "defaultSource": "Only scoped IANA/CLDR zone"
+    },
+    {
+      "countryCode": "EH",
+      "identifiers": [
+        "Africa/El_Aaiun"
+      ],
+      "defaultIdentifier": "Africa/El_Aaiun",
+      "defaultSource": "Only scoped IANA/CLDR zone"
+    },
+    {
+      "countryCode": "ER",
+      "identifiers": [
+        "Africa/Asmara"
+      ],
+      "defaultIdentifier": "Africa/Asmara",
+      "defaultSource": "Only scoped IANA/CLDR zone"
+    },
+    {
+      "countryCode": "ES",
+      "identifiers": [
+        "Africa/Ceuta",
+        "Atlantic/Canary",
+        "Europe/Madrid"
+      ],
+      "defaultIdentifier": "Europe/Madrid",
+      "defaultSource": "GeoNames capital: Madrid (3117735)"
+    },
+    {
+      "countryCode": "ET",
+      "identifiers": [
+        "Africa/Addis_Ababa"
+      ],
+      "defaultIdentifier": "Africa/Addis_Ababa",
+      "defaultSource": "Only scoped IANA/CLDR zone"
+    },
+    {
+      "countryCode": "FI",
+      "identifiers": [
+        "Europe/Helsinki"
+      ],
+      "defaultIdentifier": "Europe/Helsinki",
+      "defaultSource": "Only scoped IANA/CLDR zone"
+    },
+    {
+      "countryCode": "FJ",
+      "identifiers": [
+        "Pacific/Fiji"
+      ],
+      "defaultIdentifier": "Pacific/Fiji",
+      "defaultSource": "Only scoped IANA/CLDR zone"
+    },
+    {
+      "countryCode": "FK",
+      "identifiers": [
+        "Atlantic/Stanley"
+      ],
+      "defaultIdentifier": "Atlantic/Stanley",
+      "defaultSource": "Only scoped IANA/CLDR zone"
+    },
+    {
+      "countryCode": "FM",
+      "identifiers": [
+        "Pacific/Chuuk",
+        "Pacific/Kosrae",
+        "Pacific/Pohnpei"
+      ],
+      "defaultIdentifier": "Pacific/Pohnpei",
+      "defaultSource": "GeoNames capital: Palikir (2081986)"
+    },
+    {
+      "countryCode": "FO",
+      "identifiers": [
+        "Atlantic/Faroe"
+      ],
+      "defaultIdentifier": "Atlantic/Faroe",
+      "defaultSource": "Only scoped IANA/CLDR zone"
+    },
+    {
+      "countryCode": "FR",
+      "identifiers": [
+        "Europe/Paris"
+      ],
+      "defaultIdentifier": "Europe/Paris",
+      "defaultSource": "Only scoped IANA/CLDR zone"
+    },
+    {
+      "countryCode": "GA",
+      "identifiers": [
+        "Africa/Libreville"
+      ],
+      "defaultIdentifier": "Africa/Libreville",
+      "defaultSource": "Only scoped IANA/CLDR zone"
+    },
+    {
+      "countryCode": "GB",
+      "identifiers": [
+        "Europe/London"
+      ],
+      "defaultIdentifier": "Europe/London",
+      "defaultSource": "Only scoped IANA/CLDR zone"
+    },
+    {
+      "countryCode": "GD",
+      "identifiers": [
+        "America/Grenada"
+      ],
+      "defaultIdentifier": "America/Grenada",
+      "defaultSource": "Only scoped IANA/CLDR zone"
+    },
+    {
+      "countryCode": "GE",
+      "identifiers": [
+        "Asia/Tbilisi"
+      ],
+      "defaultIdentifier": "Asia/Tbilisi",
+      "defaultSource": "Only scoped IANA/CLDR zone"
+    },
+    {
+      "countryCode": "GF",
+      "identifiers": [
+        "America/Cayenne"
+      ],
+      "defaultIdentifier": "America/Cayenne",
+      "defaultSource": "Only scoped IANA/CLDR zone"
+    },
+    {
+      "countryCode": "GG",
+      "identifiers": [
+        "Europe/Guernsey"
+      ],
+      "defaultIdentifier": "Europe/Guernsey",
+      "defaultSource": "Only scoped IANA/CLDR zone"
+    },
+    {
+      "countryCode": "GH",
+      "identifiers": [
+        "Africa/Accra"
+      ],
+      "defaultIdentifier": "Africa/Accra",
+      "defaultSource": "Only scoped IANA/CLDR zone"
+    },
+    {
+      "countryCode": "GI",
+      "identifiers": [
+        "Europe/Gibraltar"
+      ],
+      "defaultIdentifier": "Europe/Gibraltar",
+      "defaultSource": "Only scoped IANA/CLDR zone"
+    },
+    {
+      "countryCode": "GL",
+      "identifiers": [
+        "America/Danmarkshavn",
+        "America/Nuuk",
+        "America/Scoresbysund",
+        "America/Thule"
+      ],
+      "defaultIdentifier": "America/Nuuk",
+      "defaultSource": "GeoNames capital: Nuuk (3421319)"
+    },
+    {
+      "countryCode": "GM",
+      "identifiers": [
+        "Africa/Banjul"
+      ],
+      "defaultIdentifier": "Africa/Banjul",
+      "defaultSource": "Only scoped IANA/CLDR zone"
+    },
+    {
+      "countryCode": "GN",
+      "identifiers": [
+        "Africa/Conakry"
+      ],
+      "defaultIdentifier": "Africa/Conakry",
+      "defaultSource": "Only scoped IANA/CLDR zone"
+    },
+    {
+      "countryCode": "GP",
+      "identifiers": [
+        "America/Guadeloupe"
+      ],
+      "defaultIdentifier": "America/Guadeloupe",
+      "defaultSource": "Only scoped IANA/CLDR zone"
+    },
+    {
+      "countryCode": "GQ",
+      "identifiers": [
+        "Africa/Malabo"
+      ],
+      "defaultIdentifier": "Africa/Malabo",
+      "defaultSource": "Only scoped IANA/CLDR zone"
+    },
+    {
+      "countryCode": "GR",
+      "identifiers": [
+        "Europe/Athens"
+      ],
+      "defaultIdentifier": "Europe/Athens",
+      "defaultSource": "Only scoped IANA/CLDR zone"
+    },
+    {
+      "countryCode": "GS",
+      "identifiers": [
+        "Atlantic/South_Georgia"
+      ],
+      "defaultIdentifier": "Atlantic/South_Georgia",
+      "defaultSource": "Only scoped IANA/CLDR zone"
+    },
+    {
+      "countryCode": "GT",
+      "identifiers": [
+        "America/Guatemala"
+      ],
+      "defaultIdentifier": "America/Guatemala",
+      "defaultSource": "Only scoped IANA/CLDR zone"
+    },
+    {
+      "countryCode": "GU",
+      "identifiers": [
+        "Pacific/Guam"
+      ],
+      "defaultIdentifier": "Pacific/Guam",
+      "defaultSource": "Only scoped IANA/CLDR zone"
+    },
+    {
+      "countryCode": "GW",
+      "identifiers": [
+        "Africa/Bissau"
+      ],
+      "defaultIdentifier": "Africa/Bissau",
+      "defaultSource": "Only scoped IANA/CLDR zone"
+    },
+    {
+      "countryCode": "GY",
+      "identifiers": [
+        "America/Guyana"
+      ],
+      "defaultIdentifier": "America/Guyana",
+      "defaultSource": "Only scoped IANA/CLDR zone"
+    },
+    {
+      "countryCode": "HK",
+      "identifiers": [
+        "Asia/Hong_Kong"
+      ],
+      "defaultIdentifier": "Asia/Hong_Kong",
+      "defaultSource": "Only scoped IANA/CLDR zone"
+    },
+    {
+      "countryCode": "HM",
+      "identifiers": []
+    },
+    {
+      "countryCode": "HN",
+      "identifiers": [
+        "America/Tegucigalpa"
+      ],
+      "defaultIdentifier": "America/Tegucigalpa",
+      "defaultSource": "Only scoped IANA/CLDR zone"
+    },
+    {
+      "countryCode": "HR",
+      "identifiers": [
+        "Europe/Zagreb"
+      ],
+      "defaultIdentifier": "Europe/Zagreb",
+      "defaultSource": "Only scoped IANA/CLDR zone"
+    },
+    {
+      "countryCode": "HT",
+      "identifiers": [
+        "America/Port-au-Prince"
+      ],
+      "defaultIdentifier": "America/Port-au-Prince",
+      "defaultSource": "Only scoped IANA/CLDR zone"
+    },
+    {
+      "countryCode": "HU",
+      "identifiers": [
+        "Europe/Budapest"
+      ],
+      "defaultIdentifier": "Europe/Budapest",
+      "defaultSource": "Only scoped IANA/CLDR zone"
+    },
+    {
+      "countryCode": "ID",
+      "identifiers": [
+        "Asia/Jakarta",
+        "Asia/Jayapura",
+        "Asia/Makassar",
+        "Asia/Pontianak"
+      ],
+      "defaultIdentifier": "Asia/Jakarta",
+      "defaultSource": "GeoNames capital: Jakarta (1642911)"
+    },
+    {
+      "countryCode": "IE",
+      "identifiers": [
+        "Europe/Dublin"
+      ],
+      "defaultIdentifier": "Europe/Dublin",
+      "defaultSource": "Only scoped IANA/CLDR zone"
+    },
+    {
+      "countryCode": "IL",
+      "identifiers": [
+        "Asia/Jerusalem"
+      ],
+      "defaultIdentifier": "Asia/Jerusalem",
+      "defaultSource": "Only scoped IANA/CLDR zone"
+    },
+    {
+      "countryCode": "IM",
+      "identifiers": [
+        "Europe/Isle_of_Man"
+      ],
+      "defaultIdentifier": "Europe/Isle_of_Man",
+      "defaultSource": "Only scoped IANA/CLDR zone"
+    },
+    {
+      "countryCode": "IN",
+      "identifiers": [
+        "Asia/Kolkata"
+      ],
+      "defaultIdentifier": "Asia/Kolkata",
+      "defaultSource": "Only scoped IANA/CLDR zone"
+    },
+    {
+      "countryCode": "IO",
+      "identifiers": [
+        "Indian/Chagos"
+      ],
+      "defaultIdentifier": "Indian/Chagos",
+      "defaultSource": "Only scoped IANA/CLDR zone"
+    },
+    {
+      "countryCode": "IQ",
+      "identifiers": [
+        "Asia/Baghdad"
+      ],
+      "defaultIdentifier": "Asia/Baghdad",
+      "defaultSource": "Only scoped IANA/CLDR zone"
+    },
+    {
+      "countryCode": "IR",
+      "identifiers": [
+        "Asia/Tehran"
+      ],
+      "defaultIdentifier": "Asia/Tehran",
+      "defaultSource": "Only scoped IANA/CLDR zone"
+    },
+    {
+      "countryCode": "IS",
+      "identifiers": [
+        "Atlantic/Reykjavik"
+      ],
+      "defaultIdentifier": "Atlantic/Reykjavik",
+      "defaultSource": "Only scoped IANA/CLDR zone"
+    },
+    {
+      "countryCode": "IT",
+      "identifiers": [
+        "Europe/Rome"
+      ],
+      "defaultIdentifier": "Europe/Rome",
+      "defaultSource": "Only scoped IANA/CLDR zone"
+    },
+    {
+      "countryCode": "JE",
+      "identifiers": [
+        "Europe/Jersey"
+      ],
+      "defaultIdentifier": "Europe/Jersey",
+      "defaultSource": "Only scoped IANA/CLDR zone"
+    },
+    {
+      "countryCode": "JM",
+      "identifiers": [
+        "America/Jamaica"
+      ],
+      "defaultIdentifier": "America/Jamaica",
+      "defaultSource": "Only scoped IANA/CLDR zone"
+    },
+    {
+      "countryCode": "JO",
+      "identifiers": [
+        "Asia/Amman"
+      ],
+      "defaultIdentifier": "Asia/Amman",
+      "defaultSource": "Only scoped IANA/CLDR zone"
+    },
+    {
+      "countryCode": "JP",
+      "identifiers": [
+        "Asia/Tokyo"
+      ],
+      "defaultIdentifier": "Asia/Tokyo",
+      "defaultSource": "Only scoped IANA/CLDR zone"
+    },
+    {
+      "countryCode": "KE",
+      "identifiers": [
+        "Africa/Nairobi"
+      ],
+      "defaultIdentifier": "Africa/Nairobi",
+      "defaultSource": "Only scoped IANA/CLDR zone"
+    },
+    {
+      "countryCode": "KG",
+      "identifiers": [
+        "Asia/Bishkek"
+      ],
+      "defaultIdentifier": "Asia/Bishkek",
+      "defaultSource": "Only scoped IANA/CLDR zone"
+    },
+    {
+      "countryCode": "KH",
+      "identifiers": [
+        "Asia/Phnom_Penh"
+      ],
+      "defaultIdentifier": "Asia/Phnom_Penh",
+      "defaultSource": "Only scoped IANA/CLDR zone"
+    },
+    {
+      "countryCode": "KI",
+      "identifiers": [
+        "Pacific/Kanton",
+        "Pacific/Kiritimati",
+        "Pacific/Tarawa"
+      ],
+      "defaultIdentifier": "Pacific/Tarawa",
+      "defaultSource": "GeoNames capital: Tarawa (2110257)"
+    },
+    {
+      "countryCode": "KM",
+      "identifiers": [
+        "Indian/Comoro"
+      ],
+      "defaultIdentifier": "Indian/Comoro",
+      "defaultSource": "Only scoped IANA/CLDR zone"
+    },
+    {
+      "countryCode": "KN",
+      "identifiers": [
+        "America/St_Kitts"
+      ],
+      "defaultIdentifier": "America/St_Kitts",
+      "defaultSource": "Only scoped IANA/CLDR zone"
+    },
+    {
+      "countryCode": "KP",
+      "identifiers": [
+        "Asia/Pyongyang"
+      ],
+      "defaultIdentifier": "Asia/Pyongyang",
+      "defaultSource": "Only scoped IANA/CLDR zone"
+    },
+    {
+      "countryCode": "KR",
+      "identifiers": [
+        "Asia/Seoul"
+      ],
+      "defaultIdentifier": "Asia/Seoul",
+      "defaultSource": "Only scoped IANA/CLDR zone"
+    },
+    {
+      "countryCode": "KW",
+      "identifiers": [
+        "Asia/Kuwait"
+      ],
+      "defaultIdentifier": "Asia/Kuwait",
+      "defaultSource": "Only scoped IANA/CLDR zone"
+    },
+    {
+      "countryCode": "KY",
+      "identifiers": [
+        "America/Cayman"
+      ],
+      "defaultIdentifier": "America/Cayman",
+      "defaultSource": "Only scoped IANA/CLDR zone"
+    },
+    {
+      "countryCode": "KZ",
+      "identifiers": [
+        "Asia/Almaty",
+        "Asia/Aqtau",
+        "Asia/Aqtobe",
+        "Asia/Atyrau",
+        "Asia/Oral",
+        "Asia/Qostanay",
+        "Asia/Qyzylorda"
+      ],
+      "defaultIdentifier": "Asia/Almaty",
+      "defaultSource": "GeoNames capital: Astana (1526273)"
+    },
+    {
+      "countryCode": "LA",
+      "identifiers": [
+        "Asia/Vientiane"
+      ],
+      "defaultIdentifier": "Asia/Vientiane",
+      "defaultSource": "Only scoped IANA/CLDR zone"
+    },
+    {
+      "countryCode": "LB",
+      "identifiers": [
+        "Asia/Beirut"
+      ],
+      "defaultIdentifier": "Asia/Beirut",
+      "defaultSource": "Only scoped IANA/CLDR zone"
+    },
+    {
+      "countryCode": "LC",
+      "identifiers": [
+        "America/St_Lucia"
+      ],
+      "defaultIdentifier": "America/St_Lucia",
+      "defaultSource": "Only scoped IANA/CLDR zone"
+    },
+    {
+      "countryCode": "LI",
+      "identifiers": [
+        "Europe/Vaduz"
+      ],
+      "defaultIdentifier": "Europe/Vaduz",
+      "defaultSource": "Only scoped IANA/CLDR zone"
+    },
+    {
+      "countryCode": "LK",
+      "identifiers": [
+        "Asia/Colombo"
+      ],
+      "defaultIdentifier": "Asia/Colombo",
+      "defaultSource": "Only scoped IANA/CLDR zone"
+    },
+    {
+      "countryCode": "LR",
+      "identifiers": [
+        "Africa/Monrovia"
+      ],
+      "defaultIdentifier": "Africa/Monrovia",
+      "defaultSource": "Only scoped IANA/CLDR zone"
+    },
+    {
+      "countryCode": "LS",
+      "identifiers": [
+        "Africa/Maseru"
+      ],
+      "defaultIdentifier": "Africa/Maseru",
+      "defaultSource": "Only scoped IANA/CLDR zone"
+    },
+    {
+      "countryCode": "LT",
+      "identifiers": [
+        "Europe/Vilnius"
+      ],
+      "defaultIdentifier": "Europe/Vilnius",
+      "defaultSource": "Only scoped IANA/CLDR zone"
+    },
+    {
+      "countryCode": "LU",
+      "identifiers": [
+        "Europe/Luxembourg"
+      ],
+      "defaultIdentifier": "Europe/Luxembourg",
+      "defaultSource": "Only scoped IANA/CLDR zone"
+    },
+    {
+      "countryCode": "LV",
+      "identifiers": [
+        "Europe/Riga"
+      ],
+      "defaultIdentifier": "Europe/Riga",
+      "defaultSource": "Only scoped IANA/CLDR zone"
+    },
+    {
+      "countryCode": "LY",
+      "identifiers": [
+        "Africa/Tripoli"
+      ],
+      "defaultIdentifier": "Africa/Tripoli",
+      "defaultSource": "Only scoped IANA/CLDR zone"
+    },
+    {
+      "countryCode": "MA",
+      "identifiers": [
+        "Africa/Casablanca"
+      ],
+      "defaultIdentifier": "Africa/Casablanca",
+      "defaultSource": "Only scoped IANA/CLDR zone"
+    },
+    {
+      "countryCode": "MC",
+      "identifiers": [
+        "Europe/Monaco"
+      ],
+      "defaultIdentifier": "Europe/Monaco",
+      "defaultSource": "Only scoped IANA/CLDR zone"
+    },
+    {
+      "countryCode": "MD",
+      "identifiers": [
+        "Europe/Chisinau"
+      ],
+      "defaultIdentifier": "Europe/Chisinau",
+      "defaultSource": "Only scoped IANA/CLDR zone"
+    },
+    {
+      "countryCode": "ME",
+      "identifiers": [
+        "Europe/Podgorica"
+      ],
+      "defaultIdentifier": "Europe/Podgorica",
+      "defaultSource": "Only scoped IANA/CLDR zone"
+    },
+    {
+      "countryCode": "MF",
+      "identifiers": [
+        "America/Marigot"
+      ],
+      "defaultIdentifier": "America/Marigot",
+      "defaultSource": "Only scoped IANA/CLDR zone"
+    },
+    {
+      "countryCode": "MG",
+      "identifiers": [
+        "Indian/Antananarivo"
+      ],
+      "defaultIdentifier": "Indian/Antananarivo",
+      "defaultSource": "Only scoped IANA/CLDR zone"
+    },
+    {
+      "countryCode": "MH",
+      "identifiers": [
+        "Pacific/Kwajalein",
+        "Pacific/Majuro"
+      ],
+      "defaultIdentifier": "Pacific/Majuro",
+      "defaultSource": "GeoNames capital: Majuro (2113779)"
+    },
+    {
+      "countryCode": "MK",
+      "identifiers": [
+        "Europe/Skopje"
+      ],
+      "defaultIdentifier": "Europe/Skopje",
+      "defaultSource": "Only scoped IANA/CLDR zone"
+    },
+    {
+      "countryCode": "ML",
+      "identifiers": [
+        "Africa/Bamako"
+      ],
+      "defaultIdentifier": "Africa/Bamako",
+      "defaultSource": "Only scoped IANA/CLDR zone"
+    },
+    {
+      "countryCode": "MM",
+      "identifiers": [
+        "Asia/Yangon"
+      ],
+      "defaultIdentifier": "Asia/Yangon",
+      "defaultSource": "Only scoped IANA/CLDR zone"
+    },
+    {
+      "countryCode": "MN",
+      "identifiers": [
+        "Asia/Hovd",
+        "Asia/Ulaanbaatar"
+      ],
+      "defaultIdentifier": "Asia/Ulaanbaatar",
+      "defaultSource": "GeoNames capital: Ulan Bator (2028462)"
+    },
+    {
+      "countryCode": "MO",
+      "identifiers": [
+        "Asia/Macau"
+      ],
+      "defaultIdentifier": "Asia/Macau",
+      "defaultSource": "Only scoped IANA/CLDR zone"
+    },
+    {
+      "countryCode": "MP",
+      "identifiers": [
+        "Pacific/Saipan"
+      ],
+      "defaultIdentifier": "Pacific/Saipan",
+      "defaultSource": "Only scoped IANA/CLDR zone"
+    },
+    {
+      "countryCode": "MQ",
+      "identifiers": [
+        "America/Martinique"
+      ],
+      "defaultIdentifier": "America/Martinique",
+      "defaultSource": "Only scoped IANA/CLDR zone"
+    },
+    {
+      "countryCode": "MR",
+      "identifiers": [
+        "Africa/Nouakchott"
+      ],
+      "defaultIdentifier": "Africa/Nouakchott",
+      "defaultSource": "Only scoped IANA/CLDR zone"
+    },
+    {
+      "countryCode": "MS",
+      "identifiers": [
+        "America/Montserrat"
+      ],
+      "defaultIdentifier": "America/Montserrat",
+      "defaultSource": "Only scoped IANA/CLDR zone"
+    },
+    {
+      "countryCode": "MT",
+      "identifiers": [
+        "Europe/Malta"
+      ],
+      "defaultIdentifier": "Europe/Malta",
+      "defaultSource": "Only scoped IANA/CLDR zone"
+    },
+    {
+      "countryCode": "MU",
+      "identifiers": [
+        "Indian/Mauritius"
+      ],
+      "defaultIdentifier": "Indian/Mauritius",
+      "defaultSource": "Only scoped IANA/CLDR zone"
+    },
+    {
+      "countryCode": "MV",
+      "identifiers": [
+        "Indian/Maldives"
+      ],
+      "defaultIdentifier": "Indian/Maldives",
+      "defaultSource": "Only scoped IANA/CLDR zone"
+    },
+    {
+      "countryCode": "MW",
+      "identifiers": [
+        "Africa/Blantyre"
+      ],
+      "defaultIdentifier": "Africa/Blantyre",
+      "defaultSource": "Only scoped IANA/CLDR zone"
+    },
+    {
+      "countryCode": "MX",
+      "identifiers": [
+        "America/Bahia_Banderas",
+        "America/Cancun",
+        "America/Chihuahua",
+        "America/Ciudad_Juarez",
+        "America/Hermosillo",
+        "America/Matamoros",
+        "America/Mazatlan",
+        "America/Merida",
+        "America/Mexico_City",
+        "America/Monterrey",
+        "America/Ojinaga",
+        "America/Tijuana"
+      ],
+      "defaultIdentifier": "America/Mexico_City",
+      "defaultSource": "GeoNames capital: Mexico City (3530597)"
+    },
+    {
+      "countryCode": "MY",
+      "identifiers": [
+        "Asia/Kuala_Lumpur",
+        "Asia/Kuching"
+      ],
+      "defaultIdentifier": "Asia/Kuala_Lumpur",
+      "defaultSource": "GeoNames capital: Kuala Lumpur (1735161)"
+    },
+    {
+      "countryCode": "MZ",
+      "identifiers": [
+        "Africa/Maputo"
+      ],
+      "defaultIdentifier": "Africa/Maputo",
+      "defaultSource": "Only scoped IANA/CLDR zone"
+    },
+    {
+      "countryCode": "NA",
+      "identifiers": [
+        "Africa/Windhoek"
+      ],
+      "defaultIdentifier": "Africa/Windhoek",
+      "defaultSource": "Only scoped IANA/CLDR zone"
+    },
+    {
+      "countryCode": "NC",
+      "identifiers": [
+        "Pacific/Noumea"
+      ],
+      "defaultIdentifier": "Pacific/Noumea",
+      "defaultSource": "Only scoped IANA/CLDR zone"
+    },
+    {
+      "countryCode": "NE",
+      "identifiers": [
+        "Africa/Niamey"
+      ],
+      "defaultIdentifier": "Africa/Niamey",
+      "defaultSource": "Only scoped IANA/CLDR zone"
+    },
+    {
+      "countryCode": "NF",
+      "identifiers": [
+        "Pacific/Norfolk"
+      ],
+      "defaultIdentifier": "Pacific/Norfolk",
+      "defaultSource": "Only scoped IANA/CLDR zone"
+    },
+    {
+      "countryCode": "NG",
+      "identifiers": [
+        "Africa/Lagos"
+      ],
+      "defaultIdentifier": "Africa/Lagos",
+      "defaultSource": "Only scoped IANA/CLDR zone"
+    },
+    {
+      "countryCode": "NI",
+      "identifiers": [
+        "America/Managua"
+      ],
+      "defaultIdentifier": "America/Managua",
+      "defaultSource": "Only scoped IANA/CLDR zone"
+    },
+    {
+      "countryCode": "NL",
+      "identifiers": [
+        "Europe/Amsterdam"
+      ],
+      "defaultIdentifier": "Europe/Amsterdam",
+      "defaultSource": "Only scoped IANA/CLDR zone"
+    },
+    {
+      "countryCode": "NO",
+      "identifiers": [
+        "Europe/Oslo"
+      ],
+      "defaultIdentifier": "Europe/Oslo",
+      "defaultSource": "Only scoped IANA/CLDR zone"
+    },
+    {
+      "countryCode": "NP",
+      "identifiers": [
+        "Asia/Kathmandu"
+      ],
+      "defaultIdentifier": "Asia/Kathmandu",
+      "defaultSource": "Only scoped IANA/CLDR zone"
+    },
+    {
+      "countryCode": "NR",
+      "identifiers": [
+        "Pacific/Nauru"
+      ],
+      "defaultIdentifier": "Pacific/Nauru",
+      "defaultSource": "Only scoped IANA/CLDR zone"
+    },
+    {
+      "countryCode": "NU",
+      "identifiers": [
+        "Pacific/Niue"
+      ],
+      "defaultIdentifier": "Pacific/Niue",
+      "defaultSource": "Only scoped IANA/CLDR zone"
+    },
+    {
+      "countryCode": "NZ",
+      "identifiers": [
+        "Pacific/Auckland",
+        "Pacific/Chatham"
+      ],
+      "defaultIdentifier": "Pacific/Auckland",
+      "defaultSource": "GeoNames capital: Wellington (2179537)"
+    },
+    {
+      "countryCode": "OM",
+      "identifiers": [
+        "Asia/Muscat"
+      ],
+      "defaultIdentifier": "Asia/Muscat",
+      "defaultSource": "Only scoped IANA/CLDR zone"
+    },
+    {
+      "countryCode": "PA",
+      "identifiers": [
+        "America/Panama"
+      ],
+      "defaultIdentifier": "America/Panama",
+      "defaultSource": "Only scoped IANA/CLDR zone"
+    },
+    {
+      "countryCode": "PE",
+      "identifiers": [
+        "America/Lima"
+      ],
+      "defaultIdentifier": "America/Lima",
+      "defaultSource": "Only scoped IANA/CLDR zone"
+    },
+    {
+      "countryCode": "PF",
+      "identifiers": [
+        "Pacific/Gambier",
+        "Pacific/Marquesas",
+        "Pacific/Tahiti"
+      ],
+      "defaultIdentifier": "Pacific/Tahiti",
+      "defaultSource": "GeoNames capital: Papeete (4033936)"
+    },
+    {
+      "countryCode": "PG",
+      "identifiers": [
+        "Pacific/Bougainville",
+        "Pacific/Port_Moresby"
+      ],
+      "defaultIdentifier": "Pacific/Port_Moresby",
+      "defaultSource": "GeoNames capital: Port Moresby (2088122)"
+    },
+    {
+      "countryCode": "PH",
+      "identifiers": [
+        "Asia/Manila"
+      ],
+      "defaultIdentifier": "Asia/Manila",
+      "defaultSource": "Only scoped IANA/CLDR zone"
+    },
+    {
+      "countryCode": "PK",
+      "identifiers": [
+        "Asia/Karachi"
+      ],
+      "defaultIdentifier": "Asia/Karachi",
+      "defaultSource": "Only scoped IANA/CLDR zone"
+    },
+    {
+      "countryCode": "PL",
+      "identifiers": [
+        "Europe/Warsaw"
+      ],
+      "defaultIdentifier": "Europe/Warsaw",
+      "defaultSource": "Only scoped IANA/CLDR zone"
+    },
+    {
+      "countryCode": "PM",
+      "identifiers": [
+        "America/Miquelon"
+      ],
+      "defaultIdentifier": "America/Miquelon",
+      "defaultSource": "Only scoped IANA/CLDR zone"
+    },
+    {
+      "countryCode": "PN",
+      "identifiers": [
+        "Pacific/Pitcairn"
+      ],
+      "defaultIdentifier": "Pacific/Pitcairn",
+      "defaultSource": "Only scoped IANA/CLDR zone"
+    },
+    {
+      "countryCode": "PR",
+      "identifiers": [
+        "America/Puerto_Rico"
+      ],
+      "defaultIdentifier": "America/Puerto_Rico",
+      "defaultSource": "Only scoped IANA/CLDR zone"
+    },
+    {
+      "countryCode": "PS",
+      "identifiers": [
+        "Asia/Gaza",
+        "Asia/Hebron"
+      ]
+    },
+    {
+      "countryCode": "PT",
+      "identifiers": [
+        "Atlantic/Azores",
+        "Atlantic/Madeira",
+        "Europe/Lisbon"
+      ],
+      "defaultIdentifier": "Europe/Lisbon",
+      "defaultSource": "GeoNames capital: Lisbon (2267057)"
+    },
+    {
+      "countryCode": "PW",
+      "identifiers": [
+        "Pacific/Palau"
+      ],
+      "defaultIdentifier": "Pacific/Palau",
+      "defaultSource": "Only scoped IANA/CLDR zone"
+    },
+    {
+      "countryCode": "PY",
+      "identifiers": [
+        "America/Asuncion"
+      ],
+      "defaultIdentifier": "America/Asuncion",
+      "defaultSource": "Only scoped IANA/CLDR zone"
+    },
+    {
+      "countryCode": "QA",
+      "identifiers": [
+        "Asia/Qatar"
+      ],
+      "defaultIdentifier": "Asia/Qatar",
+      "defaultSource": "Only scoped IANA/CLDR zone"
+    },
+    {
+      "countryCode": "RE",
+      "identifiers": [
+        "Indian/Reunion"
+      ],
+      "defaultIdentifier": "Indian/Reunion",
+      "defaultSource": "Only scoped IANA/CLDR zone"
+    },
+    {
+      "countryCode": "RO",
+      "identifiers": [
+        "Europe/Bucharest"
+      ],
+      "defaultIdentifier": "Europe/Bucharest",
+      "defaultSource": "Only scoped IANA/CLDR zone"
+    },
+    {
+      "countryCode": "RS",
+      "identifiers": [
+        "Europe/Belgrade"
+      ],
+      "defaultIdentifier": "Europe/Belgrade",
+      "defaultSource": "Only scoped IANA/CLDR zone"
+    },
+    {
+      "countryCode": "RU",
+      "identifiers": [
+        "Asia/Anadyr",
+        "Asia/Barnaul",
+        "Asia/Chita",
+        "Asia/Irkutsk",
+        "Asia/Kamchatka",
+        "Asia/Khandyga",
+        "Asia/Krasnoyarsk",
+        "Asia/Magadan",
+        "Asia/Novokuznetsk",
+        "Asia/Novosibirsk",
+        "Asia/Omsk",
+        "Asia/Sakhalin",
+        "Asia/Srednekolymsk",
+        "Asia/Tomsk",
+        "Asia/Ust-Nera",
+        "Asia/Vladivostok",
+        "Asia/Yakutsk",
+        "Asia/Yekaterinburg",
+        "Europe/Astrakhan",
+        "Europe/Kaliningrad",
+        "Europe/Kirov",
+        "Europe/Moscow",
+        "Europe/Samara",
+        "Europe/Saratov",
+        "Europe/Simferopol",
+        "Europe/Ulyanovsk",
+        "Europe/Volgograd"
+      ],
+      "defaultIdentifier": "Europe/Moscow",
+      "defaultSource": "GeoNames capital: Moscow (524901)"
+    },
+    {
+      "countryCode": "RW",
+      "identifiers": [
+        "Africa/Kigali"
+      ],
+      "defaultIdentifier": "Africa/Kigali",
+      "defaultSource": "Only scoped IANA/CLDR zone"
+    },
+    {
+      "countryCode": "SA",
+      "identifiers": [
+        "Asia/Riyadh"
+      ],
+      "defaultIdentifier": "Asia/Riyadh",
+      "defaultSource": "Only scoped IANA/CLDR zone"
+    },
+    {
+      "countryCode": "SB",
+      "identifiers": [
+        "Pacific/Guadalcanal"
+      ],
+      "defaultIdentifier": "Pacific/Guadalcanal",
+      "defaultSource": "Only scoped IANA/CLDR zone"
+    },
+    {
+      "countryCode": "SC",
+      "identifiers": [
+        "Indian/Mahe"
+      ],
+      "defaultIdentifier": "Indian/Mahe",
+      "defaultSource": "Only scoped IANA/CLDR zone"
+    },
+    {
+      "countryCode": "SD",
+      "identifiers": [
+        "Africa/Khartoum"
+      ],
+      "defaultIdentifier": "Africa/Khartoum",
+      "defaultSource": "Only scoped IANA/CLDR zone"
+    },
+    {
+      "countryCode": "SE",
+      "identifiers": [
+        "Europe/Stockholm"
+      ],
+      "defaultIdentifier": "Europe/Stockholm",
+      "defaultSource": "Only scoped IANA/CLDR zone"
+    },
+    {
+      "countryCode": "SG",
+      "identifiers": [
+        "Asia/Singapore"
+      ],
+      "defaultIdentifier": "Asia/Singapore",
+      "defaultSource": "Only scoped IANA/CLDR zone"
+    },
+    {
+      "countryCode": "SH",
+      "identifiers": [
+        "Atlantic/St_Helena"
+      ],
+      "defaultIdentifier": "Atlantic/St_Helena",
+      "defaultSource": "Only scoped IANA/CLDR zone"
+    },
+    {
+      "countryCode": "SI",
+      "identifiers": [
+        "Europe/Ljubljana"
+      ],
+      "defaultIdentifier": "Europe/Ljubljana",
+      "defaultSource": "Only scoped IANA/CLDR zone"
+    },
+    {
+      "countryCode": "SJ",
+      "identifiers": [
+        "Arctic/Longyearbyen"
+      ],
+      "defaultIdentifier": "Arctic/Longyearbyen",
+      "defaultSource": "Only scoped IANA/CLDR zone"
+    },
+    {
+      "countryCode": "SK",
+      "identifiers": [
+        "Europe/Bratislava"
+      ],
+      "defaultIdentifier": "Europe/Bratislava",
+      "defaultSource": "Only scoped IANA/CLDR zone"
+    },
+    {
+      "countryCode": "SL",
+      "identifiers": [
+        "Africa/Freetown"
+      ],
+      "defaultIdentifier": "Africa/Freetown",
+      "defaultSource": "Only scoped IANA/CLDR zone"
+    },
+    {
+      "countryCode": "SM",
+      "identifiers": [
+        "Europe/San_Marino"
+      ],
+      "defaultIdentifier": "Europe/San_Marino",
+      "defaultSource": "Only scoped IANA/CLDR zone"
+    },
+    {
+      "countryCode": "SN",
+      "identifiers": [
+        "Africa/Dakar"
+      ],
+      "defaultIdentifier": "Africa/Dakar",
+      "defaultSource": "Only scoped IANA/CLDR zone"
+    },
+    {
+      "countryCode": "SO",
+      "identifiers": [
+        "Africa/Mogadishu"
+      ],
+      "defaultIdentifier": "Africa/Mogadishu",
+      "defaultSource": "Only scoped IANA/CLDR zone"
+    },
+    {
+      "countryCode": "SR",
+      "identifiers": [
+        "America/Paramaribo"
+      ],
+      "defaultIdentifier": "America/Paramaribo",
+      "defaultSource": "Only scoped IANA/CLDR zone"
+    },
+    {
+      "countryCode": "SS",
+      "identifiers": [
+        "Africa/Juba"
+      ],
+      "defaultIdentifier": "Africa/Juba",
+      "defaultSource": "Only scoped IANA/CLDR zone"
+    },
+    {
+      "countryCode": "ST",
+      "identifiers": [
+        "Africa/Sao_Tome"
+      ],
+      "defaultIdentifier": "Africa/Sao_Tome",
+      "defaultSource": "Only scoped IANA/CLDR zone"
+    },
+    {
+      "countryCode": "SV",
+      "identifiers": [
+        "America/El_Salvador"
+      ],
+      "defaultIdentifier": "America/El_Salvador",
+      "defaultSource": "Only scoped IANA/CLDR zone"
+    },
+    {
+      "countryCode": "SX",
+      "identifiers": [
+        "America/Lower_Princes"
+      ],
+      "defaultIdentifier": "America/Lower_Princes",
+      "defaultSource": "Only scoped IANA/CLDR zone"
+    },
+    {
+      "countryCode": "SY",
+      "identifiers": [
+        "Asia/Damascus"
+      ],
+      "defaultIdentifier": "Asia/Damascus",
+      "defaultSource": "Only scoped IANA/CLDR zone"
+    },
+    {
+      "countryCode": "SZ",
+      "identifiers": [
+        "Africa/Mbabane"
+      ],
+      "defaultIdentifier": "Africa/Mbabane",
+      "defaultSource": "Only scoped IANA/CLDR zone"
+    },
+    {
+      "countryCode": "TC",
+      "identifiers": [
+        "America/Grand_Turk"
+      ],
+      "defaultIdentifier": "America/Grand_Turk",
+      "defaultSource": "Only scoped IANA/CLDR zone"
+    },
+    {
+      "countryCode": "TD",
+      "identifiers": [
+        "Africa/Ndjamena"
+      ],
+      "defaultIdentifier": "Africa/Ndjamena",
+      "defaultSource": "Only scoped IANA/CLDR zone"
+    },
+    {
+      "countryCode": "TF",
+      "identifiers": [
+        "Asia/Dubai",
+        "Indian/Kerguelen"
+      ],
+      "defaultIdentifier": "Indian/Kerguelen",
+      "defaultSource": "GeoNames capital: Port-aux-Français (1546102)"
+    },
+    {
+      "countryCode": "TG",
+      "identifiers": [
+        "Africa/Lome"
+      ],
+      "defaultIdentifier": "Africa/Lome",
+      "defaultSource": "Only scoped IANA/CLDR zone"
+    },
+    {
+      "countryCode": "TH",
+      "identifiers": [
+        "Asia/Bangkok"
+      ],
+      "defaultIdentifier": "Asia/Bangkok",
+      "defaultSource": "Only scoped IANA/CLDR zone"
+    },
+    {
+      "countryCode": "TJ",
+      "identifiers": [
+        "Asia/Dushanbe"
+      ],
+      "defaultIdentifier": "Asia/Dushanbe",
+      "defaultSource": "Only scoped IANA/CLDR zone"
+    },
+    {
+      "countryCode": "TK",
+      "identifiers": [
+        "Pacific/Fakaofo"
+      ],
+      "defaultIdentifier": "Pacific/Fakaofo",
+      "defaultSource": "Only scoped IANA/CLDR zone"
+    },
+    {
+      "countryCode": "TL",
+      "identifiers": [
+        "Asia/Dili"
+      ],
+      "defaultIdentifier": "Asia/Dili",
+      "defaultSource": "Only scoped IANA/CLDR zone"
+    },
+    {
+      "countryCode": "TM",
+      "identifiers": [
+        "Asia/Ashgabat"
+      ],
+      "defaultIdentifier": "Asia/Ashgabat",
+      "defaultSource": "Only scoped IANA/CLDR zone"
+    },
+    {
+      "countryCode": "TN",
+      "identifiers": [
+        "Africa/Tunis"
+      ],
+      "defaultIdentifier": "Africa/Tunis",
+      "defaultSource": "Only scoped IANA/CLDR zone"
+    },
+    {
+      "countryCode": "TO",
+      "identifiers": [
+        "Pacific/Tongatapu"
+      ],
+      "defaultIdentifier": "Pacific/Tongatapu",
+      "defaultSource": "Only scoped IANA/CLDR zone"
+    },
+    {
+      "countryCode": "TR",
+      "identifiers": [
+        "Europe/Istanbul"
+      ],
+      "defaultIdentifier": "Europe/Istanbul",
+      "defaultSource": "Only scoped IANA/CLDR zone"
+    },
+    {
+      "countryCode": "TT",
+      "identifiers": [
+        "America/Port_of_Spain"
+      ],
+      "defaultIdentifier": "America/Port_of_Spain",
+      "defaultSource": "Only scoped IANA/CLDR zone"
+    },
+    {
+      "countryCode": "TV",
+      "identifiers": [
+        "Pacific/Funafuti"
+      ],
+      "defaultIdentifier": "Pacific/Funafuti",
+      "defaultSource": "Only scoped IANA/CLDR zone"
+    },
+    {
+      "countryCode": "TW",
+      "identifiers": [
+        "Asia/Taipei"
+      ],
+      "defaultIdentifier": "Asia/Taipei",
+      "defaultSource": "Only scoped IANA/CLDR zone"
+    },
+    {
+      "countryCode": "TZ",
+      "identifiers": [
+        "Africa/Dar_es_Salaam"
+      ],
+      "defaultIdentifier": "Africa/Dar_es_Salaam",
+      "defaultSource": "Only scoped IANA/CLDR zone"
+    },
+    {
+      "countryCode": "UA",
+      "identifiers": [
+        "Europe/Kyiv",
+        "Europe/Simferopol"
+      ],
+      "defaultIdentifier": "Europe/Kyiv",
+      "defaultSource": "GeoNames capital: Kyiv (703448)"
+    },
+    {
+      "countryCode": "UG",
+      "identifiers": [
+        "Africa/Kampala"
+      ],
+      "defaultIdentifier": "Africa/Kampala",
+      "defaultSource": "Only scoped IANA/CLDR zone"
+    },
+    {
+      "countryCode": "UM",
+      "identifiers": [
+        "Pacific/Midway",
+        "Pacific/Wake"
+      ]
+    },
+    {
+      "countryCode": "US",
+      "identifiers": [
+        "America/Adak",
+        "America/Anchorage",
+        "America/Boise",
+        "America/Chicago",
+        "America/Denver",
+        "America/Detroit",
+        "America/Indiana/Indianapolis",
+        "America/Indiana/Knox",
+        "America/Indiana/Marengo",
+        "America/Indiana/Petersburg",
+        "America/Indiana/Tell_City",
+        "America/Indiana/Vevay",
+        "America/Indiana/Vincennes",
+        "America/Indiana/Winamac",
+        "America/Juneau",
+        "America/Kentucky/Louisville",
+        "America/Kentucky/Monticello",
+        "America/Los_Angeles",
+        "America/Menominee",
+        "America/Metlakatla",
+        "America/New_York",
+        "America/Nome",
+        "America/North_Dakota/Beulah",
+        "America/North_Dakota/Center",
+        "America/North_Dakota/New_Salem",
+        "America/Phoenix",
+        "America/Sitka",
+        "America/Yakutat",
+        "Pacific/Honolulu"
+      ],
+      "defaultIdentifier": "America/New_York",
+      "defaultSource": "GeoNames capital: Washington (4140963)"
+    },
+    {
+      "countryCode": "UY",
+      "identifiers": [
+        "America/Montevideo"
+      ],
+      "defaultIdentifier": "America/Montevideo",
+      "defaultSource": "Only scoped IANA/CLDR zone"
+    },
+    {
+      "countryCode": "UZ",
+      "identifiers": [
+        "Asia/Samarkand",
+        "Asia/Tashkent"
+      ],
+      "defaultIdentifier": "Asia/Tashkent",
+      "defaultSource": "GeoNames capital: Tashkent (1512569)"
+    },
+    {
+      "countryCode": "VA",
+      "identifiers": [
+        "Europe/Vatican"
+      ],
+      "defaultIdentifier": "Europe/Vatican",
+      "defaultSource": "Only scoped IANA/CLDR zone"
+    },
+    {
+      "countryCode": "VC",
+      "identifiers": [
+        "America/St_Vincent"
+      ],
+      "defaultIdentifier": "America/St_Vincent",
+      "defaultSource": "Only scoped IANA/CLDR zone"
+    },
+    {
+      "countryCode": "VE",
+      "identifiers": [
+        "America/Caracas"
+      ],
+      "defaultIdentifier": "America/Caracas",
+      "defaultSource": "Only scoped IANA/CLDR zone"
+    },
+    {
+      "countryCode": "VG",
+      "identifiers": [
+        "America/Tortola"
+      ],
+      "defaultIdentifier": "America/Tortola",
+      "defaultSource": "Only scoped IANA/CLDR zone"
+    },
+    {
+      "countryCode": "VI",
+      "identifiers": [
+        "America/St_Thomas"
+      ],
+      "defaultIdentifier": "America/St_Thomas",
+      "defaultSource": "Only scoped IANA/CLDR zone"
+    },
+    {
+      "countryCode": "VN",
+      "identifiers": [
+        "Asia/Bangkok",
+        "Asia/Ho_Chi_Minh"
+      ],
+      "defaultIdentifier": "Asia/Bangkok",
+      "defaultSource": "GeoNames capital: Hanoi (1581130)"
+    },
+    {
+      "countryCode": "VU",
+      "identifiers": [
+        "Pacific/Efate"
+      ],
+      "defaultIdentifier": "Pacific/Efate",
+      "defaultSource": "Only scoped IANA/CLDR zone"
+    },
+    {
+      "countryCode": "WF",
+      "identifiers": [
+        "Pacific/Wallis"
+      ],
+      "defaultIdentifier": "Pacific/Wallis",
+      "defaultSource": "Only scoped IANA/CLDR zone"
+    },
+    {
+      "countryCode": "WS",
+      "identifiers": [
+        "Pacific/Apia"
+      ],
+      "defaultIdentifier": "Pacific/Apia",
+      "defaultSource": "Only scoped IANA/CLDR zone"
+    },
+    {
+      "countryCode": "XK",
+      "identifiers": [
+        "Europe/Belgrade"
+      ],
+      "defaultIdentifier": "Europe/Belgrade",
+      "defaultSource": "Only scoped IANA/CLDR zone"
+    },
+    {
+      "countryCode": "YE",
+      "identifiers": [
+        "Asia/Aden"
+      ],
+      "defaultIdentifier": "Asia/Aden",
+      "defaultSource": "Only scoped IANA/CLDR zone"
+    },
+    {
+      "countryCode": "YT",
+      "identifiers": [
+        "Indian/Mayotte"
+      ],
+      "defaultIdentifier": "Indian/Mayotte",
+      "defaultSource": "Only scoped IANA/CLDR zone"
+    },
+    {
+      "countryCode": "ZA",
+      "identifiers": [
+        "Africa/Johannesburg"
+      ],
+      "defaultIdentifier": "Africa/Johannesburg",
+      "defaultSource": "Only scoped IANA/CLDR zone"
+    },
+    {
+      "countryCode": "ZM",
+      "identifiers": [
+        "Africa/Lusaka"
+      ],
+      "defaultIdentifier": "Africa/Lusaka",
+      "defaultSource": "Only scoped IANA/CLDR zone"
+    },
+    {
+      "countryCode": "ZW",
+      "identifiers": [
+        "Africa/Harare"
+      ],
+      "defaultIdentifier": "Africa/Harare",
+      "defaultSource": "Only scoped IANA/CLDR zone"
+    }
+  ],
+  "destinations": [
+    {
+      "id": "geonames-2267057",
+      "countryCode": "PT",
+      "latitude": 38.7223,
+      "longitude": -9.1393,
+      "identifier": "Europe/Lisbon"
+    },
+    {
+      "id": "geonames-2735943",
+      "countryCode": "PT",
+      "latitude": 41.1579,
+      "longitude": -8.6291,
+      "identifier": "Europe/Lisbon"
+    },
+    {
+      "id": "geonames-2510911",
+      "countryCode": "ES",
+      "latitude": 37.3891,
+      "longitude": -5.9845,
+      "identifier": "Europe/Madrid"
+    },
+    {
+      "id": "geonames-3128760",
+      "countryCode": "ES",
+      "latitude": 41.3874,
+      "longitude": 2.1686,
+      "identifier": "Europe/Madrid"
+    },
+    {
+      "id": "geonames-2988507",
+      "countryCode": "FR",
+      "latitude": 48.8566,
+      "longitude": 2.3522,
+      "identifier": "Europe/Paris"
+    },
+    {
+      "id": "geonames-3169070",
+      "countryCode": "IT",
+      "latitude": 41.9028,
+      "longitude": 12.4964,
+      "identifier": "Europe/Rome"
+    },
+    {
+      "id": "geonames-1850147",
+      "countryCode": "JP",
+      "latitude": 35.6762,
+      "longitude": 139.6503,
+      "identifier": "Asia/Tokyo"
+    },
+    {
+      "id": "geonames-1857910",
+      "countryCode": "JP",
+      "latitude": 35.0116,
+      "longitude": 135.7681,
+      "identifier": "Asia/Tokyo"
+    },
+    {
+      "id": "geonames-2643743",
+      "countryCode": "GB",
+      "latitude": 51.5074,
+      "longitude": -0.1278,
+      "identifier": "Europe/London"
+    },
+    {
+      "id": "geonames-5128581",
+      "countryCode": "US",
+      "latitude": 40.7128,
+      "longitude": -74.006,
+      "identifier": "America/New_York"
+    },
+    {
+      "id": "geonames-2147714",
+      "countryCode": "AU",
+      "latitude": -33.8688,
+      "longitude": 151.2093,
+      "identifier": "Australia/Sydney"
+    },
+    {
+      "id": "geonames-1609350",
+      "countryCode": "TH",
+      "latitude": 13.7563,
+      "longitude": 100.5018,
+      "identifier": "Asia/Bangkok"
+    },
+    {
+      "id": "geonames-1650535",
+      "countryCode": "ID",
+      "latitude": -8.4095,
+      "longitude": 115.1889,
+      "identifier": "Asia/Makassar"
+    },
+    {
+      "id": "geonames-1581130",
+      "countryCode": "VN",
+      "latitude": 21.0278,
+      "longitude": 105.8342,
+      "identifier": "Asia/Bangkok"
+    },
+    {
+      "id": "geonames-2542997",
+      "countryCode": "MA",
+      "latitude": 31.6295,
+      "longitude": -7.9811,
+      "identifier": "Africa/Casablanca"
+    },
+    {
+      "id": "geonames-264371",
+      "countryCode": "GR",
+      "latitude": 37.9838,
+      "longitude": 23.7275,
+      "identifier": "Europe/Athens"
+    },
+    {
+      "id": "geonames-2657928",
+      "countryCode": "CH",
+      "latitude": 46.0207,
+      "longitude": 7.7491,
+      "identifier": "Europe/Zurich"
+    },
+    {
+      "id": "geonames-6173331",
+      "countryCode": "CA",
+      "latitude": 49.2827,
+      "longitude": -123.1207,
+      "identifier": "America/Vancouver"
+    },
+    {
+      "id": "geonames-3530597",
+      "countryCode": "MX",
+      "latitude": 19.4326,
+      "longitude": -99.1332,
+      "identifier": "America/Mexico_City"
+    },
+    {
+      "id": "geonames-1835848",
+      "countryCode": "KR",
+      "latitude": 37.5665,
+      "longitude": 126.978,
+      "identifier": "Asia/Seoul"
+    },
+    {
+      "id": "geonames-292223",
+      "countryCode": "AE",
+      "latitude": 25.2048,
+      "longitude": 55.2708,
+      "identifier": "Asia/Dubai"
+    },
+    {
+      "id": "geonames-2193733",
+      "countryCode": "NZ",
+      "latitude": -36.8509,
+      "longitude": 174.7645,
+      "identifier": "Pacific/Auckland"
+    },
+    {
+      "id": "geonames-1668341",
+      "countryCode": "TW",
+      "latitude": 25.05306,
+      "longitude": 121.52639,
+      "identifier": "Asia/Taipei"
+    },
+    {
+      "id": "geonames-1668399",
+      "countryCode": "TW",
+      "latitude": 24.1469,
+      "longitude": 120.6839,
+      "identifier": "Asia/Taipei"
+    },
+    {
+      "id": "geonames-1673820",
+      "countryCode": "TW",
+      "latitude": 22.61626,
+      "longitude": 120.31333,
+      "identifier": "Asia/Taipei"
+    },
+    {
+      "id": "geonames-1668355",
+      "countryCode": "TW",
+      "latitude": 22.99259,
+      "longitude": 120.20507,
+      "identifier": "Asia/Taipei"
+    },
+    {
+      "id": "geonames-3041563",
+      "countryCode": "AD",
+      "latitude": 42.50779,
+      "longitude": 1.52109,
+      "identifier": "Europe/Andorra"
+    },
+    {
+      "id": "geonames-292968",
+      "countryCode": "AE",
+      "latitude": 24.45118,
+      "longitude": 54.39696,
+      "identifier": "Asia/Dubai"
+    },
+    {
+      "id": "geonames-1138958",
+      "countryCode": "AF",
+      "latitude": 34.52813,
+      "longitude": 69.17233,
+      "identifier": "Asia/Kabul"
+    },
+    {
+      "id": "geonames-3576022",
+      "countryCode": "AG",
+      "latitude": 17.12096,
+      "longitude": -61.84329,
+      "identifier": "America/Antigua"
+    },
+    {
+      "id": "geonames-3573374",
+      "countryCode": "AI",
+      "latitude": 18.21704,
+      "longitude": -63.05783,
+      "identifier": "America/Anguilla"
+    },
+    {
+      "id": "geonames-3183875",
+      "countryCode": "AL",
+      "latitude": 41.32744,
+      "longitude": 19.81866,
+      "identifier": "Europe/Tirane"
+    },
+    {
+      "id": "geonames-616052",
+      "countryCode": "AM",
+      "latitude": 40.17765,
+      "longitude": 44.5126,
+      "identifier": "Asia/Yerevan"
+    },
+    {
+      "id": "geonames-2240449",
+      "countryCode": "AO",
+      "latitude": -8.83682,
+      "longitude": 13.23432,
+      "identifier": "Africa/Luanda"
+    },
+    {
+      "id": "geonames-3435910",
+      "countryCode": "AR",
+      "latitude": -34.61315,
+      "longitude": -58.37723,
+      "identifier": "America/Argentina/Buenos_Aires"
+    },
+    {
+      "id": "geonames-5881576",
+      "countryCode": "AS",
+      "latitude": -14.27806,
+      "longitude": -170.7025,
+      "identifier": "Pacific/Pago_Pago"
+    },
+    {
+      "id": "geonames-2761369",
+      "countryCode": "AT",
+      "latitude": 48.20849,
+      "longitude": 16.37208,
+      "identifier": "Europe/Vienna"
+    },
+    {
+      "id": "geonames-2172517",
+      "countryCode": "AU",
+      "latitude": -35.28346,
+      "longitude": 149.12807,
+      "identifier": "Australia/Sydney"
+    },
+    {
+      "id": "geonames-3577154",
+      "countryCode": "AW",
+      "latitude": 12.52398,
+      "longitude": -70.02703,
+      "identifier": "America/Aruba"
+    },
+    {
+      "id": "geonames-3041732",
+      "countryCode": "AX",
+      "latitude": 60.09726,
+      "longitude": 19.93481,
+      "identifier": "Europe/Mariehamn"
+    },
+    {
+      "id": "geonames-587084",
+      "countryCode": "AZ",
+      "latitude": 40.37767,
+      "longitude": 49.89201,
+      "identifier": "Asia/Baku"
+    },
+    {
+      "id": "geonames-3191281",
+      "countryCode": "BA",
+      "latitude": 43.84864,
+      "longitude": 18.35644,
+      "identifier": "Europe/Sarajevo"
+    },
+    {
+      "id": "geonames-3374036",
+      "countryCode": "BB",
+      "latitude": 13.10732,
+      "longitude": -59.62021,
+      "identifier": "America/Barbados"
+    },
+    {
+      "id": "geonames-1185241",
+      "countryCode": "BD",
+      "latitude": 23.7104,
+      "longitude": 90.40744,
+      "identifier": "Asia/Dhaka"
+    },
+    {
+      "id": "geonames-2800866",
+      "countryCode": "BE",
+      "latitude": 50.85045,
+      "longitude": 4.34878,
+      "identifier": "Europe/Brussels"
+    },
+    {
+      "id": "geonames-2357048",
+      "countryCode": "BF",
+      "latitude": 12.36566,
+      "longitude": -1.53388,
+      "identifier": "Africa/Ouagadougou"
+    },
+    {
+      "id": "geonames-727011",
+      "countryCode": "BG",
+      "latitude": 42.69751,
+      "longitude": 23.32415,
+      "identifier": "Europe/Sofia"
+    },
+    {
+      "id": "geonames-290340",
+      "countryCode": "BH",
+      "latitude": 26.22787,
+      "longitude": 50.58565,
+      "identifier": "Asia/Bahrain"
+    },
+    {
+      "id": "geonames-426272",
+      "countryCode": "BI",
+      "latitude": -3.42708,
+      "longitude": 29.92463,
+      "identifier": "Africa/Bujumbura"
+    },
+    {
+      "id": "geonames-2392087",
+      "countryCode": "BJ",
+      "latitude": 6.49646,
+      "longitude": 2.60359,
+      "identifier": "Africa/Porto-Novo"
+    },
+    {
+      "id": "geonames-3579132",
+      "countryCode": "BL",
+      "latitude": 17.89618,
+      "longitude": -62.84978,
+      "identifier": "America/St_Barthelemy"
+    },
+    {
+      "id": "geonames-3573197",
+      "countryCode": "BM",
+      "latitude": 32.2949,
+      "longitude": -64.78303,
+      "identifier": "Atlantic/Bermuda"
+    },
+    {
+      "id": "geonames-1820906",
+      "countryCode": "BN",
+      "latitude": 4.89035,
+      "longitude": 114.94006,
+      "identifier": "Asia/Brunei"
+    },
+    {
+      "id": "geonames-3903987",
+      "countryCode": "BO",
+      "latitude": -19.03332,
+      "longitude": -65.26274,
+      "identifier": "America/La_Paz"
+    },
+    {
+      "id": "geonames-3513563",
+      "countryCode": "BQ",
+      "latitude": 12.15,
+      "longitude": -68.26667,
+      "identifier": "America/Kralendijk"
+    },
+    {
+      "id": "geonames-3469058",
+      "countryCode": "BR",
+      "latitude": -15.77972,
+      "longitude": -47.92972,
+      "identifier": "America/Sao_Paulo"
+    },
+    {
+      "id": "geonames-3571824",
+      "countryCode": "BS",
+      "latitude": 25.05823,
+      "longitude": -77.34306,
+      "identifier": "America/Nassau"
+    },
+    {
+      "id": "geonames-1252416",
+      "countryCode": "BT",
+      "latitude": 27.46609,
+      "longitude": 89.64191,
+      "identifier": "Asia/Thimphu"
+    },
+    {
+      "id": "geonames-933773",
+      "countryCode": "BW",
+      "latitude": -24.65451,
+      "longitude": 25.90859,
+      "identifier": "Africa/Gaborone"
+    },
+    {
+      "id": "geonames-625144",
+      "countryCode": "BY",
+      "latitude": 53.90019,
+      "longitude": 27.56653,
+      "identifier": "Europe/Minsk"
+    },
+    {
+      "id": "geonames-3582672",
+      "countryCode": "BZ",
+      "latitude": 17.25376,
+      "longitude": -88.76401,
+      "identifier": "America/Belize"
+    },
+    {
+      "id": "geonames-6094817",
+      "countryCode": "CA",
+      "latitude": 45.41117,
+      "longitude": -75.69812,
+      "identifier": "America/Toronto"
+    },
+    {
+      "id": "geonames-7304591",
+      "countryCode": "CC",
+      "latitude": -12.15681,
+      "longitude": 96.82251,
+      "identifier": "Indian/Cocos"
+    },
+    {
+      "id": "geonames-2314302",
+      "countryCode": "CD",
+      "latitude": -4.32758,
+      "longitude": 15.31357,
+      "identifier": "Africa/Kinshasa"
+    },
+    {
+      "id": "geonames-2389853",
+      "countryCode": "CF",
+      "latitude": 4.36122,
+      "longitude": 18.55496,
+      "identifier": "Africa/Bangui"
+    },
+    {
+      "id": "geonames-2260535",
+      "countryCode": "CG",
+      "latitude": -4.26613,
+      "longitude": 15.28318,
+      "identifier": "Africa/Brazzaville"
+    },
+    {
+      "id": "geonames-2661552",
+      "countryCode": "CH",
+      "latitude": 46.94809,
+      "longitude": 7.44744,
+      "identifier": "Europe/Zurich"
+    },
+    {
+      "id": "geonames-2279755",
+      "countryCode": "CI",
+      "latitude": 6.82055,
+      "longitude": -5.27674,
+      "identifier": "Africa/Abidjan"
+    },
+    {
+      "id": "geonames-4035715",
+      "countryCode": "CK",
+      "latitude": -21.2075,
+      "longitude": -159.77546,
+      "identifier": "Pacific/Rarotonga"
+    },
+    {
+      "id": "geonames-3871336",
+      "countryCode": "CL",
+      "latitude": -33.45694,
+      "longitude": -70.64827,
+      "identifier": "America/Santiago"
+    },
+    {
+      "id": "geonames-2220957",
+      "countryCode": "CM",
+      "latitude": 3.86667,
+      "longitude": 11.51667,
+      "identifier": "Africa/Douala"
+    },
+    {
+      "id": "geonames-1816670",
+      "countryCode": "CN",
+      "latitude": 39.9075,
+      "longitude": 116.39723,
+      "identifier": "Asia/Shanghai"
+    },
+    {
+      "id": "geonames-3688689",
+      "countryCode": "CO",
+      "latitude": 4.60971,
+      "longitude": -74.08175,
+      "identifier": "America/Bogota"
+    },
+    {
+      "id": "geonames-3621849",
+      "countryCode": "CR",
+      "latitude": 9.93388,
+      "longitude": -84.08489,
+      "identifier": "America/Costa_Rica"
+    },
+    {
+      "id": "geonames-3553478",
+      "countryCode": "CU",
+      "latitude": 23.13302,
+      "longitude": -82.38304,
+      "identifier": "America/Havana"
+    },
+    {
+      "id": "geonames-3374333",
+      "countryCode": "CV",
+      "latitude": 14.93152,
+      "longitude": -23.51254,
+      "identifier": "Atlantic/Cape_Verde"
+    },
+    {
+      "id": "geonames-3513090",
+      "countryCode": "CW",
+      "latitude": 12.12246,
+      "longitude": -68.88641,
+      "identifier": "America/Curacao"
+    },
+    {
+      "id": "geonames-2078127",
+      "countryCode": "CX",
+      "latitude": -10.42172,
+      "longitude": 105.67912,
+      "identifier": "Indian/Christmas"
+    },
+    {
+      "id": "geonames-146268",
+      "countryCode": "CY",
+      "latitude": 35.17284,
+      "longitude": 33.35397,
+      "identifier": "Asia/Nicosia"
+    },
+    {
+      "id": "geonames-3067696",
+      "countryCode": "CZ",
+      "latitude": 50.08804,
+      "longitude": 14.42076,
+      "identifier": "Europe/Prague"
+    },
+    {
+      "id": "geonames-2950159",
+      "countryCode": "DE",
+      "latitude": 52.52437,
+      "longitude": 13.41053,
+      "identifier": "Europe/Berlin"
+    },
+    {
+      "id": "geonames-223817",
+      "countryCode": "DJ",
+      "latitude": 11.58901,
+      "longitude": 43.14503,
+      "identifier": "Africa/Djibouti"
+    },
+    {
+      "id": "geonames-2618425",
+      "countryCode": "DK",
+      "latitude": 55.67594,
+      "longitude": 12.56553,
+      "identifier": "Europe/Copenhagen"
+    },
+    {
+      "id": "geonames-3575635",
+      "countryCode": "DM",
+      "latitude": 15.30174,
+      "longitude": -61.38808,
+      "identifier": "America/Dominica"
+    },
+    {
+      "id": "geonames-3492908",
+      "countryCode": "DO",
+      "latitude": 18.47186,
+      "longitude": -69.89232,
+      "identifier": "America/Santo_Domingo"
+    },
+    {
+      "id": "geonames-2507480",
+      "countryCode": "DZ",
+      "latitude": 36.73225,
+      "longitude": 3.08746,
+      "identifier": "Africa/Algiers"
+    },
+    {
+      "id": "geonames-3652462",
+      "countryCode": "EC",
+      "latitude": -0.22985,
+      "longitude": -78.52495,
+      "identifier": "America/Guayaquil"
+    },
+    {
+      "id": "geonames-588409",
+      "countryCode": "EE",
+      "latitude": 59.43696,
+      "longitude": 24.75353,
+      "identifier": "Europe/Tallinn"
+    },
+    {
+      "id": "geonames-360630",
+      "countryCode": "EG",
+      "latitude": 30.06263,
+      "longitude": 31.24967,
+      "identifier": "Africa/Cairo"
+    },
+    {
+      "id": "geonames-343300",
+      "countryCode": "ER",
+      "latitude": 15.33805,
+      "longitude": 38.93184,
+      "identifier": "Africa/Asmara"
+    },
+    {
+      "id": "geonames-3117735",
+      "countryCode": "ES",
+      "latitude": 40.4165,
+      "longitude": -3.70256,
+      "identifier": "Europe/Madrid"
+    },
+    {
+      "id": "geonames-344979",
+      "countryCode": "ET",
+      "latitude": 9.02497,
+      "longitude": 38.74689,
+      "identifier": "Africa/Addis_Ababa"
+    },
+    {
+      "id": "geonames-658225",
+      "countryCode": "FI",
+      "latitude": 60.16952,
+      "longitude": 24.93545,
+      "identifier": "Europe/Helsinki"
+    },
+    {
+      "id": "geonames-2198148",
+      "countryCode": "FJ",
+      "latitude": -18.13683,
+      "longitude": 178.42531,
+      "identifier": "Pacific/Fiji"
+    },
+    {
+      "id": "geonames-3426691",
+      "countryCode": "FK",
+      "latitude": -51.69382,
+      "longitude": -57.85701,
+      "identifier": "Atlantic/Stanley"
+    },
+    {
+      "id": "geonames-2081986",
+      "countryCode": "FM",
+      "latitude": 6.92477,
+      "longitude": 158.16109,
+      "identifier": "Pacific/Pohnpei"
+    },
+    {
+      "id": "geonames-2611396",
+      "countryCode": "FO",
+      "latitude": 62.00973,
+      "longitude": -6.77164,
+      "identifier": "Atlantic/Faroe"
+    },
+    {
+      "id": "geonames-2399697",
+      "countryCode": "GA",
+      "latitude": 0.39241,
+      "longitude": 9.45356,
+      "identifier": "Africa/Libreville"
+    },
+    {
+      "id": "geonames-3579925",
+      "countryCode": "GD",
+      "latitude": 12.05288,
+      "longitude": -61.75226,
+      "identifier": "America/Grenada"
+    },
+    {
+      "id": "geonames-611717",
+      "countryCode": "GE",
+      "latitude": 41.69143,
+      "longitude": 44.83412,
+      "identifier": "Asia/Tbilisi"
+    },
+    {
+      "id": "geonames-3382160",
+      "countryCode": "GF",
+      "latitude": 4.9381,
+      "longitude": -52.33455,
+      "identifier": "America/Cayenne"
+    },
+    {
+      "id": "geonames-3042287",
+      "countryCode": "GG",
+      "latitude": 49.45981,
+      "longitude": -2.53527,
+      "identifier": "Europe/Guernsey"
+    },
+    {
+      "id": "geonames-2306104",
+      "countryCode": "GH",
+      "latitude": 5.55602,
+      "longitude": -0.1969,
+      "identifier": "Africa/Accra"
+    },
+    {
+      "id": "geonames-2411585",
+      "countryCode": "GI",
+      "latitude": 36.14474,
+      "longitude": -5.35257,
+      "identifier": "Europe/Gibraltar"
+    },
+    {
+      "id": "geonames-3421319",
+      "countryCode": "GL",
+      "latitude": 64.18347,
+      "longitude": -51.72157,
+      "identifier": "America/Nuuk"
+    },
+    {
+      "id": "geonames-2413876",
+      "countryCode": "GM",
+      "latitude": 13.45274,
+      "longitude": -16.57803,
+      "identifier": "Africa/Banjul"
+    },
+    {
+      "id": "geonames-2422465",
+      "countryCode": "GN",
+      "latitude": 9.53795,
+      "longitude": -13.67729,
+      "identifier": "Africa/Conakry"
+    },
+    {
+      "id": "geonames-3579732",
+      "countryCode": "GP",
+      "latitude": 15.99714,
+      "longitude": -61.73214,
+      "identifier": "America/Guadeloupe"
+    },
+    {
+      "id": "geonames-12226438",
+      "countryCode": "GQ",
+      "latitude": 1.5925,
+      "longitude": 10.82361,
+      "identifier": "Africa/Malabo"
+    },
+    {
+      "id": "geonames-3426466",
+      "countryCode": "GS",
+      "latitude": -54.28111,
+      "longitude": -36.5092,
+      "identifier": "Atlantic/South_Georgia"
+    },
+    {
+      "id": "geonames-3598132",
+      "countryCode": "GT",
+      "latitude": 14.64072,
+      "longitude": -90.51327,
+      "identifier": "America/Guatemala"
+    },
+    {
+      "id": "geonames-4044012",
+      "countryCode": "GU",
+      "latitude": 13.47567,
+      "longitude": 144.74886,
+      "identifier": "Pacific/Guam"
+    },
+    {
+      "id": "geonames-2374775",
+      "countryCode": "GW",
+      "latitude": 11.86357,
+      "longitude": -15.59767,
+      "identifier": "Africa/Bissau"
+    },
+    {
+      "id": "geonames-3378644",
+      "countryCode": "GY",
+      "latitude": 6.80448,
+      "longitude": -58.15527,
+      "identifier": "America/Guyana"
+    },
+    {
+      "id": "geonames-1819729",
+      "countryCode": "HK",
+      "latitude": 22.27832,
+      "longitude": 114.17469,
+      "identifier": "Asia/Hong_Kong"
+    },
+    {
+      "id": "geonames-3600949",
+      "countryCode": "HN",
+      "latitude": 14.0818,
+      "longitude": -87.20681,
+      "identifier": "America/Tegucigalpa"
+    },
+    {
+      "id": "geonames-3186886",
+      "countryCode": "HR",
+      "latitude": 45.81444,
+      "longitude": 15.97798,
+      "identifier": "Europe/Zagreb"
+    },
+    {
+      "id": "geonames-3718426",
+      "countryCode": "HT",
+      "latitude": 18.54349,
+      "longitude": -72.33881,
+      "identifier": "America/Port-au-Prince"
+    },
+    {
+      "id": "geonames-3054643",
+      "countryCode": "HU",
+      "latitude": 47.49835,
+      "longitude": 19.04045,
+      "identifier": "Europe/Budapest"
+    },
+    {
+      "id": "geonames-1642911",
+      "countryCode": "ID",
+      "latitude": -6.21462,
+      "longitude": 106.84513,
+      "identifier": "Asia/Jakarta"
+    },
+    {
+      "id": "geonames-2964574",
+      "countryCode": "IE",
+      "latitude": 53.33306,
+      "longitude": -6.24889,
+      "identifier": "Europe/Dublin"
+    },
+    {
+      "id": "geonames-3042237",
+      "countryCode": "IM",
+      "latitude": 54.15,
+      "longitude": -4.48333,
+      "identifier": "Europe/Isle_of_Man"
+    },
+    {
+      "id": "geonames-1261481",
+      "countryCode": "IN",
+      "latitude": 28.62137,
+      "longitude": 77.2148,
+      "identifier": "Asia/Kolkata"
+    },
+    {
+      "id": "geonames-98182",
+      "countryCode": "IQ",
+      "latitude": 33.34058,
+      "longitude": 44.40088,
+      "identifier": "Asia/Baghdad"
+    },
+    {
+      "id": "geonames-112931",
+      "countryCode": "IR",
+      "latitude": 35.69439,
+      "longitude": 51.42151,
+      "identifier": "Asia/Tehran"
+    },
+    {
+      "id": "geonames-3413829",
+      "countryCode": "IS",
+      "latitude": 64.13548,
+      "longitude": -21.89541,
+      "identifier": "Atlantic/Reykjavik"
+    },
+    {
+      "id": "geonames-3042091",
+      "countryCode": "JE",
+      "latitude": 49.18804,
+      "longitude": -2.10491,
+      "identifier": "Europe/Jersey"
+    },
+    {
+      "id": "geonames-3489854",
+      "countryCode": "JM",
+      "latitude": 17.99702,
+      "longitude": -76.79358,
+      "identifier": "America/Jamaica"
+    },
+    {
+      "id": "geonames-250441",
+      "countryCode": "JO",
+      "latitude": 31.95522,
+      "longitude": 35.94503,
+      "identifier": "Asia/Amman"
+    },
+    {
+      "id": "geonames-184745",
+      "countryCode": "KE",
+      "latitude": -1.28333,
+      "longitude": 36.81667,
+      "identifier": "Africa/Nairobi"
+    },
+    {
+      "id": "geonames-1528675",
+      "countryCode": "KG",
+      "latitude": 42.87,
+      "longitude": 74.59,
+      "identifier": "Asia/Bishkek"
+    },
+    {
+      "id": "geonames-1821306",
+      "countryCode": "KH",
+      "latitude": 11.56245,
+      "longitude": 104.91601,
+      "identifier": "Asia/Phnom_Penh"
+    },
+    {
+      "id": "geonames-2110257",
+      "countryCode": "KI",
+      "latitude": 1.3278,
+      "longitude": 172.97696,
+      "identifier": "Pacific/Tarawa"
+    },
+    {
+      "id": "geonames-921772",
+      "countryCode": "KM",
+      "latitude": -11.70216,
+      "longitude": 43.25506,
+      "identifier": "Indian/Comoro"
+    },
+    {
+      "id": "geonames-3575551",
+      "countryCode": "KN",
+      "latitude": 17.2955,
+      "longitude": -62.72499,
+      "identifier": "America/St_Kitts"
+    },
+    {
+      "id": "geonames-1871859",
+      "countryCode": "KP",
+      "latitude": 39.03385,
+      "longitude": 125.75432,
+      "identifier": "Asia/Pyongyang"
+    },
+    {
+      "id": "geonames-285787",
+      "countryCode": "KW",
+      "latitude": 29.367,
+      "longitude": 47.97429,
+      "identifier": "Asia/Kuwait"
+    },
+    {
+      "id": "geonames-3580661",
+      "countryCode": "KY",
+      "latitude": 19.2866,
+      "longitude": -81.37436,
+      "identifier": "America/Cayman"
+    },
+    {
+      "id": "geonames-1526273",
+      "countryCode": "KZ",
+      "latitude": 51.1801,
+      "longitude": 71.44598,
+      "identifier": "Asia/Almaty"
+    },
+    {
+      "id": "geonames-1651944",
+      "countryCode": "LA",
+      "latitude": 17.96667,
+      "longitude": 102.6,
+      "identifier": "Asia/Vientiane"
+    },
+    {
+      "id": "geonames-276781",
+      "countryCode": "LB",
+      "latitude": 33.89332,
+      "longitude": 35.50157,
+      "identifier": "Asia/Beirut"
+    },
+    {
+      "id": "geonames-3576812",
+      "countryCode": "LC",
+      "latitude": 13.9957,
+      "longitude": -61.00614,
+      "identifier": "America/St_Lucia"
+    },
+    {
+      "id": "geonames-3042030",
+      "countryCode": "LI",
+      "latitude": 47.14151,
+      "longitude": 9.52154,
+      "identifier": "Europe/Vaduz"
+    },
+    {
+      "id": "geonames-1248991",
+      "countryCode": "LK",
+      "latitude": 6.93548,
+      "longitude": 79.84868,
+      "identifier": "Asia/Colombo"
+    },
+    {
+      "id": "geonames-2274895",
+      "countryCode": "LR",
+      "latitude": 6.30054,
+      "longitude": -10.7969,
+      "identifier": "Africa/Monrovia"
+    },
+    {
+      "id": "geonames-932505",
+      "countryCode": "LS",
+      "latitude": -29.31667,
+      "longitude": 27.48333,
+      "identifier": "Africa/Maseru"
+    },
+    {
+      "id": "geonames-593116",
+      "countryCode": "LT",
+      "latitude": 54.68916,
+      "longitude": 25.2798,
+      "identifier": "Europe/Vilnius"
+    },
+    {
+      "id": "geonames-2960316",
+      "countryCode": "LU",
+      "latitude": 49.60982,
+      "longitude": 6.13268,
+      "identifier": "Europe/Luxembourg"
+    },
+    {
+      "id": "geonames-456172",
+      "countryCode": "LV",
+      "latitude": 56.946,
+      "longitude": 24.10589,
+      "identifier": "Europe/Riga"
+    },
+    {
+      "id": "geonames-2210247",
+      "countryCode": "LY",
+      "latitude": 32.88743,
+      "longitude": 13.18733,
+      "identifier": "Africa/Tripoli"
+    },
+    {
+      "id": "geonames-2538475",
+      "countryCode": "MA",
+      "latitude": 34.01325,
+      "longitude": -6.83255,
+      "identifier": "Africa/Casablanca"
+    },
+    {
+      "id": "geonames-2993458",
+      "countryCode": "MC",
+      "latitude": 43.73718,
+      "longitude": 7.42145,
+      "identifier": "Europe/Monaco"
+    },
+    {
+      "id": "geonames-618426",
+      "countryCode": "MD",
+      "latitude": 47.00902,
+      "longitude": 28.85938,
+      "identifier": "Europe/Chisinau"
+    },
+    {
+      "id": "geonames-3193044",
+      "countryCode": "ME",
+      "latitude": 42.44124,
+      "longitude": 19.26309,
+      "identifier": "Europe/Podgorica"
+    },
+    {
+      "id": "geonames-3578851",
+      "countryCode": "MF",
+      "latitude": 18.06819,
+      "longitude": -63.08302,
+      "identifier": "America/Marigot"
+    },
+    {
+      "id": "geonames-1070940",
+      "countryCode": "MG",
+      "latitude": -18.91368,
+      "longitude": 47.53613,
+      "identifier": "Indian/Antananarivo"
+    },
+    {
+      "id": "geonames-2113779",
+      "countryCode": "MH",
+      "latitude": 7.08971,
+      "longitude": 171.38027,
+      "identifier": "Pacific/Majuro"
+    },
+    {
+      "id": "geonames-785842",
+      "countryCode": "MK",
+      "latitude": 41.99646,
+      "longitude": 21.43141,
+      "identifier": "Europe/Skopje"
+    },
+    {
+      "id": "geonames-2460596",
+      "countryCode": "ML",
+      "latitude": 12.60915,
+      "longitude": -7.97522,
+      "identifier": "Africa/Bamako"
+    },
+    {
+      "id": "geonames-6611854",
+      "countryCode": "MM",
+      "latitude": 19.745,
+      "longitude": 96.12972,
+      "identifier": "Asia/Yangon"
+    },
+    {
+      "id": "geonames-2028462",
+      "countryCode": "MN",
+      "latitude": 47.90771,
+      "longitude": 106.88324,
+      "identifier": "Asia/Ulaanbaatar"
+    },
+    {
+      "id": "geonames-1821274",
+      "countryCode": "MO",
+      "latitude": 22.20056,
+      "longitude": 113.54611,
+      "identifier": "Asia/Macau"
+    },
+    {
+      "id": "geonames-7828758",
+      "countryCode": "MP",
+      "latitude": 15.21233,
+      "longitude": 145.7545,
+      "identifier": "Pacific/Saipan"
+    },
+    {
+      "id": "geonames-3570675",
+      "countryCode": "MQ",
+      "latitude": 14.60365,
+      "longitude": -61.07418,
+      "identifier": "America/Martinique"
+    },
+    {
+      "id": "geonames-2377450",
+      "countryCode": "MR",
+      "latitude": 18.08581,
+      "longitude": -15.9785,
+      "identifier": "Africa/Nouakchott"
+    },
+    {
+      "id": "geonames-3578069",
+      "countryCode": "MS",
+      "latitude": 16.70555,
+      "longitude": -62.21292,
+      "identifier": "America/Montserrat"
+    },
+    {
+      "id": "geonames-2562305",
+      "countryCode": "MT",
+      "latitude": 35.89968,
+      "longitude": 14.5148,
+      "identifier": "Europe/Malta"
+    },
+    {
+      "id": "geonames-934154",
+      "countryCode": "MU",
+      "latitude": -20.16194,
+      "longitude": 57.49889,
+      "identifier": "Indian/Mauritius"
+    },
+    {
+      "id": "geonames-1282027",
+      "countryCode": "MV",
+      "latitude": 4.17521,
+      "longitude": 73.50916,
+      "identifier": "Indian/Maldives"
+    },
+    {
+      "id": "geonames-927967",
+      "countryCode": "MW",
+      "latitude": -13.96692,
+      "longitude": 33.78725,
+      "identifier": "Africa/Blantyre"
+    },
+    {
+      "id": "geonames-1735161",
+      "countryCode": "MY",
+      "latitude": 3.1412,
+      "longitude": 101.68653,
+      "identifier": "Asia/Kuala_Lumpur"
+    },
+    {
+      "id": "geonames-1040652",
+      "countryCode": "MZ",
+      "latitude": -25.96553,
+      "longitude": 32.58322,
+      "identifier": "Africa/Maputo"
+    },
+    {
+      "id": "geonames-3352136",
+      "countryCode": "NA",
+      "latitude": -22.55941,
+      "longitude": 17.08323,
+      "identifier": "Africa/Windhoek"
+    },
+    {
+      "id": "geonames-2139521",
+      "countryCode": "NC",
+      "latitude": -22.27407,
+      "longitude": 166.44884,
+      "identifier": "Pacific/Noumea"
+    },
+    {
+      "id": "geonames-2440485",
+      "countryCode": "NE",
+      "latitude": 13.51366,
+      "longitude": 2.1098,
+      "identifier": "Africa/Niamey"
+    },
+    {
+      "id": "geonames-2161314",
+      "countryCode": "NF",
+      "latitude": -29.05459,
+      "longitude": 167.96628,
+      "identifier": "Pacific/Norfolk"
+    },
+    {
+      "id": "geonames-2352778",
+      "countryCode": "NG",
+      "latitude": 9.05785,
+      "longitude": 7.49508,
+      "identifier": "Africa/Lagos"
+    },
+    {
+      "id": "geonames-3617763",
+      "countryCode": "NI",
+      "latitude": 12.13282,
+      "longitude": -86.2504,
+      "identifier": "America/Managua"
+    },
+    {
+      "id": "geonames-2759794",
+      "countryCode": "NL",
+      "latitude": 52.37403,
+      "longitude": 4.88969,
+      "identifier": "Europe/Amsterdam"
+    },
+    {
+      "id": "geonames-3143244",
+      "countryCode": "NO",
+      "latitude": 59.91273,
+      "longitude": 10.74609,
+      "identifier": "Europe/Oslo"
+    },
+    {
+      "id": "geonames-1283240",
+      "countryCode": "NP",
+      "latitude": 27.70169,
+      "longitude": 85.3206,
+      "identifier": "Asia/Kathmandu"
+    },
+    {
+      "id": "geonames-7626461",
+      "countryCode": "NR",
+      "latitude": -0.55085,
+      "longitude": 166.9252,
+      "identifier": "Pacific/Nauru"
+    },
+    {
+      "id": "geonames-4036284",
+      "countryCode": "NU",
+      "latitude": -19.05294,
+      "longitude": -169.91957,
+      "identifier": "Pacific/Niue"
+    },
+    {
+      "id": "geonames-2179537",
+      "countryCode": "NZ",
+      "latitude": -41.28664,
+      "longitude": 174.77557,
+      "identifier": "Pacific/Auckland"
+    },
+    {
+      "id": "geonames-287286",
+      "countryCode": "OM",
+      "latitude": 23.58413,
+      "longitude": 58.40778,
+      "identifier": "Asia/Muscat"
+    },
+    {
+      "id": "geonames-3703443",
+      "countryCode": "PA",
+      "latitude": 8.9936,
+      "longitude": -79.51973,
+      "identifier": "America/Panama"
+    },
+    {
+      "id": "geonames-3936456",
+      "countryCode": "PE",
+      "latitude": -12.04318,
+      "longitude": -77.02824,
+      "identifier": "America/Lima"
+    },
+    {
+      "id": "geonames-4033936",
+      "countryCode": "PF",
+      "latitude": -17.5347,
+      "longitude": -149.56843,
+      "identifier": "Pacific/Tahiti"
+    },
+    {
+      "id": "geonames-2088122",
+      "countryCode": "PG",
+      "latitude": -9.47723,
+      "longitude": 147.15089,
+      "identifier": "Pacific/Port_Moresby"
+    },
+    {
+      "id": "geonames-1701668",
+      "countryCode": "PH",
+      "latitude": 14.6042,
+      "longitude": 120.9822,
+      "identifier": "Asia/Manila"
+    },
+    {
+      "id": "geonames-1176615",
+      "countryCode": "PK",
+      "latitude": 33.72148,
+      "longitude": 73.04329,
+      "identifier": "Asia/Karachi"
+    },
+    {
+      "id": "geonames-756135",
+      "countryCode": "PL",
+      "latitude": 52.22977,
+      "longitude": 21.01178,
+      "identifier": "Europe/Warsaw"
+    },
+    {
+      "id": "geonames-3424934",
+      "countryCode": "PM",
+      "latitude": 46.77914,
+      "longitude": -56.1773,
+      "identifier": "America/Miquelon"
+    },
+    {
+      "id": "geonames-4030723",
+      "countryCode": "PN",
+      "latitude": -25.06597,
+      "longitude": -130.10147,
+      "identifier": "Pacific/Pitcairn"
+    },
+    {
+      "id": "geonames-4568127",
+      "countryCode": "PR",
+      "latitude": 18.46633,
+      "longitude": -66.10572,
+      "identifier": "America/Puerto_Rico"
+    },
+    {
+      "id": "geonames-8063361",
+      "countryCode": "PW",
+      "latitude": 7.50077,
+      "longitude": 134.6238,
+      "identifier": "Pacific/Palau"
+    },
+    {
+      "id": "geonames-3439389",
+      "countryCode": "PY",
+      "latitude": -25.28646,
+      "longitude": -57.647,
+      "identifier": "America/Asuncion"
+    },
+    {
+      "id": "geonames-290030",
+      "countryCode": "QA",
+      "latitude": 25.28545,
+      "longitude": 51.53096,
+      "identifier": "Asia/Qatar"
+    },
+    {
+      "id": "geonames-935264",
+      "countryCode": "RE",
+      "latitude": -20.88231,
+      "longitude": 55.4504,
+      "identifier": "Indian/Reunion"
+    },
+    {
+      "id": "geonames-683506",
+      "countryCode": "RO",
+      "latitude": 44.43225,
+      "longitude": 26.10626,
+      "identifier": "Europe/Bucharest"
+    },
+    {
+      "id": "geonames-792680",
+      "countryCode": "RS",
+      "latitude": 44.80401,
+      "longitude": 20.46513,
+      "identifier": "Europe/Belgrade"
+    },
+    {
+      "id": "geonames-524901",
+      "countryCode": "RU",
+      "latitude": 55.75204,
+      "longitude": 37.61781,
+      "identifier": "Europe/Moscow"
+    },
+    {
+      "id": "geonames-202061",
+      "countryCode": "RW",
+      "latitude": -1.94995,
+      "longitude": 30.05885,
+      "identifier": "Africa/Kigali"
+    },
+    {
+      "id": "geonames-108410",
+      "countryCode": "SA",
+      "latitude": 24.68773,
+      "longitude": 46.72185,
+      "identifier": "Asia/Riyadh"
+    },
+    {
+      "id": "geonames-2108502",
+      "countryCode": "SB",
+      "latitude": -9.43333,
+      "longitude": 159.95,
+      "identifier": "Pacific/Guadalcanal"
+    },
+    {
+      "id": "geonames-241131",
+      "countryCode": "SC",
+      "latitude": -4.62001,
+      "longitude": 55.45501,
+      "identifier": "Indian/Mahe"
+    },
+    {
+      "id": "geonames-379252",
+      "countryCode": "SD",
+      "latitude": 15.55177,
+      "longitude": 32.53241,
+      "identifier": "Africa/Khartoum"
+    },
+    {
+      "id": "geonames-2673730",
+      "countryCode": "SE",
+      "latitude": 59.32938,
+      "longitude": 18.06871,
+      "identifier": "Europe/Stockholm"
+    },
+    {
+      "id": "geonames-1880252",
+      "countryCode": "SG",
+      "latitude": 1.28967,
+      "longitude": 103.85007,
+      "identifier": "Asia/Singapore"
+    },
+    {
+      "id": "geonames-3370903",
+      "countryCode": "SH",
+      "latitude": -15.92488,
+      "longitude": -5.71816,
+      "identifier": "Atlantic/St_Helena"
+    },
+    {
+      "id": "geonames-3196359",
+      "countryCode": "SI",
+      "latitude": 46.05108,
+      "longitude": 14.50513,
+      "identifier": "Europe/Ljubljana"
+    },
+    {
+      "id": "geonames-2729907",
+      "countryCode": "SJ",
+      "latitude": 78.22334,
+      "longitude": 15.64689,
+      "identifier": "Arctic/Longyearbyen"
+    },
+    {
+      "id": "geonames-3060972",
+      "countryCode": "SK",
+      "latitude": 48.14816,
+      "longitude": 17.10674,
+      "identifier": "Europe/Bratislava"
+    },
+    {
+      "id": "geonames-2409306",
+      "countryCode": "SL",
+      "latitude": 8.48714,
+      "longitude": -13.2356,
+      "identifier": "Africa/Freetown"
+    },
+    {
+      "id": "geonames-3168070",
+      "countryCode": "SM",
+      "latitude": 43.93667,
+      "longitude": 12.44639,
+      "identifier": "Europe/San_Marino"
+    },
+    {
+      "id": "geonames-2253354",
+      "countryCode": "SN",
+      "latitude": 14.6937,
+      "longitude": -17.44406,
+      "identifier": "Africa/Dakar"
+    },
+    {
+      "id": "geonames-53654",
+      "countryCode": "SO",
+      "latitude": 2.03711,
+      "longitude": 45.34375,
+      "identifier": "Africa/Mogadishu"
+    },
+    {
+      "id": "geonames-3383330",
+      "countryCode": "SR",
+      "latitude": 5.86638,
+      "longitude": -55.16682,
+      "identifier": "America/Paramaribo"
+    },
+    {
+      "id": "geonames-373303",
+      "countryCode": "SS",
+      "latitude": 4.85165,
+      "longitude": 31.58247,
+      "identifier": "Africa/Juba"
+    },
+    {
+      "id": "geonames-2410763",
+      "countryCode": "ST",
+      "latitude": 0.33756,
+      "longitude": 6.7299,
+      "identifier": "Africa/Sao_Tome"
+    },
+    {
+      "id": "geonames-3583361",
+      "countryCode": "SV",
+      "latitude": 13.68935,
+      "longitude": -89.18718,
+      "identifier": "America/El_Salvador"
+    },
+    {
+      "id": "geonames-3513392",
+      "countryCode": "SX",
+      "latitude": 18.026,
+      "longitude": -63.04582,
+      "identifier": "America/Lower_Princes"
+    },
+    {
+      "id": "geonames-170654",
+      "countryCode": "SY",
+      "latitude": 33.5102,
+      "longitude": 36.29128,
+      "identifier": "Asia/Damascus"
+    },
+    {
+      "id": "geonames-934985",
+      "countryCode": "SZ",
+      "latitude": -26.31667,
+      "longitude": 31.13333,
+      "identifier": "Africa/Mbabane"
+    },
+    {
+      "id": "geonames-3576994",
+      "countryCode": "TC",
+      "latitude": 21.46122,
+      "longitude": -71.14188,
+      "identifier": "America/Grand_Turk"
+    },
+    {
+      "id": "geonames-2427123",
+      "countryCode": "TD",
+      "latitude": 12.10672,
+      "longitude": 15.0444,
+      "identifier": "Africa/Ndjamena"
+    },
+    {
+      "id": "geonames-1546102",
+      "countryCode": "TF",
+      "latitude": -49.34916,
+      "longitude": 70.21937,
+      "identifier": "Indian/Kerguelen"
+    },
+    {
+      "id": "geonames-2365267",
+      "countryCode": "TG",
+      "latitude": 6.12874,
+      "longitude": 1.22154,
+      "identifier": "Africa/Lome"
+    },
+    {
+      "id": "geonames-1221874",
+      "countryCode": "TJ",
+      "latitude": 38.53575,
+      "longitude": 68.77905,
+      "identifier": "Asia/Dushanbe"
+    },
+    {
+      "id": "geonames-1645457",
+      "countryCode": "TL",
+      "latitude": -8.55861,
+      "longitude": 125.57361,
+      "identifier": "Asia/Dili"
+    },
+    {
+      "id": "geonames-162183",
+      "countryCode": "TM",
+      "latitude": 37.95,
+      "longitude": 58.38333,
+      "identifier": "Asia/Ashgabat"
+    },
+    {
+      "id": "geonames-2464470",
+      "countryCode": "TN",
+      "latitude": 36.81897,
+      "longitude": 10.16579,
+      "identifier": "Africa/Tunis"
+    },
+    {
+      "id": "geonames-4032402",
+      "countryCode": "TO",
+      "latitude": -21.13683,
+      "longitude": -175.20114,
+      "identifier": "Pacific/Tongatapu"
+    },
+    {
+      "id": "geonames-323786",
+      "countryCode": "TR",
+      "latitude": 39.91987,
+      "longitude": 32.85427,
+      "identifier": "Europe/Istanbul"
+    },
+    {
+      "id": "geonames-3573890",
+      "countryCode": "TT",
+      "latitude": 10.66668,
+      "longitude": -61.51889,
+      "identifier": "America/Port_of_Spain"
+    },
+    {
+      "id": "geonames-2110394",
+      "countryCode": "TV",
+      "latitude": -8.52425,
+      "longitude": 179.19417,
+      "identifier": "Pacific/Funafuti"
+    },
+    {
+      "id": "geonames-160196",
+      "countryCode": "TZ",
+      "latitude": -6.17221,
+      "longitude": 35.73947,
+      "identifier": "Africa/Dar_es_Salaam"
+    },
+    {
+      "id": "geonames-703448",
+      "countryCode": "UA",
+      "latitude": 50.45466,
+      "longitude": 30.5238,
+      "identifier": "Europe/Kyiv"
+    },
+    {
+      "id": "geonames-232422",
+      "countryCode": "UG",
+      "latitude": 0.31628,
+      "longitude": 32.58219,
+      "identifier": "Africa/Kampala"
+    },
+    {
+      "id": "geonames-4140963",
+      "countryCode": "US",
+      "latitude": 38.89511,
+      "longitude": -77.03637,
+      "identifier": "America/New_York"
+    },
+    {
+      "id": "geonames-3441575",
+      "countryCode": "UY",
+      "latitude": -34.90328,
+      "longitude": -56.18816,
+      "identifier": "America/Montevideo"
+    },
+    {
+      "id": "geonames-1512569",
+      "countryCode": "UZ",
+      "latitude": 41.26465,
+      "longitude": 69.21627,
+      "identifier": "Asia/Tashkent"
+    },
+    {
+      "id": "geonames-6691831",
+      "countryCode": "VA",
+      "latitude": 41.90268,
+      "longitude": 12.45414,
+      "identifier": "Europe/Vatican"
+    },
+    {
+      "id": "geonames-3577887",
+      "countryCode": "VC",
+      "latitude": 13.15527,
+      "longitude": -61.22742,
+      "identifier": "America/St_Vincent"
+    },
+    {
+      "id": "geonames-3646738",
+      "countryCode": "VE",
+      "latitude": 10.48801,
+      "longitude": -66.87919,
+      "identifier": "America/Caracas"
+    },
+    {
+      "id": "geonames-3577430",
+      "countryCode": "VG",
+      "latitude": 18.42693,
+      "longitude": -64.62079,
+      "identifier": "America/Tortola"
+    },
+    {
+      "id": "geonames-4795467",
+      "countryCode": "VI",
+      "latitude": 18.3419,
+      "longitude": -64.9307,
+      "identifier": "America/St_Thomas"
+    },
+    {
+      "id": "geonames-2135171",
+      "countryCode": "VU",
+      "latitude": -17.73648,
+      "longitude": 168.31366,
+      "identifier": "Pacific/Efate"
+    },
+    {
+      "id": "geonames-4034821",
+      "countryCode": "WF",
+      "latitude": -13.28163,
+      "longitude": -176.17453,
+      "identifier": "Pacific/Wallis"
+    },
+    {
+      "id": "geonames-4035413",
+      "countryCode": "WS",
+      "latitude": -13.83333,
+      "longitude": -171.76666,
+      "identifier": "Pacific/Apia"
+    },
+    {
+      "id": "geonames-786714",
+      "countryCode": "XK",
+      "latitude": 42.67272,
+      "longitude": 21.16688,
+      "identifier": "Europe/Belgrade"
+    },
+    {
+      "id": "geonames-71137",
+      "countryCode": "YE",
+      "latitude": 15.35452,
+      "longitude": 44.20646,
+      "identifier": "Asia/Aden"
+    },
+    {
+      "id": "geonames-921815",
+      "countryCode": "YT",
+      "latitude": -12.78234,
+      "longitude": 45.22878,
+      "identifier": "Indian/Mayotte"
+    },
+    {
+      "id": "geonames-964137",
+      "countryCode": "ZA",
+      "latitude": -25.74486,
+      "longitude": 28.18783,
+      "identifier": "Africa/Johannesburg"
+    },
+    {
+      "id": "geonames-909137",
+      "countryCode": "ZM",
+      "latitude": -15.40669,
+      "longitude": 28.28713,
+      "identifier": "Africa/Lusaka"
+    },
+    {
+      "id": "geonames-890299",
+      "countryCode": "ZW",
+      "latitude": -17.82772,
+      "longitude": 31.05337,
+      "identifier": "Africa/Harare"
+    },
+    {
+      "id": "geonames-2548885",
+      "countryCode": "MA",
+      "latitude": 34.03313,
+      "longitude": -5.00028,
+      "identifier": "Africa/Casablanca"
+    },
+    {
+      "id": "geonames-360502",
+      "countryCode": "EG",
+      "latitude": 25.69893,
+      "longitude": 32.6421,
+      "identifier": "Africa/Cairo"
+    },
+    {
+      "id": "geonames-3369157",
+      "countryCode": "ZA",
+      "latitude": -33.92584,
+      "longitude": 18.42322,
+      "identifier": "Africa/Johannesburg"
+    },
+    {
+      "id": "geonames-186301",
+      "countryCode": "KE",
+      "latitude": -4.05466,
+      "longitude": 39.66359,
+      "identifier": "Africa/Nairobi"
+    },
+    {
+      "id": "geonames-148730",
+      "countryCode": "TZ",
+      "latitude": -6.16394,
+      "longitude": 39.19793,
+      "identifier": "Africa/Dar_es_Salaam"
+    },
+    {
+      "id": "geonames-233508",
+      "countryCode": "UG",
+      "latitude": 0.05621,
+      "longitude": 32.47949,
+      "identifier": "Africa/Kampala"
+    },
+    {
+      "id": "geonames-336014",
+      "countryCode": "ET",
+      "latitude": 12.6,
+      "longitude": 37.46667,
+      "identifier": "Africa/Addis_Ababa"
+    },
+    {
+      "id": "geonames-2298890",
+      "countryCode": "GH",
+      "latitude": 6.68848,
+      "longitude": -1.62443,
+      "identifier": "Africa/Accra"
+    },
+    {
+      "id": "geonames-2332459",
+      "countryCode": "NG",
+      "latitude": 6.45407,
+      "longitude": 3.39467,
+      "identifier": "Africa/Lagos"
+    },
+    {
+      "id": "geonames-2246452",
+      "countryCode": "SN",
+      "latitude": 16.01793,
+      "longitude": -16.48962,
+      "identifier": "Africa/Dakar"
+    },
+    {
+      "id": "geonames-2464915",
+      "countryCode": "TN",
+      "latitude": 35.82539,
+      "longitude": 10.63699,
+      "identifier": "Africa/Tunis"
+    },
+    {
+      "id": "geonames-2485926",
+      "countryCode": "DZ",
+      "latitude": 35.69906,
+      "longitude": -0.63588,
+      "identifier": "Africa/Algiers"
+    },
+    {
+      "id": "geonames-1045114",
+      "countryCode": "MZ",
+      "latitude": -23.865,
+      "longitude": 35.38333,
+      "identifier": "Africa/Maputo"
+    },
+    {
+      "id": "geonames-3352844",
+      "countryCode": "NA",
+      "latitude": -22.67842,
+      "longitude": 14.52663,
+      "identifier": "Africa/Windhoek"
+    },
+    {
+      "id": "geonames-910111",
+      "countryCode": "ZM",
+      "latitude": -17.84194,
+      "longitude": 25.85425,
+      "identifier": "Africa/Lusaka"
+    },
+    {
+      "id": "geonames-879431",
+      "countryCode": "ZW",
+      "latitude": -17.93285,
+      "longitude": 25.83066,
+      "identifier": "Africa/Harare"
+    },
+    {
+      "id": "geonames-2553604",
+      "countryCode": "MA",
+      "latitude": 33.58831,
+      "longitude": -7.61138,
+      "identifier": "Africa/Casablanca"
+    },
+    {
+      "id": "geonames-359792",
+      "countryCode": "EG",
+      "latitude": 24.09082,
+      "longitude": 32.89942,
+      "identifier": "Africa/Cairo"
+    },
+    {
+      "id": "geonames-993800",
+      "countryCode": "ZA",
+      "latitude": -26.20227,
+      "longitude": 28.04363,
+      "identifier": "Africa/Johannesburg"
+    },
+    {
+      "id": "geonames-161325",
+      "countryCode": "TZ",
+      "latitude": -3.36667,
+      "longitude": 36.68333,
+      "identifier": "Africa/Dar_es_Salaam"
+    },
+    {
+      "id": "geonames-233114",
+      "countryCode": "UG",
+      "latitude": 0.43902,
+      "longitude": 33.20317,
+      "identifier": "Africa/Kampala"
+    },
+    {
+      "id": "geonames-332288",
+      "countryCode": "ET",
+      "latitude": 12.03219,
+      "longitude": 39.04756,
+      "identifier": "Africa/Addis_Ababa"
+    },
+    {
+      "id": "geonames-745044",
+      "countryCode": "TR",
+      "latitude": 41.01384,
+      "longitude": 28.94966,
+      "identifier": "Europe/Istanbul"
+    },
+    {
+      "id": "geonames-615532",
+      "countryCode": "GE",
+      "latitude": 41.64077,
+      "longitude": 41.6306,
+      "identifier": "Asia/Tbilisi"
+    },
+    {
+      "id": "geonames-616635",
+      "countryCode": "AM",
+      "latitude": 40.79305,
+      "longitude": 43.84635,
+      "identifier": "Asia/Yerevan"
+    },
+    {
+      "id": "geonames-1853909",
+      "countryCode": "JP",
+      "latitude": 34.69379,
+      "longitude": 135.50107,
+      "identifier": "Asia/Tokyo"
+    },
+    {
+      "id": "geonames-1796236",
+      "countryCode": "CN",
+      "latitude": 31.22222,
+      "longitude": 121.45806,
+      "identifier": "Asia/Shanghai"
+    },
+    {
+      "id": "geonames-1838524",
+      "countryCode": "KR",
+      "latitude": 35.10168,
+      "longitude": 129.03004,
+      "identifier": "Asia/Seoul"
+    },
+    {
+      "id": "geonames-1153671",
+      "countryCode": "TH",
+      "latitude": 18.79038,
+      "longitude": 98.98468,
+      "identifier": "Asia/Bangkok"
+    },
+    {
+      "id": "geonames-1566083",
+      "countryCode": "VN",
+      "latitude": 10.82302,
+      "longitude": 106.62965,
+      "identifier": "Asia/Ho_Chi_Minh"
+    },
+    {
+      "id": "geonames-1822214",
+      "countryCode": "KH",
+      "latitude": 13.36179,
+      "longitude": 103.86056,
+      "identifier": "Asia/Phnom_Penh"
+    },
+    {
+      "id": "geonames-1655559",
+      "countryCode": "LA",
+      "latitude": 19.8933,
+      "longitude": 102.1525,
+      "identifier": "Asia/Vientiane"
+    },
+    {
+      "id": "geonames-1622846",
+      "countryCode": "ID",
+      "latitude": -8.5098,
+      "longitude": 115.2654,
+      "identifier": "Asia/Makassar"
+    },
+    {
+      "id": "geonames-1735106",
+      "countryCode": "MY",
+      "latitude": 5.41123,
+      "longitude": 100.33543,
+      "identifier": "Asia/Kuala_Lumpur"
+    },
+    {
+      "id": "geonames-1717512",
+      "countryCode": "PH",
+      "latitude": 10.31672,
+      "longitude": 123.89071,
+      "identifier": "Asia/Manila"
+    },
+    {
+      "id": "geonames-1275339",
+      "countryCode": "IN",
+      "latitude": 19.07283,
+      "longitude": 72.88261,
+      "identifier": "Asia/Kolkata"
+    },
+    {
+      "id": "geonames-1282898",
+      "countryCode": "NP",
+      "latitude": 28.26689,
+      "longitude": 83.96851,
+      "identifier": "Asia/Kathmandu"
+    },
+    {
+      "id": "geonames-1241622",
+      "countryCode": "LK",
+      "latitude": 7.2906,
+      "longitude": 80.6336,
+      "identifier": "Asia/Colombo"
+    },
+    {
+      "id": "geonames-1205733",
+      "countryCode": "BD",
+      "latitude": 22.3384,
+      "longitude": 91.83168,
+      "identifier": "Asia/Dhaka"
+    },
+    {
+      "id": "geonames-1172451",
+      "countryCode": "PK",
+      "latitude": 31.558,
+      "longitude": 74.35071,
+      "identifier": "Asia/Karachi"
+    },
+    {
+      "id": "geonames-292672",
+      "countryCode": "AE",
+      "latitude": 25.3342,
+      "longitude": 55.41221,
+      "identifier": "Asia/Dubai"
+    },
+    {
+      "id": "geonames-286621",
+      "countryCode": "OM",
+      "latitude": 17.01505,
+      "longitude": 54.09237,
+      "identifier": "Asia/Muscat"
+    },
+    {
+      "id": "geonames-105343",
+      "countryCode": "SA",
+      "latitude": 21.49012,
+      "longitude": 39.18624,
+      "identifier": "Asia/Riyadh"
+    },
+    {
+      "id": "geonames-281184",
+      "countryCode": "IL",
+      "latitude": 31.76904,
+      "longitude": 35.21633,
+      "identifier": "Asia/Jerusalem"
+    },
+    {
+      "id": "geonames-250774",
+      "countryCode": "JO",
+      "latitude": 29.52667,
+      "longitude": 35.00778,
+      "identifier": "Asia/Amman"
+    },
+    {
+      "id": "geonames-1216265",
+      "countryCode": "UZ",
+      "latitude": 39.65456,
+      "longitude": 66.96445,
+      "identifier": "Asia/Samarkand"
+    },
+    {
+      "id": "geonames-1526384",
+      "countryCode": "KZ",
+      "latitude": 43.25249,
+      "longitude": 76.9115,
+      "identifier": "Asia/Almaty"
+    },
+    {
+      "id": "geonames-323777",
+      "countryCode": "TR",
+      "latitude": 36.90812,
+      "longitude": 30.69556,
+      "identifier": "Europe/Istanbul"
+    },
+    {
+      "id": "geonames-613607",
+      "countryCode": "GE",
+      "latitude": 42.26791,
+      "longitude": 42.69459,
+      "identifier": "Asia/Tbilisi"
+    },
+    {
+      "id": "geonames-1862415",
+      "countryCode": "JP",
+      "latitude": 34.4,
+      "longitude": 132.45,
+      "identifier": "Asia/Tokyo"
+    },
+    {
+      "id": "geonames-1790630",
+      "countryCode": "CN",
+      "latitude": 34.25833,
+      "longitude": 108.92861,
+      "identifier": "Asia/Shanghai"
+    },
+    {
+      "id": "geonames-1846266",
+      "countryCode": "KR",
+      "latitude": 33.50972,
+      "longitude": 126.52194,
+      "identifier": "Asia/Seoul"
+    },
+    {
+      "id": "geonames-1151254",
+      "countryCode": "TH",
+      "latitude": 7.89059,
+      "longitude": 98.3981,
+      "identifier": "Asia/Bangkok"
+    },
+    {
+      "id": "geonames-1580541",
+      "countryCode": "VN",
+      "latitude": 15.87944,
+      "longitude": 108.335,
+      "identifier": "Asia/Ho_Chi_Minh"
+    },
+    {
+      "id": "geonames-1831797",
+      "countryCode": "KH",
+      "latitude": 13.10271,
+      "longitude": 103.19822,
+      "identifier": "Asia/Phnom_Penh"
+    },
+    {
+      "id": "geonames-1655087",
+      "countryCode": "LA",
+      "latitude": 18.9235,
+      "longitude": 102.44784,
+      "identifier": "Asia/Vientiane"
+    },
+    {
+      "id": "geonames-1621177",
+      "countryCode": "ID",
+      "latitude": -7.80139,
+      "longitude": 110.36472,
+      "identifier": "Asia/Jakarta"
+    },
+    {
+      "id": "geonames-1734759",
+      "countryCode": "MY",
+      "latitude": 2.196,
+      "longitude": 102.2405,
+      "identifier": "Asia/Kuala_Lumpur"
+    },
+    {
+      "id": "geonames-1692685",
+      "countryCode": "PH",
+      "latitude": 9.73917,
+      "longitude": 118.73528,
+      "identifier": "Asia/Manila"
+    },
+    {
+      "id": "geonames-1269515",
+      "countryCode": "IN",
+      "latitude": 26.91962,
+      "longitude": 75.78781,
+      "identifier": "Asia/Kolkata"
+    },
+    {
+      "id": "geonames-1246294",
+      "countryCode": "LK",
+      "latitude": 6.0461,
+      "longitude": 80.2103,
+      "identifier": "Asia/Colombo"
+    },
+    {
+      "id": "geonames-1174872",
+      "countryCode": "PK",
+      "latitude": 24.8608,
+      "longitude": 67.0104,
+      "identifier": "Asia/Karachi"
+    },
+    {
+      "id": "geonames-109223",
+      "countryCode": "SA",
+      "latitude": 24.46861,
+      "longitude": 39.61417,
+      "identifier": "Asia/Riyadh"
+    },
+    {
+      "id": "geonames-293397",
+      "countryCode": "IL",
+      "latitude": 32.08088,
+      "longitude": 34.78057,
+      "identifier": "Asia/Jerusalem"
+    },
+    {
+      "id": "geonames-1217662",
+      "countryCode": "UZ",
+      "latitude": 39.77026,
+      "longitude": 64.43069,
+      "identifier": "Asia/Samarkand"
+    },
+    {
+      "id": "geonames-311046",
+      "countryCode": "TR",
+      "latitude": 38.41273,
+      "longitude": 27.13838,
+      "identifier": "Europe/Istanbul"
+    },
+    {
+      "id": "geonames-1855612",
+      "countryCode": "JP",
+      "latitude": 34.68505,
+      "longitude": 135.80485,
+      "identifier": "Asia/Tokyo"
+    },
+    {
+      "id": "geonames-1815286",
+      "countryCode": "CN",
+      "latitude": 30.66667,
+      "longitude": 104.06667,
+      "identifier": "Asia/Shanghai"
+    },
+    {
+      "id": "geonames-1843564",
+      "countryCode": "KR",
+      "latitude": 37.45646,
+      "longitude": 126.70515,
+      "identifier": "Asia/Seoul"
+    },
+    {
+      "id": "geonames-1607532",
+      "countryCode": "TH",
+      "latitude": 14.35167,
+      "longitude": 100.57739,
+      "identifier": "Asia/Bangkok"
+    },
+    {
+      "id": "geonames-1583992",
+      "countryCode": "VN",
+      "latitude": 16.06778,
+      "longitude": 108.22083,
+      "identifier": "Asia/Ho_Chi_Minh"
+    },
+    {
+      "id": "geonames-1650357",
+      "countryCode": "ID",
+      "latitude": -6.92222,
+      "longitude": 107.60694,
+      "identifier": "Asia/Jakarta"
+    },
+    {
+      "id": "geonames-1733432",
+      "countryCode": "MY",
+      "latitude": 5.9749,
+      "longitude": 116.0724,
+      "identifier": "Asia/Kuching"
+    },
+    {
+      "id": "geonames-1728930",
+      "countryCode": "PH",
+      "latitude": 16.41639,
+      "longitude": 120.59306,
+      "identifier": "Asia/Manila"
+    },
+    {
+      "id": "geonames-1279259",
+      "countryCode": "IN",
+      "latitude": 27.18333,
+      "longitude": 78.01667,
+      "identifier": "Asia/Kolkata"
+    },
+    {
+      "id": "geonames-104515",
+      "countryCode": "SA",
+      "latitude": 21.42664,
+      "longitude": 39.82563,
+      "identifier": "Asia/Riyadh"
+    },
+    {
+      "id": "geonames-294801",
+      "countryCode": "IL",
+      "latitude": 32.81303,
+      "longitude": 34.99928,
+      "identifier": "Asia/Jerusalem"
+    },
+    {
+      "id": "geonames-1513604",
+      "countryCode": "UZ",
+      "latitude": 41.38555,
+      "longitude": 60.36408,
+      "identifier": "Asia/Samarkand"
+    },
+    {
+      "id": "geonames-320995",
+      "countryCode": "TR",
+      "latitude": 37.03833,
+      "longitude": 27.42917,
+      "identifier": "Europe/Istanbul"
+    },
+    {
+      "id": "geonames-1860243",
+      "countryCode": "JP",
+      "latitude": 36.6,
+      "longitude": 136.61667,
+      "identifier": "Asia/Tokyo"
+    },
+    {
+      "id": "geonames-1809858",
+      "countryCode": "CN",
+      "latitude": 23.11667,
+      "longitude": 113.25,
+      "identifier": "Asia/Shanghai"
+    },
+    {
+      "id": "geonames-1674504",
+      "countryCode": "TW",
+      "latitude": 23.97694,
+      "longitude": 121.60444,
+      "identifier": "Asia/Taipei"
+    },
+    {
+      "id": "geonames-1841603",
+      "countryCode": "KR",
+      "latitude": 35.84278,
+      "longitude": 129.21167,
+      "identifier": "Asia/Seoul"
+    },
+    {
+      "id": "geonames-1152633",
+      "countryCode": "TH",
+      "latitude": 8.07257,
+      "longitude": 98.91052,
+      "identifier": "Asia/Bangkok"
+    },
+    {
+      "id": "geonames-1580240",
+      "countryCode": "VN",
+      "latitude": 16.4619,
+      "longitude": 107.59546,
+      "identifier": "Asia/Bangkok"
+    },
+    {
+      "id": "geonames-1625822",
+      "countryCode": "ID",
+      "latitude": -7.24917,
+      "longitude": 112.75083,
+      "identifier": "Asia/Jakarta"
+    },
+    {
+      "id": "geonames-1735634",
+      "countryCode": "MY",
+      "latitude": 1.55,
+      "longitude": 110.33333,
+      "identifier": "Asia/Kuching"
+    },
+    {
+      "id": "geonames-1715348",
+      "countryCode": "PH",
+      "latitude": 7.07306,
+      "longitude": 125.61278,
+      "identifier": "Asia/Manila"
+    },
+    {
+      "id": "geonames-1253405",
+      "countryCode": "IN",
+      "latitude": 25.31668,
+      "longitude": 83.01041,
+      "identifier": "Asia/Kolkata"
+    },
+    {
+      "id": "geonames-295277",
+      "countryCode": "IL",
+      "latitude": 29.55805,
+      "longitude": 34.94821,
+      "identifier": "Asia/Jerusalem"
+    },
+    {
+      "id": "geonames-314967",
+      "countryCode": "TR",
+      "latitude": 36.64038,
+      "longitude": 29.12758,
+      "identifier": "Europe/Istanbul"
+    },
+    {
+      "id": "geonames-1863967",
+      "countryCode": "JP",
+      "latitude": 33.6,
+      "longitude": 130.41667,
+      "identifier": "Asia/Tokyo"
+    },
+    {
+      "id": "geonames-1795565",
+      "countryCode": "CN",
+      "latitude": 22.54554,
+      "longitude": 114.0683,
+      "identifier": "Asia/Shanghai"
+    },
+    {
+      "id": "geonames-1668295",
+      "countryCode": "TW",
+      "latitude": 22.75991,
+      "longitude": 121.14457,
+      "identifier": "Asia/Taipei"
+    },
+    {
+      "id": "geonames-1153669",
+      "countryCode": "TH",
+      "latitude": 19.90858,
+      "longitude": 99.8325,
+      "identifier": "Asia/Bangkok"
+    },
+    {
+      "id": "geonames-1572151",
+      "countryCode": "VN",
+      "latitude": 12.24507,
+      "longitude": 109.19432,
+      "identifier": "Asia/Ho_Chi_Minh"
+    },
+    {
+      "id": "geonames-1214520",
+      "countryCode": "ID",
+      "latitude": 3.58333,
+      "longitude": 98.66667,
+      "identifier": "Asia/Jakarta"
+    },
+    {
+      "id": "geonames-1732752",
+      "countryCode": "MY",
+      "latitude": 1.4655,
+      "longitude": 103.7578,
+      "identifier": "Asia/Kuala_Lumpur"
+    },
+    {
+      "id": "geonames-1253986",
+      "countryCode": "IN",
+      "latitude": 24.58584,
+      "longitude": 73.71346,
+      "identifier": "Asia/Kolkata"
+    },
+    {
+      "id": "geonames-2128295",
+      "countryCode": "JP",
+      "latitude": 43.06667,
+      "longitude": 141.35,
+      "identifier": "Asia/Tokyo"
+    },
+    {
+      "id": "geonames-1808926",
+      "countryCode": "CN",
+      "latitude": 30.29365,
+      "longitude": 120.16142,
+      "identifier": "Asia/Shanghai"
+    },
+    {
+      "id": "geonames-1678228",
+      "countryCode": "TW",
+      "latitude": 25.13089,
+      "longitude": 121.74094,
+      "identifier": "Asia/Taipei"
+    },
+    {
+      "id": "geonames-1153269",
+      "countryCode": "TH",
+      "latitude": 12.57065,
+      "longitude": 99.95876,
+      "identifier": "Asia/Bangkok"
+    },
+    {
+      "id": "geonames-2650225",
+      "countryCode": "GB",
+      "latitude": 55.95206,
+      "longitude": -3.19648,
+      "identifier": "Europe/London"
+    },
+    {
+      "id": "geonames-2964180",
+      "countryCode": "IE",
+      "latitude": 53.27245,
+      "longitude": -9.05095,
+      "identifier": "Europe/Dublin"
+    },
+    {
+      "id": "geonames-2990440",
+      "countryCode": "FR",
+      "latitude": 43.70313,
+      "longitude": 7.26608,
+      "identifier": "Europe/Paris"
+    },
+    {
+      "id": "geonames-3176959",
+      "countryCode": "IT",
+      "latitude": 43.77925,
+      "longitude": 11.24626,
+      "identifier": "Europe/Rome"
+    },
+    {
+      "id": "geonames-2509954",
+      "countryCode": "ES",
+      "latitude": 39.47391,
+      "longitude": -0.37966,
+      "identifier": "Europe/Madrid"
+    },
+    {
+      "id": "geonames-2268339",
+      "countryCode": "PT",
+      "latitude": 37.01869,
+      "longitude": -7.92716,
+      "identifier": "Europe/Lisbon"
+    },
+    {
+      "id": "geonames-2867714",
+      "countryCode": "DE",
+      "latitude": 48.13743,
+      "longitude": 11.57549,
+      "identifier": "Europe/Berlin"
+    },
+    {
+      "id": "geonames-2747891",
+      "countryCode": "NL",
+      "latitude": 51.9225,
+      "longitude": 4.47917,
+      "identifier": "Europe/Amsterdam"
+    },
+    {
+      "id": "geonames-2800931",
+      "countryCode": "BE",
+      "latitude": 51.20892,
+      "longitude": 3.22424,
+      "identifier": "Europe/Brussels"
+    },
+    {
+      "id": "geonames-2657896",
+      "countryCode": "CH",
+      "latitude": 47.36667,
+      "longitude": 8.55,
+      "identifier": "Europe/Zurich"
+    },
+    {
+      "id": "geonames-2766824",
+      "countryCode": "AT",
+      "latitude": 47.79941,
+      "longitude": 13.04399,
+      "identifier": "Europe/Vienna"
+    },
+    {
+      "id": "geonames-3078610",
+      "countryCode": "CZ",
+      "latitude": 49.19522,
+      "longitude": 16.60796,
+      "identifier": "Europe/Prague"
+    },
+    {
+      "id": "geonames-734077",
+      "countryCode": "GR",
+      "latitude": 40.64072,
+      "longitude": 22.93493,
+      "identifier": "Europe/Athens"
+    },
+    {
+      "id": "geonames-3190261",
+      "countryCode": "HR",
+      "latitude": 43.50891,
+      "longitude": 16.43915,
+      "identifier": "Europe/Zagreb"
+    },
+    {
+      "id": "geonames-3195506",
+      "countryCode": "SI",
+      "latitude": 46.55583,
+      "longitude": 15.64593,
+      "identifier": "Europe/Ljubljana"
+    },
+    {
+      "id": "geonames-3161732",
+      "countryCode": "NO",
+      "latitude": 60.39299,
+      "longitude": 5.32415,
+      "identifier": "Europe/Oslo"
+    },
+    {
+      "id": "geonames-2711537",
+      "countryCode": "SE",
+      "latitude": 57.70716,
+      "longitude": 11.96679,
+      "identifier": "Europe/Stockholm"
+    },
+    {
+      "id": "geonames-638936",
+      "countryCode": "FI",
+      "latitude": 66.49897,
+      "longitude": 25.68867,
+      "identifier": "Europe/Helsinki"
+    },
+    {
+      "id": "geonames-2624652",
+      "countryCode": "DK",
+      "latitude": 56.15674,
+      "longitude": 10.21076,
+      "identifier": "Europe/Copenhagen"
+    },
+    {
+      "id": "geonames-2633274",
+      "countryCode": "IS",
+      "latitude": 65.68353,
+      "longitude": -18.0878,
+      "identifier": "Atlantic/Reykjavik"
+    },
+    {
+      "id": "geonames-3094802",
+      "countryCode": "PL",
+      "latitude": 50.06143,
+      "longitude": 19.93658,
+      "identifier": "Europe/Warsaw"
+    },
+    {
+      "id": "geonames-721472",
+      "countryCode": "HU",
+      "latitude": 47.53167,
+      "longitude": 21.62444,
+      "identifier": "Europe/Budapest"
+    },
+    {
+      "id": "geonames-683844",
+      "countryCode": "RO",
+      "latitude": 45.64861,
+      "longitude": 25.60613,
+      "identifier": "Europe/Bucharest"
+    },
+    {
+      "id": "geonames-588335",
+      "countryCode": "EE",
+      "latitude": 58.38062,
+      "longitude": 26.72509,
+      "identifier": "Europe/Tallinn"
+    },
+    {
+      "id": "geonames-457954",
+      "countryCode": "LV",
+      "latitude": 56.50474,
+      "longitude": 21.01085,
+      "identifier": "Europe/Riga"
+    },
+    {
+      "id": "geonames-598316",
+      "countryCode": "LT",
+      "latitude": 54.90156,
+      "longitude": 23.90909,
+      "identifier": "Europe/Vilnius"
+    },
+    {
+      "id": "geonames-3203106",
+      "countryCode": "ME",
+      "latitude": 42.28721,
+      "longitude": 18.83922,
+      "identifier": "Europe/Podgorica"
+    },
+    {
+      "id": "geonames-363243",
+      "countryCode": "AL",
+      "latitude": 39.87534,
+      "longitude": 20.00477,
+      "identifier": "Europe/Tirane"
+    },
+    {
+      "id": "geonames-3194360",
+      "countryCode": "RS",
+      "latitude": 45.25167,
+      "longitude": 19.83694,
+      "identifier": "Europe/Belgrade"
+    },
+    {
+      "id": "geonames-3194828",
+      "countryCode": "BA",
+      "latitude": 43.34333,
+      "longitude": 17.80806,
+      "identifier": "Europe/Sarajevo"
+    },
+    {
+      "id": "geonames-498817",
+      "countryCode": "RU",
+      "latitude": 59.93863,
+      "longitude": 30.31413,
+      "identifier": "Europe/Moscow"
+    },
+    {
+      "id": "geonames-702550",
+      "countryCode": "UA",
+      "latitude": 49.83826,
+      "longitude": 24.02324,
+      "identifier": "Europe/Kyiv"
+    },
+    {
+      "id": "geonames-2643123",
+      "countryCode": "GB",
+      "latitude": 53.48095,
+      "longitude": -2.23743,
+      "identifier": "Europe/London"
+    },
+    {
+      "id": "geonames-2965140",
+      "countryCode": "IE",
+      "latitude": 51.89797,
+      "longitude": -8.47061,
+      "identifier": "Europe/Dublin"
+    },
+    {
+      "id": "geonames-2996944",
+      "countryCode": "FR",
+      "latitude": 45.74906,
+      "longitude": 4.84789,
+      "identifier": "Europe/Paris"
+    },
+    {
+      "id": "geonames-3164603",
+      "countryCode": "IT",
+      "latitude": 45.43713,
+      "longitude": 12.33265,
+      "identifier": "Europe/Rome"
+    },
+    {
+      "id": "geonames-2517117",
+      "countryCode": "ES",
+      "latitude": 37.18817,
+      "longitude": -3.60667,
+      "identifier": "Europe/Madrid"
+    },
+    {
+      "id": "geonames-2740637",
+      "countryCode": "PT",
+      "latitude": 40.20686,
+      "longitude": -8.41996,
+      "identifier": "Europe/Lisbon"
+    },
+    {
+      "id": "geonames-2911298",
+      "countryCode": "DE",
+      "latitude": 53.55073,
+      "longitude": 9.99302,
+      "identifier": "Europe/Berlin"
+    },
+    {
+      "id": "geonames-2745912",
+      "countryCode": "NL",
+      "latitude": 52.09083,
+      "longitude": 5.12222,
+      "identifier": "Europe/Amsterdam"
+    },
+    {
+      "id": "geonames-2797656",
+      "countryCode": "BE",
+      "latitude": 51.05,
+      "longitude": 3.71667,
+      "identifier": "Europe/Brussels"
+    },
+    {
+      "id": "geonames-2660646",
+      "countryCode": "CH",
+      "latitude": 46.20222,
+      "longitude": 6.14569,
+      "identifier": "Europe/Zurich"
+    },
+    {
+      "id": "geonames-2775220",
+      "countryCode": "AT",
+      "latitude": 47.26266,
+      "longitude": 11.39454,
+      "identifier": "Europe/Vienna"
+    },
+    {
+      "id": "geonames-260114",
+      "countryCode": "GR",
+      "latitude": 35.51124,
+      "longitude": 24.02921,
+      "identifier": "Europe/Athens"
+    },
+    {
+      "id": "geonames-3201047",
+      "countryCode": "HR",
+      "latitude": 42.64125,
+      "longitude": 18.10909,
+      "identifier": "Europe/Zagreb"
+    },
+    {
+      "id": "geonames-3133895",
+      "countryCode": "NO",
+      "latitude": 69.6489,
+      "longitude": 18.95508,
+      "identifier": "Europe/Oslo"
+    },
+    {
+      "id": "geonames-2692969",
+      "countryCode": "SE",
+      "latitude": 55.60587,
+      "longitude": 13.00073,
+      "identifier": "Europe/Stockholm"
+    },
+    {
+      "id": "geonames-633679",
+      "countryCode": "FI",
+      "latitude": 60.45148,
+      "longitude": 22.26869,
+      "identifier": "Europe/Helsinki"
+    },
+    {
+      "id": "geonames-3099434",
+      "countryCode": "PL",
+      "latitude": 54.35227,
+      "longitude": 18.64912,
+      "identifier": "Europe/Warsaw"
+    },
+    {
+      "id": "geonames-3046526",
+      "countryCode": "HU",
+      "latitude": 46.07617,
+      "longitude": 18.22814,
+      "identifier": "Europe/Budapest"
+    },
+    {
+      "id": "geonames-681290",
+      "countryCode": "RO",
+      "latitude": 46.76667,
+      "longitude": 23.6,
+      "identifier": "Europe/Bucharest"
+    },
+    {
+      "id": "geonames-3186084",
+      "countryCode": "AL",
+      "latitude": 40.70583,
+      "longitude": 19.95222,
+      "identifier": "Europe/Tirane"
+    },
+    {
+      "id": "geonames-551487",
+      "countryCode": "RU",
+      "latitude": 55.78874,
+      "longitude": 49.12214,
+      "identifier": "Europe/Moscow"
+    },
+    {
+      "id": "geonames-698740",
+      "countryCode": "UA",
+      "latitude": 46.48572,
+      "longitude": 30.74383,
+      "identifier": "Europe/Kyiv"
+    },
+    {
+      "id": "geonames-2644210",
+      "countryCode": "GB",
+      "latitude": 53.41058,
+      "longitude": -2.97794,
+      "identifier": "Europe/London"
+    },
+    {
+      "id": "geonames-2995469",
+      "countryCode": "FR",
+      "latitude": 43.29695,
+      "longitude": 5.38107,
+      "identifier": "Europe/Paris"
+    },
+    {
+      "id": "geonames-3173435",
+      "countryCode": "IT",
+      "latitude": 45.46427,
+      "longitude": 9.18951,
+      "identifier": "Europe/Rome"
+    },
+    {
+      "id": "geonames-2514256",
+      "countryCode": "ES",
+      "latitude": 36.72016,
+      "longitude": -4.42034,
+      "identifier": "Europe/Madrid"
+    },
+    {
+      "id": "geonames-2267827",
+      "countryCode": "PT",
+      "latitude": 32.66568,
+      "longitude": -16.92547,
+      "identifier": "Atlantic/Madeira"
+    },
+    {
+      "id": "geonames-2886242",
+      "countryCode": "DE",
+      "latitude": 50.93333,
+      "longitude": 6.95,
+      "identifier": "Europe/Berlin"
+    },
+    {
+      "id": "geonames-2747373",
+      "countryCode": "NL",
+      "latitude": 52.07667,
+      "longitude": 4.29861,
+      "identifier": "Europe/Amsterdam"
+    },
+    {
+      "id": "geonames-2803138",
+      "countryCode": "BE",
+      "latitude": 51.22047,
+      "longitude": 4.40026,
+      "identifier": "Europe/Brussels"
+    },
+    {
+      "id": "geonames-2659811",
+      "countryCode": "CH",
+      "latitude": 47.05048,
+      "longitude": 8.30635,
+      "identifier": "Europe/Zurich"
+    },
+    {
+      "id": "geonames-2778067",
+      "countryCode": "AT",
+      "latitude": 47.06733,
+      "longitude": 15.44197,
+      "identifier": "Europe/Vienna"
+    },
+    {
+      "id": "geonames-5368361",
+      "countryCode": "US",
+      "latitude": 34.05223,
+      "longitude": -118.24368,
+      "identifier": "America/Los_Angeles"
+    },
+    {
+      "id": "geonames-6167865",
+      "countryCode": "CA",
+      "latitude": 43.70643,
+      "longitude": -79.39864,
+      "identifier": "America/Toronto"
+    },
+    {
+      "id": "geonames-3531673",
+      "countryCode": "MX",
+      "latitude": 21.17429,
+      "longitude": -86.84656,
+      "identifier": "America/Cancun"
+    },
+    {
+      "id": "geonames-3623076",
+      "countryCode": "CR",
+      "latitude": 10.63517,
+      "longitude": -85.43779,
+      "identifier": "America/Costa_Rica"
+    },
+    {
+      "id": "geonames-3536729",
+      "countryCode": "CU",
+      "latitude": 20.02287,
+      "longitude": -75.82171,
+      "identifier": "America/Havana"
+    },
+    {
+      "id": "geonames-3489460",
+      "countryCode": "JM",
+      "latitude": 18.47116,
+      "longitude": -77.91883,
+      "identifier": "America/Jamaica"
+    },
+    {
+      "id": "geonames-3494242",
+      "countryCode": "DO",
+      "latitude": 18.58182,
+      "longitude": -68.40431,
+      "identifier": "America/Santo_Domingo"
+    },
+    {
+      "id": "geonames-3599699",
+      "countryCode": "GT",
+      "latitude": 14.55636,
+      "longitude": -90.7332,
+      "identifier": "America/Guatemala"
+    },
+    {
+      "id": "geonames-3581164",
+      "countryCode": "BZ",
+      "latitude": 17.91598,
+      "longitude": -87.9659,
+      "identifier": "America/Belize"
+    },
+    {
+      "id": "geonames-5391959",
+      "countryCode": "US",
+      "latitude": 37.77493,
+      "longitude": -122.41942,
+      "identifier": "America/Los_Angeles"
+    },
+    {
+      "id": "geonames-6077243",
+      "countryCode": "CA",
+      "latitude": 45.50884,
+      "longitude": -73.58781,
+      "identifier": "America/Toronto"
+    },
+    {
+      "id": "geonames-3522507",
+      "countryCode": "MX",
+      "latitude": 17.06025,
+      "longitude": -96.72544,
+      "identifier": "America/Mexico_City"
+    },
+    {
+      "id": "geonames-3534915",
+      "countryCode": "CU",
+      "latitude": 21.79956,
+      "longitude": -79.98349,
+      "identifier": "America/Havana"
+    },
+    {
+      "id": "geonames-3489239",
+      "countryCode": "JM",
+      "latitude": 18.4076,
+      "longitude": -77.10312,
+      "identifier": "America/Jamaica"
+    },
+    {
+      "id": "geonames-3595725",
+      "countryCode": "GT",
+      "latitude": 16.92258,
+      "longitude": -89.89941,
+      "identifier": "America/Guatemala"
+    },
+    {
+      "id": "geonames-5506956",
+      "countryCode": "US",
+      "latitude": 36.17497,
+      "longitude": -115.13722,
+      "identifier": "America/Los_Angeles"
+    },
+    {
+      "id": "geonames-6325494",
+      "countryCode": "CA",
+      "latitude": 46.81228,
+      "longitude": -71.21454,
+      "identifier": "America/Toronto"
+    },
+    {
+      "id": "geonames-4005539",
+      "countryCode": "MX",
+      "latitude": 20.67738,
+      "longitude": -103.34749,
+      "identifier": "America/Mexico_City"
+    },
+    {
+      "id": "geonames-4887398",
+      "countryCode": "US",
+      "latitude": 41.85003,
+      "longitude": -87.65005,
+      "identifier": "America/Chicago"
+    },
+    {
+      "id": "geonames-6174041",
+      "countryCode": "CA",
+      "latitude": 48.4359,
+      "longitude": -123.35155,
+      "identifier": "America/Vancouver"
+    },
+    {
+      "id": "geonames-3523349",
+      "countryCode": "MX",
+      "latitude": 20.967,
+      "longitude": -89.62318,
+      "identifier": "America/Merida"
+    },
+    {
+      "id": "geonames-4164138",
+      "countryCode": "US",
+      "latitude": 25.77427,
+      "longitude": -80.19366,
+      "identifier": "America/New_York"
+    },
+    {
+      "id": "geonames-5913490",
+      "countryCode": "CA",
+      "latitude": 51.05011,
+      "longitude": -114.08529,
+      "identifier": "America/Edmonton"
+    },
+    {
+      "id": "geonames-3991328",
+      "countryCode": "MX",
+      "latitude": 20.617,
+      "longitude": -105.23018,
+      "identifier": "America/Mexico_City"
+    },
+    {
+      "id": "geonames-4930956",
+      "countryCode": "US",
+      "latitude": 42.35843,
+      "longitude": -71.05977,
+      "identifier": "America/New_York"
+    },
+    {
+      "id": "geonames-6324729",
+      "countryCode": "CA",
+      "latitude": 44.64269,
+      "longitude": -63.57688,
+      "identifier": "America/Halifax"
+    },
+    {
+      "id": "geonames-3521342",
+      "countryCode": "MX",
+      "latitude": 20.6274,
+      "longitude": -87.07987,
+      "identifier": "America/Cancun"
+    },
+    {
+      "id": "geonames-5809844",
+      "countryCode": "US",
+      "latitude": 47.60621,
+      "longitude": -122.33207,
+      "identifier": "America/Los_Angeles"
+    },
+    {
+      "id": "geonames-3521081",
+      "countryCode": "MX",
+      "latitude": 19.04778,
+      "longitude": -98.20723,
+      "identifier": "America/Mexico_City"
+    },
+    {
+      "id": "geonames-4167147",
+      "countryCode": "US",
+      "latitude": 28.53834,
+      "longitude": -81.37924,
+      "identifier": "America/New_York"
+    },
+    {
+      "id": "geonames-3985344",
+      "countryCode": "MX",
+      "latitude": 20.91528,
+      "longitude": -100.74389,
+      "identifier": "America/Mexico_City"
+    },
+    {
+      "id": "geonames-4335045",
+      "countryCode": "US",
+      "latitude": 29.95465,
+      "longitude": -90.07507,
+      "identifier": "America/Chicago"
+    },
+    {
+      "id": "geonames-3515040",
+      "countryCode": "MX",
+      "latitude": 20.21173,
+      "longitude": -87.46325,
+      "identifier": "America/Cancun"
+    },
+    {
+      "id": "geonames-5856195",
+      "countryCode": "US",
+      "latitude": 21.30694,
+      "longitude": -157.85833,
+      "identifier": "Pacific/Honolulu"
+    },
+    {
+      "id": "geonames-5391811",
+      "countryCode": "US",
+      "latitude": 32.71571,
+      "longitude": -117.16472,
+      "identifier": "America/Los_Angeles"
+    },
+    {
+      "id": "geonames-3451190",
+      "countryCode": "BR",
+      "latitude": -22.90642,
+      "longitude": -43.18223,
+      "identifier": "America/Sao_Paulo"
+    },
+    {
+      "id": "geonames-3844421",
+      "countryCode": "AR",
+      "latitude": -32.88946,
+      "longitude": -68.84582,
+      "identifier": "America/Argentina/Mendoza"
+    },
+    {
+      "id": "geonames-3868626",
+      "countryCode": "CL",
+      "latitude": -33.036,
+      "longitude": -71.62963,
+      "identifier": "America/Santiago"
+    },
+    {
+      "id": "geonames-3941584",
+      "countryCode": "PE",
+      "latitude": -13.53188,
+      "longitude": -71.96701,
+      "identifier": "America/Lima"
+    },
+    {
+      "id": "geonames-3674962",
+      "countryCode": "CO",
+      "latitude": 6.245,
+      "longitude": -75.57151,
+      "identifier": "America/Bogota"
+    },
+    {
+      "id": "geonames-3657509",
+      "countryCode": "EC",
+      "latitude": -2.19616,
+      "longitude": -79.88621,
+      "identifier": "America/Guayaquil"
+    },
+    {
+      "id": "geonames-3911925",
+      "countryCode": "BO",
+      "latitude": -16.5,
+      "longitude": -68.15,
+      "identifier": "America/La_Paz"
+    },
+    {
+      "id": "geonames-3448439",
+      "countryCode": "BR",
+      "latitude": -23.5475,
+      "longitude": -46.63611,
+      "identifier": "America/Sao_Paulo"
+    },
+    {
+      "id": "geonames-3860259",
+      "countryCode": "AR",
+      "latitude": -31.40648,
+      "longitude": -64.18853,
+      "identifier": "America/Argentina/Cordoba"
+    },
+    {
+      "id": "geonames-3868121",
+      "countryCode": "CL",
+      "latitude": -33.02457,
+      "longitude": -71.55183,
+      "identifier": "America/Santiago"
+    },
+    {
+      "id": "geonames-3947322",
+      "countryCode": "PE",
+      "latitude": -16.39899,
+      "longitude": -71.53747,
+      "identifier": "America/Lima"
+    },
+    {
+      "id": "geonames-3687238",
+      "countryCode": "CO",
+      "latitude": 10.39817,
+      "longitude": -75.49328,
+      "identifier": "America/Bogota"
+    },
+    {
+      "id": "geonames-3658666",
+      "countryCode": "EC",
+      "latitude": -2.8953,
+      "longitude": -78.9963,
+      "identifier": "America/Guayaquil"
+    },
+    {
+      "id": "geonames-3450554",
+      "countryCode": "BR",
+      "latitude": -12.97563,
+      "longitude": -38.49096,
+      "identifier": "America/Bahia"
+    },
+    {
+      "id": "geonames-3838233",
+      "countryCode": "AR",
+      "latitude": -24.80645,
+      "longitude": -65.41999,
+      "identifier": "America/Argentina/Salta"
+    },
+    {
+      "id": "geonames-3874787",
+      "countryCode": "CL",
+      "latitude": -53.16282,
+      "longitude": -70.90922,
+      "identifier": "America/Punta_Arenas"
+    },
+    {
+      "id": "geonames-3931276",
+      "countryCode": "PE",
+      "latitude": -15.84003,
+      "longitude": -70.02198,
+      "identifier": "America/Lima"
+    },
+    {
+      "id": "geonames-3687925",
+      "countryCode": "CO",
+      "latitude": 3.43054,
+      "longitude": -76.5199,
+      "identifier": "America/Bogota"
+    },
+    {
+      "id": "geonames-3390760",
+      "countryCode": "BR",
+      "latitude": -8.05389,
+      "longitude": -34.88111,
+      "identifier": "America/Recife"
+    },
+    {
+      "id": "geonames-7647007",
+      "countryCode": "AR",
+      "latitude": -41.14557,
+      "longitude": -71.30822,
+      "identifier": "America/Argentina/Salta"
+    },
+    {
+      "id": "geonames-3696183",
+      "countryCode": "PE",
+      "latitude": -3.74814,
+      "longitude": -73.2529,
+      "identifier": "America/Lima"
+    },
+    {
+      "id": "geonames-3668605",
+      "countryCode": "CO",
+      "latitude": 11.23855,
+      "longitude": -74.19427,
+      "identifier": "America/Bogota"
+    },
+    {
+      "id": "geonames-3399415",
+      "countryCode": "BR",
+      "latitude": -3.71722,
+      "longitude": -38.54306,
+      "identifier": "America/Fortaleza"
+    },
+    {
+      "id": "geonames-3833367",
+      "countryCode": "AR",
+      "latitude": -54.81084,
+      "longitude": -68.31591,
+      "identifier": "America/Argentina/Ushuaia"
+    },
+    {
+      "id": "geonames-3463237",
+      "countryCode": "BR",
+      "latitude": -27.59667,
+      "longitude": -48.54917,
+      "identifier": "America/Sao_Paulo"
+    },
+    {
+      "id": "geonames-3663517",
+      "countryCode": "BR",
+      "latitude": -3.10194,
+      "longitude": -60.025,
+      "identifier": "America/Manaus"
+    },
+    {
+      "id": "geonames-3463030",
+      "countryCode": "BR",
+      "latitude": -25.54778,
+      "longitude": -54.58806,
+      "identifier": "America/Sao_Paulo"
+    },
+    {
+      "id": "geonames-3838583",
+      "countryCode": "AR",
+      "latitude": -32.94682,
+      "longitude": -60.63932,
+      "identifier": "America/Argentina/Cordoba"
+    },
+    {
+      "id": "geonames-3904906",
+      "countryCode": "BO",
+      "latitude": -17.78629,
+      "longitude": -63.18117,
+      "identifier": "America/La_Paz"
+    },
+    {
+      "id": "geonames-3172394",
+      "countryCode": "IT",
+      "latitude": 40.85216,
+      "longitude": 14.26811,
+      "identifier": "Europe/Rome"
+    },
+    {
+      "id": "geonames-252919",
+      "countryCode": "GR",
+      "latitude": 36.40572,
+      "longitude": 25.45682,
+      "identifier": "Europe/Athens"
+    },
+    {
+      "id": "geonames-3689147",
+      "countryCode": "CO",
+      "latitude": 10.96854,
+      "longitude": -74.78132,
+      "identifier": "America/Bogota"
+    },
+    {
+      "id": "geonames-3183130",
+      "countryCode": "IT",
+      "latitude": 40.6349,
+      "longitude": 14.60238,
+      "identifier": "Europe/Rome"
+    },
+    {
+      "id": "geonames-2158177",
+      "countryCode": "AU",
+      "latitude": -37.814,
+      "longitude": 144.96332,
+      "identifier": "Australia/Melbourne"
+    },
+    {
+      "id": "geonames-6204696",
+      "countryCode": "NZ",
+      "latitude": -45.03023,
+      "longitude": 168.66271,
+      "identifier": "Pacific/Auckland"
+    },
+    {
+      "id": "geonames-2202064",
+      "countryCode": "FJ",
+      "latitude": -17.80309,
+      "longitude": 177.41617,
+      "identifier": "Pacific/Fiji"
+    },
+    {
+      "id": "geonames-2172797",
+      "countryCode": "AU",
+      "latitude": -16.92366,
+      "longitude": 145.76613,
+      "identifier": "Australia/Brisbane"
+    },
+    {
+      "id": "geonames-2192362",
+      "countryCode": "NZ",
+      "latitude": -43.53333,
+      "longitude": 172.63333,
+      "identifier": "Pacific/Auckland"
+    },
+    {
+      "id": "geonames-2174003",
+      "countryCode": "AU",
+      "latitude": -27.46794,
+      "longitude": 153.02809,
+      "identifier": "Australia/Brisbane"
+    },
+    {
+      "id": "geonames-6241325",
+      "countryCode": "NZ",
+      "latitude": -38.13874,
+      "longitude": 176.24516,
+      "identifier": "Pacific/Auckland"
+    },
+    {
+      "id": "geonames-2063523",
+      "countryCode": "AU",
+      "latitude": -31.95224,
+      "longitude": 115.8614,
+      "identifier": "Australia/Perth"
+    },
+    {
+      "id": "geonames-2191562",
+      "countryCode": "NZ",
+      "latitude": -45.87416,
+      "longitude": 170.50361,
+      "identifier": "Pacific/Auckland"
+    }
+  ]
+}

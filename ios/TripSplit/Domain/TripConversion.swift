@@ -2,7 +2,10 @@ import Foundation
 
 extension TripSnapshot {
   /// Only the inline home shortcut is conditional. Converter navigation stays available.
-  var showsHomeConverter: Bool { showsHomeConverter(on: today) }
+  var showsHomeConverter: Bool {
+    guard phase == .now, let stop = stop(for: currentAttachment) else { return false }
+    return stop.currency != homeCurrency
+  }
 
   func showsHomeConverter(on date: String) -> Bool {
     guard phase(on: date) == .now,
@@ -13,7 +16,9 @@ extension TripSnapshot {
   }
 
   var conversionDefaults: (from: ConversionCurrency, to: ConversionCurrency) {
-    conversionDefaults(on: today)
+    let home = ConversionCurrency.forCurrency(
+      homeCurrency, preferredCountryCode: Locale.current.region?.identifier)
+    return (stop(for: currentAttachment).map(ConversionCurrency.forStop) ?? home, home)
   }
 
   func conversionDefaults(on date: String) -> (from: ConversionCurrency, to: ConversionCurrency) {

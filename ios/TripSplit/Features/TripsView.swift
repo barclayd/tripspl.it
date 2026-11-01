@@ -5,6 +5,13 @@ struct TripsView: View {
   var compact = false
   private var trips: [TripSnapshot] { model.store.trips }
   var body: some View {
+    if trips.isEmpty {
+      content
+    } else {
+      content.refreshable { await model.sync.syncAll() }
+    }
+  }
+  private var content: some View {
     ScrollView {
       VStack(alignment: .leading, spacing: 26) {
         if !compact {
@@ -60,7 +67,7 @@ struct TripsView: View {
           if trips.contains(where: { $0.phase == .past }) { passport }
         }
       }.pagePadding().padding(.bottom, 28)
-    }.background(Theme.background).toolbar {
+    }.scrollBounceBehavior(.basedOnSize).background(Theme.background).toolbar {
       ToolbarItem(placement: .primaryAction) {
         Button("New trip", systemImage: "plus") { model.showOnboarding = true }
       }
@@ -68,32 +75,19 @@ struct TripsView: View {
         Button("Account & sync", systemImage: "person.crop.circle") { model.showSettings = true }
       }
     }
-    .refreshable { await model.sync.syncAll() }
   }
   private var empty: some View {
     VStack(alignment: .leading, spacing: 28) {
       ZStack(alignment: .bottomTrailing) {
         VStack(alignment: .leading, spacing: 15) {
-          Kicker(title: "Your next chapter")
-          Text("Less maths.\nMore memories.").font(
+          Text("Your next trip").font(
             .system(size: 43, weight: .heavy, design: .default)
           ).tracking(-2)
-          Text("Plan the adventure. Split the costs.\nKnow what it really comes to.").font(.body)
-            .foregroundStyle(Theme.secondary).lineSpacing(4)
         }.padding(26).frame(maxWidth: .infinity, alignment: .leading).background(
           Theme.surface, in: RoundedRectangle(cornerRadius: 28))
         Text("✈️").font(.system(size: 56)).rotationEffect(.degrees(-12)).offset(x: -10, y: 28)
       }.padding(.top, 12).padding(.bottom, 20)
-      VStack(alignment: .leading, spacing: 12) {
-        Label("A budget for the whole crew", systemImage: "person.2")
-        Label("Every day, every little coffee", systemImage: "cup.and.saucer")
-        Label("Clear totals, even across currencies", systemImage: "arrow.left.arrow.right")
-      }.font(.subheadline.weight(.semibold)).foregroundStyle(Theme.secondary)
       PrimaryButton(title: "Plan your first trip", symbol: "plus") { model.showOnboarding = true }
-      Text(
-        "Start here, sign in when you’re ready to share. Your trips save automatically on this device."
-      ).font(.footnote).foregroundStyle(Theme.secondary).multilineTextAlignment(.center).frame(
-        maxWidth: .infinity)
     }
   }
   private var sidebar: some View {
@@ -228,7 +222,7 @@ struct CurrentTripCard: View {
             Text(trip.flags).font(.title)
             Spacer()
             Text(
-              "Day \((trip.days.firstIndex(where: { $0.date == trip.today }) ?? 0) + 1) of \(trip.days.count)"
+              "Day \((trip.days.firstIndex(where: { $0.id == trip.currentAttachment.id }) ?? 0) + 1) of \(trip.days.count)"
             ).font(.caption.weight(.bold)).padding(.horizontal, 12).padding(.vertical, 6)
               .background(.white.opacity(0.2), in: Capsule())
           }
@@ -260,10 +254,12 @@ struct CurrentTripCard: View {
         ForEach(trip.days) { day in
           let amount = Ledger(trip, expenses: trip.expenses(for: .init(kind: .day, id: day.id)))
             .total
-          Capsule().fill(.white.opacity(day.date > trip.today ? 0.35 : 0.9)).frame(
+          Capsule().fill(
+            .white.opacity(day.date > trip.today(for: .init(kind: .day, id: day.id)) ? 0.35 : 0.9)
+          ).frame(
             height: max(6, min(44, CGFloat(amount) / CGFloat(max(1, ledger.total)) * 150))
           ).overlay(alignment: .bottom) {
-            if day.date == trip.today {
+            if trip.isToday(day) {
               Circle().fill(.white).frame(width: 4, height: 4).offset(y: 7)
             }
           }

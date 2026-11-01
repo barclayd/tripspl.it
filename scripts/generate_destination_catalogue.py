@@ -79,6 +79,83 @@ def currency_active(currency: ET.Element, as_of: str) -> bool:
             and currency.get('to', '9999-12-31') >= as_of)
 
 
+def destination_time_zones(countries: list[dict], destinations: list[dict], records: dict) -> dict:
+    links = {}
+    for line in (SOURCES / 'iana-backward').read_text(encoding='utf-8').splitlines():
+        fields = line.split('#', 1)[0].split()
+        if fields and fields[0] == 'Link':
+            links[fields[2]] = fields[1]
+
+    def canonical(identifier: str) -> str:
+        seen = set()
+        while identifier in links:
+            if identifier in seen:
+                raise ValueError('IANA link cycle')
+            seen.add(identifier)
+            identifier = links[identifier]
+        return identifier
+
+    zones = collections.defaultdict(list)
+    # Keep familiar country-specific names, supplementing with all modern cross-country
+    # zones (for example, northern Vietnam uses Asia/Bangkok in zone1970.tab).
+    for filename in ['iana-zone.tab', 'iana-zone1970.tab']:
+        for line in (SOURCES / filename).read_text(encoding='utf-8').splitlines():
+            if not line or line.startswith('#'):
+                continue
+            fields = line.split('\t')
+            for country in fields[0].split(','):
+                if not any(canonical(zone) == canonical(fields[2]) for zone in zones[country]):
+                    zones[country].append(fields[2])
+
+    cldr = ET.parse(SOURCES / 'cldr-metaZones.xml').getroot()
+    for mapping in cldr.findall('.//mapZone'):
+        country = mapping.get('territory')
+        if country == 'XK':
+            # Kosovo has a current GeoNames/CLDR code but no ISO row in IANA's tables.
+            zones[country] += [zone for zone in mapping.attrib['type'].split() if zone not in zones[country]]
+
+    source = {row['geonameId']: row for row in read_json(SOURCES / 'geonames-time-zones.json')}
+
+    def scoped(identifier: str, country: str) -> str:
+        if identifier in zones[country]:
+            return identifier
+        matches = [zone for zone in zones[country] if canonical(zone) == canonical(identifier)]
+        if not matches:
+            raise ValueError(f'GeoNames zone {identifier} is outside the IANA/CLDR scope for {country}')
+        return matches[0]
+
+    country_rows = []
+    for country in countries:
+        code = country['code']
+        row = dict(countryCode=code, identifiers=sorted(zones[code]))
+        capitals = [record for record in records.values()
+                    if record['countryCode'] == code and record['featureCode'] == 'PPLC'
+                    and record['geonameId'] in source]
+        if len(zones[code]) == 1:
+            row['defaultIdentifier'] = zones[code][0]
+            row['defaultSource'] = 'Only scoped IANA/CLDR zone'
+        elif len(capitals) == 1:
+            capital = capitals[0]
+            row['defaultIdentifier'] = scoped(source[capital['geonameId']]['identifier'], code)
+            row['defaultSource'] = f"GeoNames capital: {capital['name']} ({capital['geonameId']})"
+        # With no unambiguous capital/single zone, leave the representative unset.
+        # AQ, UM and PS require a choice; uninhabited BV/HM have no scoped zones.
+        country_rows.append(row)
+
+    destination_rows = []
+    for destination in destinations:
+        gid = destination['id'].removeprefix('geonames-')
+        raw = source[gid]
+        assert raw['countryCode'] == destination['countryCode']
+        destination_rows.append(dict(id=destination['id'], countryCode=destination['countryCode'],
+                                     latitude=destination['latitude'], longitude=destination['longitude'],
+                                     identifier=scoped(raw['identifier'], destination['countryCode'])))
+    assert len(source) == len(destination_rows) == 500
+    assert len({(row['countryCode'], row['latitude'], row['longitude']) for row in destination_rows}) == 500
+    return dict(version=(SOURCES / 'iana-version').read_text().strip(),
+                countries=country_rows, destinations=destination_rows)
+
+
 def generate() -> tuple[dict[str, str], dict]:
     manifest = read_json(DATA / 'selection.json')
     aliases = read_json(DATA / 'aliases.json')
@@ -189,7 +266,7 @@ def generate() -> tuple[dict[str, str], dict]:
         'TripSplit offline destination data — attribution and licences',
         'Catalogue snapshot: 2026-11-01. This is a curated search catalogue, not a tourism ranking.',
         '', 'GEONAMES',
-        'Geographical names, country/territory codes, destination coordinates and source aliases © GeoNames contributors.',
+        'Geographical names, country/territory codes, destination coordinates, time-zone identifiers and source aliases © GeoNames contributors.',
         'Source: https://www.geonames.org/ — https://download.geonames.org/export/dump/',
         'Licence: Creative Commons Attribution 4.0 International (CC BY 4.0).',
         'Changes by TripSplit: selection of 500 destinations, bounded/curated search aliases, English display names,',
@@ -205,11 +282,18 @@ def generate() -> tuple[dict[str, str], dict]:
         'Currency records are filtered for 2026-11-01, tender=true, and TripSplit-supported ISO codes.',
         'CLDR and Google source order/coordinates are preserved except as documented in docs/destination-data.md.',
         '', (SOURCES / 'unicode-license.txt').read_text(encoding='utf-8'),
+        '', 'IANA TIME ZONE DATABASE 2026f — COUNTRY TIME-ZONE SCOPE AND ALIASES',
+        'Source: https://data.iana.org/time-zones/tzdb-2026f/',
+        'Country choices combine zone.tab and zone1970.tab, with equivalent backward links deduplicated.',
+        'These source tables and backward links are in the public domain. The tzdb licence follows.',
+        '', (SOURCES / 'iana-LICENSE').read_text(encoding='utf-8'),
     ])
+    time_zones = destination_time_zones(countries, destinations, records)
     files = {
         'Countries.json': json.dumps(countries, ensure_ascii=False, indent=2) + '\n',
         'Destinations.json': json.dumps(destinations, ensure_ascii=False, indent=2) + '\n',
         'DestinationDataLicenses.txt': licences.rstrip() + '\n',
+        'DestinationTimeZones.json': json.dumps(time_zones, ensure_ascii=False, indent=2) + '\n',
     }
     summary = {
         'countriesAndTerritories': len(countries), 'destinations': len(destinations),
@@ -217,6 +301,9 @@ def generate() -> tuple[dict[str, str], dict]:
                                            if len(row['currencies']) > 1},
         'countriesWithoutSupportedNationalTender': [row['code'] for row in countries if not row['currencies']],
         'unsupportedActiveCLDRCodes': unsupported_active,
+        'timeZoneVersion': time_zones['version'],
+        'countriesWithoutTimeZoneDefault': [row['countryCode'] for row in time_zones['countries']
+                                           if 'defaultIdentifier' not in row],
         'selectionReasons': dict(collections.Counter(row['reason'] for row in manifest['destinations'])),
         'resourceBytes': {name: len(content.encode('utf-8')) for name, content in files.items()},
         'resourceSHA256': {name: hashlib.sha256(content.encode('utf-8')).hexdigest()

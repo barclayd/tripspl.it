@@ -32,7 +32,10 @@ struct BoardingPass: View {
         Theme.accent
         VStack(spacing: 8) {
           Text(destination?.flag ?? "🏡").font(.title)
-          Text(destination.map { "\($0.nights) NIGHTS" } ?? "WELCOME\nHOME").font(
+          Text(
+            destination.map { "\($0.nights) \($0.nights == 1 ? "NIGHT" : "NIGHTS")" }
+              ?? "WELCOME\nHOME"
+          ).font(
             .system(size: 9, weight: .black)
           ).multilineTextAlignment(.center).tracking(1)
           barcode
@@ -93,7 +96,7 @@ struct BoardingPassStack: View {
     return Array(trip.legs[offset...] + trip.legs[..<offset])
   }
   var body: some View {
-    VStack(spacing: 14) {
+    VStack(spacing: 0) {
       ZStack(alignment: .top) {
         ForEach(Array(ordered.enumerated().reversed()), id: \.element.id) { i, leg in
           BoardingPass(
@@ -109,9 +112,15 @@ struct BoardingPassStack: View {
           .onTapGesture {
             if expanded, let open { open(leg) } else { animate { expanded.toggle() } }
           }
-          .accessibilityAddTraits(.isButton).accessibilityAction(
-            named: expanded ? "Open travel day" : "Expand boarding passes"
-          ) { if expanded { open?(leg) } else { expanded = true } }
+          .accessibilityAddTraits(.isButton)
+          .accessibilityAction {
+            if expanded, let open { open(leg) } else { animate { expanded.toggle() } }
+          }
+          .accessibilityAction(
+            named: expanded ? "Collapse boarding passes" : "Expand boarding passes"
+          ) {
+            animate { expanded.toggle() }
+          }
         }
       }.frame(height: expanded ? CGFloat(trip.legs.count) * 176 - 10 : 186)
         .gesture(
@@ -133,13 +142,13 @@ struct BoardingPassStack: View {
               animate { drag = .zero }
             }
           })
-      Button {
-        animate { expanded.toggle() }
-      } label: {
-        Label(
-          expanded ? "Stack them" : "\(trip.legs.count) passes · tap to explore",
-          systemImage: expanded ? "rectangle.stack" : "hand.tap"
-        ).font(.caption.weight(.semibold)).foregroundStyle(Theme.secondary)
+      if expanded {
+        Button {
+          animate { expanded = false }
+        } label: {
+          Image(systemName: "rectangle.stack").font(.body.weight(.semibold))
+            .frame(width: 44, height: 44).contentShape(Rectangle())
+        }.foregroundStyle(Theme.secondary).accessibilityLabel("Collapse boarding passes")
       }
     }
   }

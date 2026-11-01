@@ -1,0 +1,3502 @@
+[
+  {
+    "geonameId": "53654",
+    "countryCode": "SO",
+    "identifier": "Africa/Mogadishu",
+    "modificationDate": "2025-10-18",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "71137",
+    "countryCode": "YE",
+    "identifier": "Asia/Aden",
+    "modificationDate": "2025-06-14",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "98182",
+    "countryCode": "IQ",
+    "identifier": "Asia/Baghdad",
+    "modificationDate": "2024-02-14",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "104515",
+    "countryCode": "SA",
+    "identifier": "Asia/Riyadh",
+    "modificationDate": "2026-04-14",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "105343",
+    "countryCode": "SA",
+    "identifier": "Asia/Riyadh",
+    "modificationDate": "2024-04-21",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "108410",
+    "countryCode": "SA",
+    "identifier": "Asia/Riyadh",
+    "modificationDate": "2024-03-26",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "109223",
+    "countryCode": "SA",
+    "identifier": "Asia/Riyadh",
+    "modificationDate": "2026-04-14",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "112931",
+    "countryCode": "IR",
+    "identifier": "Asia/Tehran",
+    "modificationDate": "2026-09-07",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "146268",
+    "countryCode": "CY",
+    "identifier": "Asia/Nicosia",
+    "modificationDate": "2025-06-12",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "148730",
+    "countryCode": "TZ",
+    "identifier": "Africa/Dar_es_Salaam",
+    "modificationDate": "2026-04-14",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "160196",
+    "countryCode": "TZ",
+    "identifier": "Africa/Dar_es_Salaam",
+    "modificationDate": "2024-12-02",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "161325",
+    "countryCode": "TZ",
+    "identifier": "Africa/Dar_es_Salaam",
+    "modificationDate": "2026-04-14",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "162183",
+    "countryCode": "TM",
+    "identifier": "Asia/Ashgabat",
+    "modificationDate": "2026-04-15",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "170654",
+    "countryCode": "SY",
+    "identifier": "Asia/Damascus",
+    "modificationDate": "2026-08-27",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "184745",
+    "countryCode": "KE",
+    "identifier": "Africa/Nairobi",
+    "modificationDate": "2023-12-21",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "186301",
+    "countryCode": "KE",
+    "identifier": "Africa/Nairobi",
+    "modificationDate": "2022-09-26",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "202061",
+    "countryCode": "RW",
+    "identifier": "Africa/Kigali",
+    "modificationDate": "2021-11-09",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "223817",
+    "countryCode": "DJ",
+    "identifier": "Africa/Djibouti",
+    "modificationDate": "2023-11-29",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "232422",
+    "countryCode": "UG",
+    "identifier": "Africa/Kampala",
+    "modificationDate": "2025-12-14",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "233114",
+    "countryCode": "UG",
+    "identifier": "Africa/Kampala",
+    "modificationDate": "2026-04-14",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "233508",
+    "countryCode": "UG",
+    "identifier": "Africa/Kampala",
+    "modificationDate": "2024-12-02",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "241131",
+    "countryCode": "SC",
+    "identifier": "Indian/Mahe",
+    "modificationDate": "2019-09-05",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "250441",
+    "countryCode": "JO",
+    "identifier": "Asia/Amman",
+    "modificationDate": "2019-09-05",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "250774",
+    "countryCode": "JO",
+    "identifier": "Asia/Amman",
+    "modificationDate": "2024-03-03",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "252919",
+    "countryCode": "GR",
+    "identifier": "Europe/Athens",
+    "modificationDate": "2025-04-06",
+    "source": "country:GR"
+  },
+  {
+    "geonameId": "260114",
+    "countryCode": "GR",
+    "identifier": "Europe/Athens",
+    "modificationDate": "2026-03-16",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "264371",
+    "countryCode": "GR",
+    "identifier": "Europe/Athens",
+    "modificationDate": "2026-03-11",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "276781",
+    "countryCode": "LB",
+    "identifier": "Asia/Beirut",
+    "modificationDate": "2026-04-04",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "281184",
+    "countryCode": "IL",
+    "identifier": "Asia/Jerusalem",
+    "modificationDate": "2025-09-23",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "285787",
+    "countryCode": "KW",
+    "identifier": "Asia/Kuwait",
+    "modificationDate": "2025-06-12",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "286621",
+    "countryCode": "OM",
+    "identifier": "Asia/Muscat",
+    "modificationDate": "2026-04-14",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "287286",
+    "countryCode": "OM",
+    "identifier": "Asia/Muscat",
+    "modificationDate": "2019-09-05",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "290030",
+    "countryCode": "QA",
+    "identifier": "Asia/Qatar",
+    "modificationDate": "2022-11-15",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "290340",
+    "countryCode": "BH",
+    "identifier": "Asia/Bahrain",
+    "modificationDate": "2019-09-05",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "292223",
+    "countryCode": "AE",
+    "identifier": "Asia/Dubai",
+    "modificationDate": "2026-04-13",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "292672",
+    "countryCode": "AE",
+    "identifier": "Asia/Dubai",
+    "modificationDate": "2026-04-13",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "292968",
+    "countryCode": "AE",
+    "identifier": "Asia/Dubai",
+    "modificationDate": "2026-06-30",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "293397",
+    "countryCode": "IL",
+    "identifier": "Asia/Jerusalem",
+    "modificationDate": "2023-04-24",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "294801",
+    "countryCode": "IL",
+    "identifier": "Asia/Jerusalem",
+    "modificationDate": "2025-05-15",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "295277",
+    "countryCode": "IL",
+    "identifier": "Asia/Jerusalem",
+    "modificationDate": "2024-03-03",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "311046",
+    "countryCode": "TR",
+    "identifier": "Europe/Istanbul",
+    "modificationDate": "2026-09-02",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "314967",
+    "countryCode": "TR",
+    "identifier": "Europe/Istanbul",
+    "modificationDate": "2017-05-09",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "320995",
+    "countryCode": "TR",
+    "identifier": "Europe/Istanbul",
+    "modificationDate": "2019-09-24",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "323777",
+    "countryCode": "TR",
+    "identifier": "Europe/Istanbul",
+    "modificationDate": "2026-05-30",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "323786",
+    "countryCode": "TR",
+    "identifier": "Europe/Istanbul",
+    "modificationDate": "2026-03-24",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "332288",
+    "countryCode": "ET",
+    "identifier": "Africa/Addis_Ababa",
+    "modificationDate": "2023-11-30",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "336014",
+    "countryCode": "ET",
+    "identifier": "Africa/Addis_Ababa",
+    "modificationDate": "2023-11-30",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "343300",
+    "countryCode": "ER",
+    "identifier": "Africa/Asmara",
+    "modificationDate": "2021-03-10",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "344979",
+    "countryCode": "ET",
+    "identifier": "Africa/Addis_Ababa",
+    "modificationDate": "2026-02-23",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "359792",
+    "countryCode": "EG",
+    "identifier": "Africa/Cairo",
+    "modificationDate": "2024-07-14",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "360502",
+    "countryCode": "EG",
+    "identifier": "Africa/Cairo",
+    "modificationDate": "2019-09-05",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "360630",
+    "countryCode": "EG",
+    "identifier": "Africa/Cairo",
+    "modificationDate": "2026-08-29",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "363243",
+    "countryCode": "AL",
+    "identifier": "Europe/Tirane",
+    "modificationDate": "2026-06-05",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "373303",
+    "countryCode": "SS",
+    "identifier": "Africa/Juba",
+    "modificationDate": "2020-07-12",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "379252",
+    "countryCode": "SD",
+    "identifier": "Africa/Khartoum",
+    "modificationDate": "2025-11-03",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "426272",
+    "countryCode": "BI",
+    "identifier": "Africa/Bujumbura",
+    "modificationDate": "2023-11-29",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "456172",
+    "countryCode": "LV",
+    "identifier": "Europe/Riga",
+    "modificationDate": "2019-09-05",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "457954",
+    "countryCode": "LV",
+    "identifier": "Europe/Riga",
+    "modificationDate": "2026-04-14",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "498817",
+    "countryCode": "RU",
+    "identifier": "Europe/Moscow",
+    "modificationDate": "2026-10-20",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "524901",
+    "countryCode": "RU",
+    "identifier": "Europe/Moscow",
+    "modificationDate": "2025-09-09",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "551487",
+    "countryCode": "RU",
+    "identifier": "Europe/Moscow",
+    "modificationDate": "2026-04-14",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "587084",
+    "countryCode": "AZ",
+    "identifier": "Asia/Baku",
+    "modificationDate": "2026-06-02",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "588335",
+    "countryCode": "EE",
+    "identifier": "Europe/Tallinn",
+    "modificationDate": "2026-08-29",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "588409",
+    "countryCode": "EE",
+    "identifier": "Europe/Tallinn",
+    "modificationDate": "2026-02-23",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "593116",
+    "countryCode": "LT",
+    "identifier": "Europe/Vilnius",
+    "modificationDate": "2021-07-25",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "598316",
+    "countryCode": "LT",
+    "identifier": "Europe/Vilnius",
+    "modificationDate": "2026-04-14",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "611717",
+    "countryCode": "GE",
+    "identifier": "Asia/Tbilisi",
+    "modificationDate": "2026-06-11",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "613607",
+    "countryCode": "GE",
+    "identifier": "Asia/Tbilisi",
+    "modificationDate": "2023-02-12",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "615532",
+    "countryCode": "GE",
+    "identifier": "Asia/Tbilisi",
+    "modificationDate": "2026-03-23",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "616052",
+    "countryCode": "AM",
+    "identifier": "Asia/Yerevan",
+    "modificationDate": "2026-08-31",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "616635",
+    "countryCode": "AM",
+    "identifier": "Asia/Yerevan",
+    "modificationDate": "2026-04-17",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "618426",
+    "countryCode": "MD",
+    "identifier": "Europe/Chisinau",
+    "modificationDate": "2025-06-12",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "625144",
+    "countryCode": "BY",
+    "identifier": "Europe/Minsk",
+    "modificationDate": "2025-11-01",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "633679",
+    "countryCode": "FI",
+    "identifier": "Europe/Helsinki",
+    "modificationDate": "2025-11-18",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "638936",
+    "countryCode": "FI",
+    "identifier": "Europe/Helsinki",
+    "modificationDate": "2025-11-18",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "658225",
+    "countryCode": "FI",
+    "identifier": "Europe/Helsinki",
+    "modificationDate": "2023-02-13",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "681290",
+    "countryCode": "RO",
+    "identifier": "Europe/Bucharest",
+    "modificationDate": "2026-04-14",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "683506",
+    "countryCode": "RO",
+    "identifier": "Europe/Bucharest",
+    "modificationDate": "2026-01-09",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "683844",
+    "countryCode": "RO",
+    "identifier": "Europe/Bucharest",
+    "modificationDate": "2026-04-14",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "698740",
+    "countryCode": "UA",
+    "identifier": "Europe/Kyiv",
+    "modificationDate": "2026-08-03",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "702550",
+    "countryCode": "UA",
+    "identifier": "Europe/Kyiv",
+    "modificationDate": "2026-10-18",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "703448",
+    "countryCode": "UA",
+    "identifier": "Europe/Kyiv",
+    "modificationDate": "2026-08-14",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "721472",
+    "countryCode": "HU",
+    "identifier": "Europe/Budapest",
+    "modificationDate": "2025-08-19",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "727011",
+    "countryCode": "BG",
+    "identifier": "Europe/Sofia",
+    "modificationDate": "2023-09-08",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "734077",
+    "countryCode": "GR",
+    "identifier": "Europe/Athens",
+    "modificationDate": "2025-09-09",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "745044",
+    "countryCode": "TR",
+    "identifier": "Europe/Istanbul",
+    "modificationDate": "2026-08-25",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "756135",
+    "countryCode": "PL",
+    "identifier": "Europe/Warsaw",
+    "modificationDate": "2026-10-28",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "785842",
+    "countryCode": "MK",
+    "identifier": "Europe/Skopje",
+    "modificationDate": "2026-10-04",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "786714",
+    "countryCode": "XK",
+    "identifier": "Europe/Belgrade",
+    "modificationDate": "2022-09-14",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "792680",
+    "countryCode": "RS",
+    "identifier": "Europe/Belgrade",
+    "modificationDate": "2026-01-15",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "879431",
+    "countryCode": "ZW",
+    "identifier": "Africa/Harare",
+    "modificationDate": "2024-12-02",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "890299",
+    "countryCode": "ZW",
+    "identifier": "Africa/Harare",
+    "modificationDate": "2025-02-07",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "909137",
+    "countryCode": "ZM",
+    "identifier": "Africa/Lusaka",
+    "modificationDate": "2025-10-26",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "910111",
+    "countryCode": "ZM",
+    "identifier": "Africa/Lusaka",
+    "modificationDate": "2024-12-02",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "921772",
+    "countryCode": "KM",
+    "identifier": "Indian/Comoro",
+    "modificationDate": "2023-11-29",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "921815",
+    "countryCode": "YT",
+    "identifier": "Indian/Mayotte",
+    "modificationDate": "2023-02-01",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "927967",
+    "countryCode": "MW",
+    "identifier": "Africa/Blantyre",
+    "modificationDate": "2024-01-18",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "932505",
+    "countryCode": "LS",
+    "identifier": "Africa/Maseru",
+    "modificationDate": "2023-12-21",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "933773",
+    "countryCode": "BW",
+    "identifier": "Africa/Gaborone",
+    "modificationDate": "2023-11-29",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "934154",
+    "countryCode": "MU",
+    "identifier": "Indian/Mauritius",
+    "modificationDate": "2019-09-05",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "934985",
+    "countryCode": "SZ",
+    "identifier": "Africa/Mbabane",
+    "modificationDate": "2019-09-05",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "935264",
+    "countryCode": "RE",
+    "identifier": "Indian/Reunion",
+    "modificationDate": "2024-01-18",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "964137",
+    "countryCode": "ZA",
+    "identifier": "Africa/Johannesburg",
+    "modificationDate": "2024-12-02",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "993800",
+    "countryCode": "ZA",
+    "identifier": "Africa/Johannesburg",
+    "modificationDate": "2026-04-14",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "1040652",
+    "countryCode": "MZ",
+    "identifier": "Africa/Maputo",
+    "modificationDate": "2024-01-18",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "1045114",
+    "countryCode": "MZ",
+    "identifier": "Africa/Maputo",
+    "modificationDate": "2026-04-14",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "1070940",
+    "countryCode": "MG",
+    "identifier": "Indian/Antananarivo",
+    "modificationDate": "2025-05-18",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "1138958",
+    "countryCode": "AF",
+    "identifier": "Asia/Kabul",
+    "modificationDate": "2024-11-12",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "1151254",
+    "countryCode": "TH",
+    "identifier": "Asia/Bangkok",
+    "modificationDate": "2026-04-14",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "1152633",
+    "countryCode": "TH",
+    "identifier": "Asia/Bangkok",
+    "modificationDate": "2026-04-14",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "1153269",
+    "countryCode": "TH",
+    "identifier": "Asia/Bangkok",
+    "modificationDate": "2025-06-17",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "1153669",
+    "countryCode": "TH",
+    "identifier": "Asia/Bangkok",
+    "modificationDate": "2026-04-14",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "1153671",
+    "countryCode": "TH",
+    "identifier": "Asia/Bangkok",
+    "modificationDate": "2026-04-14",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "1172451",
+    "countryCode": "PK",
+    "identifier": "Asia/Karachi",
+    "modificationDate": "2026-04-14",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "1174872",
+    "countryCode": "PK",
+    "identifier": "Asia/Karachi",
+    "modificationDate": "2026-04-14",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "1176615",
+    "countryCode": "PK",
+    "identifier": "Asia/Karachi",
+    "modificationDate": "2019-09-05",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "1185241",
+    "countryCode": "BD",
+    "identifier": "Asia/Dhaka",
+    "modificationDate": "2026-09-07",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "1205733",
+    "countryCode": "BD",
+    "identifier": "Asia/Dhaka",
+    "modificationDate": "2026-04-13",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "1214520",
+    "countryCode": "ID",
+    "identifier": "Asia/Jakarta",
+    "modificationDate": "2026-06-10",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "1216265",
+    "countryCode": "UZ",
+    "identifier": "Asia/Samarkand",
+    "modificationDate": "2026-08-25",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "1217662",
+    "countryCode": "UZ",
+    "identifier": "Asia/Samarkand",
+    "modificationDate": "2026-08-24",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "1221874",
+    "countryCode": "TJ",
+    "identifier": "Asia/Dushanbe",
+    "modificationDate": "2016-10-19",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "1241622",
+    "countryCode": "LK",
+    "identifier": "Asia/Colombo",
+    "modificationDate": "2026-04-14",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "1246294",
+    "countryCode": "LK",
+    "identifier": "Asia/Colombo",
+    "modificationDate": "2026-04-14",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "1248991",
+    "countryCode": "LK",
+    "identifier": "Asia/Colombo",
+    "modificationDate": "2019-09-05",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "1252416",
+    "countryCode": "BT",
+    "identifier": "Asia/Thimphu",
+    "modificationDate": "2019-09-05",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "1253405",
+    "countryCode": "IN",
+    "identifier": "Asia/Kolkata",
+    "modificationDate": "2026-07-24",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "1253986",
+    "countryCode": "IN",
+    "identifier": "Asia/Kolkata",
+    "modificationDate": "2025-08-05",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "1261481",
+    "countryCode": "IN",
+    "identifier": "Asia/Kolkata",
+    "modificationDate": "2025-07-22",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "1269515",
+    "countryCode": "IN",
+    "identifier": "Asia/Kolkata",
+    "modificationDate": "2025-08-05",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "1275339",
+    "countryCode": "IN",
+    "identifier": "Asia/Kolkata",
+    "modificationDate": "2024-09-05",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "1279259",
+    "countryCode": "IN",
+    "identifier": "Asia/Kolkata",
+    "modificationDate": "2025-10-31",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "1282027",
+    "countryCode": "MV",
+    "identifier": "Indian/Maldives",
+    "modificationDate": "2025-08-06",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "1282898",
+    "countryCode": "NP",
+    "identifier": "Asia/Kathmandu",
+    "modificationDate": "2026-04-14",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "1283240",
+    "countryCode": "NP",
+    "identifier": "Asia/Kathmandu",
+    "modificationDate": "2019-10-18",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "1512569",
+    "countryCode": "UZ",
+    "identifier": "Asia/Tashkent",
+    "modificationDate": "2024-06-22",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "1513604",
+    "countryCode": "UZ",
+    "identifier": "Asia/Samarkand",
+    "modificationDate": "2025-06-25",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "1526273",
+    "countryCode": "KZ",
+    "identifier": "Asia/Almaty",
+    "modificationDate": "2026-06-12",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "1526384",
+    "countryCode": "KZ",
+    "identifier": "Asia/Almaty",
+    "modificationDate": "2026-04-14",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "1528675",
+    "countryCode": "KG",
+    "identifier": "Asia/Bishkek",
+    "modificationDate": "2025-08-22",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "1546102",
+    "countryCode": "TF",
+    "identifier": "Indian/Kerguelen",
+    "modificationDate": "2018-08-17",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "1566083",
+    "countryCode": "VN",
+    "identifier": "Asia/Ho_Chi_Minh",
+    "modificationDate": "2025-10-19",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "1572151",
+    "countryCode": "VN",
+    "identifier": "Asia/Ho_Chi_Minh",
+    "modificationDate": "2026-04-14",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "1580240",
+    "countryCode": "VN",
+    "identifier": "Asia/Bangkok",
+    "modificationDate": "2026-04-14",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "1580541",
+    "countryCode": "VN",
+    "identifier": "Asia/Ho_Chi_Minh",
+    "modificationDate": "2025-07-29",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "1581130",
+    "countryCode": "VN",
+    "identifier": "Asia/Bangkok",
+    "modificationDate": "2026-05-07",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "1583992",
+    "countryCode": "VN",
+    "identifier": "Asia/Ho_Chi_Minh",
+    "modificationDate": "2026-04-14",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "1607532",
+    "countryCode": "TH",
+    "identifier": "Asia/Bangkok",
+    "modificationDate": "2026-04-14",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "1609350",
+    "countryCode": "TH",
+    "identifier": "Asia/Bangkok",
+    "modificationDate": "2024-03-26",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "1621177",
+    "countryCode": "ID",
+    "identifier": "Asia/Jakarta",
+    "modificationDate": "2026-06-10",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "1622846",
+    "countryCode": "ID",
+    "identifier": "Asia/Makassar",
+    "modificationDate": "2022-10-03",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "1625822",
+    "countryCode": "ID",
+    "identifier": "Asia/Jakarta",
+    "modificationDate": "2026-06-10",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "1642911",
+    "countryCode": "ID",
+    "identifier": "Asia/Jakarta",
+    "modificationDate": "2026-02-23",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "1645457",
+    "countryCode": "TL",
+    "identifier": "Asia/Dili",
+    "modificationDate": "2019-09-05",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "1650357",
+    "countryCode": "ID",
+    "identifier": "Asia/Jakarta",
+    "modificationDate": "2026-06-10",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "1650535",
+    "countryCode": "ID",
+    "identifier": "Asia/Makassar",
+    "modificationDate": "2026-04-16",
+    "source": "country:ID"
+  },
+  {
+    "geonameId": "1651944",
+    "countryCode": "LA",
+    "identifier": "Asia/Vientiane",
+    "modificationDate": "2026-03-29",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "1655087",
+    "countryCode": "LA",
+    "identifier": "Asia/Vientiane",
+    "modificationDate": "2023-02-10",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "1655559",
+    "countryCode": "LA",
+    "identifier": "Asia/Vientiane",
+    "modificationDate": "2026-04-14",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "1668295",
+    "countryCode": "TW",
+    "identifier": "Asia/Taipei",
+    "modificationDate": "2026-09-14",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "1668341",
+    "countryCode": "TW",
+    "identifier": "Asia/Taipei",
+    "modificationDate": "2025-02-24",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "1668355",
+    "countryCode": "TW",
+    "identifier": "Asia/Taipei",
+    "modificationDate": "2026-10-16",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "1668399",
+    "countryCode": "TW",
+    "identifier": "Asia/Taipei",
+    "modificationDate": "2025-06-14",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "1673820",
+    "countryCode": "TW",
+    "identifier": "Asia/Taipei",
+    "modificationDate": "2026-04-14",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "1674504",
+    "countryCode": "TW",
+    "identifier": "Asia/Taipei",
+    "modificationDate": "2025-06-14",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "1678228",
+    "countryCode": "TW",
+    "identifier": "Asia/Taipei",
+    "modificationDate": "2025-06-14",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "1692685",
+    "countryCode": "PH",
+    "identifier": "Asia/Manila",
+    "modificationDate": "2020-11-01",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "1701668",
+    "countryCode": "PH",
+    "identifier": "Asia/Manila",
+    "modificationDate": "2025-09-16",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "1715348",
+    "countryCode": "PH",
+    "identifier": "Asia/Manila",
+    "modificationDate": "2026-04-14",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "1717512",
+    "countryCode": "PH",
+    "identifier": "Asia/Manila",
+    "modificationDate": "2026-04-14",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "1728930",
+    "countryCode": "PH",
+    "identifier": "Asia/Manila",
+    "modificationDate": "2026-04-14",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "1732752",
+    "countryCode": "MY",
+    "identifier": "Asia/Kuala_Lumpur",
+    "modificationDate": "2026-04-14",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "1733432",
+    "countryCode": "MY",
+    "identifier": "Asia/Kuching",
+    "modificationDate": "2026-04-14",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "1734759",
+    "countryCode": "MY",
+    "identifier": "Asia/Kuala_Lumpur",
+    "modificationDate": "2026-04-14",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "1735106",
+    "countryCode": "MY",
+    "identifier": "Asia/Kuala_Lumpur",
+    "modificationDate": "2026-04-14",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "1735161",
+    "countryCode": "MY",
+    "identifier": "Asia/Kuala_Lumpur",
+    "modificationDate": "2026-04-29",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "1735634",
+    "countryCode": "MY",
+    "identifier": "Asia/Kuching",
+    "modificationDate": "2026-04-14",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "1790630",
+    "countryCode": "CN",
+    "identifier": "Asia/Shanghai",
+    "modificationDate": "2026-08-26",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "1795565",
+    "countryCode": "CN",
+    "identifier": "Asia/Shanghai",
+    "modificationDate": "2025-10-22",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "1796236",
+    "countryCode": "CN",
+    "identifier": "Asia/Shanghai",
+    "modificationDate": "2026-08-26",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "1808926",
+    "countryCode": "CN",
+    "identifier": "Asia/Shanghai",
+    "modificationDate": "2026-08-26",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "1809858",
+    "countryCode": "CN",
+    "identifier": "Asia/Shanghai",
+    "modificationDate": "2026-08-26",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "1815286",
+    "countryCode": "CN",
+    "identifier": "Asia/Shanghai",
+    "modificationDate": "2026-08-26",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "1816670",
+    "countryCode": "CN",
+    "identifier": "Asia/Shanghai",
+    "modificationDate": "2025-12-15",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "1819729",
+    "countryCode": "HK",
+    "identifier": "Asia/Hong_Kong",
+    "modificationDate": "2025-08-25",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "1820906",
+    "countryCode": "BN",
+    "identifier": "Asia/Brunei",
+    "modificationDate": "2019-09-05",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "1821274",
+    "countryCode": "MO",
+    "identifier": "Asia/Macau",
+    "modificationDate": "2024-08-27",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "1821306",
+    "countryCode": "KH",
+    "identifier": "Asia/Phnom_Penh",
+    "modificationDate": "2025-10-19",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "1822214",
+    "countryCode": "KH",
+    "identifier": "Asia/Phnom_Penh",
+    "modificationDate": "2026-04-14",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "1831797",
+    "countryCode": "KH",
+    "identifier": "Asia/Phnom_Penh",
+    "modificationDate": "2026-04-14",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "1835848",
+    "countryCode": "KR",
+    "identifier": "Asia/Seoul",
+    "modificationDate": "2024-12-01",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "1838524",
+    "countryCode": "KR",
+    "identifier": "Asia/Seoul",
+    "modificationDate": "2026-04-14",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "1841603",
+    "countryCode": "KR",
+    "identifier": "Asia/Seoul",
+    "modificationDate": "2025-07-15",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "1843564",
+    "countryCode": "KR",
+    "identifier": "Asia/Seoul",
+    "modificationDate": "2026-04-14",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "1846266",
+    "countryCode": "KR",
+    "identifier": "Asia/Seoul",
+    "modificationDate": "2026-04-14",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "1850147",
+    "countryCode": "JP",
+    "identifier": "Asia/Tokyo",
+    "modificationDate": "2025-07-22",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "1853909",
+    "countryCode": "JP",
+    "identifier": "Asia/Tokyo",
+    "modificationDate": "2024-09-05",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "1855612",
+    "countryCode": "JP",
+    "identifier": "Asia/Tokyo",
+    "modificationDate": "2022-08-15",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "1857910",
+    "countryCode": "JP",
+    "identifier": "Asia/Tokyo",
+    "modificationDate": "2022-10-24",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "1860243",
+    "countryCode": "JP",
+    "identifier": "Asia/Tokyo",
+    "modificationDate": "2022-08-15",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "1862415",
+    "countryCode": "JP",
+    "identifier": "Asia/Tokyo",
+    "modificationDate": "2024-12-02",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "1863967",
+    "countryCode": "JP",
+    "identifier": "Asia/Tokyo",
+    "modificationDate": "2026-01-20",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "1871859",
+    "countryCode": "KP",
+    "identifier": "Asia/Pyongyang",
+    "modificationDate": "2024-06-19",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "1880252",
+    "countryCode": "SG",
+    "identifier": "Asia/Singapore",
+    "modificationDate": "2025-07-23",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "2028462",
+    "countryCode": "MN",
+    "identifier": "Asia/Ulaanbaatar",
+    "modificationDate": "2025-08-25",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "2063523",
+    "countryCode": "AU",
+    "identifier": "Australia/Perth",
+    "modificationDate": "2026-06-24",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "2078127",
+    "countryCode": "CX",
+    "identifier": "Indian/Christmas",
+    "modificationDate": "2026-09-15",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "2081986",
+    "countryCode": "FM",
+    "identifier": "Pacific/Pohnpei",
+    "modificationDate": "2025-12-03",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "2088122",
+    "countryCode": "PG",
+    "identifier": "Pacific/Port_Moresby",
+    "modificationDate": "2022-03-06",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "2108502",
+    "countryCode": "SB",
+    "identifier": "Pacific/Guadalcanal",
+    "modificationDate": "2025-10-04",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "2110257",
+    "countryCode": "KI",
+    "identifier": "Pacific/Tarawa",
+    "modificationDate": "2025-05-08",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "2110394",
+    "countryCode": "TV",
+    "identifier": "Pacific/Funafuti",
+    "modificationDate": "2025-08-02",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "2113779",
+    "countryCode": "MH",
+    "identifier": "Pacific/Majuro",
+    "modificationDate": "2025-05-08",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "2128295",
+    "countryCode": "JP",
+    "identifier": "Asia/Tokyo",
+    "modificationDate": "2025-11-03",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "2135171",
+    "countryCode": "VU",
+    "identifier": "Pacific/Efate",
+    "modificationDate": "2025-05-08",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "2139521",
+    "countryCode": "NC",
+    "identifier": "Pacific/Noumea",
+    "modificationDate": "2017-07-27",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "2147714",
+    "countryCode": "AU",
+    "identifier": "Australia/Sydney",
+    "modificationDate": "2026-06-24",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "2158177",
+    "countryCode": "AU",
+    "identifier": "Australia/Melbourne",
+    "modificationDate": "2026-06-24",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "2161314",
+    "countryCode": "NF",
+    "identifier": "Pacific/Norfolk",
+    "modificationDate": "2014-08-18",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "2172517",
+    "countryCode": "AU",
+    "identifier": "Australia/Sydney",
+    "modificationDate": "2019-09-05",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "2172797",
+    "countryCode": "AU",
+    "identifier": "Australia/Brisbane",
+    "modificationDate": "2019-05-22",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "2174003",
+    "countryCode": "AU",
+    "identifier": "Australia/Brisbane",
+    "modificationDate": "2026-07-03",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "2179537",
+    "countryCode": "NZ",
+    "identifier": "Pacific/Auckland",
+    "modificationDate": "2019-09-05",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "2191562",
+    "countryCode": "NZ",
+    "identifier": "Pacific/Auckland",
+    "modificationDate": "2026-05-04",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "2192362",
+    "countryCode": "NZ",
+    "identifier": "Pacific/Auckland",
+    "modificationDate": "2026-05-04",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "2193733",
+    "countryCode": "NZ",
+    "identifier": "Pacific/Auckland",
+    "modificationDate": "2026-05-02",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "2198148",
+    "countryCode": "FJ",
+    "identifier": "Pacific/Fiji",
+    "modificationDate": "2023-02-23",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "2202064",
+    "countryCode": "FJ",
+    "identifier": "Pacific/Fiji",
+    "modificationDate": "2023-08-15",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "2210247",
+    "countryCode": "LY",
+    "identifier": "Africa/Tripoli",
+    "modificationDate": "2026-07-08",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "2220957",
+    "countryCode": "CM",
+    "identifier": "Africa/Douala",
+    "modificationDate": "2024-07-20",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "2240449",
+    "countryCode": "AO",
+    "identifier": "Africa/Luanda",
+    "modificationDate": "2024-03-26",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "2246452",
+    "countryCode": "SN",
+    "identifier": "Africa/Dakar",
+    "modificationDate": "2026-04-14",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "2253354",
+    "countryCode": "SN",
+    "identifier": "Africa/Dakar",
+    "modificationDate": "2024-07-27",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "2260535",
+    "countryCode": "CG",
+    "identifier": "Africa/Brazzaville",
+    "modificationDate": "2025-10-31",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "2267057",
+    "countryCode": "PT",
+    "identifier": "Europe/Lisbon",
+    "modificationDate": "2026-02-23",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "2267827",
+    "countryCode": "PT",
+    "identifier": "Atlantic/Madeira",
+    "modificationDate": "2026-04-14",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "2268339",
+    "countryCode": "PT",
+    "identifier": "Europe/Lisbon",
+    "modificationDate": "2026-04-14",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "2274895",
+    "countryCode": "LR",
+    "identifier": "Africa/Monrovia",
+    "modificationDate": "2025-12-15",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "2279755",
+    "countryCode": "CI",
+    "identifier": "Africa/Abidjan",
+    "modificationDate": "2024-01-05",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "2298890",
+    "countryCode": "GH",
+    "identifier": "Africa/Accra",
+    "modificationDate": "2024-06-22",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "2306104",
+    "countryCode": "GH",
+    "identifier": "Africa/Accra",
+    "modificationDate": "2026-04-29",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "2314302",
+    "countryCode": "CD",
+    "identifier": "Africa/Kinshasa",
+    "modificationDate": "2023-11-29",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "2332459",
+    "countryCode": "NG",
+    "identifier": "Africa/Lagos",
+    "modificationDate": "2023-10-25",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "2352778",
+    "countryCode": "NG",
+    "identifier": "Africa/Lagos",
+    "modificationDate": "2024-04-06",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "2357048",
+    "countryCode": "BF",
+    "identifier": "Africa/Ouagadougou",
+    "modificationDate": "2025-06-20",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "2365267",
+    "countryCode": "TG",
+    "identifier": "Africa/Lome",
+    "modificationDate": "2025-10-31",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "2374775",
+    "countryCode": "GW",
+    "identifier": "Africa/Bissau",
+    "modificationDate": "2024-09-05",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "2377450",
+    "countryCode": "MR",
+    "identifier": "Africa/Nouakchott",
+    "modificationDate": "2024-01-18",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "2389853",
+    "countryCode": "CF",
+    "identifier": "Africa/Bangui",
+    "modificationDate": "2023-11-29",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "2392087",
+    "countryCode": "BJ",
+    "identifier": "Africa/Porto-Novo",
+    "modificationDate": "2023-11-29",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "2399697",
+    "countryCode": "GA",
+    "identifier": "Africa/Libreville",
+    "modificationDate": "2023-12-01",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "2409306",
+    "countryCode": "SL",
+    "identifier": "Africa/Freetown",
+    "modificationDate": "2024-01-18",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "2410763",
+    "countryCode": "ST",
+    "identifier": "Africa/Sao_Tome",
+    "modificationDate": "2025-01-07",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "2411585",
+    "countryCode": "GI",
+    "identifier": "Europe/Gibraltar",
+    "modificationDate": "2024-09-05",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "2413876",
+    "countryCode": "GM",
+    "identifier": "Africa/Banjul",
+    "modificationDate": "2023-12-01",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "2422465",
+    "countryCode": "GN",
+    "identifier": "Africa/Conakry",
+    "modificationDate": "2023-12-20",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "2427123",
+    "countryCode": "TD",
+    "identifier": "Africa/Ndjamena",
+    "modificationDate": "2023-11-29",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "2440485",
+    "countryCode": "NE",
+    "identifier": "Africa/Niamey",
+    "modificationDate": "2024-01-18",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "2460596",
+    "countryCode": "ML",
+    "identifier": "Africa/Bamako",
+    "modificationDate": "2025-02-18",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "2464470",
+    "countryCode": "TN",
+    "identifier": "Africa/Tunis",
+    "modificationDate": "2026-02-23",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "2464915",
+    "countryCode": "TN",
+    "identifier": "Africa/Tunis",
+    "modificationDate": "2026-04-14",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "2485926",
+    "countryCode": "DZ",
+    "identifier": "Africa/Algiers",
+    "modificationDate": "2026-04-13",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "2507480",
+    "countryCode": "DZ",
+    "identifier": "Africa/Algiers",
+    "modificationDate": "2024-08-05",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "2509954",
+    "countryCode": "ES",
+    "identifier": "Europe/Madrid",
+    "modificationDate": "2025-10-22",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "2510911",
+    "countryCode": "ES",
+    "identifier": "Europe/Madrid",
+    "modificationDate": "2026-03-23",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "2514256",
+    "countryCode": "ES",
+    "identifier": "Europe/Madrid",
+    "modificationDate": "2026-04-30",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "2517117",
+    "countryCode": "ES",
+    "identifier": "Europe/Madrid",
+    "modificationDate": "2025-07-25",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "2538475",
+    "countryCode": "MA",
+    "identifier": "Africa/Casablanca",
+    "modificationDate": "2026-08-31",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "2542997",
+    "countryCode": "MA",
+    "identifier": "Africa/Casablanca",
+    "modificationDate": "2026-04-14",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "2548885",
+    "countryCode": "MA",
+    "identifier": "Africa/Casablanca",
+    "modificationDate": "2026-04-14",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "2553604",
+    "countryCode": "MA",
+    "identifier": "Africa/Casablanca",
+    "modificationDate": "2026-04-14",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "2562305",
+    "countryCode": "MT",
+    "identifier": "Europe/Malta",
+    "modificationDate": "2019-10-29",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "2611396",
+    "countryCode": "FO",
+    "identifier": "Atlantic/Faroe",
+    "modificationDate": "2024-01-07",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "2618425",
+    "countryCode": "DK",
+    "identifier": "Europe/Copenhagen",
+    "modificationDate": "2024-09-05",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "2624652",
+    "countryCode": "DK",
+    "identifier": "Europe/Copenhagen",
+    "modificationDate": "2026-08-27",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "2633274",
+    "countryCode": "IS",
+    "identifier": "Atlantic/Reykjavik",
+    "modificationDate": "2024-07-10",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "2643123",
+    "countryCode": "GB",
+    "identifier": "Europe/London",
+    "modificationDate": "2026-03-23",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "2643743",
+    "countryCode": "GB",
+    "identifier": "Europe/London",
+    "modificationDate": "2026-08-17",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "2644210",
+    "countryCode": "GB",
+    "identifier": "Europe/London",
+    "modificationDate": "2025-06-26",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "2650225",
+    "countryCode": "GB",
+    "identifier": "Europe/London",
+    "modificationDate": "2026-09-07",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "2657896",
+    "countryCode": "CH",
+    "identifier": "Europe/Zurich",
+    "modificationDate": "2026-04-13",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "2657928",
+    "countryCode": "CH",
+    "identifier": "Europe/Zurich",
+    "modificationDate": "2016-09-13",
+    "source": "country:CH"
+  },
+  {
+    "geonameId": "2659811",
+    "countryCode": "CH",
+    "identifier": "Europe/Zurich",
+    "modificationDate": "2026-04-13",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "2660646",
+    "countryCode": "CH",
+    "identifier": "Europe/Zurich",
+    "modificationDate": "2026-10-01",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "2661552",
+    "countryCode": "CH",
+    "identifier": "Europe/Zurich",
+    "modificationDate": "2019-09-18",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "2673730",
+    "countryCode": "SE",
+    "identifier": "Europe/Stockholm",
+    "modificationDate": "2024-06-20",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "2692969",
+    "countryCode": "SE",
+    "identifier": "Europe/Stockholm",
+    "modificationDate": "2026-04-30",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "2711537",
+    "countryCode": "SE",
+    "identifier": "Europe/Stockholm",
+    "modificationDate": "2026-05-07",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "2729907",
+    "countryCode": "SJ",
+    "identifier": "Arctic/Longyearbyen",
+    "modificationDate": "2022-01-04",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "2735943",
+    "countryCode": "PT",
+    "identifier": "Europe/Lisbon",
+    "modificationDate": "2026-04-14",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "2740637",
+    "countryCode": "PT",
+    "identifier": "Europe/Lisbon",
+    "modificationDate": "2026-04-14",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "2745912",
+    "countryCode": "NL",
+    "identifier": "Europe/Amsterdam",
+    "modificationDate": "2026-10-10",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "2747373",
+    "countryCode": "NL",
+    "identifier": "Europe/Amsterdam",
+    "modificationDate": "2017-10-24",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "2747891",
+    "countryCode": "NL",
+    "identifier": "Europe/Amsterdam",
+    "modificationDate": "2026-10-27",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "2759794",
+    "countryCode": "NL",
+    "identifier": "Europe/Amsterdam",
+    "modificationDate": "2026-02-23",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "2761369",
+    "countryCode": "AT",
+    "identifier": "Europe/Vienna",
+    "modificationDate": "2025-11-01",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "2766824",
+    "countryCode": "AT",
+    "identifier": "Europe/Vienna",
+    "modificationDate": "2026-04-13",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "2775220",
+    "countryCode": "AT",
+    "identifier": "Europe/Vienna",
+    "modificationDate": "2026-09-23",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "2778067",
+    "countryCode": "AT",
+    "identifier": "Europe/Vienna",
+    "modificationDate": "2026-09-09",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "2797656",
+    "countryCode": "BE",
+    "identifier": "Europe/Brussels",
+    "modificationDate": "2023-02-19",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "2800866",
+    "countryCode": "BE",
+    "identifier": "Europe/Brussels",
+    "modificationDate": "2024-05-03",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "2800931",
+    "countryCode": "BE",
+    "identifier": "Europe/Brussels",
+    "modificationDate": "2023-02-19",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "2803138",
+    "countryCode": "BE",
+    "identifier": "Europe/Brussels",
+    "modificationDate": "2026-06-08",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "2867714",
+    "countryCode": "DE",
+    "identifier": "Europe/Berlin",
+    "modificationDate": "2026-05-06",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "2886242",
+    "countryCode": "DE",
+    "identifier": "Europe/Berlin",
+    "modificationDate": "2026-05-06",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "2911298",
+    "countryCode": "DE",
+    "identifier": "Europe/Berlin",
+    "modificationDate": "2026-05-06",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "2950159",
+    "countryCode": "DE",
+    "identifier": "Europe/Berlin",
+    "modificationDate": "2025-07-22",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "2960316",
+    "countryCode": "LU",
+    "identifier": "Europe/Luxembourg",
+    "modificationDate": "2025-06-20",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "2964180",
+    "countryCode": "IE",
+    "identifier": "Europe/Dublin",
+    "modificationDate": "2026-06-15",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "2964574",
+    "countryCode": "IE",
+    "identifier": "Europe/Dublin",
+    "modificationDate": "2022-03-09",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "2965140",
+    "countryCode": "IE",
+    "identifier": "Europe/Dublin",
+    "modificationDate": "2026-06-15",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "2988507",
+    "countryCode": "FR",
+    "identifier": "Europe/Paris",
+    "modificationDate": "2026-02-23",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "2990440",
+    "countryCode": "FR",
+    "identifier": "Europe/Paris",
+    "modificationDate": "2026-02-23",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "2993458",
+    "countryCode": "MC",
+    "identifier": "Europe/Monaco",
+    "modificationDate": "2025-12-13",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "2995469",
+    "countryCode": "FR",
+    "identifier": "Europe/Paris",
+    "modificationDate": "2026-03-23",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "2996944",
+    "countryCode": "FR",
+    "identifier": "Europe/Paris",
+    "modificationDate": "2025-12-09",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "3041563",
+    "countryCode": "AD",
+    "identifier": "Europe/Andorra",
+    "modificationDate": "2020-03-03",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "3041732",
+    "countryCode": "AX",
+    "identifier": "Europe/Mariehamn",
+    "modificationDate": "2024-01-07",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "3042030",
+    "countryCode": "LI",
+    "identifier": "Europe/Vaduz",
+    "modificationDate": "2013-04-02",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "3042091",
+    "countryCode": "JE",
+    "identifier": "Europe/Jersey",
+    "modificationDate": "2021-08-01",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "3042237",
+    "countryCode": "IM",
+    "identifier": "Europe/Isle_of_Man",
+    "modificationDate": "2021-08-01",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "3042287",
+    "countryCode": "GG",
+    "identifier": "Europe/Guernsey",
+    "modificationDate": "2019-09-05",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "3046526",
+    "countryCode": "HU",
+    "identifier": "Europe/Budapest",
+    "modificationDate": "2026-01-14",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "3054643",
+    "countryCode": "HU",
+    "identifier": "Europe/Budapest",
+    "modificationDate": "2026-07-29",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "3060972",
+    "countryCode": "SK",
+    "identifier": "Europe/Bratislava",
+    "modificationDate": "2026-01-18",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "3067696",
+    "countryCode": "CZ",
+    "identifier": "Europe/Prague",
+    "modificationDate": "2026-02-23",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "3078610",
+    "countryCode": "CZ",
+    "identifier": "Europe/Prague",
+    "modificationDate": "2026-09-11",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "3094802",
+    "countryCode": "PL",
+    "identifier": "Europe/Warsaw",
+    "modificationDate": "2026-06-21",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "3099434",
+    "countryCode": "PL",
+    "identifier": "Europe/Warsaw",
+    "modificationDate": "2026-04-14",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "3117735",
+    "countryCode": "ES",
+    "identifier": "Europe/Madrid",
+    "modificationDate": "2026-02-23",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "3128760",
+    "countryCode": "ES",
+    "identifier": "Europe/Madrid",
+    "modificationDate": "2026-05-20",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "3133895",
+    "countryCode": "NO",
+    "identifier": "Europe/Oslo",
+    "modificationDate": "2026-04-14",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "3143244",
+    "countryCode": "NO",
+    "identifier": "Europe/Oslo",
+    "modificationDate": "2024-08-27",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "3161732",
+    "countryCode": "NO",
+    "identifier": "Europe/Oslo",
+    "modificationDate": "2026-04-14",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "3164603",
+    "countryCode": "IT",
+    "identifier": "Europe/Rome",
+    "modificationDate": "2026-03-23",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "3168070",
+    "countryCode": "SM",
+    "identifier": "Europe/San_Marino",
+    "modificationDate": "2023-08-07",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "3169070",
+    "countryCode": "IT",
+    "identifier": "Europe/Rome",
+    "modificationDate": "2025-07-22",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "3172394",
+    "countryCode": "IT",
+    "identifier": "Europe/Rome",
+    "modificationDate": "2026-04-17",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "3173435",
+    "countryCode": "IT",
+    "identifier": "Europe/Rome",
+    "modificationDate": "2026-04-01",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "3176959",
+    "countryCode": "IT",
+    "identifier": "Europe/Rome",
+    "modificationDate": "2026-03-23",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "3183130",
+    "countryCode": "IT",
+    "identifier": "Europe/Rome",
+    "modificationDate": "2026-08-30",
+    "source": "country:IT"
+  },
+  {
+    "geonameId": "3183875",
+    "countryCode": "AL",
+    "identifier": "Europe/Tirane",
+    "modificationDate": "2026-06-05",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "3186084",
+    "countryCode": "AL",
+    "identifier": "Europe/Tirane",
+    "modificationDate": "2026-06-04",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "3186886",
+    "countryCode": "HR",
+    "identifier": "Europe/Zagreb",
+    "modificationDate": "2023-11-25",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "3190261",
+    "countryCode": "HR",
+    "identifier": "Europe/Zagreb",
+    "modificationDate": "2023-11-25",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "3191281",
+    "countryCode": "BA",
+    "identifier": "Europe/Sarajevo",
+    "modificationDate": "2019-09-05",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "3193044",
+    "countryCode": "ME",
+    "identifier": "Europe/Podgorica",
+    "modificationDate": "2025-06-12",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "3194360",
+    "countryCode": "RS",
+    "identifier": "Europe/Belgrade",
+    "modificationDate": "2024-07-03",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "3194828",
+    "countryCode": "BA",
+    "identifier": "Europe/Sarajevo",
+    "modificationDate": "2026-04-16",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "3195506",
+    "countryCode": "SI",
+    "identifier": "Europe/Ljubljana",
+    "modificationDate": "2026-04-14",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "3196359",
+    "countryCode": "SI",
+    "identifier": "Europe/Ljubljana",
+    "modificationDate": "2019-09-05",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "3201047",
+    "countryCode": "HR",
+    "identifier": "Europe/Zagreb",
+    "modificationDate": "2026-04-02",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "3203106",
+    "countryCode": "ME",
+    "identifier": "Europe/Podgorica",
+    "modificationDate": "2026-04-14",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "3352136",
+    "countryCode": "NA",
+    "identifier": "Africa/Windhoek",
+    "modificationDate": "2024-01-18",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "3352844",
+    "countryCode": "NA",
+    "identifier": "Africa/Windhoek",
+    "modificationDate": "2026-04-14",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "3369157",
+    "countryCode": "ZA",
+    "identifier": "Africa/Johannesburg",
+    "modificationDate": "2026-04-14",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "3370903",
+    "countryCode": "SH",
+    "identifier": "Atlantic/St_Helena",
+    "modificationDate": "2024-03-04",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "3374036",
+    "countryCode": "BB",
+    "identifier": "America/Barbados",
+    "modificationDate": "2021-08-08",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "3374333",
+    "countryCode": "CV",
+    "identifier": "Atlantic/Cape_Verde",
+    "modificationDate": "2026-07-01",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "3378644",
+    "countryCode": "GY",
+    "identifier": "America/Guyana",
+    "modificationDate": "2021-08-01",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "3382160",
+    "countryCode": "GF",
+    "identifier": "America/Cayenne",
+    "modificationDate": "2024-11-27",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "3383330",
+    "countryCode": "SR",
+    "identifier": "America/Paramaribo",
+    "modificationDate": "2019-09-05",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "3390760",
+    "countryCode": "BR",
+    "identifier": "America/Recife",
+    "modificationDate": "2026-04-13",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "3399415",
+    "countryCode": "BR",
+    "identifier": "America/Fortaleza",
+    "modificationDate": "2026-04-13",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "3413829",
+    "countryCode": "IS",
+    "identifier": "Atlantic/Reykjavik",
+    "modificationDate": "2025-05-08",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "3421319",
+    "countryCode": "GL",
+    "identifier": "America/Nuuk",
+    "modificationDate": "2024-01-07",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "3424934",
+    "countryCode": "PM",
+    "identifier": "America/Miquelon",
+    "modificationDate": "2025-01-05",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "3426466",
+    "countryCode": "GS",
+    "identifier": "Atlantic/South_Georgia",
+    "modificationDate": "2018-07-15",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "3426691",
+    "countryCode": "FK",
+    "identifier": "Atlantic/Stanley",
+    "modificationDate": "2023-10-26",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "3435910",
+    "countryCode": "AR",
+    "identifier": "America/Argentina/Buenos_Aires",
+    "modificationDate": "2024-06-19",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "3439389",
+    "countryCode": "PY",
+    "identifier": "America/Asuncion",
+    "modificationDate": "2019-09-05",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "3441575",
+    "countryCode": "UY",
+    "identifier": "America/Montevideo",
+    "modificationDate": "2026-02-23",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "3448439",
+    "countryCode": "BR",
+    "identifier": "America/Sao_Paulo",
+    "modificationDate": "2026-04-13",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "3450554",
+    "countryCode": "BR",
+    "identifier": "America/Bahia",
+    "modificationDate": "2026-04-13",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "3451190",
+    "countryCode": "BR",
+    "identifier": "America/Sao_Paulo",
+    "modificationDate": "2026-04-13",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "3463030",
+    "countryCode": "BR",
+    "identifier": "America/Sao_Paulo",
+    "modificationDate": "2026-07-13",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "3463237",
+    "countryCode": "BR",
+    "identifier": "America/Sao_Paulo",
+    "modificationDate": "2026-04-13",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "3469058",
+    "countryCode": "BR",
+    "identifier": "America/Sao_Paulo",
+    "modificationDate": "2024-06-29",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "3489239",
+    "countryCode": "JM",
+    "identifier": "America/Jamaica",
+    "modificationDate": "2026-06-18",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "3489460",
+    "countryCode": "JM",
+    "identifier": "America/Jamaica",
+    "modificationDate": "2017-03-14",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "3489854",
+    "countryCode": "JM",
+    "identifier": "America/Jamaica",
+    "modificationDate": "2021-08-01",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "3492908",
+    "countryCode": "DO",
+    "identifier": "America/Santo_Domingo",
+    "modificationDate": "2025-03-09",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "3494242",
+    "countryCode": "DO",
+    "identifier": "America/Santo_Domingo",
+    "modificationDate": "2016-06-05",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "3513090",
+    "countryCode": "CW",
+    "identifier": "America/Curacao",
+    "modificationDate": "2024-01-10",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "3513392",
+    "countryCode": "SX",
+    "identifier": "America/Lower_Princes",
+    "modificationDate": "2019-09-05",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "3513563",
+    "countryCode": "BQ",
+    "identifier": "America/Kralendijk",
+    "modificationDate": "2025-05-02",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "3515040",
+    "countryCode": "MX",
+    "identifier": "America/Cancun",
+    "modificationDate": "2026-09-02",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "3521081",
+    "countryCode": "MX",
+    "identifier": "America/Mexico_City",
+    "modificationDate": "2026-04-14",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "3521342",
+    "countryCode": "MX",
+    "identifier": "America/Cancun",
+    "modificationDate": "2018-11-03",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "3522507",
+    "countryCode": "MX",
+    "identifier": "America/Mexico_City",
+    "modificationDate": "2026-04-14",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "3523349",
+    "countryCode": "MX",
+    "identifier": "America/Merida",
+    "modificationDate": "2026-04-14",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "3530597",
+    "countryCode": "MX",
+    "identifier": "America/Mexico_City",
+    "modificationDate": "2024-03-26",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "3531673",
+    "countryCode": "MX",
+    "identifier": "America/Cancun",
+    "modificationDate": "2025-10-23",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "3534915",
+    "countryCode": "CU",
+    "identifier": "America/Havana",
+    "modificationDate": "2026-06-17",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "3536729",
+    "countryCode": "CU",
+    "identifier": "America/Havana",
+    "modificationDate": "2026-04-13",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "3553478",
+    "countryCode": "CU",
+    "identifier": "America/Havana",
+    "modificationDate": "2025-10-31",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "3570675",
+    "countryCode": "MQ",
+    "identifier": "America/Martinique",
+    "modificationDate": "2025-04-28",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "3571824",
+    "countryCode": "BS",
+    "identifier": "America/Nassau",
+    "modificationDate": "2019-09-05",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "3573197",
+    "countryCode": "BM",
+    "identifier": "Atlantic/Bermuda",
+    "modificationDate": "2019-09-05",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "3573374",
+    "countryCode": "AI",
+    "identifier": "America/Anguilla",
+    "modificationDate": "2019-09-05",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "3573890",
+    "countryCode": "TT",
+    "identifier": "America/Port_of_Spain",
+    "modificationDate": "2022-12-29",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "3575551",
+    "countryCode": "KN",
+    "identifier": "America/St_Kitts",
+    "modificationDate": "2019-09-05",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "3575635",
+    "countryCode": "DM",
+    "identifier": "America/Dominica",
+    "modificationDate": "2023-09-05",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "3576022",
+    "countryCode": "AG",
+    "identifier": "America/Antigua",
+    "modificationDate": "2026-02-02",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "3576812",
+    "countryCode": "LC",
+    "identifier": "America/St_Lucia",
+    "modificationDate": "2019-09-05",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "3576994",
+    "countryCode": "TC",
+    "identifier": "America/Grand_Turk",
+    "modificationDate": "2019-09-05",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "3577154",
+    "countryCode": "AW",
+    "identifier": "America/Aruba",
+    "modificationDate": "2024-01-10",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "3577430",
+    "countryCode": "VG",
+    "identifier": "America/Tortola",
+    "modificationDate": "2019-09-05",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "3577887",
+    "countryCode": "VC",
+    "identifier": "America/St_Vincent",
+    "modificationDate": "2019-09-05",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "3578069",
+    "countryCode": "MS",
+    "identifier": "America/Montserrat",
+    "modificationDate": "2019-09-05",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "3578851",
+    "countryCode": "MF",
+    "identifier": "America/Marigot",
+    "modificationDate": "2019-09-05",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "3579132",
+    "countryCode": "BL",
+    "identifier": "America/St_Barthelemy",
+    "modificationDate": "2019-09-05",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "3579732",
+    "countryCode": "GP",
+    "identifier": "America/Guadeloupe",
+    "modificationDate": "2019-09-05",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "3579925",
+    "countryCode": "GD",
+    "identifier": "America/Grenada",
+    "modificationDate": "2021-02-20",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "3580661",
+    "countryCode": "KY",
+    "identifier": "America/Cayman",
+    "modificationDate": "2021-08-01",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "3581164",
+    "countryCode": "BZ",
+    "identifier": "America/Belize",
+    "modificationDate": "2025-11-14",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "3582672",
+    "countryCode": "BZ",
+    "identifier": "America/Belize",
+    "modificationDate": "2025-05-15",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "3583361",
+    "countryCode": "SV",
+    "identifier": "America/El_Salvador",
+    "modificationDate": "2019-09-05",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "3595725",
+    "countryCode": "GT",
+    "identifier": "America/Guatemala",
+    "modificationDate": "2020-07-12",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "3598132",
+    "countryCode": "GT",
+    "identifier": "America/Guatemala",
+    "modificationDate": "2020-07-15",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "3599699",
+    "countryCode": "GT",
+    "identifier": "America/Guatemala",
+    "modificationDate": "2025-05-15",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "3600949",
+    "countryCode": "HN",
+    "identifier": "America/Tegucigalpa",
+    "modificationDate": "2024-09-12",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "3617763",
+    "countryCode": "NI",
+    "identifier": "America/Managua",
+    "modificationDate": "2026-01-02",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "3621849",
+    "countryCode": "CR",
+    "identifier": "America/Costa_Rica",
+    "modificationDate": "2025-05-15",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "3623076",
+    "countryCode": "CR",
+    "identifier": "America/Costa_Rica",
+    "modificationDate": "2026-04-13",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "3646738",
+    "countryCode": "VE",
+    "identifier": "America/Caracas",
+    "modificationDate": "2025-11-01",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "3652462",
+    "countryCode": "EC",
+    "identifier": "America/Guayaquil",
+    "modificationDate": "2025-12-15",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "3657509",
+    "countryCode": "EC",
+    "identifier": "America/Guayaquil",
+    "modificationDate": "2024-11-09",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "3658666",
+    "countryCode": "EC",
+    "identifier": "America/Guayaquil",
+    "modificationDate": "2025-07-07",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "3663517",
+    "countryCode": "BR",
+    "identifier": "America/Manaus",
+    "modificationDate": "2026-04-13",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "3668605",
+    "countryCode": "CO",
+    "identifier": "America/Bogota",
+    "modificationDate": "2026-04-13",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "3674962",
+    "countryCode": "CO",
+    "identifier": "America/Bogota",
+    "modificationDate": "2026-04-13",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "3687238",
+    "countryCode": "CO",
+    "identifier": "America/Bogota",
+    "modificationDate": "2026-04-13",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "3687925",
+    "countryCode": "CO",
+    "identifier": "America/Bogota",
+    "modificationDate": "2026-04-13",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "3688689",
+    "countryCode": "CO",
+    "identifier": "America/Bogota",
+    "modificationDate": "2024-03-26",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "3689147",
+    "countryCode": "CO",
+    "identifier": "America/Bogota",
+    "modificationDate": "2026-04-13",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "3696183",
+    "countryCode": "PE",
+    "identifier": "America/Lima",
+    "modificationDate": "2026-04-14",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "3703443",
+    "countryCode": "PA",
+    "identifier": "America/Panama",
+    "modificationDate": "2026-05-01",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "3718426",
+    "countryCode": "HT",
+    "identifier": "America/Port-au-Prince",
+    "modificationDate": "2019-09-05",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "3833367",
+    "countryCode": "AR",
+    "identifier": "America/Argentina/Ushuaia",
+    "modificationDate": "2026-04-13",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "3838233",
+    "countryCode": "AR",
+    "identifier": "America/Argentina/Salta",
+    "modificationDate": "2026-04-13",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "3838583",
+    "countryCode": "AR",
+    "identifier": "America/Argentina/Cordoba",
+    "modificationDate": "2026-04-16",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "3844421",
+    "countryCode": "AR",
+    "identifier": "America/Argentina/Mendoza",
+    "modificationDate": "2026-04-13",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "3860259",
+    "countryCode": "AR",
+    "identifier": "America/Argentina/Cordoba",
+    "modificationDate": "2026-04-13",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "3868121",
+    "countryCode": "CL",
+    "identifier": "America/Santiago",
+    "modificationDate": "2025-11-04",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "3868626",
+    "countryCode": "CL",
+    "identifier": "America/Santiago",
+    "modificationDate": "2026-04-13",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "3871336",
+    "countryCode": "CL",
+    "identifier": "America/Santiago",
+    "modificationDate": "2025-06-21",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "3874787",
+    "countryCode": "CL",
+    "identifier": "America/Punta_Arenas",
+    "modificationDate": "2026-04-13",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "3903987",
+    "countryCode": "BO",
+    "identifier": "America/La_Paz",
+    "modificationDate": "2021-05-28",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "3904906",
+    "countryCode": "BO",
+    "identifier": "America/La_Paz",
+    "modificationDate": "2026-04-13",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "3911925",
+    "countryCode": "BO",
+    "identifier": "America/La_Paz",
+    "modificationDate": "2025-07-19",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "3931276",
+    "countryCode": "PE",
+    "identifier": "America/Lima",
+    "modificationDate": "2026-04-14",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "3936456",
+    "countryCode": "PE",
+    "identifier": "America/Lima",
+    "modificationDate": "2023-10-25",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "3941584",
+    "countryCode": "PE",
+    "identifier": "America/Lima",
+    "modificationDate": "2026-04-14",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "3947322",
+    "countryCode": "PE",
+    "identifier": "America/Lima",
+    "modificationDate": "2026-06-21",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "3985344",
+    "countryCode": "MX",
+    "identifier": "America/Mexico_City",
+    "modificationDate": "2025-10-23",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "3991328",
+    "countryCode": "MX",
+    "identifier": "America/Mexico_City",
+    "modificationDate": "2025-10-23",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "4005539",
+    "countryCode": "MX",
+    "identifier": "America/Mexico_City",
+    "modificationDate": "2026-04-14",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "4030723",
+    "countryCode": "PN",
+    "identifier": "Pacific/Pitcairn",
+    "modificationDate": "2021-08-27",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "4032402",
+    "countryCode": "TO",
+    "identifier": "Pacific/Tongatapu",
+    "modificationDate": "2025-05-08",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "4033936",
+    "countryCode": "PF",
+    "identifier": "Pacific/Tahiti",
+    "modificationDate": "2024-06-04",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "4034821",
+    "countryCode": "WF",
+    "identifier": "Pacific/Wallis",
+    "modificationDate": "2019-09-05",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "4035413",
+    "countryCode": "WS",
+    "identifier": "Pacific/Apia",
+    "modificationDate": "2019-09-05",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "4035715",
+    "countryCode": "CK",
+    "identifier": "Pacific/Rarotonga",
+    "modificationDate": "2023-11-08",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "4036284",
+    "countryCode": "NU",
+    "identifier": "Pacific/Niue",
+    "modificationDate": "2026-02-14",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "4044012",
+    "countryCode": "GU",
+    "identifier": "Pacific/Guam",
+    "modificationDate": "2011-10-19",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "4140963",
+    "countryCode": "US",
+    "identifier": "America/New_York",
+    "modificationDate": "2026-06-12",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "4164138",
+    "countryCode": "US",
+    "identifier": "America/New_York",
+    "modificationDate": "2025-06-25",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "4167147",
+    "countryCode": "US",
+    "identifier": "America/New_York",
+    "modificationDate": "2025-06-25",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "4335045",
+    "countryCode": "US",
+    "identifier": "America/Chicago",
+    "modificationDate": "2025-06-25",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "4568127",
+    "countryCode": "PR",
+    "identifier": "America/Puerto_Rico",
+    "modificationDate": "2019-09-05",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "4795467",
+    "countryCode": "VI",
+    "identifier": "America/St_Thomas",
+    "modificationDate": "2019-09-05",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "4887398",
+    "countryCode": "US",
+    "identifier": "America/Chicago",
+    "modificationDate": "2025-06-21",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "4930956",
+    "countryCode": "US",
+    "identifier": "America/New_York",
+    "modificationDate": "2026-04-14",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "5128581",
+    "countryCode": "US",
+    "identifier": "America/New_York",
+    "modificationDate": "2026-03-07",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "5368361",
+    "countryCode": "US",
+    "identifier": "America/Los_Angeles",
+    "modificationDate": "2025-07-22",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "5391811",
+    "countryCode": "US",
+    "identifier": "America/Los_Angeles",
+    "modificationDate": "2025-06-25",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "5391959",
+    "countryCode": "US",
+    "identifier": "America/Los_Angeles",
+    "modificationDate": "2025-07-22",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "5506956",
+    "countryCode": "US",
+    "identifier": "America/Los_Angeles",
+    "modificationDate": "2025-06-25",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "5809844",
+    "countryCode": "US",
+    "identifier": "America/Los_Angeles",
+    "modificationDate": "2025-06-25",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "5856195",
+    "countryCode": "US",
+    "identifier": "Pacific/Honolulu",
+    "modificationDate": "2026-04-14",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "5881576",
+    "countryCode": "AS",
+    "identifier": "Pacific/Pago_Pago",
+    "modificationDate": "2019-09-05",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "5913490",
+    "countryCode": "CA",
+    "identifier": "America/Edmonton",
+    "modificationDate": "2026-01-20",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "6077243",
+    "countryCode": "CA",
+    "identifier": "America/Toronto",
+    "modificationDate": "2026-02-23",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "6094817",
+    "countryCode": "CA",
+    "identifier": "America/Toronto",
+    "modificationDate": "2025-08-04",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "6167865",
+    "countryCode": "CA",
+    "identifier": "America/Toronto",
+    "modificationDate": "2026-04-13",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "6173331",
+    "countryCode": "CA",
+    "identifier": "America/Vancouver",
+    "modificationDate": "2025-08-04",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "6174041",
+    "countryCode": "CA",
+    "identifier": "America/Vancouver",
+    "modificationDate": "2026-04-13",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "6204696",
+    "countryCode": "NZ",
+    "identifier": "Pacific/Auckland",
+    "modificationDate": "2018-07-25",
+    "source": "country:NZ"
+  },
+  {
+    "geonameId": "6241325",
+    "countryCode": "NZ",
+    "identifier": "Pacific/Auckland",
+    "modificationDate": "2024-09-18",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "6324729",
+    "countryCode": "CA",
+    "identifier": "America/Halifax",
+    "modificationDate": "2026-04-13",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "6325494",
+    "countryCode": "CA",
+    "identifier": "America/Toronto",
+    "modificationDate": "2026-04-13",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "6611854",
+    "countryCode": "MM",
+    "identifier": "Asia/Yangon",
+    "modificationDate": "2025-05-08",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "6691831",
+    "countryCode": "VA",
+    "identifier": "Europe/Vatican",
+    "modificationDate": "2026-02-25",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "7304591",
+    "countryCode": "CC",
+    "identifier": "Indian/Cocos",
+    "modificationDate": "2026-03-24",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "7626461",
+    "countryCode": "NR",
+    "identifier": "Pacific/Nauru",
+    "modificationDate": "2016-10-03",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "7647007",
+    "countryCode": "AR",
+    "identifier": "America/Argentina/Salta",
+    "modificationDate": "2022-10-09",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "7828758",
+    "countryCode": "MP",
+    "identifier": "Pacific/Saipan",
+    "modificationDate": "2017-12-07",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "8063361",
+    "countryCode": "PW",
+    "identifier": "Pacific/Palau",
+    "modificationDate": "2026-05-01",
+    "source": "cities15000"
+  },
+  {
+    "geonameId": "12226438",
+    "countryCode": "GQ",
+    "identifier": "Africa/Malabo",
+    "modificationDate": "2026-01-18",
+    "source": "cities15000"
+  }
+]
