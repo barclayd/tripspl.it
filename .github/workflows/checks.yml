@@ -42,17 +42,17 @@ jobs:
       - name: Install XcodeGen
         run: brew install xcodegen
       - name: Test shared domain
-        run: swift test --package-path Packages/TripSplitDomain
+        run: swift test --package-path apple/Packages/TripSplitDomain
       - name: Test shared application services
-        run: swift test --package-path Packages/TripSplitApplication
+        run: swift test --package-path apple/Packages/TripSplitApplication
       - name: Build shared services for watchOS
         run: |
-          swift build --package-path Packages/TripSplitApplication \
+          swift build --package-path apple/Packages/TripSplitApplication \
             --scratch-path "$RUNNER_TEMP/tripsplit-watch-packages" \
             --triple arm64_32-apple-watchos26.0 \
             --sdk "$(xcrun --sdk watchos --show-sdk-path)" \
             --target TripSplitApplication
-          swift build --package-path Packages/TripSplitApplication \
+          swift build --package-path apple/Packages/TripSplitApplication \
             --scratch-path "$RUNNER_TEMP/tripsplit-watch-packages" \
             --triple arm64_32-apple-watchos26.0 \
             --sdk "$(xcrun --sdk watchos --show-sdk-path)" \
@@ -60,12 +60,12 @@ jobs:
       - name: Validate destination catalogue
         run: python3 scripts/generate_destination_catalogue.py --check
       - name: Generate project
-        working-directory: ios
+        working-directory: apple/ios
         run: xcodegen generate
       - name: Build and test on Duo
         run: >-
           xcodebuild -quiet
-          -project ios/TripSplit.xcodeproj
+          -project apple/ios/TripSplit.xcodeproj
           -scheme TripSplit
           -destination 'platform=iOS Simulator,name=iPhone Duo,OS=27.1'
           -resultBundlePath build/TripSplit.xcresult

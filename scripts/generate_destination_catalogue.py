@@ -17,7 +17,7 @@ import xml.etree.ElementTree as ET
 ROOT = Path(__file__).resolve().parents[1]
 DATA = ROOT / 'scripts' / 'destination-data'
 SOURCES = DATA / 'sources'
-OUTPUT = ROOT / 'Packages' / 'TripSplitDomain' / 'Sources' / 'TripSplitDomain' / 'Resources'
+OUTPUT = ROOT / 'apple' / 'Packages' / 'TripSplitDomain' / 'Sources' / 'TripSplitDomain' / 'Resources'
 
 
 def read_json(path: Path):
@@ -159,7 +159,7 @@ def destination_time_zones(countries: list[dict], destinations: list[dict], reco
 def generate() -> tuple[dict[str, str], dict]:
     manifest = read_json(DATA / 'selection.json')
     aliases = read_json(DATA / 'aliases.json')
-    supported = set(read_json(ROOT / 'contracts' / 'currencies.json')['minorUnits'])
+    supported = set(read_json(ROOT / 'api' / 'src' / 'data' / 'currencies.json')['minorUnits'])
     source_records = read_json(SOURCES / 'geonames-selected.json')
     records = {record['geonameId']: record for record in source_records}
     if len(records) != len(source_records):

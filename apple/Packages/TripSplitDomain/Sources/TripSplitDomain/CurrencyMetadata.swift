@@ -1,4 +1,4 @@
-// Generated from contracts/currencies.json (SIX ISO 4217, 2026-09-17).
+// Generated from api/src/data/currencies.json (SIX ISO 4217, 2026-09-17).
 import Foundation
 
 public enum CurrencyMetadata {

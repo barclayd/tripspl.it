@@ -15,11 +15,11 @@ xcodebuild -project TripSplit.xcodeproj -scheme TripSplit \
   CODE_SIGNING_ALLOWED=NO -parallel-testing-enabled NO test
 ```
 
-Tests use the canonical money/currency fixtures in `../contracts/`. The native suite also tests SQLite restart, restored installation identity, immutable uncertain operations, multi-batch sync, conflicts, account isolation and JSON null encoding. The package tests include a synthetic store created by the old app module and a consumer using only public APIs.
+Tests use the canonical money/currency fixtures in `../../api/contracts/fixtures/` and `../../api/src/data/currencies.json`. The native suite also tests SQLite restart, restored installation identity, immutable uncertain operations, multi-batch sync, conflicts, account isolation and JSON null encoding. The package tests include a synthetic store created by the old app module and a consumer using only public APIs.
 
 ## Shared packages
 
-The app is a composition shell for four local packages in `../Packages/`: `TripSplitDomain`, `TripSplitInfrastructure`, `TripSplitApplication` and `TripSplitFeatures`. Infrastructure exposes networking, persistence and sync separately. Features exposes design system, shared UI, Apple adapters and six vertical UI products. See [the architecture and dependency rules](../docs/architecture.md#package-architecture) before adding a feature.
+The app is a composition shell for four local packages in `../Packages/`: `TripSplitDomain`, `TripSplitInfrastructure`, `TripSplitApplication` and `TripSplitFeatures`. Infrastructure exposes networking, persistence and sync separately. Features exposes design system, shared UI, Apple adapters and six vertical UI products. See [the architecture and dependency rules](../../docs/architecture.md#package-architecture) before adding a feature.
 
 Domain, networking, persistence, sync, application coordination and conversion are usable without iOS presentation code. Their minimum platforms are iOS 26, macOS 26 and watchOS 26. CI runs their macOS tests and compiles the application and conversion products for watchOS. Watch and Mac application interfaces remain future work.
 

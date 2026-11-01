@@ -2,7 +2,7 @@
 
 The 2026-11-01 catalogue contains **250 countries and territories** and **exactly 500 city or region destinations**, covering 242 country/territory codes. These are travel-search choices, not an official tourism ranking or the world's 500 largest cities. Country inclusion follows the current GeoNames country-code dataset: 252 source rows, excluding obsolete `AN` (Netherlands Antilles) and `CS` (Serbia and Montenegro), retaining `XK` (Kosovo). This count is not a claim about the number of sovereign states.
 
-The `TripSplitDomain` package bundles four files in `Packages/TripSplitDomain/Sources/TripSplitDomain/Resources/`:
+The `TripSplitDomain` package bundles four files in `apple/Packages/TripSplitDomain/Sources/TripSplitDomain/Resources/`:
 
 - `Countries.json`: code, English display name, ordered current tender currency codes, representative latitude/longitude and search aliases.
 - `Destinations.json`: stable `geonames-<ID>` identity, display name, country code, coordinates and search aliases.
@@ -22,7 +22,7 @@ The data is about 309 KB combined, including licences. Countries have at most 16
 | [Google DSPL country coordinates](https://github.com/google/dspl/blob/db79dad685276dbf98ca44b875d1481bc240c5c1/samples/google/canonical/countries.csv) | Repository commit `db79dad685276dbf98ca44b875d1481bc240c5c1` | Country representative map points, with explicit exceptions below |
 | [Unicode CLDR 49](https://github.com/unicode-org/cldr/releases/tag/release-49) | Release published 2026-10-21; commit `96e54b273d2da4ec6fbad350ba19ff23fa24a588` | English country/territory names, current tender currency records and Kosovo's scoped zone mapping in `metaZones.xml` |
 | [IANA tzdb 2026f](https://data.iana.org/time-zones/tzdb-2026f/) | Exact `zone.tab`, `zone1970.tab`, `backward`, `version` and `LICENSE` bytes pinned | Complete country-scoped time-zone choices and equivalence of legacy aliases |
-| `contracts/currencies.json` | Existing shared 165-code ISO minor-unit catalogue | Allowed currency codes for expense arithmetic and the country currency filter |
+| `api/src/data/currencies.json` | Existing shared 165-code ISO minor-unit catalogue | Allowed currency codes for expense arithmetic and the country currency filter |
 
 All downloaded source files, including licence texts, have exact SHA-256 hashes in `scripts/destination-data/source-hashes.json`. `upstream.json` records original URLs and pinned commits. GeoNames publishes a moving daily dump rather than an immutable release archive; therefore the repository contains a compact exact extract of the **501 source records** needed for the 500 destinations plus UM's representative point. A separate compact extract holds the 500 time-zone fields, and five exact TSV source rows preserve the supplemental country-dump records. The original large ZIPs are not needed to regenerate app resources. Their hashes and an extraction-check tool allow an auditor holding those original ZIPs to verify the compact sources against the original dumps and pinned RDF responses.
 
@@ -32,7 +32,7 @@ Country lists mean **current CLDR tender currency as of 2026-11-01**, not every 
 
 1. Read `currencyData/region` in pinned CLDR `supplementalData.xml`.
 2. Keep records whose `from`/`to` interval contains the snapshot date and whose `tender` flag is true; an absent flag defaults to true.
-3. Keep only codes in the shared `contracts/currencies.json` catalogue, deduplicating without reordering. No active tender code is excluded by the supported-code filter in this snapshot.
+3. Keep only codes in the shared `api/src/data/currencies.json` catalogue, deduplicating without reordering. No active tender code is excluded by the supported-code filter in this snapshot.
 4. Preserve CLDR source order. Do not infer a currency from a historical GeoNames country-info field, a neighbouring country, or commercial acceptance practices.
 
 Seven countries/territories have multiple current tender codes. The custom destination picker offers only these codes and initially selects the first:
@@ -91,7 +91,7 @@ Antarctica (`AQ`), US Minor Outlying Islands (`UM`) and Palestine (`PS`) expose 
 
 The Swift `DestinationTimeZones.identifier(countryCode:latitude:longitude:)` API first matches the exact stored catalogue coordinates within the country, then falls back only to the documented country representative. `identifiers(countryCode:)` returns that country's scoped choices. Both omit names unsupported by the device's Foundation time-zone database; an unsupported exact point returns nil rather than silently using a capital or UTC. Apple Maps results supply `MKMapItem.timeZone` directly in the app. Custom/country destinations must make the representative fallback clear and permit an explicit choice. DST rules and date calculations use Foundation's installed IANA data rather than bundled fixed offsets. Tests verify all bundled identifiers are supported on the development platform and distinguish city-specific zones, no-default countries and DST behavior.
 
-`Stop.timeZone` is an additive optional, non-null transport field. The backend validates named zones, persists and returns them, and preserves a saved stop's zone when a legacy `trip.update` omits it for the same stable stop ID. An explicit valid zone may replace it without moving existing civil dates. Receipts still hash the original submitted operation, so omitted-field retries work after eviction and cannot be reused with changed content. Existing revision and referenced-itinerary guards remain active; see [the API contract](../contracts/api.md).
+`Stop.timeZone` is an additive optional, non-null transport field. The backend validates named zones, persists and returns them, and preserves a saved stop's zone when a legacy `trip.update` omits it for the same stable stop ID. An explicit valid zone may replace it without moving existing civil dates. Receipts still hash the original submitted operation, so omitted-field retries work after eviction and cannot be reused with changed content. Existing revision and referenced-itinerary guards remain active; see [the API contract](../api/docs/protocol.md).
 
 ## Reproduction and maintenance
 
