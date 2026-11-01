@@ -375,6 +375,13 @@ package struct BudgetBar: View {
         Spacer(minLength: 0)
       }
       .background(hero ? Theme.heroTrack : Theme.inset).clipShape(Capsule())
+      .overlay(alignment: .leading) {
+        // Marks where the budget ran out once spending passes it.
+        if !hero, budget > 0, paid + planned > budget {
+          Rectangle().fill(Theme.ink).frame(width: 2)
+            .offset(x: geo.size.width * CGFloat(budget) / maxValue - 1)
+        }
+      }
     }.frame(height: 10).accessibilityElement(children: .ignore).accessibilityLabel(
       "\(Money.format(paid, currency)) paid, \(Money.format(planned, currency)) planned, budget \(Money.format(budget, currency))"
     )

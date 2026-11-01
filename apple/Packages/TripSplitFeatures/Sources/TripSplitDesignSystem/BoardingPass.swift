@@ -133,14 +133,19 @@ extension TripSnapshot {
     return legs.sorted { (rank($0.kind), $0.date) < (rank($1.kind), $1.date) }
   }
 
-  /// Home-currency spend on a leg, plus travel spend on a transfer's day.
-  package func travelSpend(on leg: TravelLeg) -> Int64 {
-    let list = expenses.filter { expense in
+  /// Expenses on a leg, plus travel expenses on a transfer's day.
+  package func travelExpenses(on leg: TravelLeg) -> [Expense] {
+    expenses.filter { expense in
       if expense.attachment == Attachment(kind: .leg, id: leg.id) { return true }
       guard let dayId = leg.dayId else { return false }
       return expense.attachment == Attachment(kind: .day, id: dayId)
         && expense.category.group == .travel
     }
+  }
+
+  /// Home-currency spend on a leg, plus travel spend on a transfer's day.
+  package func travelSpend(on leg: TravelLeg) -> Int64 {
+    let list = travelExpenses(on: leg)
     return list.isEmpty ? 0 : Ledger(self, expenses: list).total
   }
 }

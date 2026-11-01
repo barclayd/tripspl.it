@@ -195,6 +195,22 @@ private struct GrowUp: ViewModifier {
   }
 }
 
+/// Grows a bar across from its leading edge.
+private struct GrowAcross: ViewModifier {
+  let delay: Double
+  let duration: Double
+  @State private var grown = false
+  @Environment(\.accessibilityReduceMotion) private var reduceMotion
+
+  func body(content: Content) -> some View {
+    content.scaleEffect(x: grown || reduceMotion ? 1 : 0, y: 1, anchor: .leading)
+      .onAppear {
+        guard !grown else { return }
+        withAnimation(Motion.rise.speed(0.55 / duration).delay(delay)) { grown = true }
+      }
+  }
+}
+
 /// Slams down from twice the size, as a passport stamp lands.
 private struct StampIn: ViewModifier {
   let delay: Double
@@ -217,6 +233,10 @@ extension View {
   /// Grows up from the bottom edge, 0.7s.
   package func growUp(delay: Double = 0) -> some View {
     modifier(GrowUp(delay: delay))
+  }
+  /// Grows across from the leading edge.
+  package func growAcross(delay: Double = 0, duration: Double = 0.8) -> some View {
+    modifier(GrowAcross(delay: delay, duration: duration))
   }
   /// Stamps in once `visible` turns true.
   package func stampIn(delay: Double = 0, visible: Bool = true) -> some View {
