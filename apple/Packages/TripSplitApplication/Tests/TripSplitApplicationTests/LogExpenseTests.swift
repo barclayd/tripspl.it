@@ -69,8 +69,9 @@ import TripSplitWatchModel
     let options = log.dayOptions
     #expect(options.first?.title == "Before you go")
     #expect(options.first?.detail == "Flights, deposits, gear")
-    #expect(options.count == trip.days.count + 1)
+    #expect(options.count == trip.days.count + 2)
     #expect(options[1].title.hasPrefix("Day 1 · "))
+    #expect(options.map(\.isTravel) == [true] + trip.days.map { _ in false } + [true])
     log.choose(try #require(options.first).attachment)
     #expect(log.currency == "GBP")
     #expect(log.category == .flight)
@@ -153,6 +154,82 @@ import TripSplitWatchModel
     #expect(log.asksSplit)
     #expect(log.step(after: .category) == .split)
     #expect(log.step(after: .split) == nil)
+  }
+
+  @Test func returnFromTripComesLastAndIsntAskedAgain() throws {
+    let (model, sent) = try model()
+    let trip = try #require(model.timeline.upcoming.first)
+    let back = try #require(trip.legs.first { $0.kind == .return })
+    let log = LogExpense(model: model, trip: trip)
+    let option = try #require(log.dayOptions.last)
+    #expect(option.title == "Return from trip")
+    #expect(option.detail == "Flights, taxi home")
+    #expect(option.attachment == Attachment(kind: .leg, id: back.id))
+    log.choose(option.attachment)
+    #expect(log.currency == "GBP")
+    #expect(log.category == .flight)
+    #expect(!log.asksReturn)
+    #expect(log.step(after: .category) == .split)
+    log.amount = 180
+    let receipt = try #require(log.save())
+    #expect(try saved(sent()).title == "Flight")
+    #expect(receipt.heading.hasPrefix("Return from trip · "))
+  }
+
+  @Test func flightBeforeYouGoAsksIfItsAReturn() throws {
+    let (model, sent) = try model()
+    let trip = try #require(model.timeline.upcoming.first)
+    let out = try #require(trip.legs.first { $0.kind == .outbound })
+    let log = LogExpense(model: model, trip: trip)
+    log.choose(Attachment(kind: .leg, id: out.id))
+    #expect(log.asksReturn)
+    #expect(log.coversReturn)
+    #expect(log.step(after: .category) == .returnToo)
+    #expect(log.step(after: .returnToo) == .split)
+    log.amount = 420
+    let receipt = try #require(log.save())
+    let ticket = try saved(sent())
+    #expect(ticket.title == "Return flight")
+    #expect(ticket.attachment.id == out.id)
+    #expect(receipt.category == "Return flight")
+    #expect(receipt.heading.hasPrefix("Before you go · "))
+    // Editing keeps it a return until you say it's one way.
+    let editing = LogExpense(model: model, trip: trip, editing: ticket)
+    #expect(editing.coversReturn)
+    editing.coversReturn = false
+    editing.save()
+    #expect(try saved(sent()).title == "Flight")
+  }
+
+  @Test(arguments: [ExpenseCategory.taxi, .stay, .shopping, .other])
+  func oneWayCostsBeforeYouGoArentAsked(category: ExpenseCategory) throws {
+    let (model, sent) = try model()
+    let trip = try #require(model.timeline.upcoming.first)
+    let log = LogExpense(model: model, trip: trip)
+    log.choose(try #require(log.dayOptions.first).attachment)
+    log.category = category
+    #expect(!log.asksReturn)
+    #expect(log.step(after: .category) == .split)
+    log.amount = 50
+    log.save()
+    #expect(try saved(sent()).title == category.title)
+  }
+
+  @Test func travelOnADayIsntAsked() throws {
+    let (model, _) = try model()
+    let trip = try #require(model.timeline.upcoming.first)
+    let log = LogExpense(model: model, trip: trip)
+    log.choose(log.dayOptions[1].attachment)
+    log.category = .train
+    #expect(!log.asksReturn)
+  }
+
+  @Test func onlyTravelThereAndBackHasAReturn() {
+    #expect(ExpenseCategory.flight.returnTitle == "Return flight")
+    #expect(ExpenseCategory.train.returnTitle == "Return train")
+    #expect(ExpenseCategory.transport.returnTitle == "Return journey")
+    #expect(ExpenseCategory.taxi.returnTitle == nil)
+    #expect(ExpenseCategory.stay.returnTitle == nil)
   }
 
   @Test func plannedForATripStillToCome() throws {
