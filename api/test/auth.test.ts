@@ -1,7 +1,7 @@
 import { env } from 'cloudflare:workers';
 import { beforeAll, describe, expect, it, vi } from 'vitest';
 import { exportJWK, exportPKCS8, generateKeyPair, SignJWT } from 'jose';
-import type { Session } from '../../contracts/tripsplit-v1';
+import type { Session } from '../src/types/contract';
 import { appleSignIn, authenticate, challenge, deleteAccount, processDeletions, refresh } from '../src/services/auth';
 import { encrypt, sha256 } from '../src/utils/crypto';
 import { create, request, session } from './fixtures';

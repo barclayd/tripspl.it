@@ -1,5 +1,5 @@
 import { createRemoteJWKSet, errors as joseErrors, importPKCS8, jwtVerify, SignJWT } from 'jose';
-import type { AuthChallenge, Session, User } from '../../../contracts/tripsplit-v1';
+import type { AuthChallenge, Session, User } from '../types/contract';
 import { AppError, assert } from '../utils/errors';
 import { decrypt, encrypt, randomToken, sha256 } from '../utils/crypto';
 import { parse } from '../schemas/trip';

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import examples from '../../contracts/money-examples.json';
+import examples from '../contracts/fixtures/money-examples.json';
 import { allocate, convert, currencyDigits, ledger, rateFraction } from '../src/utils/money';
 import { decimalLexeme } from '../src/services/fx';
 import { draft, expense } from './fixtures';

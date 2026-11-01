@@ -1,5 +1,5 @@
 import { DurableObject } from 'cloudflare:workers';
-import type { Expense, Operation, OperationResult, Repayment, SyncRequest, SyncResponse, Traveller, TripSnapshot } from '../../../contracts/tripsplit-v1';
+import type { Expense, Invitation, LiveHint, Operation, OperationResult, Repayment, Success, SyncRequest, SyncResponse, Traveller, TripSnapshot } from '../types/contract';
 import { AppError, assert, errorResponse } from '../utils/errors';
 import { canonical, randomToken, sha256 } from '../utils/crypto';
 import { normalizeConversion, normalizeRecords } from '../services/fx';
@@ -20,7 +20,7 @@ export type RoomAction =
   | { type: 'sync'; request: SyncRequest } | { type: 'invite'; travellerId: string }
   | { type: 'accept'; inviteId: string; token: string } | { type: 'revokeInvite'; inviteId: string }
   | { type: 'removeMember'; travellerId: string };
-type RoomValue = TripSnapshot | SyncResponse | { id: string; token: string; expiresAt: string; url: string | null } | { ok: true };
+type RoomValue = TripSnapshot | SyncResponse | Invitation | Success;
 type RoomResult = { ok: true; value: RoomValue } | { ok: false; error: { status: number; code: string; message: string; retryable: boolean } };
 
 export class TripRoom extends DurableObject<Env> {
@@ -271,7 +271,7 @@ export class TripRoom extends DurableObject<Env> {
       return { id: operation.id, status: 'accepted', revision, code: null, message: null };
     });
   }
-  async invite(userId: string, travellerId: string): Promise<{ id: string; token: string; expiresAt: string; url: string | null }> {
+  async invite(userId: string, travellerId: string): Promise<Invitation> {
     await this.armMaintenance();
     this.member(userId, true);
     const token = randomToken(), hash = await sha256(token), id = crypto.randomUUID(), expires = Date.now() + 7 * 86_400_000;
@@ -464,7 +464,7 @@ export class TripRoom extends DurableObject<Env> {
     for (const socket of this.ctx.getWebSockets()) {
       try {
         if (!await this.socketAuthorized(socket)) { socket.close(1008, 'Membership or session ended'); continue; }
-        if (send) { const row = this.tripRow(); socket.send(JSON.stringify({ type: 'changed', revision: row.revision, syncEpoch: this.epoch(row) })); }
+        if (send) { const row = this.tripRow(); socket.send(JSON.stringify({ type: 'changed', revision: row.revision, syncEpoch: this.epoch(row) } satisfies LiveHint)); }
       } catch { socket.close(1011, 'Refresh required'); }
     }
   }

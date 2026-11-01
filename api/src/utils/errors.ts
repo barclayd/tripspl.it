@@ -1,4 +1,4 @@
-import type { APIError } from '../../../contracts/tripsplit-v1';
+import type { APIError } from '../types/contract';
 
 export class AppError extends Error {
   constructor(public readonly status: number, public readonly code: string, message: string, public readonly retryable = false) { super(message); }

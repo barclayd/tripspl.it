@@ -1,6 +1,6 @@
 # TripSplit API
 
-Strict TypeScript API using Hono and Zod OpenAPI on Cloudflare Workers, one SQLite `TripRoom` Durable Object per trip, and D1 for accounts, hashed sessions, immutable FX quotes and the trip directory. The HTTP and money contracts live in `../contracts/`.
+Strict TypeScript API using Hono and Zod OpenAPI on Cloudflare Workers, one SQLite `TripRoom` Durable Object per trip, and D1 for accounts, hashed sessions, immutable FX quotes and the trip directory. Canonical transport schemas live in `src/schemas/`, the portable OpenAPI contract and cross-platform fixtures live in `contracts/`, and protocol semantics live in `docs/protocol.md`.
 
 ## Local development
 
@@ -39,6 +39,21 @@ curl 'http://localhost:5173/v1/fx?from=GBP&to=GBP&date=2026-10-30'
 `migrate:local` uses the Vite plugin's documented local Explorer API and rejects non-loopback destinations. This is necessary because `cf d1 migrations apply --local` currently requires a UUID, while Vite assigns the local binding the synthetic ID `DB-tripsplit-api`. The script applies the same SQL migrations transactionally, records their names, and is safe to repeat. Set `LOCAL_WORKER_ORIGIN` if the local dev port changes. Local state is under ignored `.cloudflare/state/`. No cloud resources are created by these commands.
 
 The compatibility date is `2026-10-30`: the pinned workerd binary supports that date, but rejects `2026-10-31`. Upgrade the runtime and rerun checks before advancing it. Runtime tests use `@cloudflare/vitest-plugin`, real SQLite Durable Objects and D1; they do not mock the ledger storage. Apple/FX network responses are mocked and Apple test JWTs are cryptographically signed. No development login endpoint is shipped.
+
+## Contract generation
+
+The Zod schemas used by the Hono routes and `TripRoom` are the source of truth. `src/types/contract.ts` uses `z.infer` to expose their output types to API code; it contains no independent transport interfaces and produces no runtime imports. Numerical primitives in `src/utils/money-values.ts` depend only on currency data and error helpers, so schema validation does not import the ledger implementation back into itself.
+
+```sh
+bun run contracts:generate
+bun run contracts:check
+```
+
+Generation writes deterministic OpenAPI 3.1 JSON to `contracts/openapi.json` from the actual Hono route registry. `bun run check` includes the drift check. Both contract commands compile the generated component schemas with Ajv's JSON Schema 2020-12 validator and verify transport examples, nullable fields, omitted stop zones, all seven operation variants, monetary string bounds, authentication declarations and required FX query inputs. Ajv is development tooling only; production validation remains Zod and the runtime tests remain workerd tests.
+
+The portable artifact is suitable input for future Swift or other client generators. API implementation types remain inferred directly from Zod; generated clients are separate consumers. No public OpenAPI endpoint is exposed. Named nullable schemas retain `.nullable()` behavior while avoiding an upstream generator issue with `allOf` and nonnullable references. Keep the contract checks when upgrading schema tooling.
+
+[`docs/protocol.md`](docs/protocol.md) explains refinements and transactional rules that OpenAPI cannot fully express. `contracts/fixtures/money-examples.json` and `contracts/fixtures/transport.json` supply cross-platform examples. `src/data/currencies.json` owns the shared ISO currency metadata.
 
 ## Configuration and release
 
@@ -93,7 +108,7 @@ The authoritative ledger is independent of D1 directory availability. A persiste
 
 ## Money and FX
 
-Amounts are positive integer minor-unit strings for expenses/repayments; zero is permitted for budgets. Maximum per-record/budget amount is `999999999999`. Calculations use `bigint`, half-up conversion and sorted-ID remainder allocation. `contracts/currencies.json` is the shared ISO 4217/SIX metadata: display-formatting conventions are not used for ledger precision (in particular, IDR has two minor digits). `contracts/money-examples.json` exercises both platforms' exact allocation, conversion and settlement behavior.
+Amounts are positive integer minor-unit strings for expenses/repayments; zero is permitted for budgets. Maximum per-record/budget amount is `999999999999`. Calculations use `bigint`, half-up conversion and sorted-ID remainder allocation. `src/data/currencies.json` is the shared ISO 4217/SIX metadata: display-formatting conventions are not used for ledger precision (in particular, IDR has two minor digits). `contracts/fixtures/money-examples.json` exercises both platforms' exact allocation, conversion and settlement behavior.
 
 Public FX requests use [Frankfurter v2](https://frankfurter.dev/), with effective dates and immutable D1 quote IDs. The numeric JSON lexeme is read as decimal text, never converted through a binary floating-point number. Reference conversions are recomputed against the stored quote. Manual card-statement amounts remain explicit and may differ from the indicative rate. Unknown rates retain `conversion:null`; totals/debt are incomplete until resolved. Planned spending affects expected cost only; paid spending affects balances; repayments reduce balances without adding trip cost. Settlement ordering sorts initial debt/credit amounts descending, ties by traveller ID, then consumes them in order.
 

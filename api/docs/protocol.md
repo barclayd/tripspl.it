@@ -1,6 +1,6 @@
 # HTTP contract v1
 
-JSON over HTTPS under `/v1`. Bearer access token required except challenge, Apple sign-in, refresh, health, exchange-rate lookup and public invite landing/association files. Error shape is `APIError`. IDs are opaque strings (client-created record/operation IDs use UUIDs). Timestamps are ISO 8601 UTC; civil dates use `YYYY-MM-DD`. All money/rates follow `tripsplit-v1.ts`. All lists, body sizes and batches are bounded. No credentials in query strings or logs.
+JSON over HTTPS under `/v1`. Bearer access token required except challenge, Apple sign-in, refresh, health, exchange-rate lookup and public invite landing/association files. Error shape is `APIError`. IDs are opaque strings (client-created record/operation IDs use UUIDs). Timestamps are ISO 8601 UTC; civil dates use `YYYY-MM-DD`. Field shapes and scalar schemas come from [`../src/schemas/`](../src/schemas/), with the generated portable contract at [`../contracts/openapi.json`](../contracts/openapi.json). All lists, body sizes and batches are bounded. No credentials in query strings or logs.
 
 | Method | Path | Request | Success response |
 | --- | --- | --- | --- |
@@ -10,7 +10,7 @@ JSON over HTTPS under `/v1`. Bearer access token required except challenge, Appl
 | POST | `/auth/refresh` | `{refreshToken}` | `Session` |
 | POST | `/auth/logout` | `{refreshToken}` | `{ok:true}` |
 | GET | `/me` | — | `User` |
-| DELETE | `/me` | `{}` | 202 `{status:'pending'}` or 200 `{status:'deleted'}` |
+| DELETE | `/me` | `{}` | 202 `{status:'pending'}` |
 | GET | `/trips` | optional `cursor` | `{trips:TripSnapshot[], nextCursor:string|null}` |
 | POST | `/trips` | `{operationId, trip:TripSnapshot}` | `TripSnapshot` |
 | GET | `/trips/:tripId` | — | `TripSnapshot` |
@@ -41,3 +41,14 @@ Invitation URLs must use a configured origin/application link; otherwise return 
 Every amount/budget, including a converted home amount, is a nonnegative integer no greater than `999999999999` minor units. Expense and repayment amounts must be positive. A trip has at most 10,000 expenses and repayments combined. Rates have at most 18 significant digits and at most 18 fractional digits. These bounds allow exact Swift Decimal conversion and safe Int64 aggregate arithmetic. SQL/TypeScript may use larger integer representations internally, but must enforce the transport bounds. Settlement suggestions sort creditors/debtors by descending initial amount with ascending ID tie-break, then consume each list in order without re-sorting after a transfer.
 
 The v1 trip directory returns one complete snapshot per page to bound Worker memory; clients follow `nextCursor` until null. Rate lookup is public with an IP-based rate limit so local-only users can convert amounts before signing in. It contains no user expense data.
+
+
+## Contract ownership and expressiveness
+
+The API owns this contract. Hono route definitions reference the canonical Zod schemas; API TypeScript types are inferred from them in [`src/types/contract.ts`](../src/types/contract.ts). Clients may generate their own language models from [`contracts/openapi.json`](../contracts/openapi.json), but those generated models are not the source for API implementation types. Run `bun run contracts:generate` after a deliberate schema change. `bun run contracts:check`, also included in `bun run check`, rejects stale artifacts and validates representative JSON with an independent JSON Schema 2020-12 implementation.
+
+OpenAPI describes fields, required and nullable values, operation variants, supported currency codes, ordinary scalar/collection bounds, bearer authentication and HTTP methods. In particular, a nullable field is still required unless stated otherwise: `paidOn`, `conversion`, nullable leg references, nullable sync cursors/epochs and `SyncResponse.snapshot` cannot simply be omitted. `Stop.timeZone` has different semantics: it may be omitted, but it cannot be null. The API's parsed TypeScript output also omits explicit `undefined` rather than storing an undefined-valued property.
+
+Runtime validation additionally checks real Gregorian dates within 1900–2200, known IANA time-zone names, trimmed nonempty text, and exact positive rates with at most 18 significant and 18 fractional digits. OpenAPI annotations describe these constraints, but a generated client must not assume a successful structural JSON Schema check establishes all of them. The first query parameter value is used when a name is repeated; FX requires `from`, `to` and `date`, although its parser retains empty defaults to preserve the existing error order. Streamed request byte limits, fatal UTF-8 decoding, rate limits, maintenance and Apple configuration checks are middleware or service behavior, not JSON Schema rules.
+
+Trip graph rules remain in runtime validation: IDs must be unique within their entity kind, linked entities/travellers must exist, day ownership follows ordered stop nights, paid status agrees with the payment date, the owner is active, and expenses plus repayments must remain within the combined 10,000-record limit. Durable Object transactions additionally enforce membership, owner privileges, revision/epoch checks, receipt hashes and tombstones. Ledger arithmetic, FX provenance, omission-preserving updates, deletion cleanup, ownership transfer and WebSocket membership rechecks depend on state and cannot be represented by a generated transport model. Keep the Workers tests and money fixtures alongside client contract checks.

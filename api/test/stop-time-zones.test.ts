@@ -1,10 +1,10 @@
 import { env } from 'cloudflare:workers';
 import { evictDurableObject } from 'cloudflare:test';
 import { describe, expect, it } from 'vitest';
-import type { Operation, SyncResponse, TripSettings, TripSnapshot } from '../../contracts/tripsplit-v1';
+import type { Operation, SyncResponse, TripSettings, TripSnapshot } from '../src/types/contract';
 import { addExpense, create, draft, request, session } from './fixtures';
 import { snapshotSchema } from '../src/schemas/trip';
-import timeZones from '../../Packages/TripSplitDomain/Sources/TripSplitDomain/Resources/DestinationTimeZones.json';
+import timeZones from '../../apple/Packages/TripSplitDomain/Sources/TripSplitDomain/Resources/DestinationTimeZones.json';
 
 function update(trip: TripSnapshot, changes: Partial<TripSettings> = {}): Operation {
   const { name, startsOn, timeZone, homeCurrency, budgetMinor, stops, days, legs } = trip;

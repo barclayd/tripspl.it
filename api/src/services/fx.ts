@@ -1,4 +1,4 @@
-import type { Conversion, Expense, FXQuote, Repayment } from '../../../contracts/tripsplit-v1';
+import type { Conversion, Expense, FXQuote, Repayment } from '../types/contract';
 import { AppError, assert } from '../utils/errors';
 import { convert, currencyDigits, rateFraction } from '../utils/money';
 import { civil, parse } from '../schemas/trip';

@@ -1,7 +1,7 @@
 import { env, exports } from 'cloudflare:workers';
 import { createExecutionContext, waitOnExecutionContext } from 'cloudflare:test';
 import { describe, expect, it } from 'vitest';
-import type { APIError, TripSnapshot } from '../../contracts/tripsplit-v1';
+import type { APIError, TripSnapshot } from '../src/types/contract';
 import worker from '../src/index';
 import { sha256 } from '../src/utils/crypto';
 import { create, request, session } from './fixtures';
