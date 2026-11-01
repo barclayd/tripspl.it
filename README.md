@@ -18,6 +18,7 @@ See [destination data and currencies](docs/destination-data.md), [architecture](
 apple/
   ios/                 iPhone/iPad app shell and Xcode project
   Packages/            Shared Swift services and feature products
+  scripts/             Apple build and TestFlight delivery tools
 api/
   src/schemas/         Authoritative Zod request/response schemas
   src/data/            Currency metadata used by the API and Swift checks

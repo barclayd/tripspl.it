@@ -14,7 +14,7 @@ import subprocess
 import sys
 
 
-ROOT = Path(__file__).resolve().parents[1]
+ROOT = Path(__file__).resolve().parents[2]
 
 
 def run(args, *, env, log=None, timeout=60, accepted=(0,)):
@@ -70,9 +70,10 @@ def main():
     if args.dry_run and args.action != "release":
         parser.error("--dry-run is only supported with release")
     os.umask(0o077)
-    configs = [ROOT / p for p in ("apple/ios/testflight.json", "ios/testflight.json") if (ROOT / p).is_file()]
+    configs = [ROOT / "apple/ios/testflight.json"]
+    configs = [p for p in configs if p.is_file()]
     if len(configs) != 1:
-        raise RuntimeError("Expected one TestFlight config in apple/ios or ios.")
+        raise RuntimeError("Expected the TestFlight config at apple/ios/testflight.json.")
     config = json.loads(configs[0].read_text())
     projects = [p for p in config["project_candidates"] if (ROOT / p).is_dir()]
     if len(projects) != 1:

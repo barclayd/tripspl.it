@@ -1,4 +1,5 @@
 # Pinned upstream inputs must retain their exact downloaded bytes and licence text.
 scripts/destination-data/sources/* -text -whitespace linguist-vendored
-ios/TripSplit/Domain/Resources/*.json linguist-generated
-ios/TripSplit/Domain/Resources/DestinationDataLicenses.txt -whitespace linguist-generated
+apple/Packages/TripSplitDomain/Sources/TripSplitDomain/Resources/*.json linguist-generated
+apple/Packages/TripSplitDomain/Sources/TripSplitDomain/Resources/DestinationDataLicenses.txt -whitespace linguist-generated
+api/contracts/openapi.json linguist-generated

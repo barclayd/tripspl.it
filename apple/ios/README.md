@@ -66,16 +66,16 @@ Quick Convert opens with the current stop's currency and the trip's home currenc
 
 ## Internal beta delivery
 
-App Store Connect app `6829340844` is **TripSplit: Travel Budget**; the installed name remains TripSplit. The intended internal group is **Dan**, ID `69183108-1726-4905-82c5-e3e6ecae0251`. Nonsecret release settings live in `testflight.json` alongside this README. The wrapper accepts both `ios` and `apple/ios` layouts and requires one matching project; move this config with the iOS shell.
+App Store Connect app `6829340844` is **TripSplit: Travel Budget**; the installed name remains TripSplit. The intended internal group is **Dan**, ID `69183108-1726-4905-82c5-e3e6ecae0251`. Nonsecret release settings live in `testflight.json` alongside this README. The Apple release entrypoint is `apple/scripts/testflight.py`; its project path is relative to the repository root. Run the commands below from that root.
 
 Use the shared `testflight-release` skill and tools from `~/Developer/barclayd` (`./codex/install-testflight.sh`). The normal local route is manual distribution signing and App Store Connect API authentication, with no Organizer or Safari dependency:
 
 ```sh
-python3 scripts/testflight.py check
-python3 scripts/testflight.py release --dry-run
-python3 scripts/testflight.py release
-python3 scripts/testflight.py resume --receipt /private/path/release.json
-python3 scripts/testflight.py status --receipt /private/path/release.json
+python3 apple/scripts/testflight.py check
+python3 apple/scripts/testflight.py release --dry-run
+python3 apple/scripts/testflight.py release
+python3 apple/scripts/testflight.py resume --receipt /private/path/release.json
+python3 apple/scripts/testflight.py status --receipt /private/path/release.json
 ```
 
 Run from a clean committed checkout. `release` runs the scheme's tests, resolves the next remote build number, unlocks the dedicated signing keychain, archives/exports an internal-only IPA, uploads it once and performs a bounded availability check. It holds a local release lock through upload and reuses `~/Library/Caches/TripSplit/TestFlightDerivedData`; do not routinely clean this cache. The build number is an archive override, not a source edit. A source change during tests/archive stops upload.
