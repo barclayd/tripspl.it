@@ -25,11 +25,13 @@ import TripSplitDomain
   public var paidBy = ""
   public var splitWith: Set<String> = []
 
-  /// Starts from Trips with no trip chosen, inside a trip, or on a spend to change.
+  /// Starts from Trips with no trip chosen, inside a trip, or on a spend to change. From Trips
+  /// with only one trip to log for, it starts on that trip, as there's nothing to choose.
   public init(model: WatchModel, trip: TripSnapshot? = nil, editing expense: Expense? = nil) {
     self.model = model
     editing = expense
-    if let trip { choose(trip) }
+    let only = expense == nil && trips.count == 1 ? trips.first : nil
+    if let trip = trip ?? only { choose(trip) }
     guard let expense else { return }
     attachment = expense.attachment
     currency = expense.currency
