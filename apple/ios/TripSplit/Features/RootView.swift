@@ -185,7 +185,8 @@ struct RootView: View {
       #if DEBUG
         // Opens a demo trip straight away so simulator screenshots can reach trip screens.
         if ProcessInfo.processInfo.arguments.contains("--open-trip") {
-          model.selectedTripID = model.store.trips.first?.id
+          let trips = model.store.trips
+          model.selectedTripID = (trips.first { $0.phase == .now } ?? trips.first)?.id
         }
       #endif
       await model.sync.syncAll()

@@ -42,7 +42,7 @@ package enum SpendGroup: String, CaseIterable, Sendable {
     }
   }
 
-  package var color: Color { OKLCH(0.72, 0.14, hue).color }
+  package var color: Color { Color(light: OKLCH(0.72, 0.14, hue), dark: OKLCH(0.74, 0.13, hue)) }
 }
 
 extension ExpenseCategory {
