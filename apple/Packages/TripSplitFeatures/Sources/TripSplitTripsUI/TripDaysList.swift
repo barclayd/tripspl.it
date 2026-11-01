@@ -115,15 +115,7 @@ private struct StopGroup: View {
   /// "3 nights · €1 = £0.86", with the rate only for a foreign stop whose rate is known.
   private var meta: String {
     let nights = "\(stop.nights) night\(stop.nights == 1 ? "" : "s")"
-    guard stop.currency != trip.homeCurrency, let rate = trip.knownRate(from: stop.currency)
-    else { return nights }
-    // Zero-decimal currencies read better in thousands: ¥1,000 rather than ¥1.
-    let unit = Money.factor(stop.currency) * (Money.precision(stop.currency) == 0 ? 1000 : 1)
-    guard
-      let value = try? Money.convert(unit, from: stop.currency, to: trip.homeCurrency, rate: rate)
-    else { return nights }
-    return
-      "\(nights) · \(Money.format(unit, stop.currency, compact: true)) = \(Money.format(value, trip.homeCurrency))"
+    return trip.rateLabel(for: stop.currency).map { "\(nights) · \($0)" } ?? nights
   }
 }
 
@@ -213,14 +205,5 @@ private struct DayRowStyle: ButtonStyle {
         configuration.isPressed ? Theme.inset : highlighted ? Theme.accentSoft : Color.clear
       )
       .animation(.easeOut(duration: 0.15), value: configuration.isPressed)
-  }
-}
-
-extension TripSnapshot {
-  /// The latest rate an expense locked in from `currency` to home, so stop rates work offline.
-  func knownRate(from currency: String) -> String? {
-    expenses.lazy.filter { $0.currency == currency }
-      .compactMap(\.conversion)
-      .max { $0.rateDate < $1.rateDate }?.rate
   }
 }

@@ -30,3 +30,41 @@ extension TripSnapshot {
     days.map { Ledger(self, expenses: expenses(for: .init(kind: .day, id: $0.id))).total }
   }
 }
+
+extension TripSnapshot {
+  /// The latest rate an expense locked in from `currency` to home, so stop rates work offline.
+  package func knownRate(from currency: String) -> String? {
+    expenses.lazy.filter { $0.currency == currency }
+      .compactMap(\.conversion)
+      .max { $0.rateDate < $1.rateDate }?.rate
+  }
+
+  /// "€1 = £0.86" for a foreign currency with a known rate, in thousands for zero-decimal
+  /// currencies (¥1,000 rather than ¥1), or nil.
+  package func rateLabel(for currency: String) -> String? {
+    guard currency != homeCurrency, let rate = knownRate(from: currency) else { return nil }
+    let unit = Money.factor(currency) * (Money.precision(currency) == 0 ? 1000 : 1)
+    guard let value = try? Money.convert(unit, from: currency, to: homeCurrency, rate: rate)
+    else { return nil }
+    return "\(Money.format(unit, currency, compact: true)) = \(Money.format(value, homeCurrency))"
+  }
+
+  /// The home value of `minor` in `currency` at the known rate, or nil without one.
+  package func estimate(_ minor: Int64, from currency: String) -> Int64? {
+    if currency == homeCurrency { return minor }
+    guard let rate = knownRate(from: currency) else { return nil }
+    return try? Money.convert(minor, from: currency, to: homeCurrency, rate: rate)
+  }
+
+  /// "You" for the current traveller, otherwise their name.
+  package func displayName(_ travellerID: String) -> String {
+    if travellerID == currentTravellerId { return "You" }
+    return travellers.first { $0.id == travellerID }?.name ?? "Traveller"
+  }
+
+  /// "Day 4" for an itinerary day, or the leg's title.
+  package func shortTitle(for attachment: Attachment) -> String {
+    guard attachment.kind == .day else { return title(for: attachment) }
+    return "Day \((days.firstIndex { $0.id == attachment.id } ?? 0) + 1)"
+  }
+}

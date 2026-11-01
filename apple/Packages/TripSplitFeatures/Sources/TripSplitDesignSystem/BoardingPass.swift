@@ -360,13 +360,18 @@ private struct DashedRule: View {
 }
 
 /// A deterministic barcode: FNV-1a hash of the key seeds an LCG for bar and gap widths.
-private struct Barcode: View {
-  enum Axis { case horizontal, vertical }
+package struct Barcode: View {
+  package enum Axis { case horizontal, vertical }
+  package init(key: String, length: CGFloat, axis: Axis = .horizontal) {
+    self.key = key
+    self.length = length
+    self.axis = axis
+  }
   var key: String
   var length: CGFloat
   var axis: Axis
 
-  var body: some View {
+  package var body: some View {
     let bars = Self.bars(key: key, length: length)
     Canvas { context, size in
       for bar in bars {
