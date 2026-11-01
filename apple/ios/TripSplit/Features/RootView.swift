@@ -12,6 +12,7 @@ import TripSplitSync
 import TripSplitTripsUI
 
 struct RootView: View {
+  static let newTripTab = 2
   @Environment(AppModel.self) private var model
   @Environment(\.scenePhase) private var scenePhase
   @State private var columns: NavigationSplitViewVisibility = .all
@@ -19,7 +20,18 @@ struct RootView: View {
   @State private var wide = false
   var body: some View {
     @Bindable var model = model
-    TabView(selection: $model.selectedTab) {
+    // The "+" tab is an action, not a destination: selecting it starts a new trip in place.
+    TabView(
+      selection: Binding(
+        get: { model.selectedTab },
+        set: { tab in
+          if tab == RootView.newTripTab {
+            model.showOnboarding = true
+          } else {
+            model.selectedTab = tab
+          }
+        })
+    ) {
       Tab("Trips", systemImage: "suitcase", value: 0) {
         NavigationSplitView(columnVisibility: $columns, preferredCompactColumn: $preferredColumn) {
           ZStack {
@@ -30,7 +42,11 @@ struct RootView: View {
               TripDetailView(tripID: trip.id, compact: true)
             }
           }.navigationSplitViewColumnWidth(min: 300, ideal: 340, max: 360).navigationTitle(
-            model.selectedAttachment == nil ? "Trips" : model.selectedTrip?.name ?? "Trip")
+            model.selectedAttachment == nil ? "Trips" : model.selectedTrip?.name ?? "Trip"
+          )
+          // The phone's trips root draws its own large header.
+          .toolbar(
+            !wide && model.selectedAttachment == nil ? .hidden : .automatic, for: .navigationBar)
         } detail: {
           NavigationStack {
             ZStack {
@@ -127,6 +143,9 @@ struct RootView: View {
           .onChange(of: model.fullScreenDay) { _, full in columns = full ? .detailOnly : .all }
       }
       Tab("Globe", systemImage: "globe", value: 1) { NavigationStack { GlobeView() } }
+      Tab("New trip", systemImage: "plus", value: RootView.newTripTab, role: .search) {
+        Color.clear
+      }
     }
     .sheet(isPresented: $model.showSettings) { SettingsView().trailingSheet() }
     .sheet(isPresented: $model.showTripSettings) {
