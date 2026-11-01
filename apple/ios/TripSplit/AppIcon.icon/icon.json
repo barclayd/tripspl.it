@@ -1,77 +1,138 @@
 {
-  "fill-specializations": [
+  "fill-specializations" : [
     {
-      "value": {
-        "solid": "srgb:0.898039,0.149020,0.419608,1.000000"
+      "value" : {
+        "solid" : "srgb:0.89804,0.14902,0.41961,1.00000"
       }
     },
     {
-      "appearance": "dark",
-      "value": {
-        "solid": "srgb:0.207843,0.070588,0.121569,1.000000"
+      "appearance" : "dark",
+      "value" : {
+        "solid" : "srgb:0.20784,0.07059,0.12157,1.00000"
       }
     }
   ],
-  "groups": [
+  "groups" : [
     {
-      "name": "Boarding pass",
-      "layers": [
+      "layers" : [
         {
-          "name": "04 Barcode",
-          "image-name": "04-barcode.svg",
-          "opacity": 0.78,
-          "fill-specializations": [
-            { "value": { "solid": "srgb:0.898039,0.149020,0.419608,1.000000" } },
-            { "appearance": "dark", "value": { "solid": "srgb:0.898039,0.149020,0.419608,1.000000" } },
-            { "appearance": "tinted", "value": { "solid": "srgb:0.050000,0.050000,0.050000,1.000000" } }
-          ]
+          "fill-specializations" : [
+            {
+              "value" : {
+                "solid" : "srgb:0.89804,0.14902,0.41961,1.00000"
+              }
+            },
+            {
+              "appearance" : "dark",
+              "value" : {
+                "solid" : "srgb:0.89804,0.14902,0.41961,1.00000"
+              }
+            },
+            {
+              "appearance" : "tinted",
+              "value" : {
+                "solid" : "srgb:0.05000,0.05000,0.05000,1.00000"
+              }
+            }
+          ],
+          "image-name" : "04-barcode.svg",
+          "name" : "04 Barcode",
+          "opacity" : 0.78
         },
         {
-          "name": "03 Perforation",
-          "image-name": "03-perforation.svg",
-          "opacity": 0.26,
-          "fill-specializations": [
-            { "value": { "solid": "srgb:0.898039,0.149020,0.419608,1.000000" } },
-            { "appearance": "dark", "value": { "solid": "srgb:0.898039,0.149020,0.419608,1.000000" } },
-            { "appearance": "tinted", "value": { "solid": "srgb:0.050000,0.050000,0.050000,1.000000" } }
-          ]
+          "fill-specializations" : [
+            {
+              "value" : {
+                "solid" : "srgb:0.89804,0.14902,0.41961,1.00000"
+              }
+            },
+            {
+              "appearance" : "dark",
+              "value" : {
+                "solid" : "srgb:0.89804,0.14902,0.41961,1.00000"
+              }
+            },
+            {
+              "appearance" : "tinted",
+              "value" : {
+                "solid" : "srgb:0.05000,0.05000,0.05000,1.00000"
+              }
+            }
+          ],
+          "image-name" : "03-perforation.svg",
+          "name" : "03 Perforation",
+          "opacity" : 0.26
         },
         {
-          "name": "02 Airplane",
-          "image-name": "02-airplane.svg",
-          "fill-specializations": [
-            { "value": { "solid": "srgb:0.898039,0.149020,0.419608,1.000000" } },
-            { "appearance": "dark", "value": { "solid": "srgb:0.898039,0.149020,0.419608,1.000000" } },
-            { "appearance": "tinted", "value": { "solid": "srgb:0.050000,0.050000,0.050000,1.000000" } }
-          ]
+          "fill-specializations" : [
+            {
+              "value" : {
+                "solid" : "srgb:0.89804,0.14902,0.41961,1.00000"
+              }
+            },
+            {
+              "appearance" : "dark",
+              "value" : {
+                "solid" : "srgb:0.89804,0.14902,0.41961,1.00000"
+              }
+            },
+            {
+              "appearance" : "tinted",
+              "value" : {
+                "solid" : "srgb:0.05000,0.05000,0.05000,1.00000"
+              }
+            }
+          ],
+          "image-name" : "02-airplane.svg",
+          "name" : "02 Airplane"
         },
         {
-          "name": "01 Ticket",
-          "image-name": "01-ticket.svg",
-          "fill-specializations": [
-            { "value": { "solid": "srgb:1.000000,1.000000,1.000000,1.000000" } },
-            { "appearance": "dark", "value": { "solid": "srgb:0.952941,0.913725,0.929412,1.000000" } },
-            { "appearance": "tinted", "value": { "solid": "srgb:1.000000,1.000000,1.000000,1.000000" } }
-          ]
+          "fill-specializations" : [
+            {
+              "value" : {
+                "solid" : "srgb:1.00000,1.00000,1.00000,1.00000"
+              }
+            },
+            {
+              "appearance" : "dark",
+              "value" : {
+                "solid" : "srgb:0.95294,0.91373,0.92941,1.00000"
+              }
+            },
+            {
+              "appearance" : "tinted",
+              "value" : {
+                "solid" : "srgb:1.00000,1.00000,1.00000,1.00000"
+              }
+            }
+          ],
+          "image-name" : "01-ticket.svg",
+          "name" : "01 Ticket"
         }
       ],
-      "lighting": "combined",
-      "shadow": {
-        "kind": "neutral",
-        "opacity": 0.2
+      "lighting" : "combined",
+      "name" : "Boarding pass",
+      "position" : {
+        "scale" : 1.188,
+        "translation-in-points" : [
+          0,
+          0
+        ]
       },
-      "translucency": {
-        "enabled": false,
-        "value": 0
+      "shadow" : {
+        "kind" : "neutral",
+        "opacity" : 0.2
       },
-      "position": {
-        "scale": 1.32,
-        "translation-in-points": [0, 0]
+      "translucency" : {
+        "enabled" : false,
+        "value" : 0
       }
     }
   ],
-  "supported-platforms": {
-    "circles": ["watchOS"],
-    "squares": "shared"
+  "supported-platforms" : {
+    "circles" : [
+      "watchOS"
+    ],
+    "squares" : "shared"
   }
 }
