@@ -4,7 +4,8 @@ import TripSplitWatchDesign
 import TripSplitWatchModel
 
 /// Log expense, presented as a sheet: which trip from Trips (F1), which day for a trip still to come
-/// (F6), how much (F2), what it was (F3) and who shares it (F4), then the receipt (F5).
+/// (F6), how much (F2), what it was (F3) and, with others on the trip, who shares it (F4), then
+/// the receipt (F5).
 struct LogExpenseView: View {
   @Environment(\.dismiss) private var dismiss
   @State private var log: LogExpense
@@ -55,28 +56,39 @@ struct LogExpenseView: View {
     case .trip:
       TripChoiceView(log: log) { trip in
         log.choose(trip)
-        path.append(.step(log.attachment == nil ? .day : .amount))
+        advance(from: .trip)
       }
     case .day:
       DayChoiceView(log: log) { attachment in
         log.choose(attachment)
-        path.append(.step(.amount))
+        advance(from: .day)
       }
     case .amount:
       AmountStepView(log: log, path: $path)
     case .category:
       CategoryStepView(log: log) { category in
         log.category = category
-        path.append(.step(.split))
+        advance(from: .category)
       }
     case .split:
-      SplitStepView(log: log) {
-        let offline = !log.model.isPhoneReachable
-        guard let saved = log.save() else { return }
-        savedOffline = offline
-        withAnimation(.snappy) { receipt = saved }
-      }
+      SplitStepView(log: log, save: save)
     }
+  }
+
+  /// On to the next step, or saves when that was the last, e.g. the category on a solo trip.
+  private func advance(from step: LogExpense.Step) {
+    if let next = log.step(after: step) {
+      path.append(.step(next))
+    } else {
+      save()
+    }
+  }
+
+  private func save() {
+    let offline = !log.model.isPhoneReachable
+    guard let saved = log.save() else { return }
+    savedOffline = offline
+    withAnimation(.snappy) { receipt = saved }
   }
 }
 

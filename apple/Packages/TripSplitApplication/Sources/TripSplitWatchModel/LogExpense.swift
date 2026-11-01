@@ -3,7 +3,7 @@ import Observation
 import TripSplitDomain
 
 /// The watch's log flow: which trip (F1), which day for a trip still to come (F6), how much (F2),
-/// what it was (F3) and who shares it (F4). Saves through the phone like any other watch change,
+/// what it was (F3) and, with others on the trip, who shares it (F4). Saves through the phone like any other watch change,
 /// with an estimate from cached rates so the spend shows in the home currency straight away, even
 /// offline. The phone swaps the estimate for a quoted rate when it applies the change.
 @MainActor @Observable public final class LogExpense {
@@ -50,6 +50,20 @@ import TripSplitDomain
     if tripID == nil { return .trip }
     return attachment == nil ? .day : .amount
   }
+
+  /// The step after `step`, or nil once there's nothing left to ask and the spend saves.
+  public func step(after step: Step) -> Step? {
+    switch step {
+    case .trip: attachment == nil ? .day : .amount
+    case .day: .amount
+    case .amount: .category
+    case .category: asksSplit ? .split : nil
+    case .split: nil
+    }
+  }
+
+  /// Who shares it is only asked when someone else is on the trip. On your own it's just yours.
+  public var asksSplit: Bool { (trip?.activeTravellers.count ?? 0) > 1 }
 
   public var trip: TripSnapshot? { tripID.flatMap(model.trip) }
   public var home: String { trip?.homeCurrency ?? "GBP" }
