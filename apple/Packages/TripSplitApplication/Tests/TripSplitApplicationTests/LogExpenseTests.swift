@@ -127,6 +127,34 @@ import TripSplitWatchModel
     #expect(expense.conversion == nil)
   }
 
+  @Test func soloTripSkipsWhoSharesIt() throws {
+    let demo = try WatchModel.demo()
+    var trip = try #require(demo.trips.first { $0.phase(at: demo.now) == .now })
+    trip.travellers = trip.travellers.filter { $0.id == trip.currentTravellerId }
+    var sent: [CompanionCommand] = []
+    let model = WatchModel(
+      state: .init(context: .init(trips: [trip], sentAt: demo.now)), send: { sent.append($0) })
+    model.now = demo.now
+    let log = LogExpense(model: model)
+    #expect(!log.asksSplit)
+    #expect(log.step(after: .category) == nil)
+    log.amount = 20
+    let receipt = try #require(log.save())
+    let expense = try saved(sent)
+    #expect(expense.paidBy == trip.currentTravellerId)
+    #expect(expense.splitWith == [trip.currentTravellerId])
+    #expect(receipt.people == ["You"])
+    #expect(receipt.each == nil)
+  }
+
+  @Test func sharedTripAsksWhoSharesIt() throws {
+    let (model, _) = try model()
+    let log = LogExpense(model: model, trip: model.timeline.now.first)
+    #expect(log.asksSplit)
+    #expect(log.step(after: .category) == .split)
+    #expect(log.step(after: .split) == nil)
+  }
+
   @Test func plannedForATripStillToCome() throws {
     let (model, sent) = try model()
     let trip = try #require(model.timeline.upcoming.first)
