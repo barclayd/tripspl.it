@@ -1,0 +1,40 @@
+---
+import Budget from '../components/Budget.astro';
+import Convert from '../components/Convert.astro';
+import Cta from '../components/Cta.astro';
+import Departures from '../components/Departures.astro';
+import Ecosystem from '../components/Ecosystem.astro';
+import Faq from '../components/Faq.astro';
+import Footer from '../components/Footer.astro';
+import Group from '../components/Group.astro';
+import Hero from '../components/Hero.astro';
+import Nav from '../components/Nav.astro';
+import Split from '../components/Split.astro';
+import Base from '../layouts/Base.astro';
+---
+
+<Base>
+  <Nav />
+  <main>
+    <Hero />
+    <Group />
+    <Departures />
+    <Budget />
+    <Split />
+    <Convert />
+    <Ecosystem />
+    <Faq />
+    <Cta />
+  </main>
+  <Footer />
+</Base>
+
+<script>
+  import { initFlaps } from '../scripts/flap';
+  import { initGlobe } from '../scripts/globe';
+  import { initScroll } from '../scripts/scroll';
+
+  initScroll();
+  initFlaps();
+  initGlobe();
+</script>

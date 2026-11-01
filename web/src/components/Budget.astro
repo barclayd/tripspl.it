@@ -1,0 +1,159 @@
+---
+// Daily spend for the first eight days. Day 4 (today) is the accent bar; future days are stubs.
+const bars = [268, 187, 214, 59, 0, 0, 0, 0].map((v, i) => ({
+  h: v ? `${Math.round((v / 300) * 120)}px` : '4px',
+  d: (i * 0.08).toFixed(2),
+  c: i === 3 ? 'var(--ac)' : v ? 'var(--inv)' : 'var(--sf2)',
+  l: `D${i + 1}`,
+}));
+
+const cats = [
+  { l: 'Stays', v: '£1,224', c: 'oklch(0.72 0.14 300)' },
+  { l: 'Travel', v: '£1,019', c: 'oklch(0.72 0.14 235)' },
+  { l: 'Things to do', v: '£380', c: 'oklch(0.72 0.14 195)' },
+  { l: 'Food & drink', v: '£329', c: 'oklch(0.72 0.14 45)' },
+];
+---
+
+<section id="budget" class="budget" data-sc="budget" aria-labelledby="budget-title">
+  <div class="sticky-stage fit-stage feature">
+    <div class="copy">
+      <span class="eyebrow">BUDGET</span>
+      <h2 class="display" id="budget-title">Know where<br />every pound went.</h2>
+      <div class="chip-row">
+        <span class="chip">By day</span>
+        <span class="chip">By place</span>
+        <span class="chip">By person</span>
+      </div>
+    </div>
+    <div class="card sf">
+      <div class="card-top">
+        <div>
+          <div class="where">🇵🇹 Porto · Day 4 of 8</div>
+          <div class="total tnum" data-bind="dayTotal">£58.97</div>
+        </div>
+        <div class="left tnum" data-bind="dayLeft">£241 left today</div>
+      </div>
+      <div class="progress" aria-hidden="true"><div class="progress-fill"></div></div>
+      <div class="bars" role="img" aria-label="Daily spend: £268, £187, £214 and £59 so far today">
+        {
+          bars.map((b) => (
+            <div class="bar-col">
+              <div class="bar" style={`--h:${b.h};--d:${b.d};background:${b.c}`} />
+              <span class="bar-l">{b.l}</span>
+            </div>
+          ))
+        }
+      </div>
+      <div class="cats">
+        {
+          cats.map((c) => (
+            <span class="cat">
+              <span class="cat-dot" style={`background:${c.c}`} />
+              {c.l} <span class="cat-v">{c.v}</span>
+            </span>
+          ))
+        }
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .budget {
+    height: 240vh;
+  }
+  .card {
+    border-radius: 28px;
+    padding: 26px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    box-shadow: 0 40px 70px -44px rgba(22, 18, 15, 0.4);
+  }
+  .card-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+  }
+  .where {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--ink2);
+  }
+  .total {
+    font-size: 56px;
+    font-weight: 800;
+    letter-spacing: -0.05em;
+    line-height: 1;
+    margin-top: 6px;
+  }
+  .left {
+    text-align: right;
+    font-size: 15px;
+    font-weight: 800;
+    color: var(--goodText);
+  }
+  .progress {
+    height: 12px;
+    border-radius: 999px;
+    background: var(--sf2);
+    overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%;
+    width: calc(min(var(--p) * 1.4, 1) * 20%);
+    border-radius: 999px;
+    background: var(--ac);
+  }
+  .bars {
+    display: grid;
+    grid-template-columns: repeat(8, 1fr);
+    align-items: end;
+    gap: 8px;
+    height: 150px;
+    padding-top: 10px;
+    border-top: 1px solid var(--hairline);
+  }
+  .bar-col {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    height: 100%;
+    justify-content: flex-end;
+  }
+  .bar {
+    width: 100%;
+    height: calc(min(max(var(--p) * 1.6 - var(--d), 0), 1) * var(--h));
+    border-radius: 10px;
+  }
+  .bar-l {
+    font-size: 11px;
+    font-weight: 800;
+    color: var(--ink3);
+  }
+  .cats {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .cat {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 7px 12px;
+    border-radius: 999px;
+    background: var(--bg);
+    font-size: 13px;
+    font-weight: 800;
+  }
+  .cat-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+  }
+  .cat-v {
+    color: var(--ink2);
+  }
+</style>

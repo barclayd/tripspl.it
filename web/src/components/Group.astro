@@ -1,0 +1,244 @@
+---
+import Memoji from './Memoji.astro';
+
+type Face = 1 | 2 | 3 | 4;
+const everyone: Face[] = [1, 2, 3, 4];
+
+interface Row {
+  icon: string;
+  hue: number;
+  title: string;
+  sub: string;
+  faces: Face[];
+  /** Faces shown greyed out: in the group but not part of this cost. */
+  out?: Face[];
+  extra?: 'badge' | string;
+  amount: string;
+  pill: string;
+  accent: boolean;
+}
+
+const rows: Row[] = [
+  {
+    icon: '✈️',
+    hue: 235,
+    title: 'Flights',
+    sub: 'Everyone their own',
+    faces: everyone,
+    extra: '+4 · £237 each',
+    amount: '£1,896',
+    pill: 'Not split',
+    accent: false,
+  },
+  {
+    icon: '🏡',
+    hue: 300,
+    title: 'Villa in Deià',
+    sub: '4 rooms, 5 nights',
+    faces: everyone,
+    extra: 'badge',
+    amount: '£1,413',
+    pill: 'Split 8 ways',
+    accent: true,
+  },
+  {
+    icon: '☕',
+    hue: 65,
+    title: 'Café in Palma',
+    sub: "Tom's treat",
+    faces: [3],
+    out: [1, 2, 4],
+    amount: '£38',
+    pill: 'Tom paid',
+    accent: false,
+  },
+  {
+    icon: '🥘',
+    hue: 45,
+    title: 'Paella night',
+    sub: 'Table for 8',
+    faces: everyone,
+    extra: 'badge',
+    amount: '£312',
+    pill: '£39 each',
+    accent: true,
+  },
+];
+---
+
+<section class="group" data-sc="group" aria-labelledby="group-title">
+  <div class="sticky-stage group-stage">
+    <div class="stage group-inner">
+      <div class="stage-head">
+        <span class="stage-pill">🇪🇸 GROUP TRIP</span>
+        <h2 class="stage-h2" id="group-title">
+          Or with <span class="hi">friends</span><span class="sticker bob" style="--r:14deg;right:-0.7em" aria-hidden="true"
+            >🥳</span
+          >
+        </h2>
+      </div>
+      <div class="crew">
+        <div class="faces" role="img" aria-label="Maya, you, Tom, Priya and four more friends">
+          {everyone.map((n) => <Memoji n={n} size={48} style="margin-left:-6px" />)}
+          <span class="inv-badge crew-more" aria-hidden="true">+4</span>
+        </div>
+        <div class="crew-total">
+          <span class="crew-trip">🇪🇸 Mallorca · 8 friends</span>
+          <span class="crew-sum tnum" data-bind="groupTotal">£3,659</span>
+        </div>
+      </div>
+      {
+        rows.map((r, i) => (
+          <div class="stage-row sf group-row" style={`--k:${i + 1}`}>
+            <div class="stage-tile pastel" style={`background:oklch(0.94 0.045 ${r.hue})`} aria-hidden="true">
+              {r.icon}
+            </div>
+            <div class="row-mid">
+              <div class="row-titles">
+                <span class="stage-title">{r.title}</span>
+                <span class="stage-sub">{r.sub}</span>
+              </div>
+              <div class="row-faces">
+                {r.faces.map((n) => (
+                  <Memoji n={n} size={34} style="margin-left:-2px" />
+                ))}
+                {r.out?.map((n) => (
+                  <Memoji n={n} size={34} class="out" style="margin-left:-2px" />
+                ))}
+                {r.extra === 'badge' && <span class="inv-badge row-more">+4</span>}
+                {r.extra && r.extra !== 'badge' && <span class="row-each">{r.extra}</span>}
+              </div>
+            </div>
+            <div class="row-end">
+              <span class="stage-amt tnum">{r.amount}</span>
+              <span class:list={['row-pill', { accent: r.accent }]}>{r.pill}</span>
+            </div>
+          </div>
+        ))
+      }
+    </div>
+  </div>
+</section>
+
+<style>
+  .group {
+    --b: var(--p);
+    height: 260vh;
+  }
+  .group-stage {
+    overflow: hidden;
+    background: radial-gradient(60% 50% at 50% 55%, var(--acSoft) 0%, var(--bg) 70%);
+  }
+  .group-inner {
+    transform-origin: 50% 50%;
+    opacity: min(var(--b) * 4 + 0.2, 1);
+  }
+  .crew {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 8px;
+    transform: translateY(calc((1 - min(var(--b) * 4, 1)) * 30px));
+  }
+  .faces,
+  .row-faces {
+    display: flex;
+    align-items: center;
+  }
+  .crew-more {
+    width: 48px;
+    height: 48px;
+    margin-left: 4px;
+    font-size: 16px;
+  }
+  .crew-total {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+  }
+  .crew-trip {
+    font-size: 13px;
+    font-weight: 800;
+    color: var(--ink2);
+  }
+  .crew-sum {
+    font-size: 32px;
+    font-weight: 800;
+    letter-spacing: -0.04em;
+  }
+  .group-row {
+    --v: clamp(0, calc(var(--b) * 6 - var(--k)), 1);
+    padding: 16px 18px;
+    opacity: var(--v);
+    transform: translateY(calc((1 - var(--v)) * 40px));
+  }
+  .row-mid {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    min-width: 0;
+  }
+  .row-titles {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+  .row-faces :global(.out) {
+    filter: grayscale(1);
+    opacity: 0.35;
+  }
+  .row-more {
+    width: 34px;
+    height: 34px;
+    margin-left: 4px;
+    font-size: 13px;
+  }
+  .row-each {
+    margin-left: 8px;
+    font-size: 13px;
+    font-weight: 800;
+    color: var(--ink2);
+  }
+  .row-end {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 6px;
+  }
+  .row-pill {
+    padding: 5px 10px;
+    border-radius: 999px;
+    background: var(--bg);
+    color: var(--ink2);
+    font-size: 12px;
+    font-weight: 800;
+    white-space: nowrap;
+  }
+  .row-pill.accent {
+    background: var(--acSoft);
+    color: var(--acText);
+  }
+
+  @media (prefers-color-scheme: dark) {
+    .group-stage {
+      background: radial-gradient(60% 50% at 50% 58%, oklch(0.2 0.07 4) 0%, #000 70%);
+    }
+  }
+
+  @media (max-width: 640px) {
+    .group-row {
+      padding: 12px;
+    }
+    .crew-sum {
+      font-size: 24px;
+    }
+    .crew-more,
+    .row-more {
+      width: 28px;
+      height: 28px;
+      font-size: 11px;
+    }
+  }
+</style>

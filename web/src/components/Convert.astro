@@ -1,0 +1,137 @@
+<section id="convert" class="convert" data-sc="convert" aria-labelledby="convert-title">
+  <div class="sticky-stage fit-stage feature">
+    <div class="cv-wrap">
+      <div class="cv sf">
+        <div class="cv-pair">
+          <span class="cur">🇵🇹 EUR</span>
+          <span class="swap" aria-hidden="true">
+            <svg
+              width="17"
+              height="17"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2.6"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              aria-hidden="true"><path d="M4 8h14l-4-4M20 16H6l4 4"></path></svg>
+          </span>
+          <span class="cur">🇬🇧 GBP</span>
+        </div>
+        <div class="cv-in tnum" data-bind="cvIn">€120</div>
+        <div class="cv-box">
+          <span class="cv-about">That's about</span>
+          <span class="cv-out tnum" data-bind="cvOut">£103.44</span>
+        </div>
+        <div class="cv-row">
+          <span data-bind="cvPct">34% of a day's budget</span>
+          <span>£300 a day</span>
+        </div>
+        <div class="cv-bar" aria-hidden="true"><div class="cv-fill" data-bind-style="width:cvBar" style="width:34.48%"></div></div>
+      </div>
+    </div>
+    <div class="copy">
+      <span class="eyebrow">QUICK CONVERT</span>
+      <h2 class="display" id="convert-title">Price tag in euros.<br />Answer in pounds.</h2>
+      <div class="chip-row">
+        <span class="chip">Live rates</span>
+        <span class="chip">Works offline</span>
+        <span class="chip">Log it in one tap</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .convert {
+    height: 220vh;
+  }
+  .cv-wrap {
+    display: flex;
+    justify-content: center;
+    order: 2;
+  }
+  .copy {
+    order: 1;
+  }
+  .cv {
+    width: min(100%, 380px);
+    border-radius: 36px;
+    padding: 26px 24px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 14px;
+    box-shadow: 0 40px 70px -44px rgba(22, 18, 15, 0.4);
+  }
+  .cv-pair {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .cur {
+    padding: 9px 14px;
+    border-radius: 999px;
+    background: var(--sf2);
+    font-size: 15px;
+    font-weight: 800;
+  }
+  .swap {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: var(--inv);
+    color: var(--invInk);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transform: rotate(calc(var(--p) * 360deg));
+  }
+  .cv-in {
+    font-size: 52px;
+    font-weight: 700;
+    letter-spacing: -0.045em;
+  }
+  .cv-box {
+    width: 100%;
+    background: var(--sf2);
+    border-radius: 22px;
+    padding: 14px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+  }
+  .cv-about {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--ink2);
+  }
+  .cv-out {
+    font-size: 48px;
+    font-weight: 700;
+    letter-spacing: -0.045em;
+    color: var(--acText);
+  }
+  .cv-row {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--ink2);
+  }
+  .cv-bar {
+    width: 100%;
+    height: 8px;
+    border-radius: 9px;
+    background: var(--sf2);
+    overflow: hidden;
+  }
+  .cv-fill {
+    height: 100%;
+    border-radius: 9px;
+    background: oklch(0.6 0.15 155);
+    transition: width 0.3s;
+  }
+</style>
