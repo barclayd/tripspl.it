@@ -57,6 +57,10 @@ public struct Destination: Identifiable, Hashable, Sendable {
       countryCode: countryCode, place: city, nights: nights, currency: currency,
       latitude: latitude, longitude: longitude, timeZone: resolvedTimeZone)
   }
+  /// Leaving from here, as the trip saves it.
+  public var origin: TripOrigin {
+    .init(place: city, countryCode: countryCode, latitude: latitude, longitude: longitude)
+  }
 
   /// The destination a stop was picked from: its catalogue entry, or one rebuilt from the stop
   /// for a place found on Apple Maps.
@@ -70,6 +74,20 @@ public struct Destination: Identifiable, Hashable, Sendable {
       country: CountryMetadata.country(stop.countryCode)?.name ?? stop.countryCode,
       city: stop.place, currency: stop.currency, latitude: stop.latitude,
       longitude: stop.longitude, timeZone: stop.timeZone)
+  }
+
+  /// The place an origin was picked from: its catalogue entry, or one rebuilt from the origin for
+  /// a place found on Apple Maps or from the current location.
+  public init(origin: TripOrigin) {
+    if let match = Self.all.first(where: { $0.origin == origin }) {
+      self = match
+      return
+    }
+    self.init(
+      countryCode: origin.countryCode,
+      country: CountryMetadata.country(origin.countryCode)?.name ?? origin.countryCode,
+      city: origin.place, currency: origin.currency ?? "", latitude: origin.latitude,
+      longitude: origin.longitude)
   }
 
   /// Whether the stop is a visit here: the same place, ignoring case and accents, at the same spot.
@@ -101,6 +119,23 @@ public struct Destination: Identifiable, Hashable, Sendable {
   public static func home(region: String?) -> Destination? {
     guard let region = region?.uppercased() else { return nil }
     return all.first { $0.countryCode == region && !$0.isCountry }
+  }
+  /// Where people in a region usually leave from: its own cities, then the nearest neighbours'
+  /// leading cities, so the UK lists London, Edinburgh and Manchester before Dublin. Neighbours
+  /// need a few catalogue cities, which passes over small islands such as the Isle of Man.
+  public static func origins(region: String?, limit: Int = 7) -> [Destination] {
+    let cities = all.filter { !$0.isCountry }
+    guard let code = region?.uppercased(), let country = CountryMetadata.country(code) else {
+      return Array(cities.prefix(limit))
+    }
+    let centre = GeoPoint(latitude: country.latitude, longitude: country.longitude)
+    let sizes = Dictionary(grouping: cities, by: \.countryCode).mapValues(\.count)
+    var seen: Set = [code]
+    let neighbours = cities.filter { sizes[$0.countryCode, default: 0] > 1 }
+      .filter { seen.insert($0.countryCode).inserted }
+      .sorted { $0.point.distance(to: centre) < $1.point.distance(to: centre) }
+    let local = cities.filter { $0.countryCode == code }.prefix(max(limit - 1, 0))
+    return Array((local + neighbours).prefix(limit))
   }
 
   /// Exact names and aliases precede prefixes; country-name matches include their cities.
@@ -174,7 +209,8 @@ public struct OnboardingDraft: Codable, Equatable, Sendable {
     travellers: [Traveller] = [Traveller(name: "You")],
     currency: String = "GBP",
     budget: String = "2400",
-    name: String = ""
+    name: String = "",
+    origin: TripOrigin? = nil
   ) {
     self.createdTripID = createdTripID
     self.step = step
@@ -185,6 +221,7 @@ public struct OnboardingDraft: Codable, Equatable, Sendable {
     self.currency = currency
     self.budget = budget
     self.name = name
+    self.origin = origin
   }
   /// A fresh draft for the new-trip flow, with the budget left for the flow to suggest.
   public static func newTrip() -> OnboardingDraft { OnboardingDraft(budget: "") }
@@ -206,6 +243,8 @@ public struct OnboardingDraft: Codable, Equatable, Sendable {
   public var currency = "GBP"
   public var budget = "2400"
   public var name = ""
+  /// Where the trip leaves from and returns to; drafts saved before the step have none.
+  public var origin: TripOrigin?
   public var nights: Int { stops.reduce(0) { $0 + $1.nights } }
   public var days: Int { nights + 1 }
   public var returnDate: String { CivilDate.adding(nights, to: startsOn) }
@@ -217,15 +256,27 @@ public struct OnboardingDraft: Codable, Equatable, Sendable {
   public var tripNights: ClosedRange<Int> {
     (stops.count > 1 ? stops.count : 0)...Self.maximumNights
   }
-  /// Where, when, how long, who, home currency, budget, then done. How long only splits the dates
-  /// between stops, so a single destination skips it. Step 7 (a since-removed return date step)
-  /// is no longer part of the flow.
-  public var flowSteps: [Int] { stops.count > 1 ? [0, 1, 2, 3, 4, 5, 6] : [0, 1, 3, 4, 5, 6] }
+  /// Every step in the order they're asked. Drafts are saved by step number, so leaving from (8)
+  /// slots in after where without renumbering, and step 7 (a since-removed return date step) is
+  /// gone: where, leaving from, when, how long, who, home currency, budget, then done.
+  public static let stepOrder = [0, 8, 1, 2, 3, 4, 5, 6]
+  /// How long only splits the dates between stops, so a single destination skips it.
+  public var flowSteps: [Int] { Self.stepOrder.filter { $0 != 2 || stops.count > 1 } }
   public var totalSteps: Int { flowSteps.count - 1 }
   public var stepPosition: Int { min((flowSteps.firstIndex(of: step) ?? 0) + 1, totalSteps) }
+  /// Whether the flow has got as far as `target`, by the order the steps are asked in.
+  public func reached(_ target: Int) -> Bool { Self.rank(step) >= Self.rank(target) }
+  private static func rank(_ step: Int) -> Int { stepOrder.firstIndex(of: step) ?? stepOrder.count }
+  /// The progress bar's fill. Leaving from is quick, so it counts as half a step.
+  public var progress: Double {
+    let questions = flowSteps.filter { $0 != 8 }
+    let done = step == 8 ? 0.5 : Double(questions.firstIndex(of: step) ?? 0)
+    return max(0.05, done / Double(max(questions.count - 1, 1)))
+  }
   public var canAdvance: Bool {
     switch step {
     case 0: return !stops.isEmpty
+    case 8: return origin != nil
     case 1: return stops.allSatisfy { $0.resolvedTimeZone != nil } && tripNights.contains(nights)
     case 2: return !stops.isEmpty && stops.allSatisfy { nightRange.contains($0.nights) }
     case 5: return ((try? Money.parse(budget, currency: currency)) ?? 0) > 0
@@ -310,8 +361,15 @@ public struct OnboardingDraft: Codable, Equatable, Sendable {
   }
   /// Jumps back to an answered step to change it; never forward, and never once the trip exists.
   public mutating func revisit(_ target: Int) {
-    guard step != 6, flowSteps.contains(target), target < step else { return }
+    guard step != 6, flowSteps.contains(target), Self.rank(target) < Self.rank(step) else { return }
     step = target
+  }
+  /// Leaves from `origin`, making its currency home; the currency step can still change it.
+  public mutating func setOrigin(_ origin: TripOrigin) {
+    self.origin = origin
+    if let currency = origin.currency, CurrencyMetadata.codes.contains(currency) {
+      self.currency = currency
+    }
   }
   /// Days × people × £75, in the home currency at `homePerGBP`, rounded to 50 and at least 100.
   public func suggestedBudget(homePerGBP: Double) -> Int {
@@ -364,7 +422,8 @@ public struct OnboardingDraft: Codable, Equatable, Sendable {
     return TripSnapshot(
       name: tripName, startsOn: startsOn, timeZone: stops.first?.resolvedTimeZone ?? timeZone,
       homeCurrency: currency,
-      budgetMinor: String(try Money.parse(budget, currency: currency)), ownerTravellerId: owner.id,
-      currentTravellerId: owner.id, travellers: travellers, stops: stops, days: days, legs: legs)
+      budgetMinor: String(try Money.parse(budget, currency: currency)), origin: origin,
+      ownerTravellerId: owner.id, currentTravellerId: owner.id, travellers: travellers,
+      stops: stops, days: days, legs: legs)
   }
 }

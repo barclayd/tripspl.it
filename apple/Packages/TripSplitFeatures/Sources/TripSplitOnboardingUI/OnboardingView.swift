@@ -16,6 +16,7 @@ public struct OnboardingView: View {
   @State private var verticalRail = false
   @State private var fanned = false
   @State private var rejected = 0
+  @State private var originNearby = false
   @FocusState private var inputFocused: Bool
 
   private var draft: OnboardingDraft { model.onboarding }
@@ -149,9 +150,9 @@ public struct OnboardingView: View {
   }
 
   private func stepRow(index: Int, target: Int) -> some View {
-    let done = target < step || step == 6
     let current = target == step
-    let title = OnboardingCopy.stepTitles[min(target, OnboardingCopy.stepTitles.count - 1)]
+    let done = step == 6 || (draft.reached(target) && !current)
+    let title = OnboardingCopy.stepTitle(target)
     return Button {
       guard done, step != 6 else { return }
       inputFocused = false
@@ -260,8 +261,7 @@ public struct OnboardingView: View {
   }
 
   private var progress: some View {
-    ProgressTrack(
-      progress: max(0.05, Double(draft.flowSteps.firstIndex(of: step) ?? 0) / Double(draft.totalSteps)))
+    ProgressTrack(progress: draft.progress)
       .accessibilityElement()
       .accessibilityLabel("Step \(draft.stepPosition) of \(draft.totalSteps)")
   }
@@ -299,13 +299,15 @@ public struct OnboardingView: View {
     let travelClass = OnboardingCopy.travelClass(
       draft, homePerGBP: model.indicativeRate(from: "GBP", to: draft.currency))
     var passes = BoardingPassContent.itinerary(
-      stops: draft.stops, start: draft.startsOn, homeCurrency: draft.currency
+      stops: draft.stops, start: draft.reached(1) ? draft.startsOn : nil,
+      homeCurrency: draft.currency,
+      origin: draft.origin
     ) { _ in
       [.init("PAX", "\(draft.travellers.count)"), .init("CLASS", travelClass ?? "—")]
     }
     let highlight: BoardingPassContent.Highlight? =
       switch step {
-      case 0: .destination
+      case 0, 8: .destination
       case 1, 2: .field(1)
       case 3: .field(2)
       case 5: .field(3)
@@ -343,6 +345,7 @@ public struct OnboardingView: View {
     VStack(alignment: .leading, spacing: 14) {
       switch step {
       case 0: RouteStep(focus: $inputFocused)
+      case 8: LeavingFromStep(focus: $inputFocused, nearby: $originNearby)
       case 1: DepartureStep()
       case 2: NightsStep()
       case 3: TravellersStep(focus: $inputFocused)

@@ -51,7 +51,9 @@ struct RouteStep: View {
   var body: some View {
     VStack(alignment: .leading, spacing: 16) {
       StepTitle("Where are you off to?", "Add each country in the order you’ll visit.")
-      searchField
+      PlaceSearchField(
+        text: $query, focus: focus,
+        hint: "Search countries and cities, or Apple Maps for anywhere else")
       if searchQuery.isEmpty {
         chips(picked + Self.suggested)
       } else {
@@ -91,29 +93,6 @@ struct RouteStep: View {
     }
   }
 
-  private var searchField: some View {
-    HStack(spacing: 10) {
-      Image(systemName: "magnifyingglass").font(.system(size: 16, weight: .bold))
-        .foregroundStyle(Theme.tertiary).accessibilityHidden(true)
-      TextField("Search cities or countries", text: $query)
-        .typeface(16, .bold, relativeTo: .body, maximum: 1.4).foregroundStyle(Theme.ink)
-        .focused(focus).textInputAutocapitalization(.words).autocorrectionDisabled()
-        .submitLabel(.search).onSubmit { focus.wrappedValue = false }
-        .accessibilityIdentifier("onboarding.search")
-        .accessibilityHint("Search countries and cities, or Apple Maps for anywhere else")
-      if !query.isEmpty {
-        Button {
-          query = ""
-        } label: {
-          Image(systemName: "xmark.circle.fill").font(.system(size: 17))
-            .foregroundStyle(Theme.tertiary).frame(width: 32, height: 44)
-        }.buttonStyle(.plain).accessibilityLabel("Clear search")
-      }
-    }
-    .padding(.horizontal, 16).frame(minHeight: 50)
-    .background(Theme.surface, in: RoundedRectangle(cornerRadius: Theme.Radius.key))
-  }
-
   private func chips(_ destinations: [Destination]) -> some View {
     FlowLayout(spacing: 8) {
       ForEach(destinations) { destination in
@@ -128,28 +107,8 @@ struct RouteStep: View {
     return Button {
       select(destination)
     } label: {
-      HStack(spacing: 7) {
-        Text(destination.flag).font(.system(size: 20))
-        Text(destination.city).typeface(14.5, .heavy, relativeTo: .subheadline, maximum: 1.4)
-          .lineLimit(1)
-        if !destination.isCountry {
-          Text(destination.country).typeface(12.5, .bold, relativeTo: .caption, maximum: 1.4)
-            .foregroundStyle(Theme.tertiary).lineLimit(1)
-        }
-        if selected {
-          Text("\(count)").typeface(11, .black, relativeTo: .caption2, maximum: 1.3)
-            .monospacedDigit().foregroundStyle(Theme.accentInk)
-            .padding(.horizontal, 5).frame(minWidth: 18, minHeight: 18)
-            .background(Theme.accent, in: Capsule())
-            .bump(on: count).transition(.scale.combined(with: .opacity))
-        }
-      }
-      .foregroundStyle(selected ? Theme.accentText : Theme.ink)
-      .padding(.top, 9).padding(.trailing, 13).padding(.bottom, 9).padding(.leading, 10)
-      .background(selected ? Theme.accentSoft : Theme.surface, in: Capsule())
-      .overlay { Capsule().strokeBorder(Theme.accent, lineWidth: selected ? 2 : 0) }
-      .contentShape(Capsule())
-      .opacity(full && !selected ? 0.45 : 1)
+      PlaceChip(destination: destination, selected: selected, count: count)
+        .opacity(full && !selected ? 0.45 : 1)
     }
     .buttonStyle(PressStyle(scale: 0.93))
     .animation(Motion.popIn, value: count)
@@ -173,28 +132,10 @@ struct RouteStep: View {
     .accessibilityIdentifier("onboarding.destination.\(destination.id)")
   }
 
-  @ViewBuilder private var mapsResults: some View {
-    VStack(alignment: .leading, spacing: 12) {
-      Button(action: searchMaps) {
-        Label("Search Apple Maps for “\(searchQuery)”", systemImage: "map")
-          .typeface(14, .heavy, relativeTo: .subheadline, maximum: 1.4)
-          .foregroundStyle(Theme.accentText).lineLimit(1).frame(minHeight: 44)
-      }.buttonStyle(.plain)
-        .disabled(mapSearch.isSearching || full).opacity(full ? 0.4 : 1)
-        .accessibilityIdentifier("onboarding.searchMaps")
-      if searchedMapQuery == searchQuery {
-        if mapSearch.isSearching {
-          ProgressView("Searching Apple Maps…").tint(Theme.secondary)
-        } else if let error = mapSearch.error {
-          Text(error).typeface(13, .semibold, relativeTo: .footnote).foregroundStyle(Theme.bad)
-        } else if mapSearch.matches.isEmpty {
-          Text("No places found. Try adding the country to your search.")
-            .typeface(13, .semibold, relativeTo: .footnote).foregroundStyle(Theme.secondary)
-        } else {
-          chips(mapSearch.matches)
-        }
-      }
-    }
+  private var mapsResults: some View {
+    MapsSearchResults(
+      query: searchQuery, search: mapSearch, searched: searchedMapQuery == searchQuery,
+      disabled: full, onSearch: searchMaps, chip: chip)
   }
 
   // MARK: Route changes

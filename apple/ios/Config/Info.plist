@@ -36,6 +36,8 @@
 		<key>NSAllowsLocalNetworking</key>
 		<true/>
 	</dict>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>TripSplit looks up your location once, when you ask, to fill in where your trip leaves from.</string>
 	<key>NSUserActivityTypes</key>
 	<array>
 		<string>it.tripspl.TripSplit.new-trip</string>

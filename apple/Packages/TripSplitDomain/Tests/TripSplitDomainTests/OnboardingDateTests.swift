@@ -14,8 +14,8 @@ struct OnboardingDateTests {
 
   @Test func onlyARouteWithSeveralStopsAsksHowLongInEachPlace() {
     var single = draft()
-    #expect(single.flowSteps == [0, 1, 3, 4, 5, 6])
-    #expect(single.totalSteps == 5)
+    #expect(single.flowSteps == [0, 8, 1, 3, 4, 5, 6])
+    #expect(single.totalSteps == 6)
     single.step = 1
     single.advanceStep()
     #expect(single.step == 3)
@@ -23,7 +23,7 @@ struct OnboardingDateTests {
     #expect(single.step == 1)
 
     var route = draft(multiple: true)
-    #expect(route.flowSteps == [0, 1, 2, 3, 4, 5, 6])
+    #expect(route.flowSteps == [0, 8, 1, 2, 3, 4, 5, 6])
     route.step = 1
     route.advanceStep()
     #expect(route.step == 2)
