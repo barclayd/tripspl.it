@@ -12,14 +12,14 @@ struct TripDaysList: View {
   var body: some View {
     let legs = trip.orderedLegs
     VStack(alignment: .leading, spacing: 20) {
-      ForEach(legs.filter { $0.kind == .outbound }) { TravelBlock(trip: trip, leg: $0) }
+      ForEach(legs.filter { $0.kind == .outbound }) { TravelBlock(trip: trip, leg: $0, compact: compact) }
       ForEach(trip.stops) { stop in
         StopGroup(trip: trip, stop: stop, compact: compact)
         ForEach(legs.filter { $0.kind == .transfer && $0.fromStopId == stop.id }) {
-          TravelBlock(trip: trip, leg: $0)
+          TravelBlock(trip: trip, leg: $0, compact: compact)
         }
       }
-      ForEach(legs.filter { $0.kind == .return }) { TravelBlock(trip: trip, leg: $0) }
+      ForEach(legs.filter { $0.kind == .return }) { TravelBlock(trip: trip, leg: $0, compact: compact) }
     }
   }
 }
@@ -28,15 +28,18 @@ struct TripDaysList: View {
 private struct TravelBlock: View {
   var trip: TripSnapshot
   var leg: TravelLeg
+  var compact = false
   @Environment(AppModel.self) private var model
 
   var body: some View {
+    let attachment = Attachment(kind: .leg, id: leg.id)
     let items = trip.travelExpenses(on: leg)
+    let selected = compact && model.selectedAttachment == attachment
     let ledger = Ledger(trip, expenses: items)
     let planned = items.count { $0.status == .planned }
     let palette = CategoryPalette(.flight)
     Button {
-      model.openDay(.init(kind: .leg, id: leg.id))
+      model.openDay(attachment)
     } label: {
       HStack(spacing: 14) {
         Image(systemName: leg.kind == .outbound ? "airplane" : "tram")
@@ -72,11 +75,18 @@ private struct TravelBlock: View {
           .foregroundStyle(Theme.tertiary).accessibilityHidden(true)
       }
       .padding(.vertical, 14).padding(.horizontal, 16)
-      .background(Theme.surface, in: RoundedRectangle(cornerRadius: Theme.Radius.card, style: .continuous))
+      .background(selected ? Theme.accentSoft : Theme.surface)
+      .overlay(alignment: .leading) {
+        // Marked like an open day in the Duo's trip column.
+        if selected { Rectangle().fill(Theme.accent).frame(width: 4) }
+      }
+      .clipShape(RoundedRectangle(cornerRadius: Theme.Radius.card, style: .continuous))
       .contentShape(Rectangle())
     }
     .buttonStyle(PressStyle(scale: 0.98))
     .accessibilityHint(items.isEmpty ? "Adds travel" : "Opens travel")
+    .accessibilityAddTraits(selected ? .isSelected : [])
+    .id(attachment)
   }
 }
 
@@ -183,6 +193,7 @@ private struct DayRow: View {
       if selected { Rectangle().fill(Theme.accent).frame(width: 4) }
     }
     .accessibilityAddTraits(selected ? .isSelected : [])
+    .id(attachment)
   }
 
   /// Planned count, pending conversions, or the total in the stop's own currency.
