@@ -5,6 +5,18 @@ import TripSplitPersistence
 import TripSplitSync
 
 @MainActor public enum DemoData {
+  /// Approximate GBP reference rates so demo builds can show indicative conversions offline.
+  public static func referenceRates() -> FXTable {
+    let today = CivilDate.today(timeZone: TimeZone.current.identifier)
+    return FXTable(
+      base: "GBP", requestedDate: today, rateDate: today, source: "demo",
+      rates: [
+        "GBP": "1", "EUR": "1.16", "USD": "1.27", "AUD": "1.95", "CAD": "1.74", "CHF": "1.12",
+        "JPY": "192", "THB": "44.2", "VND": "33000", "IDR": "20500", "MXN": "23.5", "MAD": "12.6",
+        "ISK": "175", "NZD": "2.14",
+      ])
+  }
+
   public static func install(into store: LocalStore) throws {
     let today = CivilDate.today(timeZone: TimeZone.current.identifier)
     var draft = OnboardingDraft()

@@ -278,15 +278,18 @@ package struct Avatar: View {
 /// when pressed.
 package struct LipButtonStyle: ButtonStyle {
   package enum Kind: Sendable { case primary, secondary }
-  package init(_ kind: Kind = .primary, height: CGFloat = 58) {
+  /// `inactive` looks disabled but still takes taps, so a rejected tap can shake.
+  package init(_ kind: Kind = .primary, height: CGFloat = 58, inactive: Bool = false) {
     self.kind = kind
     self.height = height
+    self.inactive = inactive
   }
   package var kind: Kind
   package var height: CGFloat
+  package var inactive: Bool
 
   package func makeBody(configuration: Configuration) -> some View {
-    LipButton(configuration: configuration, kind: kind, height: height)
+    LipButton(configuration: configuration, kind: kind, height: height, inactive: inactive)
   }
 }
 
@@ -294,7 +297,9 @@ private struct LipButton: View {
   let configuration: ButtonStyleConfiguration
   let kind: LipButtonStyle.Kind
   let height: CGFloat
-  @Environment(\.isEnabled) private var isEnabled
+  let inactive: Bool
+  @Environment(\.isEnabled) private var enabled
+  private var isEnabled: Bool { enabled && !inactive }
 
   var body: some View {
     let pressed = configuration.isPressed && isEnabled

@@ -148,8 +148,7 @@ public struct OnboardingDraft: Codable, Equatable, Sendable {
     travellers: [Traveller] = [Traveller(name: "You")],
     currency: String = "GBP",
     budget: String = "2400",
-    name: String = "",
-    returnsOn: String? = nil
+    name: String = ""
   ) {
     self.createdTripID = createdTripID
     self.step = step
@@ -160,8 +159,16 @@ public struct OnboardingDraft: Codable, Equatable, Sendable {
     self.currency = currency
     self.budget = budget
     self.name = name
-    self.returnsOn = returnsOn
   }
+  /// A fresh draft for the new-trip flow, with the budget left for the flow to suggest.
+  public static func newTrip() -> OnboardingDraft { OnboardingDraft(budget: "") }
+
+  public static let maximumStops = 6
+  public static let maximumTravellers = 8
+  public static let maximumNightsPerStop = 30
+  /// The budget suggested per person per day, in pounds, before converting to the home currency.
+  public static let suggestedDailySpendGBP = 75
+
   public var createdTripID: String?
   public var step = 0
   public var stops: [Stop] = []
@@ -171,78 +178,61 @@ public struct OnboardingDraft: Codable, Equatable, Sendable {
   public var currency = "GBP"
   public var budget = "2400"
   public var name = ""
-  public var returnsOn: String?
   public var nights: Int { stops.reduce(0) { $0 + $1.nights } }
-  public var returnDate: String { returnsOn ?? CivilDate.adding(nights, to: startsOn) }
-  public var totalNights: Int { CivilDate.days(from: startsOn, to: returnDate) }
-  public var unallocatedNights: Int { totalNights - nights }
-  public var minimumReturnDate: String {
-    CivilDate.adding(stops.count > 1 ? stops.count : 0, to: startsOn)
+  public var days: Int { nights + 1 }
+  public var returnDate: String { CivilDate.adding(nights, to: startsOn) }
+  /// A lone stop can be a day trip; every stop on a longer route needs at least a night.
+  public var nightRange: ClosedRange<Int> {
+    (stops.count > 1 ? 1 : 0)...Self.maximumNightsPerStop
   }
-  public var maximumReturnDate: String { CivilDate.adding(365, to: startsOn) }
-  // Preserve the original persisted step IDs; return date is the new step 7.
-  public var flowSteps: [Int] { [0, 1, 7] + (stops.count > 1 ? [2] : []) + [3, 4, 5, 6] }
+  /// Where, when, how long, who, home currency, budget, then done. Step 7 (a since-removed return
+  /// date step) is no longer part of the flow.
+  public var flowSteps: [Int] { [0, 1, 2, 3, 4, 5, 6] }
   public var totalSteps: Int { flowSteps.count - 1 }
   public var stepPosition: Int { min((flowSteps.firstIndex(of: step) ?? 0) + 1, totalSteps) }
   public var canAdvance: Bool {
     switch step {
     case 0: return !stops.isEmpty
     case 1: return stops.allSatisfy { $0.resolvedTimeZone != nil }
-    case 7: return returnDate >= minimumReturnDate && returnDate <= maximumReturnDate
-    case 2: return unallocatedNights == 0 && stops.allSatisfy { (1...365).contains($0.nights) }
+    case 2: return !stops.isEmpty && stops.allSatisfy { nightRange.contains($0.nights) }
     case 5: return ((try? Money.parse(budget, currency: currency)) ?? 0) > 0
     default: return true
     }
   }
-  public mutating func setDeparture(_ date: String) {
-    startsOn = date
-    if returnsOn != nil { reconcileRoute() }
-  }
-  public mutating func setReturn(_ date: String) {
-    returnsOn = min(max(date, minimumReturnDate), maximumReturnDate)
-    reconcileRoute()
-  }
+  public mutating func setDeparture(_ date: String) { startsOn = date }
+  /// Keeps nights within range after the route changes and moves a stale step back into the flow.
   public mutating func reconcileRoute() {
-    guard !stops.isEmpty else { return }
-    if let returnsOn {
-      self.returnsOn = min(max(returnsOn, minimumReturnDate), maximumReturnDate)
-      let minimum = stops.count > 1 ? 1 : 0
-      for index in stops.indices { stops[index].nights = max(minimum, stops[index].nights) }
-      var remaining = totalNights - nights
-      // Preserve existing allocations where possible, adjusting from the final stop backwards.
-      for index in stops.indices.reversed() where remaining != 0 {
-        let change =
-          remaining > 0
-          ? min(remaining, 365 - stops[index].nights)
-          : max(remaining, minimum - stops[index].nights)
-        stops[index].nights += change
-        remaining -= change
-      }
+    for index in stops.indices {
+      stops[index].nights = min(max(stops[index].nights, nightRange.lowerBound), nightRange.upperBound)
     }
-    if !flowSteps.contains(step) { step = 7 }
-  }
-  public func maximumNights(at index: Int) -> Int {
-    guard stops.indices.contains(index) else { return 0 }
-    return max(stops.count > 1 ? 1 : 0, min(365, stops[index].nights + unallocatedNights))
+    if !flowSteps.contains(step) { step = 2 }
   }
   public mutating func setNights(_ value: Int, at index: Int) {
     guard stops.indices.contains(index) else { return }
-    stops[index].nights = min(max(value, stops.count > 1 ? 1 : 0), maximumNights(at: index))
+    stops[index].nights = min(max(value, nightRange.lowerBound), nightRange.upperBound)
   }
   public mutating func advanceStep() {
-    guard canAdvance else { return }
-    if step == 7 { setReturn(returnDate) }
-    guard let index = flowSteps.firstIndex(of: step), index + 1 < flowSteps.count else { return }
+    guard canAdvance, let index = flowSteps.firstIndex(of: step), index + 1 < flowSteps.count
+    else { return }
     step = flowSteps[index + 1]
   }
   public mutating func previousStep() {
     guard let index = flowSteps.firstIndex(of: step), index > 0, step != 6 else { return }
     step = flowSteps[index - 1]
   }
+  /// Days × people × £75, in the home currency at `homePerGBP`, rounded to 50 and at least 100.
+  public func suggestedBudget(homePerGBP: Double) -> Int {
+    let value =
+      Double(days * max(1, travellers.count) * Self.suggestedDailySpendGBP) * homePerGBP
+    return max(100, Int((value / 50).rounded()) * 50)
+  }
+  /// The chosen name, or the places in order: "Lisbon, Porto & Seville".
   public var tripName: String {
-    name.trimmingCharacters(in: .whitespaces).isEmpty
-      ? Array(NSOrderedSet(array: stops.map(\.place))).compactMap { $0 as? String }.joined(
-        separator: ", ") : name
+    let chosen = name.trimmingCharacters(in: .whitespaces)
+    guard chosen.isEmpty else { return chosen }
+    let places = Array(NSOrderedSet(array: stops.map(\.place))).compactMap { $0 as? String }
+    guard places.count > 1, let last = places.last else { return places.first ?? "" }
+    return places.dropLast().joined(separator: ", ") + " & " + last
   }
   public func previewTrip() throws -> TripSnapshot {
     var preview = self
@@ -255,9 +245,7 @@ public struct OnboardingDraft: Codable, Equatable, Sendable {
   public func makeTrip() throws -> TripSnapshot {
     guard let owner = travellers.first, !stops.isEmpty,
       stops.allSatisfy({ (0...365).contains($0.nights) }), nights <= 365,
-      returnsOn == nil
-        || (returnDate >= minimumReturnDate && returnDate <= maximumReturnDate
-          && unallocatedNights == 0)
+      stops.count == 1 || stops.allSatisfy({ $0.nights > 0 })
     else { throw MoneyError.invalid }
     var days: [TripDay] = []
     var legs: [TravelLeg] = []

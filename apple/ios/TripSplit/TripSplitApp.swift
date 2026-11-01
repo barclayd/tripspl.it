@@ -24,6 +24,9 @@ import TripSplitSync
       if ProcessInfo.processInfo.arguments.contains("--demo"), store.trips.isEmpty {
         try DemoData.install(into: store)
       }
+      if ProcessInfo.processInfo.arguments.contains("--demo"), model.referenceRates == nil {
+        model.cacheReferenceRates(DemoData.referenceRates())
+      }
       _model = State(initialValue: model)
       _watch = State(initialValue: WatchCompanionHost(model: model))
     } catch { _error = State(initialValue: error.localizedDescription) }

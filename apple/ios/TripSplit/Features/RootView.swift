@@ -182,6 +182,26 @@ struct RootView: View {
           model.selectedTripID = (trips.first { $0.phase == .now } ?? trips.first)?.id
         }
         let arguments = ProcessInfo.processInfo.arguments
+        // `--onboarding-step N` opens new trip onboarding at step N with a demo route filled in.
+        if let index = arguments.firstIndex(of: "--onboarding-step"), arguments.indices.contains(index + 1),
+          let step = Int(arguments[index + 1])
+        {
+          var draft = OnboardingDraft.newTrip()
+          draft.stops = [("PT", 4), ("ES", 3), ("MA", 3)].compactMap { code, nights in
+            Destination.country(code)?.stop(nights: nights)
+          }
+          draft.reconcileRoute()
+          if step > 1 { draft.setDeparture(CivilDate.adding(12, to: draft.startsOn)) }
+          if step >= 3 {
+            draft.travellers += zip(["Sam", "Priya", "Jonah"], [250.0, 75, 160]).map {
+              Traveller(name: $0, hue: $1)
+            }
+          }
+          if step >= 5 { draft.budget = "3200" }
+          draft.step = step
+          model.onboarding = draft
+          model.showOnboarding = true
+        }
         if let trip = model.selectedTrip {
           // `--open-day current|outbound|return`, `--add-expense` and `--quick-convert` reach the day and sheets.
           if let index = arguments.firstIndex(of: "--open-day"), arguments.indices.contains(index + 1) {
