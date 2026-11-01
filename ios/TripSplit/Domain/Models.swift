@@ -15,6 +15,12 @@ struct Stop: Codable, Identifiable, Hashable, Sendable {
   var currency: String
   var latitude: Double
   var longitude: Double
+  var timeZone: String? = nil
+  var resolvedTimeZone: String? {
+    if let timeZone, TimeZone(identifier: timeZone) != nil { return timeZone }
+    return DestinationTimeZones.identifier(
+      countryCode: countryCode, latitude: latitude, longitude: longitude)
+  }
   var flag: String { countryCode.flag }
   var code: String {
     [
@@ -152,14 +158,54 @@ struct TripSnapshot: Codable, Identifiable, Hashable, Sendable {
   var archived = false
   var updatedAt = ISO8601DateFormatter().string(from: Date())
   var endsOn: String { days.last?.date ?? startsOn }
-  var today: String { CivilDate.today(timeZone: timeZone) }
-  var phase: Phase { phase(on: today) }
+  var today: String {
+    let now = Date()
+    return currentDay(at: now)?.date
+      ?? CivilDate.string(now, timeZone: stops.first?.resolvedTimeZone ?? timeZone)
+  }
+  var phase: Phase { phase(at: Date()) }
   enum Phase: String, CaseIterable { case now, upcoming, past }
   func phase(on day: String) -> Phase { day < startsOn ? .upcoming : day > endsOn ? .past : .now }
   var flags: String { stops.map(\.flag).joined(separator: " ") }
   var activeTravellers: [Traveller] { travellers.filter { !$0.archived } }
   var currentAttachment: Attachment {
-    .init(kind: .day, id: days.first(where: { $0.date == today })?.id ?? days.first?.id ?? "")
+    currentAttachment(at: Date())
+  }
+  func currentAttachment(at instant: Date) -> Attachment {
+    let day =
+      currentDay(at: instant)
+      ?? days.last(where: { $0.date <= today(for: .init(kind: .day, id: $0.id), at: instant) })
+      ?? days.first
+    return .init(kind: .day, id: day?.id ?? "")
+  }
+  func currentDay(at instant: Date) -> TripDay? {
+    // Crossing zones can make two itinerary dates locally current. Prefer the later stop.
+    var datesByZone: [String: String] = [:]
+    var datesByStop: [String: String] = [:]
+    for stop in stops {
+      let zone = stop.resolvedTimeZone ?? timeZone
+      let date = datesByZone[zone] ?? CivilDate.string(instant, timeZone: zone)
+      datesByZone[zone] = date
+      datesByStop[stop.id] = date
+    }
+    return days.last { $0.date == datesByStop[$0.stopId] }
+  }
+  func phase(at instant: Date) -> Phase {
+    if currentDay(at: instant) != nil { return .now }
+    let firstDate = CivilDate.string(instant, timeZone: stops.first?.resolvedTimeZone ?? timeZone)
+    let lastDate = CivilDate.string(instant, timeZone: stops.last?.resolvedTimeZone ?? timeZone)
+    if firstDate < startsOn { return .upcoming }
+    if lastDate > endsOn { return .past }
+    return .now
+  }
+  func timeZone(for attachment: Attachment) -> String {
+    stop(for: attachment)?.resolvedTimeZone ?? timeZone
+  }
+  func today(for attachment: Attachment, at instant: Date = Date()) -> String {
+    CivilDate.string(instant, timeZone: timeZone(for: attachment))
+  }
+  func isToday(_ day: TripDay, at instant: Date = Date()) -> Bool {
+    day.date == today(for: .init(kind: .day, id: day.id), at: instant)
   }
   func date(for attachment: Attachment) -> String {
     attachment.kind == .day
@@ -170,7 +216,7 @@ struct TripSnapshot: Codable, Identifiable, Hashable, Sendable {
     let id =
       attachment.kind == .day
       ? days.first(where: { $0.id == attachment.id })?.stopId
-      : legs.first(where: { $0.id == attachment.id })?.toStopId
+      : legs.first(where: { $0.id == attachment.id }).flatMap { $0.toStopId ?? $0.fromStopId }
     return stops.first { $0.id == id }
   }
   func title(for attachment: Attachment) -> String {

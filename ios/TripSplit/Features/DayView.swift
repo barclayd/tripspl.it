@@ -98,7 +98,7 @@ struct DayView: View {
         Theme.surface, in: RoundedRectangle(cornerRadius: 20))
       if attachment.kind == .day {
         Text(
-          "DAY \((trip.days.firstIndex(where: { $0.id == attachment.id }) ?? 0) + 1) OF \(trip.days.count)\(trip.date(for: attachment) == trip.today ? " · TODAY" : "")"
+          "DAY \((trip.days.firstIndex(where: { $0.id == attachment.id }) ?? 0) + 1) OF \(trip.days.count)\(trip.date(for: attachment) == trip.today(for: attachment) ? " · TODAY" : "")"
         ).font(.caption.weight(.black)).tracking(1).foregroundStyle(Theme.accent)
       }
       Text(trip.title(for: attachment)).font(.system(size: 30, weight: .heavy, design: .default))

@@ -11,8 +11,14 @@ struct Destination: Identifiable, Hashable, Sendable {
   var aliases: [String] = []
   var isCountry = false
   var detail: String? = nil
+  var timeZone: String? = nil
   var id: String { catalogID ?? "\(countryCode):\(isCountry ? "country" : "place"):\(city)" }
   var flag: String { countryCode.flag }
+  var resolvedTimeZone: String? {
+    if let timeZone, TimeZone(identifier: timeZone) != nil { return timeZone }
+    return DestinationTimeZones.identifier(
+      countryCode: countryCode, latitude: latitude, longitude: longitude)
+  }
   var currencies: [String] { CountryMetadata.country(countryCode)?.currencies ?? [] }
   var requiresCurrencySelection: Bool { currency.isEmpty }
   var secondaryLabel: String {
@@ -24,7 +30,7 @@ struct Destination: Identifiable, Hashable, Sendable {
   func stop(nights: Int = 3) -> Stop {
     .init(
       countryCode: countryCode, place: city, nights: nights, currency: currency,
-      latitude: latitude, longitude: longitude)
+      latitude: latitude, longitude: longitude, timeZone: resolvedTimeZone)
   }
 
   /// The first entries retain the original demo itinerary's order.
@@ -117,14 +123,94 @@ struct OnboardingDraft: Codable, Equatable, Sendable {
   var currency = "GBP"
   var budget = "2400"
   var name = ""
+  var returnsOn: String?
   var nights: Int { stops.reduce(0) { $0 + $1.nights } }
+  var returnDate: String { returnsOn ?? CivilDate.adding(nights, to: startsOn) }
+  var totalNights: Int { CivilDate.days(from: startsOn, to: returnDate) }
+  var unallocatedNights: Int { totalNights - nights }
+  var minimumReturnDate: String {
+    CivilDate.adding(stops.count > 1 ? stops.count : 0, to: startsOn)
+  }
+  var maximumReturnDate: String { CivilDate.adding(365, to: startsOn) }
+  // Preserve the original persisted step IDs; return date is the new step 7.
+  var flowSteps: [Int] { [0, 1, 7] + (stops.count > 1 ? [2] : []) + [3, 4, 5, 6] }
+  var totalSteps: Int { flowSteps.count - 1 }
+  var stepPosition: Int { min((flowSteps.firstIndex(of: step) ?? 0) + 1, totalSteps) }
+  var canAdvance: Bool {
+    switch step {
+    case 0: return !stops.isEmpty
+    case 1: return stops.allSatisfy { $0.resolvedTimeZone != nil }
+    case 7: return returnDate >= minimumReturnDate && returnDate <= maximumReturnDate
+    case 2: return unallocatedNights == 0 && stops.allSatisfy { (1...365).contains($0.nights) }
+    case 5: return ((try? Money.parse(budget, currency: currency)) ?? 0) > 0
+    default: return true
+    }
+  }
+  mutating func setDeparture(_ date: String) {
+    startsOn = date
+    if returnsOn != nil { reconcileRoute() }
+  }
+  mutating func setReturn(_ date: String) {
+    returnsOn = min(max(date, minimumReturnDate), maximumReturnDate)
+    reconcileRoute()
+  }
+  mutating func reconcileRoute() {
+    guard !stops.isEmpty else { return }
+    if let returnsOn {
+      self.returnsOn = min(max(returnsOn, minimumReturnDate), maximumReturnDate)
+      let minimum = stops.count > 1 ? 1 : 0
+      for index in stops.indices { stops[index].nights = max(minimum, stops[index].nights) }
+      var remaining = totalNights - nights
+      // Preserve existing allocations where possible, adjusting from the final stop backwards.
+      for index in stops.indices.reversed() where remaining != 0 {
+        let change =
+          remaining > 0
+          ? min(remaining, 365 - stops[index].nights)
+          : max(remaining, minimum - stops[index].nights)
+        stops[index].nights += change
+        remaining -= change
+      }
+    }
+    if !flowSteps.contains(step) { step = 7 }
+  }
+  func maximumNights(at index: Int) -> Int {
+    guard stops.indices.contains(index) else { return 0 }
+    return max(stops.count > 1 ? 1 : 0, min(365, stops[index].nights + unallocatedNights))
+  }
+  mutating func setNights(_ value: Int, at index: Int) {
+    guard stops.indices.contains(index) else { return }
+    stops[index].nights = min(max(value, stops.count > 1 ? 1 : 0), maximumNights(at: index))
+  }
+  mutating func advanceStep() {
+    guard canAdvance else { return }
+    if step == 7 { setReturn(returnDate) }
+    guard let index = flowSteps.firstIndex(of: step), index + 1 < flowSteps.count else { return }
+    step = flowSteps[index + 1]
+  }
+  mutating func previousStep() {
+    guard let index = flowSteps.firstIndex(of: step), index > 0, step != 6 else { return }
+    step = flowSteps[index - 1]
+  }
   var tripName: String {
     name.trimmingCharacters(in: .whitespaces).isEmpty
       ? Array(NSOrderedSet(array: stops.map(\.place))).compactMap { $0 as? String }.joined(
         separator: ", ") : name
   }
+  func previewTrip() throws -> TripSnapshot {
+    var preview = self
+    preview.reconcileRoute()
+    if (try? Money.parse(preview.budget, currency: preview.currency)) == nil {
+      preview.budget = "0"
+    }
+    return try preview.makeTrip()
+  }
   func makeTrip() throws -> TripSnapshot {
-    guard let owner = travellers.first, !stops.isEmpty else { throw MoneyError.invalid }
+    guard let owner = travellers.first, !stops.isEmpty,
+      stops.allSatisfy({ (0...365).contains($0.nights) }), nights <= 365,
+      returnsOn == nil
+        || (returnDate >= minimumReturnDate && returnDate <= maximumReturnDate
+          && unallocatedNights == 0)
+    else { throw MoneyError.invalid }
     var days: [TripDay] = []
     var legs: [TravelLeg] = []
     var offset = 0
@@ -147,7 +233,8 @@ struct OnboardingDraft: Codable, Equatable, Sendable {
         kind: .return, date: lastDate, fromStopId: stops.last!.id, toStopId: nil,
         dayId: days.last?.id))
     return TripSnapshot(
-      name: tripName, startsOn: startsOn, timeZone: timeZone, homeCurrency: currency,
+      name: tripName, startsOn: startsOn, timeZone: stops.first?.resolvedTimeZone ?? timeZone,
+      homeCurrency: currency,
       budgetMinor: String(try Money.parse(budget, currency: currency)), ownerTravellerId: owner.id,
       currentTravellerId: owner.id, travellers: travellers, stops: stops, days: days, legs: legs)
   }

@@ -29,7 +29,42 @@
       "https://sws.geonames.org/5854968/about.rdf",
       "https://sws.geonames.org/252919/about.rdf",
       "https://sws.geonames.org/3183130/about.rdf"
-    ]
+    ],
+    "cldrMetaZones": "https://raw.githubusercontent.com/unicode-org/cldr/96e54b273d2da4ec6fbad350ba19ff23fa24a588/common/supplemental/metaZones.xml",
+    "ianaZoneTab": "https://data.iana.org/time-zones/tzdb-2026f/zone.tab",
+    "ianaZone1970Tab": "https://data.iana.org/time-zones/tzdb-2026f/zone1970.tab",
+    "ianaBackward": "https://data.iana.org/time-zones/tzdb-2026f/backward",
+    "ianaLicense": "https://data.iana.org/time-zones/tzdb-2026f/LICENSE",
+    "ianaVersion": "https://data.iana.org/time-zones/tzdb-2026f/version"
   },
-  "cldrReleasePublishedAt": "2026-10-21T22:13:30Z"
+  "cldrReleasePublishedAt": "2026-10-21T22:13:30Z",
+  "ianaRelease": "2026f",
+  "ianaReleaseURL": "https://data.iana.org/time-zones/tzdb-2026f/",
+  "geonamesSupplementalTimeZoneDumps": {
+    "GR": {
+      "url": "https://download.geonames.org/export/dump/GR.zip",
+      "sha256": "cbaa9edec04f5faa711230de5f4aa9d5b5e8cb1aa7f007d1ab3b921b89c681ea",
+      "retrievedOn": "2026-11-01"
+    },
+    "ID": {
+      "url": "https://download.geonames.org/export/dump/ID.zip",
+      "sha256": "187598d6e536932afb72d25a17e8f4e32fe026fd2db530279928ccc5f8a64279",
+      "retrievedOn": "2026-11-01"
+    },
+    "CH": {
+      "url": "https://download.geonames.org/export/dump/CH.zip",
+      "sha256": "9f1fac5884386619c73658bc62dc82c187ff4554b04ad6ed15cad6e5200c511a",
+      "retrievedOn": "2026-11-01"
+    },
+    "IT": {
+      "url": "https://download.geonames.org/export/dump/IT.zip",
+      "sha256": "147cab6778e3726b7e900db83fb4b386a3e532b13ff52e96547b67f1dcdce745",
+      "retrievedOn": "2026-11-01"
+    },
+    "NZ": {
+      "url": "https://download.geonames.org/export/dump/NZ.zip",
+      "sha256": "c5e71975e12072d007de2272e608f8889c9fb4b743b46856f9541dcda54004ff",
+      "retrievedOn": "2026-11-01"
+    }
+  }
 }

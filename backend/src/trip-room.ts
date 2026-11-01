@@ -230,7 +230,15 @@ export class TripRoom extends DurableObject<Env> {
             const newEntity = (expense.attachment.kind === 'day' ? operation.payload.days : operation.payload.legs).find(item => item.id === expense.attachment.id);
             assert(oldEntity && newEntity && oldEntity.date === newEntity.date, 'REFERENCED_ITINERARY', 'Move attached expenses explicitly before changing or deleting their day or leg.');
           }
-          Object.assign(trip, operation.payload);
+          // Older clients omit this additive field. Preserve it by stable stop ID without
+          // modifying the submitted operation: receipts must still hash the original payload.
+          const existingStops = new Map(trip.stops.map(stop => [stop.id, stop]));
+          const stops = operation.payload.stops.map(stop => {
+            const previousTimeZone = existingStops.get(stop.id)?.timeZone;
+            return stop.timeZone === undefined && previousTimeZone !== undefined
+              ? { ...stop, timeZone: previousTimeZone } : stop;
+          });
+          Object.assign(trip, operation.payload, { stops });
           validateTrip(trip); this.writeItinerary(trip);
         } else trip.archived = operation.payload.archived;
         after = this.meta(trip);

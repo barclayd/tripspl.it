@@ -11,7 +11,7 @@ struct SettingsView: View {
     NavigationStack {
       Form {
         Section {
-          Label("Your trips, together", systemImage: "person.2.fill").font(.headline)
+          Label("Trip sharing", systemImage: "person.2.fill").font(.headline)
           Text(
             "Everything saves on this device first. Sign in to share trips and keep changes in sync."
           ).font(.subheadline).foregroundStyle(.secondary)
@@ -274,6 +274,9 @@ struct TripSettingsView: View {
   @State private var name = ""
   @State private var budget = ""
   @State private var timeZone = TimeZone.current.identifier
+  @State private var stops: [Stop] = []
+  @State private var timeZoneSelection: DestinationTimeZoneSelection?
+  @State private var loaded = false
   @State private var invite: Invite?
   @State private var message: String?
   @State private var archive = false
@@ -289,14 +292,21 @@ struct TripSettingsView: View {
               Text(trip.homeCurrency)
               TextField("Whole-trip budget", text: $budget).keyboardType(.decimalPad)
             }
-            Picker("Trip time zone", selection: $timeZone) {
-              ForEach(TimeZone.knownTimeZoneIdentifiers, id: \.self) {
-                Text($0.replacingOccurrences(of: "_", with: " ")).tag($0)
-              }
-            }
             Text(
-              "Today follows this time zone. The itinerary and home currency stay fixed once created, so existing financial records keep their dates and meaning."
+              "Itinerary dates and home currency stay fixed after creation."
             ).font(.footnote).foregroundStyle(.secondary)
+          }.disabled(trip.role != "owner")
+          Section("Destination time zones") {
+            ForEach(stops) { stop in
+              Button {
+                timeZoneSelection = .init(id: stop.id)
+              } label: {
+                DestinationTimeZoneRow(
+                  place: stop.place, identifier: stop.resolvedTimeZone,
+                  date: CivilDate.date(
+                    trip.days.first(where: { $0.stopId == stop.id })?.date ?? trip.startsOn))
+              }.buttonStyle(.plain).accessibilityIdentifier("settings.timezone.\(stop.id)")
+            }
           }.disabled(trip.role != "owner")
           Section("Travellers") {
             ForEach(trip.activeTravellers) { person in
@@ -387,7 +397,8 @@ struct TripSettingsView: View {
                 model.perform {
                   var settings = TripSettings(trip)
                   settings.name = name
-                  settings.timeZone = timeZone
+                  settings.stops = stops
+                  settings.timeZone = stops.first?.resolvedTimeZone ?? timeZone
                   settings.budgetMinor = String(
                     try Money.parse(budget, currency: trip.homeCurrency))
                   try model.store.enqueue(
@@ -403,9 +414,22 @@ struct TripSettingsView: View {
           }
         }
         .onAppear {
+          guard !loaded else { return }
+          loaded = true
           name = trip.name
           timeZone = trip.timeZone
+          stops = trip.stops
           budget = Money.input(Money.minor(trip.budgetMinor) ?? 0, currency: trip.homeCurrency)
+        }
+        .sheet(item: $timeZoneSelection) { selection in
+          if let stop = stops.first(where: { $0.id == selection.id }) {
+            TimeZonePicker(
+              selection: timeZoneBinding(for: stop.id),
+              allowedIdentifiers: DestinationTimeZones.identifiers(countryCode: stop.countryCode),
+              title: stop.place,
+              referenceDate: CivilDate.date(
+                trip.days.first(where: { $0.stopId == stop.id })?.date ?? trip.startsOn))
+          }
         }
         .confirmationDialog("Archive \(trip.name)?", isPresented: $archive) {
           Button("Archive trip", role: .destructive) {
@@ -424,6 +448,15 @@ struct TripSettingsView: View {
         .disabled(busy)
       }
     }
+  }
+  private func timeZoneBinding(for stopID: String) -> Binding<String> {
+    Binding(
+      get: { stops.first(where: { $0.id == stopID })?.resolvedTimeZone ?? "" },
+      set: { zone in
+        guard let index = stops.firstIndex(where: { $0.id == stopID }) else { return }
+        stops[index].timeZone = zone
+        if index == 0 { timeZone = zone }
+      })
   }
   private func createInvite(_ travellerID: String) {
     busy = true

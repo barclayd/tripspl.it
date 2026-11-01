@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import type { TripSnapshot } from '../../contracts/tripsplit-v1';
+import type { Stop, TripSnapshot } from '../../contracts/tripsplit-v1';
 import { AppError, assert } from './errors';
 import { currencyDigits, rateFraction } from './money';
 
@@ -9,9 +9,15 @@ const amount = z.string().regex(/^(0|[1-9]\d{0,11})$/);
 const currency = z.string().regex(/^[A-Z]{3}$/).refine(value => { try { currencyDigits(value); return true; } catch { return false; } });
 const revision = z.number().int().min(0).max(Number.MAX_SAFE_INTEGER);
 const shortText = z.string().trim().min(1).max(120);
+const timeZone = z.string().min(1).max(80).refine(value => {
+  // Require a named zone, not the numeric UTC-offset syntax supported by newer Intl runtimes.
+  if (!/^[A-Za-z][A-Za-z0-9_+\-/]*$/.test(value)) return false;
+  try { new Intl.DateTimeFormat('en', { timeZone: value }); return true; } catch { return false; }
+});
 const conversion = z.strictObject({ homeAmountMinor: amount, rate: z.string().max(32).refine(value => { try { rateFraction(value); return true; } catch { return false; } }), rateDate: civil, source: z.string().min(1).max(120), kind: z.enum(['reference', 'manual']), quoteId: id.nullable() }).nullable();
 export const travellerSchema = z.strictObject({ id, name: shortText, hue: z.number().min(0).max(360), archived: z.boolean(), revision });
-const stop = z.strictObject({ id, countryCode: z.string().regex(/^[A-Z]{2}$/), place: shortText, nights: z.number().int().min(0).max(365), currency, latitude: z.number().min(-90).max(90), longitude: z.number().min(-180).max(180) });
+const stop = z.strictObject({ id, countryCode: z.string().regex(/^[A-Z]{2}$/), place: shortText, nights: z.number().int().min(0).max(365), currency, latitude: z.number().min(-90).max(90), longitude: z.number().min(-180).max(180), timeZone: timeZone.optional() })
+  .transform(({ timeZone, ...stop }): Stop => timeZone === undefined ? stop : { ...stop, timeZone });
 const day = z.strictObject({ id, date: civil, stopId: id });
 const leg = z.strictObject({ id, kind: z.enum(['outbound', 'transfer', 'return']), date: civil, fromStopId: id.nullable(), toStopId: id.nullable(), dayId: id.nullable() });
 export const expenseSchema = z.strictObject({ id, revision, attachment: z.strictObject({ kind: z.enum(['day', 'leg']), id }), title: shortText, category: z.enum(['food', 'coffee', 'stay', 'activity', 'transport', 'shopping', 'flight', 'train', 'taxi', 'other']), amountMinor: amount.refine(v => BigInt(v) > 0n), currency, status: z.enum(['planned', 'paid']), paidOn: civil.nullable(), paidBy: id, splitWith: z.array(id).min(1).max(40), conversion });

@@ -11,40 +11,39 @@ struct OnboardingView: View {
   @State private var destinationSearch = DestinationSearch()
   @State private var searchedMapQuery: String?
   @State private var currencyDestination: Destination?
+  @State private var timeZoneSelection: DestinationTimeZoneSelection?
   @FocusState private var inputFocused: Bool
   @ScaledMetric(relativeTo: .subheadline) private var routeHeight = 78.0
-  private let titles = [
-    "Where are you off to?", "When do you leave?", "How long in each place?", "Who’s coming?",
-    "What’s your home currency?", "What’s the budget?", "You’re all set.",
-  ]
-  private let subtitles = [
-    "Choose countries or cities, then continue when your route is ready.",
-    "Pick the day you set off.",
-    "A little stopover or a long, slow stay?", "Everyone who’ll be splitting costs.",
-    "One currency for the honest, whole-trip total.", "For the whole trip, everyone included.",
-    "Next, add how you’re getting there.",
-  ]
+  private var title: String {
+    switch model.onboarding.step {
+    case 0: "Where are you going?"
+    case 1: "When do you leave?"
+    case 7: "When are you home?"
+    case 2: "Nights by destination"
+    case 3: "Who’s coming?"
+    case 4: "Home currency"
+    case 5: "Trip budget"
+    default: "Trip created"
+    }
+  }
   var body: some View {
     NavigationStack {
       VStack(spacing: 0) {
-        ProgressView(value: Double(model.onboarding.step + 1), total: 7).tint(Theme.accent)
+        ProgressView(
+          value: Double(model.onboarding.stepPosition), total: Double(model.onboarding.totalSteps)
+        ).tint(Theme.accent)
           .scaleEffect(y: 2).padding(.horizontal, 24).padding(.vertical, 12)
           .frame(maxWidth: 680).frame(maxWidth: .infinity)
         ScrollViewReader { scroll in
           ScrollView {
             VStack(alignment: .leading, spacing: 24) {
-              if model.onboarding.step > 0, let trip = try? model.onboarding.makeTrip() {
+              if model.onboarding.step > 0, let trip = try? model.onboarding.previewTrip() {
                 BoardingPassStack(trip: trip, cleared: model.onboarding.step == 6)
               }
-              VStack(alignment: .leading, spacing: 8) {
-                Text(titles[model.onboarding.step]).font(.largeTitle.weight(.heavy)).tracking(-1)
-                Text(subtitles[model.onboarding.step]).font(.subheadline).foregroundStyle(
-                  Theme.secondary
-                ).lineSpacing(3)
-              }
+              Text(title).font(.largeTitle.weight(.heavy)).tracking(-1)
               step
             }.pagePadding().padding(.bottom, 20).id("onboarding-top")
-          }.scrollDismissesKeyboard(.interactively)
+          }.scrollDismissesKeyboard(.interactively).scrollBounceBehavior(.basedOnSize)
             .onChange(of: model.onboarding.step) { _, _ in
               inputFocused = false
               scroll.scrollTo("onboarding-top", anchor: .top)
@@ -52,7 +51,10 @@ struct OnboardingView: View {
         }
         footer
       }.overlay { if model.onboarding.step == 6 { Celebration() } }.background(Theme.background)
-        .navigationTitle("\(min(model.onboarding.step + 1, 6)) of 6")
+        .navigationTitle(
+          model.onboarding.step == 6
+            ? "" : "\(model.onboarding.stepPosition) of \(model.onboarding.totalSteps)"
+        )
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
           ToolbarItem(placement: .cancellationAction) {
@@ -80,13 +82,19 @@ struct OnboardingView: View {
             addDestination(confirmed)
           }
         }
+        .sheet(item: $timeZoneSelection) { selection in
+          if let stop = model.onboarding.stops.first(where: { $0.id == selection.id }) {
+            TimeZonePicker(
+              selection: timeZoneBinding(for: stop.id),
+              allowedIdentifiers: DestinationTimeZones.identifiers(countryCode: stop.countryCode),
+              title: stop.place, referenceDate: CivilDate.date(model.onboarding.startsOn))
+          }
+        }
     }
   }
 
   private var footer: some View {
     VStack(spacing: 8) {
-      Text(cheer).font(.footnote.weight(.semibold)).foregroundStyle(Theme.accent)
-        .multilineTextAlignment(.center)
       let layout =
         dynamicTypeSize.isAccessibilitySize
         ? AnyLayout(VStackLayout(spacing: 8)) : AnyLayout(HStackLayout(spacing: 16))
@@ -110,7 +118,7 @@ struct OnboardingView: View {
             Text(
               model.onboarding.step == 5
                 ? "Create trip"
-                : model.onboarding.step == 6 ? "Plan getting there" : "Continue")
+                : model.onboarding.step == 6 ? "Add travel" : "Continue")
             Image(systemName: model.onboarding.step == 6 ? "airplane" : "arrow.right")
           }.font(.headline).foregroundStyle(.white)
             .padding(.horizontal, 20).padding(.vertical, 12)
@@ -130,17 +138,17 @@ struct OnboardingView: View {
     switch model.onboarding.step {
     case 0:
       routeSelection
-      TextField("Search country or city", text: $query)
+      TextField("Search by city or country", text: $query)
         .textFieldStyle(.roundedBorder).focused($inputFocused)
         .accessibilityIdentifier("onboarding.search")
         .textInputAutocapitalization(.words).submitLabel(.search)
         .onSubmit { inputFocused = false }
         .accessibilityHint("Search countries and cities, or use Apple Maps for another place")
       VStack(alignment: .leading, spacing: 12) {
-        Text(searchQuery.isEmpty ? "A little inspiration" : "Countries & cities")
+        Text(searchQuery.isEmpty ? "Destinations" : "Results")
           .font(.headline)
         if catalogueMatches.isEmpty {
-          Text("No saved places match. Try Apple Maps or add another destination below.")
+          Text("No matching destinations.")
             .font(.subheadline).foregroundStyle(Theme.secondary)
         } else {
           LazyVGrid(columns: [.init(.adaptive(minimum: 240), spacing: 10)], spacing: 10) {
@@ -157,8 +165,6 @@ struct OnboardingView: View {
               .frame(minHeight: 44)
           }.disabled(destinationSearch.isSearching || model.onboarding.stops.count >= 6)
             .accessibilityIdentifier("onboarding.searchMaps")
-          Text("Find a specific city or place online. Choose a result to add it.")
-            .font(.footnote).foregroundStyle(Theme.secondary)
           if searchedMapQuery == searchQuery {
             if destinationSearch.isSearching {
               ProgressView("Searching Apple Maps…")
@@ -177,7 +183,7 @@ struct OnboardingView: View {
           }
         }
       }
-      Button("Add another destination", systemImage: "mappin.and.ellipse") {
+      Button("Can’t find your destination?", systemImage: "mappin.and.ellipse") {
         inputFocused = false
         custom = true
       }.frame(minHeight: 44).disabled(model.onboarding.stops.count >= 6)
@@ -187,33 +193,33 @@ struct OnboardingView: View {
         "Departure",
         selection: Binding(
           get: { CivilDate.date(model.onboarding.startsOn) },
-          set: { model.onboarding.startsOn = CivilDate.string($0) }), displayedComponents: .date
+          set: { model.onboarding.setDeparture(CivilDate.string($0)) }), displayedComponents: .date
       ).datePickerStyle(.graphical).environment(\.timeZone, TimeZone(secondsFromGMT: 0)!).padding(
         12
       ).background(Theme.surface, in: RoundedRectangle(cornerRadius: 22))
-      Picker(
-        "Trip time zone",
+        .accessibilityIdentifier("onboarding.departureDate")
+      destinationTimeZones
+    case 7:
+      DatePicker(
+        "Return",
         selection: Binding(
-          get: { model.onboarding.timeZone }, set: { model.onboarding.timeZone = $0 })
-      ) {
-        ForEach(TimeZone.knownTimeZoneIdentifiers, id: \.self) {
-          Text($0.replacingOccurrences(of: "_", with: " ")).tag($0)
-        }
-      }
-      Text("Today and trip dates follow this time zone. You can change it in trip settings.").font(
-        .footnote
-      ).foregroundStyle(Theme.secondary)
-      Text("You can also log an adventure that already happened.").font(.footnote).foregroundStyle(
-        Theme.secondary)
+          get: { CivilDate.date(model.onboarding.returnDate) },
+          set: { model.onboarding.setReturn(CivilDate.string($0)) }),
+        in: CivilDate.date(
+          model.onboarding.minimumReturnDate)...CivilDate.date(model.onboarding.maximumReturnDate),
+        displayedComponents: .date
+      ).datePickerStyle(.graphical).environment(\.timeZone, TimeZone(secondsFromGMT: 0)!)
+        .padding(12).background(Theme.surface, in: RoundedRectangle(cornerRadius: 22))
+        .accessibilityIdentifier("onboarding.returnDate")
     case 2:
       HStack(alignment: .firstTextBaseline) {
-        Text("\(model.onboarding.nights + 1)").font(
+        Text("\(model.onboarding.totalNights + 1)").font(
           .system(size: 68, weight: .heavy, design: .default)
         ).foregroundStyle(Theme.accent).contentTransition(.numericText())
         Text("days").font(.title2.weight(.bold))
       }
       Text(
-        "\(CivilDate.display(model.onboarding.startsOn)) → \(CivilDate.display(CivilDate.adding(model.onboarding.nights, to: model.onboarding.startsOn))) · \(model.onboarding.nights) nights"
+        "\(CivilDate.display(model.onboarding.startsOn)) → \(CivilDate.display(model.onboarding.returnDate)) · \(model.onboarding.totalNights) nights"
       ).font(.subheadline).foregroundStyle(Theme.secondary)
       ForEach(model.onboarding.stops.indices, id: \.self) { index in
         Card(padding: 16) {
@@ -221,7 +227,9 @@ struct OnboardingView: View {
             Text(model.onboarding.stops[index].flag).font(.title)
             VStack(alignment: .leading, spacing: 4) {
               Text(model.onboarding.stops[index].place).font(.headline)
-              Text("\(model.onboarding.stops[index].nights) nights").font(.caption).foregroundStyle(
+              Text(
+                "\(model.onboarding.stops[index].nights) \(model.onboarding.stops[index].nights == 1 ? "night" : "nights")"
+              ).font(.caption).foregroundStyle(
                 Theme.secondary)
             }
             Spacer()
@@ -229,10 +237,20 @@ struct OnboardingView: View {
               "Nights",
               value: Binding(
                 get: { model.onboarding.stops[index].nights },
-                set: { model.onboarding.stops[index].nights = $0 }), in: 1...30
+                set: { model.onboarding.setNights($0, at: index) }),
+              in: 1...max(1, model.onboarding.maximumNights(at: index))
             ).labelsHidden().accessibilityLabel("Nights in \(model.onboarding.stops[index].place)")
           }
         }
+      }
+      if model.onboarding.unallocatedNights != 0 {
+        Text(
+          model.onboarding.unallocatedNights > 0
+            ? "\(model.onboarding.unallocatedNights) \(model.onboarding.unallocatedNights == 1 ? "night" : "nights") to allocate"
+            : "Remove \(-model.onboarding.unallocatedNights) \(model.onboarding.unallocatedNights == -1 ? "night" : "nights")"
+        )
+        .font(.subheadline.weight(.semibold)).foregroundStyle(Theme.accent)
+        .accessibilityIdentifier("onboarding.unallocatedNights")
       }
     case 3:
       HStack {
@@ -339,19 +357,45 @@ struct OnboardingView: View {
         text: Binding(get: { model.onboarding.name }, set: { model.onboarding.name = $0 })
       ).textFieldStyle(.roundedBorder).focused($inputFocused)
     default:
-      Text(greeting).font(.system(size: 42, weight: .heavy, design: .default)).foregroundStyle(
-        Theme.accent)
-      Text("\(model.onboarding.tripName) is all set.").font(.title3.weight(.semibold))
+      Text(model.onboarding.tripName).font(.title3.weight(.semibold))
       Label("Saved on this device", systemImage: "checkmark.circle.fill").foregroundStyle(
         Theme.good)
     }
   }
-  private var valid: Bool {
-    switch model.onboarding.step {
-    case 0: !model.onboarding.stops.isEmpty
-    case 5:
-      (try? Money.parse(model.onboarding.budget, currency: model.onboarding.currency)) ?? 0 > 0
-    default: true
+  private var valid: Bool { model.onboarding.canAdvance }
+  private var destinationTimeZones: some View {
+    VStack(alignment: .leading, spacing: 10) {
+      Text("Time zones").font(.headline)
+      ForEach(model.onboarding.stops) { stop in
+        Button {
+          timeZoneSelection = .init(id: stop.id)
+        } label: {
+          DestinationTimeZoneRow(
+            place: stop.place, identifier: stop.resolvedTimeZone,
+            date: CivilDate.date(model.onboarding.startsOn)
+          )
+          .padding(14).background(Theme.surface, in: RoundedRectangle(cornerRadius: 18))
+        }.buttonStyle(.plain).accessibilityIdentifier("onboarding.timezone.\(stop.id)")
+      }
+    }
+  }
+  private func timeZoneBinding(for stopID: String) -> Binding<String> {
+    Binding(
+      get: {
+        model.onboarding.stops.first(where: { $0.id == stopID })?.resolvedTimeZone ?? ""
+      },
+      set: { zone in
+        guard let index = model.onboarding.stops.firstIndex(where: { $0.id == stopID }) else {
+          return
+        }
+        model.onboarding.stops[index].timeZone = zone
+        if index == 0 { model.onboarding.timeZone = zone }
+      })
+  }
+  private func reconcileRoute() {
+    model.onboarding.reconcileRoute()
+    if let zone = model.onboarding.stops.first?.resolvedTimeZone {
+      model.onboarding.timeZone = zone
     }
   }
   private var searchQuery: String { query.trimmingCharacters(in: .whitespacesAndNewlines) }
@@ -361,7 +405,7 @@ struct OnboardingView: View {
   private var routeSelection: some View {
     VStack(alignment: .leading, spacing: 8) {
       HStack {
-        Text("Your route").font(.headline)
+        Text("Route").font(.headline)
         Spacer()
         Text("\(model.onboarding.stops.count) of 6 stops").font(.caption)
           .foregroundStyle(Theme.secondary)
@@ -369,7 +413,7 @@ struct OnboardingView: View {
       ScrollView(.horizontal) {
         HStack(spacing: 10) {
           if model.onboarding.stops.isEmpty {
-            Label("Choose your first stop below", systemImage: "mappin.and.ellipse")
+            Label("No destinations selected", systemImage: "mappin.and.ellipse")
               .font(.subheadline).foregroundStyle(Theme.secondary)
               .padding(.horizontal, 16).frame(height: routeHeight)
           }
@@ -396,6 +440,7 @@ struct OnboardingView: View {
                 .accessibilityIdentifier("onboarding.route.\(index).menu")
               Button {
                 model.onboarding.stops.removeAll { $0.id == stop.id }
+                reconcileRoute()
               } label: {
                 Image(systemName: "xmark.circle.fill").font(.body)
                   .frame(width: 44, height: 44).contentShape(Rectangle())
@@ -406,8 +451,10 @@ struct OnboardingView: View {
               .background(Theme.accentSoft, in: RoundedRectangle(cornerRadius: 16))
           }
         }
-      }.scrollIndicators(.hidden).frame(height: routeHeight)
-        .background(Theme.surface, in: RoundedRectangle(cornerRadius: 16))
+      }.scrollIndicators(.hidden).scrollBounceBehavior(.basedOnSize, axes: .horizontal).frame(
+        height: routeHeight
+      )
+      .background(Theme.surface, in: RoundedRectangle(cornerRadius: 16))
     }
   }
   private func destinationRow(_ destination: Destination) -> some View {
@@ -456,18 +503,21 @@ struct OnboardingView: View {
     else { return }
     // Keep the list in place: selection changes only this reserved route area and the row checkmark.
     model.onboarding.stops.append(destination.stop())
+    reconcileRoute()
   }
   private func moveStop(_ id: String, by offset: Int) {
     guard let index = model.onboarding.stops.firstIndex(where: { $0.id == id }),
       model.onboarding.stops.indices.contains(index + offset)
     else { return }
     model.onboarding.stops.swapAt(index, index + offset)
+    reconcileRoute()
   }
   private func repeatStop(_ stop: Stop) {
     guard model.onboarding.stops.count < 6 else { return }
     var repeated = stop
     repeated.id = UUID().uuidString
     model.onboarding.stops.append(repeated)
+    reconcileRoute()
   }
   private func searchMaps() {
     let requested = searchQuery
@@ -477,32 +527,6 @@ struct OnboardingView: View {
     inputFocused = false
     searchedMapQuery = requested
     Task { await destinationSearch.searchMaps(requested) }
-  }
-  private var cheer: String {
-    switch model.onboarding.step {
-    case 0:
-      model.onboarding.stops.isEmpty
-        ? "Every adventure starts somewhere."
-        : "\(model.onboarding.stops.count) stop\(model.onboarding.stops.count == 1 ? "" : "s"). Lovely choice."
-    case 2:
-      model.onboarding.nights < 6
-        ? "Short and sweet."
-        : model.onboarding.nights < 14 ? "A good long trip." : "A proper adventure."
-    case 3:
-      model.onboarding.travellers.count == 1
-        ? "Solo trip. Respect."
-        : model.onboarding.travellers.count == 2
-          ? "Just the two of you." : "Party of \(model.onboarding.travellers.count)!"
-    case 4: "Everything comes home to \(model.onboarding.currency)."
-    case 5: "Room for memories."
-    default: "Let’s make it a good one."
-    }
-  }
-  private var greeting: String {
-    [
-      "PT": "Boa viagem!", "ES": "¡Buen viaje!", "FR": "Bon voyage!", "IT": "Buon viaggio!",
-      "JP": "Itterasshai!",
-    ][model.onboarding.stops.first?.countryCode ?? ""] ?? "Happy travels!"
   }
   private func addPerson() {
     let name = personName.trimmingCharacters(in: .whitespaces)
@@ -520,14 +544,14 @@ struct OnboardingView: View {
     } else if model.onboarding.step == 6 {
       model.finishOnboarding(planTravel: true)
     } else {
-      animate { model.onboarding.step += 1 }
+      animate { model.onboarding.advanceStep() }
     }
     model.saveOnboarding()
   }
   private func goBack() {
-    guard model.onboarding.step > 0, model.onboarding.step < 6 else { return }
+    guard model.onboarding.stepPosition > 1, model.onboarding.step != 6 else { return }
     inputFocused = false
-    animate { model.onboarding.step -= 1 }
+    animate { model.onboarding.previousStep() }
     model.saveOnboarding()
   }
   private func animate(_ action: () -> Void) {
@@ -592,8 +616,6 @@ private struct DestinationCurrencySheet: View {
           Label("\(destination.flag) \(destination.city)", systemImage: "mappin.and.ellipse")
           DestinationCurrencyPicker(countryCode: destination.countryCode, currency: $currency)
             .accessibilityIdentifier("onboarding.travelCurrency")
-        } footer: {
-          Text("Your home currency and whole-trip budget come later.")
         }
         Section {
           Button("Add to route", systemImage: "plus") {
@@ -612,7 +634,7 @@ private struct DestinationCurrencySheet: View {
         .onAppear {
           currency = CountryMetadata.country(destination.countryCode)?.defaultCurrency ?? ""
         }
-    }.tint(Theme.accent)
+    }.tint(Theme.accent).scrollBounceBehavior(.basedOnSize)
   }
 }
 
@@ -657,7 +679,7 @@ private struct CustomDestinationSheet: View {
           .accessibilityIdentifier("onboarding.custom.searchMaps")
         } footer: {
           Text(
-            "Find the real location, then choose a result below. Apple Maps needs an internet connection."
+            "Requires an internet connection."
           )
         }
         if hasSearched {
@@ -709,7 +731,7 @@ private struct CustomDestinationSheet: View {
         }
         .onChange(of: city) { _, _ in invalidateSearch() }
         .onDisappear { search.cancel() }
-    }.tint(Theme.accent)
+    }.tint(Theme.accent).scrollBounceBehavior(.basedOnSize)
   }
   private func invalidateSearch() {
     search.cancel()

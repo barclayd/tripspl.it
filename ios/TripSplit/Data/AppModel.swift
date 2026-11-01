@@ -29,6 +29,7 @@ import SwiftUI
     self.store = store
     self.sync = SyncCoordinator(store: store)
     onboarding = store.read(OnboardingDraft.self, key: "onboarding") ?? OnboardingDraft()
+    if !onboarding.flowSteps.contains(onboarding.step) { onboarding.step = 7 }
     if onboarding.step == 6 { selectedTripID = onboarding.createdTripID }
     connectivity = Connectivity { [weak self] in Task { await self?.sync.syncAll() } }
   }
@@ -89,7 +90,7 @@ import SwiftUI
     perform {
       var edited = expense
       edited.status = expense.status == .paid ? .planned : .paid
-      edited.paidOn = edited.status == .paid ? trip.today : nil
+      edited.paidOn = edited.status == .paid ? trip.today(for: edited.attachment) : nil
       try store.saveExpense(edited, tripID: trip.id)
       notify(edited.status == .paid ? "Ticked off as paid" : "Moved back to planned")
       changed()

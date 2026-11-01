@@ -163,13 +163,13 @@ struct TripDetailView: View {
           HStack {
             Text("Day \((trip.days.firstIndex(where: { $0.id == day.id }) ?? 0) + 1)").font(
               .subheadline.weight(.heavy))
-            if day.date == trip.today {
+            if trip.isToday(day) {
               Text("TODAY").font(.system(size: 8, weight: .black)).foregroundStyle(Theme.accent)
                 .padding(4).background(Theme.accentSoft, in: Capsule())
             }
           }
           Text(
-            items.isEmpty ? "A blank page. Go explore." : items.map(\.title).joined(separator: ", ")
+            items.isEmpty ? "No expenses" : items.map(\.title).joined(separator: ", ")
           ).font(.caption).lineLimit(1).foregroundStyle(Theme.secondary)
         }
         Spacer(minLength: 0)
@@ -185,7 +185,7 @@ struct TripDetailView: View {
           }
         }
       }.padding(14).background(
-        model.selectedAttachment == attachment || day.date == trip.today
+        model.selectedAttachment == attachment || trip.isToday(day)
           ? Theme.accentSoft.opacity(0.7) : .clear)
     }.buttonStyle(.plain)
   }

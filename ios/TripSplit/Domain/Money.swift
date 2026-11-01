@@ -203,6 +203,9 @@ enum CivilDate {
     return f.string(from: date)
   }
   static func today(timeZone: String) -> String { string(Date(), timeZone: timeZone) }
+  static func days(from start: String, to end: String) -> Int {
+    calendar().dateComponents([.day], from: date(start), to: date(end)).day ?? 0
+  }
   static func adding(_ days: Int, to value: String) -> String {
     string(calendar().date(byAdding: .day, value: days, to: date(value))!)
   }
