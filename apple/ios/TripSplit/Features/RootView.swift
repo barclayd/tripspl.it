@@ -254,14 +254,17 @@ struct RootView: View {
             Destination.country(code)?.stop(nights: nights)
           }
           draft.reconcileRoute()
-          if step >= 1 { draft.setDeparture(CivilDate.adding(12, to: draft.startsOn)) }
-          if step >= 3 {
+          draft.step = step
+          if draft.reached(1), let home = Destination.home(region: Locale.current.region?.identifier) {
+            draft.setOrigin(home.origin)
+          }
+          if draft.reached(1) { draft.setDeparture(CivilDate.adding(12, to: draft.startsOn)) }
+          if draft.reached(3) {
             draft.travellers += zip(["Sam", "Priya", "Jonah"], [250.0, 75, 160]).map {
               Traveller(name: $0, hue: $1)
             }
           }
-          if step >= 5 { draft.budget = "3200" }
-          draft.step = step
+          if draft.reached(5) { draft.budget = "3200" }
           model.onboarding = draft
           model.showOnboarding = true
         }

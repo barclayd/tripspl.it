@@ -14,6 +14,8 @@ enum OnboardingCopy {
       case 2: return "Two stops. Nice route."
       case let count: return "\(count) stops. Ambitious!"
       }
+    case 8:
+      return draft.origin.map { "Leaving from \($0.flag) \($0.place)" } ?? ""
     case 1:
       if draft.nights == 0 { return "A day trip. Easy." }
       return draft.nights >= 14
@@ -92,13 +94,24 @@ enum OnboardingCopy {
 
   // MARK: Open Duo
 
-  /// The six questions, as the open Duo's sidebar lists them.
-  static let stepTitles = ["Where", "When", "How long", "Who", "Home currency", "Budget"]
+  /// Each question, as the open Duo's sidebar lists them.
+  static func stepTitle(_ step: Int) -> String {
+    switch step {
+    case 0: "Where"
+    case 8: "Leaving from"
+    case 1: "When"
+    case 2: "How long"
+    case 3: "Who"
+    case 4: "Home currency"
+    default: "Budget"
+    }
+  }
 
   /// Each answered step in a line, e.g. "🇵🇹 Portugal → 🇪🇸 Spain" or "7 nights · 8 days".
   static func answer(_ step: Int, _ draft: OnboardingDraft) -> String {
     switch step {
     case 0: return draft.stops.map { "\($0.flag) \($0.place)" }.joined(separator: " → ")
+    case 8: return draft.origin.map { "\($0.flag) \($0.place)" } ?? ""
     case 1: return "\(dateRange(draft)) · \(draft.days) day\(draft.days == 1 ? "" : "s")"
     case 2:
       return draft.stops.map { "\($0.flag) \($0.nights)" }.joined(separator: " · ")
@@ -126,12 +139,13 @@ enum OnboardingCopy {
     return names.dropLast().joined(separator: ", ") + " & " + names[names.count - 1]
   }
 
-  /// The pass as the answers stand, tinting whichever field the current step fills in.
+  /// The pass as the answers stand, tinting whichever field the current step fills in. It leaves
+  /// from the picked origin, or the region's leading city until there is one.
   static func tripPass(
     _ draft: OnboardingDraft, size: TripPass.Size,
     region: String? = Locale.current.region?.identifier
   ) -> TripPassContent {
-    let home = Destination.home(region: region)?.stop()
+    let home = draft.origin ?? Destination.home(region: region)?.origin
     let codes = unique(draft.stops.map(\.countryCode))
     let to =
       switch draft.stops.count {
@@ -145,10 +159,10 @@ enum OnboardingCopy {
       case 1: draft.stops[0].place
       default: size == .full ? countries(draft) : "\(draft.stops.count) stops"
       }
-    let budgetAnswered = draft.step >= 5 && !draft.budget.isEmpty
+    let budgetAnswered = draft.reached(5) && !draft.budget.isEmpty
     let highlight: BoardingPassContent.Highlight? =
       switch draft.step {
-      case 0: .destination
+      case 0, 8: .destination
       case 1, 2: .field(1)
       case 3: .field(2)
       case 5: .field(3)
@@ -157,8 +171,9 @@ enum OnboardingCopy {
     return TripPassContent(
       from: home?.passCode ?? "HOME", fromName: home?.place ?? "Home", to: to, toName: toName,
       placeholder: draft.stops.isEmpty,
-      date: .init(draft.step >= 1 ? dateRange(draft) : "When?", answered: draft.step >= 1),
-      pax: .init("\(draft.travellers.count)", answered: draft.step > 3 || draft.travellers.count > 1),
+      date: .init(draft.reached(1) ? dateRange(draft) : "When?", answered: draft.reached(1)),
+      pax: .init(
+        "\(draft.travellers.count)", answered: draft.reached(4) || draft.travellers.count > 1),
       budget: .init(
         budgetAnswered ? Money.typed(draft.budget, currency: draft.currency) : "Budget?",
         answered: budgetAnswered),

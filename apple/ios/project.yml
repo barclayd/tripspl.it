@@ -79,6 +79,7 @@ targets:
         NSAppTransportSecurity:
           NSAllowsLocalNetworking: true
         NSUserActivityTypes: [it.tripspl.TripSplit.new-trip]
+        NSLocationWhenInUseUsageDescription: TripSplit looks up your location once, when you ask, to fill in where your trip leaves from.
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: it.tripspl.TripSplit
