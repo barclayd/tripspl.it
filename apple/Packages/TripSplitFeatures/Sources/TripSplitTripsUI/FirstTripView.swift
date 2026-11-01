@@ -7,6 +7,9 @@ import TripSplitSync
 
 /// The Trips tab before there are any: what TripSplit is for, with the first trip a tap away.
 ///
+/// The header, card and button stay put while the reasons scroll between them, so the first trip
+/// is always a tap away however many reasons there are.
+///
 /// The first launch plays it in: the plane lands on the card, each reason rises and has its
 /// emoji stamped down, and a sheen crosses the button. Later launches, and Reduce Motion, show
 /// it at rest.
@@ -40,25 +43,21 @@ struct FirstTripView<Header: View>: View {
     .timingCurve(0.2, 0.8, 0.2, 1, duration: duration)
   }
 
+  /// The gap between the card and the reasons, which they fade through as they scroll up.
+  private static var fade: CGFloat { 16 }
+
   var body: some View {
-    ScrollView {
+    VStack(spacing: 0) {
       VStack(alignment: .leading, spacing: 26) {
         header
-        VStack(alignment: .leading, spacing: 16) {
-          card
-          VStack(spacing: 10) {
-            ForEach(Array(reasons.enumerated()), id: \.element.title) { index, reason in
-              ReasonRow(reason: reason, settled: settled, delay: 0.09 * Double(index))
-            }
-          }
-        }
+        card
       }
-      .pagePadding().padding(.bottom, 12)
+      .padding(.horizontal, Theme.Spacing.screen).padding(.top, 12)
+      .frame(maxWidth: 680).frame(maxWidth: .infinity)
+      // The plane overhangs the card, so it stays over the reasons scrolling beneath it.
+      .zIndex(1)
+      reasonList
     }
-    .scrollBounceBehavior(.basedOnSize)
-    .scrollEdgeEffectHidden(sidebar, for: .top)
-    .scrollEdgeEffectHidden(true, for: .bottom)
-    .safeAreaInset(edge: .bottom, spacing: 0) { planButton }
     .background(Theme.background)
     .task { await loadRate() }
     .onAppear {
@@ -98,6 +97,30 @@ struct FirstTripView<Header: View>: View {
   }
 
   // MARK: Reasons
+
+  /// Scrolls on its own, without an indicator, under the card above and the button below.
+  private var reasonList: some View {
+    ScrollView {
+      VStack(spacing: 10) {
+        ForEach(Array(reasons.enumerated()), id: \.element.title) { index, reason in
+          ReasonRow(reason: reason, settled: settled, delay: 0.09 * Double(index))
+        }
+      }
+      .padding(.horizontal, Theme.Spacing.screen).padding(.top, Self.fade).padding(.bottom, 12)
+      .frame(maxWidth: 680).frame(maxWidth: .infinity)
+    }
+    .scrollIndicators(.hidden)
+    .scrollBounceBehavior(.basedOnSize)
+    .scrollEdgeEffectHidden(true, for: .vertical)
+    .mask {
+      VStack(spacing: 0) {
+        LinearGradient(colors: [.clear, .black], startPoint: .top, endPoint: .bottom)
+          .frame(height: Self.fade)
+        Rectangle()
+      }
+    }
+    .safeAreaInset(edge: .bottom, spacing: 0) { planButton }
+  }
 
   private var reasons: [Reason] {
     [
