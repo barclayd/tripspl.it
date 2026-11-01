@@ -30,16 +30,22 @@ public struct TripsRootView: View {
         }
       }
       .navigationDestination(for: TripRoute.self) { TripDestination(route: $0) }
-      .toolbar {
-        // The wordmark sits level with the time, in the accent, as in the design. The passport
-        // stamp and Always On leave the time on its own.
+      // The wordmark, in the accent, as in the design. It's the title rather than a leading
+      // item so the time, which the profile button moves to the left, stays above it. The
+      // passport stamp and Always On leave the time on its own.
+      .navigationTitle {
         if !dimmed, !(model.moment?.isStamp ?? false) {
-          ToolbarItem(placement: .topBarLeading) {
-            Text("TripSplit")
-              .watchFont(15, .black)
-              .foregroundStyle(WatchTheme.accentText)
-              .fixedSize()
-              .accessibilityAddTraits(.isHeader)
+          Text("TripSplit")
+            .watchFont(15, .black)
+            .foregroundStyle(WatchTheme.accentText)
+            .frame(maxWidth: .infinity, alignment: .leading)
+        }
+      }
+      .toolbar {
+        // Settings sit behind the profile button, top right, as on the phone.
+        if !dimmed, model.moment == nil {
+          ToolbarItem(placement: .topBarTrailing) {
+            ProfileButton { sheet = .settings }
           }
         }
       }
@@ -51,6 +57,7 @@ public struct TripsRootView: View {
       switch sheet {
       case .convert: QuickConvertView(model: model)
       case .log(let trip): LogExpenseView(model: model, trip: trip.flatMap(model.trip))
+      case .settings: WatchSettingsView(model: model)
       }
     }
     .onOpenURL { url in
@@ -88,6 +95,7 @@ public struct TripsRootView: View {
 enum TripsSheet: Hashable, Identifiable {
   case convert
   case log(trip: String?)
+  case settings
   var id: Self { self }
 }
 
@@ -129,7 +137,6 @@ struct TripsList: View {
           SectionLabel("Been there", colour: WatchTheme.ink2)
           PassportPage(trips: timeline.past, total: timeline.pastTotal)
         }
-        WatchSettings()
       }
       .padding(.horizontal, 7)
     }
@@ -161,13 +168,43 @@ struct LogButton: View {
   }
 }
 
-/// Watch-only settings, at the foot of the trips list.
-struct WatchSettings: View {
-  @Environment(WatchModel.self) private var model
+/// The profile button on Trips, top right, that opens Settings.
+struct ProfileButton: View {
+  let action: () -> Void
 
   var body: some View {
-    @Bindable var model = model
-    SectionLabel("Settings", symbol: "gearshape", colour: WatchTheme.ink2)
+    Button(action: action) {
+      Image(systemName: "person.fill")
+        .font(.system(size: 15, weight: .bold))
+        .foregroundStyle(.white)
+    }
+    .buttonBorderShape(.circle)
+    // Neutral glass, so it doesn't compete with the accent "+".
+    .tint(WatchTheme.card2)
+    .accessibilityLabel("Settings")
+  }
+}
+
+/// Watch-only settings, from the profile button on Trips.
+struct WatchSettingsView: View {
+  @Bindable var model: WatchModel
+
+  var body: some View {
+    NavigationStack {
+      ScrollView {
+        VStack(alignment: .leading, spacing: 6) {
+          StepTitle("Settings")
+          toggles
+            .padding(.horizontal, 6)
+        }
+      }
+      .containerBackground(.black, for: .navigation)
+    }
+    // Toolbar buttons sit on the card fill rather than the accent, as in the design.
+    .tint(WatchTheme.card2)
+  }
+
+  @ViewBuilder private var toggles: some View {
     Toggle(isOn: $model.preferences.hidesAmountsWhenWristDown) {
       VStack(alignment: .leading, spacing: 2) {
         Text("Hide amounts")
