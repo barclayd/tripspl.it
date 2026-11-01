@@ -29,8 +29,7 @@ struct RouteStep: View {
   let focus: FocusState<Bool>.Binding
   @Environment(AppModel.self) private var model
   @State private var query = ""
-  @State private var mapSearch = DestinationSearch()
-  @State private var searchedMapQuery: String?
+  @State private var completer = PlaceCompleter()
   @State private var addingCustom = false
   @State private var currencyDestination: Destination?
 
@@ -53,18 +52,14 @@ struct RouteStep: View {
       StepTitle("Where are you off to?", "Add each country in the order you’ll visit.")
       PlaceSearchField(
         text: $query, focus: focus,
-        hint: "Search countries and cities, or Apple Maps for anywhere else")
+        hint: "Suggests countries and cities anywhere as you type")
       if searchQuery.isEmpty {
         chips(picked + Self.suggested)
       } else {
-        let results = Destination.search(searchQuery, limit: 40)
-        if results.isEmpty {
-          Text("No matching countries or cities.")
-            .typeface(14, .semibold, relativeTo: .subheadline).foregroundStyle(Theme.secondary)
-        } else {
-          chips(results)
-        }
-        mapsResults
+        PlaceResults(
+          results: Destination.search(searchQuery, limit: 40), completer: completer,
+          hint: full ? "Your route is full" : "Adds a stop to your route", disabled: full,
+          chip: chip, onSuggestion: choose)
       }
       Button {
         focus.wrappedValue = false
@@ -76,11 +71,25 @@ struct RouteStep: View {
       }.buttonStyle(.plain).disabled(full).opacity(full ? 0.4 : 1)
         .accessibilityIdentifier("onboarding.addCustom")
     }
-    .onChange(of: query) { _, _ in
-      mapSearch.cancel()
-      searchedMapQuery = nil
-    }
-    .onDisappear { mapSearch.cancel() }
+    .onChange(of: query) { _, query in completer.update(query) }
+    .onDisappear { completer.cancel() }
+    #if DEBUG
+      .task {
+        let arguments = ProcessInfo.processInfo.arguments
+        if let index = arguments.firstIndex(of: "--onboarding-query"),
+          arguments.indices.contains(index + 1)
+        {
+          query = arguments[index + 1]
+        }
+      }
+      // `--onboarding-choose` taps the first suggestion Apple Maps gives for the query.
+      .onChange(of: completer.suggestions.first) { _, first in
+        guard let first, ProcessInfo.processInfo.arguments.contains("--onboarding-choose"),
+          completer.resolved.isEmpty
+        else { return }
+        choose(first)
+      }
+    #endif
     .sheet(isPresented: $addingCustom) {
       CustomDestinationSheet(isSelected: { visits($0) > 0 }, onSelect: add)
     }
@@ -132,12 +141,6 @@ struct RouteStep: View {
     .accessibilityIdentifier("onboarding.destination.\(destination.id)")
   }
 
-  private var mapsResults: some View {
-    MapsSearchResults(
-      query: searchQuery, search: mapSearch, searched: searchedMapQuery == searchQuery,
-      disabled: full, onSearch: searchMaps, chip: chip)
-  }
-
   // MARK: Route changes
 
   private func visits(_ destination: Destination) -> Int {
@@ -183,11 +186,19 @@ struct RouteStep: View {
     model.onboarding.reconcileRoute()
   }
 
-  private func searchMaps() {
-    let requested = searchQuery
-    guard !requested.isEmpty, !mapSearch.isSearching, !full else { return }
-    focus.wrappedValue = false
-    searchedMapQuery = requested
-    Task { await mapSearch.searchMaps(requested) }
+  /// Looks a suggested place up, then adds it like any other chip.
+  private func choose(_ suggestion: PlaceSuggestion) {
+    guard !full else {
+      Haptics.error()
+      return
+    }
+    guard completer.resolving != suggestion.id else { return }
+    Task {
+      if let place = await completer.resolve(suggestion) {
+        select(place)
+      } else if completer.error != nil {
+        Haptics.error()
+      }
+    }
   }
 }

@@ -112,6 +112,15 @@ public struct Destination: Identifiable, Hashable, Sendable {
   }()
 
   public static var suggestions: [Destination] { Array(all.prefix(12)) }
+  /// The catalogue's city by one of its names in a country, so a place found through Maps and the
+  /// chips agree on it.
+  public static func catalogued(city name: String, countryCode: String) -> Destination? {
+    let name = normalise(name)
+    return index.first {
+      !$0.destination.isCountry && $0.destination.countryCode == countryCode
+        && $0.names.contains(name)
+    }?.destination
+  }
   public static func country(_ code: String) -> Destination? {
     CountryMetadata.country(code).map(makeCountry)
   }

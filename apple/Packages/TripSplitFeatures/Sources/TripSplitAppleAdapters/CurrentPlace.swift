@@ -108,14 +108,8 @@ import TripSplitDomain
     let parts = named.split(separator: ",").map { $0.trimmingCharacters(in: .whitespaces) }
       .filter { !$0.isEmpty }
     guard let city = parts.last else { return nil }
-    let cities = Destination.all.filter { !$0.isCountry && $0.countryCode == country.code }
     for part in parts.reversed() {
-      let name = Destination.normalise(part)
-      if let known = cities.first(where: {
-        ([$0.city] + $0.aliases).map(Destination.normalise).contains(name)
-      }) {
-        return known
-      }
+      if let known = Destination.catalogued(city: part, countryCode: country.code) { return known }
     }
     let coordinate = item.location.coordinate
     guard CLLocationCoordinate2DIsValid(coordinate) else { return nil }

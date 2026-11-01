@@ -34,20 +34,42 @@ struct PlaceSearchField: View {
 }
 
 /// A place as a pill: flag and name, the country in grey beside a city, and how many times it's
-/// in the route.
+/// in the route. A spinner stands in for the flag while Maps looks the place up.
 struct PlaceChip: View {
-  let destination: Destination
+  let flag: String
+  let name: String
+  var context: String?
   var selected = false
-  var showsCountry = true
   var count = 0
+  var busy = false
+
+  init(
+    destination: Destination, selected: Bool = false, showsCountry: Bool = true, count: Int = 0
+  ) {
+    flag = destination.flag
+    name = destination.city
+    context = showsCountry && !destination.isCountry ? destination.country : nil
+    self.selected = selected
+    self.count = count
+  }
+
+  init(suggestion: PlaceSuggestion, busy: Bool) {
+    flag = suggestion.flag
+    name = suggestion.title
+    context = suggestion.context
+    self.busy = busy
+  }
 
   var body: some View {
     HStack(spacing: 7) {
-      Text(destination.flag).font(.system(size: 20))
-      Text(destination.city).typeface(14.5, .heavy, relativeTo: .subheadline, maximum: 1.4)
+      ZStack {
+        Text(flag).font(.system(size: 20)).opacity(busy ? 0 : 1)
+        if busy { ProgressView().controlSize(.small).tint(Theme.secondary) }
+      }
+      Text(name).typeface(14.5, .heavy, relativeTo: .subheadline, maximum: 1.4)
         .lineLimit(1)
-      if showsCountry, !destination.isCountry {
-        Text(destination.country).typeface(12.5, .bold, relativeTo: .caption, maximum: 1.4)
+      if let context {
+        Text(context).typeface(12.5, .bold, relativeTo: .caption, maximum: 1.4)
           .foregroundStyle(Theme.tertiary).lineLimit(1)
       }
       if count > 0 {
@@ -66,39 +88,60 @@ struct PlaceChip: View {
   }
 }
 
-/// "Search Apple Maps for …" under the local results, and what Apple Maps found once asked.
-struct MapsSearchResults<Chip: View>: View {
-  let query: String
-  let search: DestinationSearch
-  /// Whether Apple Maps has been asked about this exact query.
-  let searched: Bool
+/// The catalogue's matches for a search, then what Apple Maps suggests for anywhere else. A
+/// suggestion becomes an ordinary chip once it has been looked up.
+struct PlaceResults<Chip: View>: View {
+  let results: [Destination]
+  let completer: PlaceCompleter
+  /// What tapping a suggestion does, for VoiceOver.
+  let hint: String
   var disabled = false
-  let onSearch: () -> Void
   @ViewBuilder let chip: (Destination) -> Chip
+  let onSuggestion: (PlaceSuggestion) -> Void
 
   var body: some View {
+    let suggested = completer.suggestions(beyond: results)
     VStack(alignment: .leading, spacing: 12) {
-      Button(action: onSearch) {
-        Label("Search Apple Maps for “\(query)”", systemImage: "map")
-          .typeface(14, .heavy, relativeTo: .subheadline, maximum: 1.4)
-          .foregroundStyle(Theme.accentText).lineLimit(1).frame(minHeight: 44)
-      }.buttonStyle(.plain)
-        .disabled(search.isSearching || disabled).opacity(disabled ? 0.4 : 1)
-        .accessibilityIdentifier("onboarding.searchMaps")
-      if searched {
-        if search.isSearching {
+      if results.isEmpty, suggested.isEmpty {
+        if completer.isPending {
           ProgressView("Searching Apple Maps…").tint(Theme.secondary)
-        } else if let error = search.error {
-          Text(error).typeface(13, .semibold, relativeTo: .footnote).foregroundStyle(Theme.bad)
-        } else if search.matches.isEmpty {
-          Text("No places found. Try adding the country to your search.")
-            .typeface(13, .semibold, relativeTo: .footnote).foregroundStyle(Theme.secondary)
+            .typeface(14, .semibold, relativeTo: .subheadline).foregroundStyle(Theme.secondary)
         } else {
-          FlowLayout(spacing: 8) {
-            ForEach(search.matches) { chip($0) }
+          Text("No matching countries or cities.")
+            .typeface(14, .semibold, relativeTo: .subheadline).foregroundStyle(Theme.secondary)
+        }
+      } else {
+        FlowLayout(spacing: 8) {
+          ForEach(results) { chip($0) }
+          ForEach(suggested) { suggestion in
+            if let place = completer.resolved[suggestion.id] {
+              chip(place)
+            } else {
+              suggestionChip(suggestion)
+            }
           }
         }
       }
+      if let error = completer.error {
+        Text(error).typeface(13, .semibold, relativeTo: .footnote).foregroundStyle(Theme.bad)
+      }
     }
+  }
+
+  private func suggestionChip(_ suggestion: PlaceSuggestion) -> some View {
+    let busy = completer.resolving == suggestion.id
+    return Button {
+      onSuggestion(suggestion)
+    } label: {
+      PlaceChip(suggestion: suggestion, busy: busy).opacity(disabled ? 0.45 : 1)
+    }
+    .buttonStyle(PressStyle(scale: 0.93))
+    .transition(.scale(scale: 0.8).combined(with: .opacity))
+    .accessibilityLabel(
+      [suggestion.title, suggestion.context].compactMap { $0 }.joined(separator: ", ")
+    )
+    .accessibilityValue(busy ? "Looking it up" : "")
+    .accessibilityHint(hint)
+    .accessibilityIdentifier("onboarding.suggestion.\(suggestion.title)")
   }
 }

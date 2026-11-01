@@ -15,8 +15,7 @@ struct LeavingFromStep: View {
   @State private var query = ""
   @State private var here = CurrentPlace()
   @State private var failure: CurrentPlace.Outcome?
-  @State private var mapSearch = DestinationSearch()
-  @State private var searchedMapQuery: String?
+  @State private var completer = PlaceCompleter()
 
   private let popular = Destination.origins(region: Locale.current.region?.identifier)
   private var origin: TripOrigin? { model.onboarding.origin }
@@ -35,7 +34,7 @@ struct LeavingFromStep: View {
       locationCard
       PlaceSearchField(
         text: $query, focus: focus,
-        hint: "Search cities and countries, or Apple Maps for anywhere else")
+        hint: "Suggests cities and countries anywhere as you type")
       VStack(alignment: .leading, spacing: 8) {
         Text(searchQuery.isEmpty ? "POPULAR" : "RESULTS")
           .typeface(12, .black, tracking: 0.1, relativeTo: .caption, maximum: 1.4)
@@ -43,33 +42,27 @@ struct LeavingFromStep: View {
         if searchQuery.isEmpty {
           chips(shown, searching: false)
         } else {
-          let results = Destination.search(searchQuery, limit: 14)
-          if results.isEmpty {
-            Text("No matching countries or cities.")
-              .typeface(14, .semibold, relativeTo: .subheadline).foregroundStyle(Theme.secondary)
-          } else {
-            chips(results, searching: true)
-          }
+          PlaceResults(
+            results: Destination.search(searchQuery, limit: 14), completer: completer,
+            hint: "Sets where you’re leaving from", chip: { chip($0, searching: true) },
+            onSuggestion: choose)
         }
       }
-      if !searchQuery.isEmpty {
-        MapsSearchResults(
-          query: searchQuery, search: mapSearch, searched: searchedMapQuery == searchQuery,
-          onSearch: searchMaps
-        ) { chip($0, searching: true) }
-      }
     }
-    .onChange(of: query) { _, _ in
-      mapSearch.cancel()
-      searchedMapQuery = nil
-    }
+    .onChange(of: query) { _, query in completer.update(query) }
     .onDisappear {
       here.cancel()
-      mapSearch.cancel()
+      completer.cancel()
     }
     #if DEBUG
       .task {
-        if ProcessInfo.processInfo.arguments.contains("--onboarding-locate"), !nearby { locate() }
+        let arguments = ProcessInfo.processInfo.arguments
+        if arguments.contains("--onboarding-locate"), !nearby { locate() }
+        if let index = arguments.firstIndex(of: "--onboarding-query"),
+          arguments.indices.contains(index + 1)
+        {
+          query = arguments[index + 1]
+        }
       }
     #endif
   }
@@ -183,7 +176,7 @@ struct LeavingFromStep: View {
 
   private func pick(_ destination: Destination, nearby: Bool) {
     here.cancel()
-    mapSearch.cancel()
+    completer.cancel()
     focus.wrappedValue = false
     Haptics.lightImpact()
     withAnimation(Motion.spring) {
@@ -193,12 +186,16 @@ struct LeavingFromStep: View {
     }
   }
 
-  private func searchMaps() {
-    let requested = searchQuery
-    guard !requested.isEmpty, !mapSearch.isSearching else { return }
-    focus.wrappedValue = false
-    searchedMapQuery = requested
-    Task { await mapSearch.searchMaps(requested) }
+  /// Looks a suggested place up, then leaves from it like any other chip.
+  private func choose(_ suggestion: PlaceSuggestion) {
+    guard completer.resolving != suggestion.id else { return }
+    Task {
+      if let place = await completer.resolve(suggestion) {
+        pick(place, nearby: false)
+      } else if completer.error != nil {
+        Haptics.error()
+      }
+    }
   }
 }
 
