@@ -4,8 +4,8 @@ import TripSplitWatchDesign
 import TripSplitWatchModel
 
 /// Log expense, presented as a sheet: which trip from Trips (F1), which day for a trip still to come
-/// (F6), how much (F2), what it was (F3) and, with others on the trip, who shares it (F4), then
-/// the receipt (F5).
+/// (F6), how much (F2), what it was (F3), whether travel booked before you go is a return and,
+/// with others on the trip, who shares it (F4), then the receipt (F5).
 struct LogExpenseView: View {
   @Environment(\.dismiss) private var dismiss
   @State private var log: LogExpense
@@ -70,6 +70,11 @@ struct LogExpenseView: View {
         log.category = category
         advance(from: .category)
       }
+    case .returnToo:
+      ReturnStepView(log: log) { covers in
+        log.coversReturn = covers
+        advance(from: .returnToo)
+      }
     case .split:
       SplitStepView(log: log, save: save)
     }
@@ -124,7 +129,8 @@ struct TripChoiceView: View {
   }
 }
 
-/// F6 · Which day? Costs before you go first, then each day, for a trip still to come.
+/// F6 · Which day? For a trip still to come: costs before you go, each day, then getting home.
+/// Travel either side of the days sits in the accent.
 struct DayChoiceView: View {
   let log: LogExpense
   let choose: (Attachment) -> Void
@@ -139,8 +145,7 @@ struct DayChoiceView: View {
             choose(option.attachment)
           } label: {
             ChoiceRow(
-              title: option.title, detail: option.detail, flag: nil,
-              highlighted: option.id == options.first?.id)
+              title: option.title, detail: option.detail, flag: nil, highlighted: option.isTravel)
           }
           .buttonStyle(.plain)
         }
@@ -366,6 +371,36 @@ struct AmountBadge: ToolbarContent {
         .lineLimit(1)
         .fixedSize()
     }
+  }
+}
+
+/// Return too? For a flight, train or coach booked before you go, where a return ticket covers
+/// getting home as well. One tap picks and moves on.
+struct ReturnStepView: View {
+  let log: LogExpense
+  let choose: (Bool) -> Void
+
+  var body: some View {
+    ScrollView {
+      VStack(alignment: .leading, spacing: 6) {
+        StepTitle("Return too?")
+        option(true, title: log.category.returnTitle ?? "Return", detail: "Covers getting home too")
+        option(false, title: "One way", detail: "Just getting there")
+      }
+    }
+    .toolbar { AmountBadge(log: log) }
+    .containerBackground(.black, for: .navigation)
+  }
+
+  private func option(_ covers: Bool, title: String, detail: String) -> some View {
+    let selected = covers == log.coversReturn
+    return Button {
+      choose(covers)
+    } label: {
+      ChoiceRow(title: title, detail: detail, flag: nil, highlighted: selected)
+    }
+    .buttonStyle(.plain)
+    .accessibilityAddTraits(selected ? .isSelected : [])
   }
 }
 

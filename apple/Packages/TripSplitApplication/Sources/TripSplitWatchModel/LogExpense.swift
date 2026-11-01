@@ -3,12 +3,13 @@ import Observation
 import TripSplitDomain
 
 /// The watch's log flow: which trip (F1), which day for a trip still to come (F6), how much (F2),
-/// what it was (F3) and, with others on the trip, who shares it (F4). Saves through the phone like any other watch change,
+/// what it was (F3), whether travel booked before you go is a return, and, with others on the
+/// trip, who shares it (F4). Saves through the phone like any other watch change,
 /// with an estimate from cached rates so the spend shows in the home currency straight away, even
 /// offline. The phone swaps the estimate for a quoted rate when it applies the change.
 @MainActor @Observable public final class LogExpense {
   public enum Step: Hashable, Sendable {
-    case trip, day, amount, category, split
+    case trip, day, amount, category, returnToo, split
   }
 
   @ObservationIgnored public let model: WatchModel
@@ -20,6 +21,10 @@ import TripSplitDomain
   /// The amount in major units of `currency`, e.g. 42.5.
   public var amount: Decimal = 0
   public var category: ExpenseCategory = .food
+  /// Whether a ticket booked before you go covers getting home too, as most flights do. Only
+  /// asked of travel there and back (`asksReturn`), and it names the spend "Return flight". It
+  /// stays one spend on the way out, so the balances count it once.
+  public var coversReturn = true
   /// Shared between travellers, or just for you.
   public var isShared = true
   public var paidBy = ""
@@ -38,6 +43,7 @@ import TripSplitDomain
     amount =
       Decimal(Money.minor(expense.amountMinor) ?? 0) / Decimal(Money.factor(expense.currency))
     category = expense.category
+    coversReturn = expense.title == expense.category.returnTitle
     paidBy = expense.paidBy
     splitWith = Set(expense.splitWith)
     isShared = !(expense.splitWith == [expense.paidBy] && expense.paidBy == you)
@@ -57,13 +63,23 @@ import TripSplitDomain
     case .trip: attachment == nil ? .day : .amount
     case .day: .amount
     case .amount: .category
-    case .category: asksSplit ? .split : nil
+    case .category: asksReturn ? .returnToo : asksSplit ? .split : nil
+    case .returnToo: asksSplit ? .split : nil
     case .split: nil
     }
   }
 
   /// Who shares it is only asked when someone else is on the trip. On your own it's just yours.
   public var asksSplit: Bool { (trip?.activeTravellers.count ?? 0) > 1 }
+
+  /// Travel booked before you go that might be a return ticket: a flight, train or coach, not a
+  /// taxi, deposit or gear.
+  public var asksReturn: Bool {
+    guard category.returnTitle != nil, let attachment, attachment.kind == .leg else { return false }
+    return trip?.legs.first { $0.id == attachment.id }?.kind == .outbound
+  }
+
+  private var isReturnTicket: Bool { asksReturn && coversReturn }
 
   public var trip: TripSnapshot? { tripID.flatMap(model.trip) }
   public var home: String { trip?.homeCurrency ?? "GBP" }
@@ -119,20 +135,28 @@ import TripSplitDomain
 
   public struct DayOption: Identifiable, Hashable, Sendable {
     public let attachment: Attachment
-    /// "Before you go" or "Day 1 · Sat 19 Dec".
+    /// "Before you go", "Day 1 · Sat 19 Dec" or "Return from trip".
     public let title: String
-    /// "Flights, deposits, gear" or the stop, e.g. "Zermatt".
+    /// "Flights, deposits, gear", the stop, e.g. "Zermatt", or "Flights, taxi home".
     public let detail: String
     public var id: String { attachment.kind.rawValue + ":" + attachment.id }
+    /// Getting there or home rather than a day of the trip.
+    public var isTravel: Bool { attachment.kind == .leg }
   }
 
-  /// Costs before you go, against the outbound leg, then each day of the trip.
+  /// Costs before you go, against the outbound leg, then each day of the trip, then getting home,
+  /// against the return leg.
   public var dayOptions: [DayOption] {
     guard let trip else { return [] }
     let before = trip.legs.first { $0.kind == .outbound }.map {
       DayOption(
         attachment: .init(kind: .leg, id: $0.id), title: "Before you go",
         detail: "Flights, deposits, gear")
+    }
+    let after = trip.legs.first { $0.kind == .return }.map {
+      DayOption(
+        attachment: .init(kind: .leg, id: $0.id), title: "Return from trip",
+        detail: "Flights, taxi home")
     }
     let days = trip.days.map { day in
       let attachment = Attachment(kind: .day, id: day.id)
@@ -142,7 +166,7 @@ import TripSplitDomain
           + CivilDate.display(day.date, format: "EEE d MMM"),
         detail: trip.stop(for: attachment)?.place ?? trip.destination)
     }
-    return [before].compactMap { $0 } + days
+    return [before].compactMap { $0 } + days + [after].compactMap { $0 }
   }
 
   // MARK: Amount
@@ -249,10 +273,15 @@ import TripSplitDomain
     return receipt(expense, in: trip, rateDate: estimate.date)
   }
 
-  /// A name typed on the phone stays; otherwise the title follows the category.
+  /// A name typed on the phone stays; otherwise the title follows the category, e.g. "Flight", or
+  /// "Return flight" for a ticket that covers getting home too.
   private var title: String {
-    if let editing, editing.title != editing.category.title { return editing.title }
-    return category.title
+    if let editing, editing.title != editing.category.title,
+      editing.title != editing.category.returnTitle
+    {
+      return editing.title
+    }
+    return isReturnTicket ? category.returnTitle ?? category.title : category.title
   }
 
   /// Keeps the phone's conversion while the amount is unchanged, else estimates from cached
@@ -297,8 +326,12 @@ import TripSplitDomain
   private func receipt(_ expense: Expense, in trip: TripSnapshot, rateDate: String?) -> Receipt {
     let place: String
     if expense.attachment.kind == .leg {
-      let leg = trip.legs.first { $0.id == expense.attachment.id }
-      place = leg?.kind == .outbound ? "Before you go" : trip.title(for: expense.attachment)
+      place =
+        switch trip.legs.first(where: { $0.id == expense.attachment.id })?.kind {
+        case .outbound: "Before you go"
+        case .return: "Return from trip"
+        default: trip.title(for: expense.attachment)
+        }
     } else {
       place = trip.stop(for: expense.attachment)?.place ?? trip.destination
     }
@@ -308,7 +341,9 @@ import TripSplitDomain
     let shares = Int64(expense.splitWith.count)
     let each = home.map { ($0 / shares, trip.homeCurrency) } ?? (minor / shares, expense.currency)
     return Receipt(
-      heading: "\(place) · \(date)", category: expense.category.watchTitle,
+      heading: "\(place) · \(date)",
+      category: expense.title == expense.category.returnTitle
+        ? expense.title : expense.category.watchTitle,
       amount: WatchCurrency.format(minor, expense.currency),
       home: expense.currency == trip.homeCurrency
         ? nil : home.map { WatchCurrency.format($0, trip.homeCurrency) },
@@ -330,6 +365,17 @@ extension ExpenseCategory {
   public static let watchOrder: [ExpenseCategory] = [
     .food, .coffee, .transport, .activity, .shopping, .stay, .taxi, .flight, .train, .other,
   ]
+
+  /// What a ticket that covers getting home too is called, for travel there and back: flights,
+  /// trains and coaches. Nil for taxis, deposits, gear and the rest, which are one way.
+  public var returnTitle: String? {
+    switch self {
+    case .flight: "Return flight"
+    case .train: "Return train"
+    case .transport: "Return journey"
+    default: nil
+    }
+  }
 
   /// A one-word label for the watch's category grid and receipt.
   public var watchTitle: String {
