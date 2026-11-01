@@ -27,7 +27,12 @@ targets:
   TripSplit:
     type: application
     platform: iOS
-    sources: [TripSplit]
+    sources:
+      - path: TripSplit
+        excludes: [AppIcon.icon]
+      - path: TripSplit/AppIcon.icon
+        type: file
+        buildPhase: resources
     dependencies:
       - package: TripSplitApplication
         product: TripSplitApplication

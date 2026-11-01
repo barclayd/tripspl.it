@@ -38,6 +38,12 @@ swift build --package-path ../Packages/TripSplitApplication \
   --target TripSplitConversion
 ```
 
+## App icon
+
+`TripSplit/AppIcon.icon` is the editable Icon Composer source. It preserves the original boarding pass, hand-drawn airplane, barcode, perforations and rose (`#E5266B`) as four SVG layers. The `Boarding pass` group is scaled to 118.8%, reduced 10% from the previous 132% version to leave more padding inside Apple's masks. The artwork is rotated 20° anticlockwise from its original 10° clockwise angle, so its final angle is −10°. Adjust the group scale in Icon Composer to resize all details together.
+
+The document supports iOS and watchOS, with a near-black dark background (`#101012`), explicit foreground colours and contrasting monochrome layer fills so the airplane stays visible when the system applies clear or user-selected tints. Apple supplies the outer masks and Liquid Glass effects. XcodeGen includes the `.icon` bundle as a single resource; it replaces the old bitmap app-icon asset. The Watch rendering can be previewed in Icon Composer; this repository does not yet contain a watchOS app target.
+
 ## Run and configure
 
 The app opens empty. The explicit `--demo` launch argument seeds an empty store with sample trips and labelled manual conversion estimates. Demo data is never injected into an existing store. To launch an installed simulator build:

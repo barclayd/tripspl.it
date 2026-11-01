@@ -70,6 +70,7 @@
 		E3EA194F87602D87630090C3 /* TripSplitApplication in Frameworks */ = {isa = PBXBuildFile; productRef = 5A52A9A0C9A308ADD795B24E /* TripSplitApplication */; };
 		E41029BD1A504F502F6B7EFB /* WatchMomentsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8CBE0BC4587DF56B24FC2D53 /* WatchMomentsTests.swift */; };
 		E415AED908799D14D25C6C1B /* OnboardingDateTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2C9BAF877BB7E81B4083939 /* OnboardingDateTests.swift */; };
+		E700986C43EE17E0F6ACD7B2 /* AppIcon.icon in Resources */ = {isa = PBXBuildFile; fileRef = 67C0604DA2932D2E43F015D4 /* AppIcon.icon */; };
 		E500CF02A3A7BABBA32DF21D /* TripSplitCompanionHost in Frameworks */ = {isa = PBXBuildFile; productRef = 9E824DA2C23A5DA40DB661C1 /* TripSplitCompanionHost */; };
 		F88B644B0EE781A06A18E9E4 /* TripConversionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E824087A1FC4230135F6421 /* TripConversionTests.swift */; };
 		FEAA33415689C2B51C01F49F /* TripActionsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEF90CE80361EDBEDD351D16 /* TripActionsTests.swift */; };
@@ -120,6 +121,7 @@
 		4D08900A43848327D96035CD /* OpenWatchLinkIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OpenWatchLinkIntent.swift; sourceTree = "<group>"; };
 		56848BEF485EE07498DBD90A /* GlanceTimeline.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GlanceTimeline.swift; sourceTree = "<group>"; };
 		5ED7000F9BD96D4E28D9FBA3 /* TripSplitTests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = TripSplitTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		67C0604DA2932D2E43F015D4 /* AppIcon.icon */ = {isa = PBXFileReference; lastKnownFileType = wrapper.icon; path = AppIcon.icon; sourceTree = "<group>"; };
 		64828B2B3E41A78C4561C43B /* Widgets.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Widgets.swift; sourceTree = "<group>"; };
 		690ED349D57C098AFE20508C /* TripSplitWatchFeatures */ = {isa = PBXFileReference; lastKnownFileType = folder; name = TripSplitWatchFeatures; path = ../Packages/TripSplitWatchFeatures; sourceTree = SOURCE_ROOT; };
 		71021F5E7CBBA9943ABED572 /* PublicAPITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PublicAPITests.swift; sourceTree = "<group>"; };
@@ -277,6 +279,7 @@
 			isa = PBXGroup;
 			children = (
 				2CD809495C9551555CE105A0 /* APIConfiguration.swift */,
+				67C0604DA2932D2E43F015D4 /* AppIcon.icon */,
 				DBC7D0CB5EA99035F367F932 /* Assets.xcassets */,
 				ECF15BF32A826DF42AE46AF7 /* TripSplitApp.swift */,
 				573174458936BF4B2498FB65 /* Features */,
@@ -530,6 +533,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E700986C43EE17E0F6ACD7B2 /* AppIcon.icon in Resources */,
 				C87F7BF785AF373705A60D0C /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
