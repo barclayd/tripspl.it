@@ -18,7 +18,6 @@ public struct DayView: View {
   var showsPaneControls = false
   @State private var usesVerticalRail = false
   @State private var tent = false
-  @State private var clear = false
   /// Expenses already on screen, so one that arrives from the sheet can flash.
   @State private var seen: Set<String>?
   @State private var fresh: Set<String> = []
@@ -75,23 +74,6 @@ public struct DayView: View {
             Button("Quick convert", systemImage: "arrow.left.arrow.right") {
               model.showConverter = true
             }
-          }
-        }
-        ToolbarItem {
-          Menu("Day options", systemImage: "calendar") {
-            Button("Clear day", systemImage: "trash", role: .destructive) { clear = true }
-              .disabled(items.isEmpty)
-          }
-        }
-      }
-      .confirmationDialog(
-        "Delete all \(items.count) expenses on this day?", isPresented: $clear,
-        titleVisibility: .visible
-      ) {
-        Button("Delete expenses", role: .destructive) {
-          model.perform {
-            for item in items { try model.store.deleteExpense(item, tripID: trip.id) }
-            model.changed()
           }
         }
       }

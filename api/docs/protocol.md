@@ -14,6 +14,7 @@ JSON over HTTPS under `/v1`. Bearer access token required except challenge, Appl
 | GET | `/trips` | optional `cursor` | `{trips:TripSnapshot[], nextCursor:string|null}` |
 | POST | `/trips` | `{operationId, trip:TripSnapshot}` | `TripSnapshot` |
 | GET | `/trips/:tripId` | — | `TripSnapshot` |
+| DELETE | `/trips/:tripId` | — (owner only; repeats succeed) | `{ok:true}` |
 | POST | `/trips/:tripId/sync` | `SyncRequest` | `SyncResponse` |
 | POST | `/trips/:tripId/invites` | `{travellerId}` | `{id, token, expiresAt, url:string|null}` |
 | POST | `/trips/:tripId/invites/:inviteId/accept` | `{token}` | `TripSnapshot` |
@@ -24,6 +25,8 @@ JSON over HTTPS under `/v1`. Bearer access token required except challenge, Appl
 | GET | `/trips/:tripId/live` | WebSocket upgrade (authenticated) | `{type:'changed', revision, syncEpoch}` messages |
 
 Apple challenge `nonce` is a random raw nonce. The app sends its SHA-256 hex digest to Apple's native request. The server checks that digest against Apple's token and consumes the matching challenge exactly once. Verify cryptographic signatures through a maintained library and Apple's keys; require configured bundle audience. Account deletion persists a cleanup job, invalidates app sessions and revokes the stored Apple grant, retrying temporary provider failures. It does not require a fresh Apple sign-in. Shared-trip records remain with account links removed and the linked traveller anonymised; ownership passes to the earliest remaining active member. Trips with no other linked member are removed. These consequences must be disclosed in the native confirmation.
+
+Deleting a trip is owner only and applies to every traveller: the room purges its records, tombstones its expenses and closes live subscriptions with 1008. Afterwards every route for that trip answers 404 `TRIP_NOT_FOUND`, including replayed creates, and each member's trip slot is freed. Clients drop a synced trip from the device when it answers `TRIP_NOT_FOUND` or `MEMBERSHIP`.
 
 Trip creation is idempotent on operation ID and trip ID, assigns the authenticated user to `ownerTravellerId`, and rejects impersonation. Ignore client-provided role/currentTravellerId as authority. `revision = 0` and `syncEpoch = 'local'` are permitted only in local draft creation; the server returns its own initial revision/epoch. Create must resolve the same original operation after uncertain acknowledgement.
 

@@ -19,7 +19,7 @@ export type RoomAction =
   | { type: 'read' } | { type: 'create'; operationId: string; trip: TripSnapshot }
   | { type: 'sync'; request: SyncRequest } | { type: 'invite'; travellerId: string }
   | { type: 'accept'; inviteId: string; token: string } | { type: 'revokeInvite'; inviteId: string }
-  | { type: 'removeMember'; travellerId: string };
+  | { type: 'removeMember'; travellerId: string } | { type: 'delete' };
 type RoomValue = TripSnapshot | SyncResponse | Invitation | Success;
 type RoomResult = { ok: true; value: RoomValue } | { ok: false; error: { status: number; code: string; message: string; retryable: boolean } };
 
@@ -57,6 +57,7 @@ export class TripRoom extends DurableObject<Env> {
         case 'accept': value = await this.accept(user.id, action.inviteId, action.token); break;
         case 'revokeInvite': await this.revokeInvite(user.id, action.inviteId); value = { ok: true }; break;
         case 'removeMember': await this.removeMember(user.id, action.travellerId); value = { ok: true }; break;
+        case 'delete': await this.deleteTrip(user.id); value = { ok: true }; break;
       }
       return { ok: true, value };
     } catch (error) {
@@ -121,9 +122,9 @@ export class TripRoom extends DurableObject<Env> {
     const { travellers: _travellers, expenses: _expenses, repayments: _repayments, stops: _stops, days: _days, legs: _legs, currentTravellerId: _current, role: _role, ...meta } = trip;
     return meta;
   }
-  private queueProjection(tripId: string, revision: number, updatedAt: string): void {
+  private queueProjection(tripId: string, revision: number, updatedAt: string, active?: number): void {
     for (const member of this.ctx.storage.sql.exec<Member>('SELECT * FROM members').toArray()) {
-      this.ctx.storage.sql.exec('INSERT INTO directory_outbox(user_id,trip_id,revision,active,updated_at) VALUES(?,?,?,?,?) ON CONFLICT(user_id) DO UPDATE SET revision=excluded.revision,active=excluded.active,updated_at=excluded.updated_at', member.user_id, tripId, revision, member.active, updatedAt);
+      this.ctx.storage.sql.exec('INSERT INTO directory_outbox(user_id,trip_id,revision,active,updated_at) VALUES(?,?,?,?,?) ON CONFLICT(user_id) DO UPDATE SET revision=excluded.revision,active=excluded.active,updated_at=excluded.updated_at', member.user_id, tripId, revision, active ?? member.active, updatedAt);
     }
   }
   private audit(revision: number, userId: string, type: string, entityId: string, before: unknown, after: unknown, operationId: string | null = null): void {
@@ -338,6 +339,34 @@ export class TripRoom extends DurableObject<Env> {
     });
     this.scheduleMaintenance(); this.ctx.waitUntil(this.notify());
   }
+  /**
+   * Deletes the trip for every traveller. Members keep their rows so they see the trip as gone
+   * (404) rather than lose access to it (403), and a retry by the owner succeeds.
+   */
+  async deleteTrip(userId: string): Promise<void> {
+    await this.armMaintenance();
+    const tripId = this.ctx.storage.transactionSync(() => {
+      this.member(userId, true);
+      const row = this.ctx.storage.sql.exec<TripRow>('SELECT * FROM trip').one(), meta = JSON.parse(row.data) as Meta;
+      if (row.purged) return meta.id;
+      meta.revision = row.revision + 1; meta.updatedAt = new Date().toISOString();
+      this.purge(meta);
+      this.ctx.storage.sql.exec('UPDATE trip SET data=?,revision=?,purged=1 WHERE singleton=1', JSON.stringify(meta), meta.revision);
+      this.queueProjection(meta.id, meta.revision, meta.updatedAt, 0);
+      return meta.id;
+    });
+    // Frees every traveller's trip allowance; repeated on retry if this write fails.
+    await this.env.DB.prepare('DELETE FROM user_trip_targets WHERE trip_id=?').bind(tripId).run();
+    this.scheduleMaintenance(); await this.notify();
+  }
+  /** Empties the trip but keeps receipts and tombstones, so restored devices can't bring it back. */
+  private purge(meta: Meta): void {
+    meta.name = 'Deleted trip'; meta.archived = true; meta.budgetMinor = '0';
+    meta.startsOn = '1970-01-01'; meta.timeZone = 'UTC'; meta.homeCurrency = 'GBP'; meta.ownerTravellerId = 'deleted';
+    this.ctx.storage.sql.exec('UPDATE entities SET data=NULL,deleted=1,revision=revision+1');
+    for (const table of TABLES) this.ctx.storage.sql.exec(`DELETE FROM ${table}`);
+    this.ctx.storage.sql.exec('DELETE FROM changes'); this.ctx.storage.sql.exec('DELETE FROM invites');
+  }
   async removeAccount(userId: string): Promise<void> {
     await this.armMaintenance();
     this.ctx.storage.transactionSync(() => {
@@ -358,12 +387,7 @@ export class TripRoom extends DurableObject<Env> {
       }
       meta.revision = row.revision + 1; meta.updatedAt = new Date().toISOString();
       if (!others.length) {
-        // Keep receipts and tombstones to prevent resurrection by restored devices.
-        meta.name = 'Deleted trip'; meta.archived = true; meta.budgetMinor = '0';
-        meta.startsOn = '1970-01-01'; meta.timeZone = 'UTC'; meta.homeCurrency = 'GBP'; meta.ownerTravellerId = 'deleted';
-        this.ctx.storage.sql.exec('UPDATE entities SET data=NULL,deleted=1,revision=revision+1');
-        for (const table of TABLES) this.ctx.storage.sql.exec(`DELETE FROM ${table}`);
-        this.ctx.storage.sql.exec('DELETE FROM changes'); this.ctx.storage.sql.exec('DELETE FROM invites');
+        this.purge(meta);
       } else {
         // Names and deleted account IDs are not retained in historical JSON.
         this.ctx.storage.sql.exec('UPDATE changes SET before_json=NULL,after_json=NULL WHERE entity_id=? OR actor=?', member.traveller_id, userId);
@@ -382,6 +406,10 @@ export class TripRoom extends DurableObject<Env> {
     const row = this.ctx.storage.sql.exec<TripRow>('SELECT * FROM trip').toArray()[0];
     if (!row) return { tripId: null };
     const meta = JSON.parse(row.data) as Meta;
+    if (row.purged) {
+      await this.env.DB.prepare('DELETE FROM user_trip_targets WHERE trip_id=?').bind(meta.id).run();
+      return { tripId: meta.id };
+    }
     for (const member of this.ctx.storage.sql.exec<Member>('SELECT * FROM members WHERE active=1').toArray()) {
       const account = await this.env.DB.prepare('SELECT deleting FROM users WHERE id=?').bind(member.user_id).first<{ deleting: number }>();
       assert(account, 'RECOVERY_ACCOUNT_MISSING', 'An account missing from D1 must be recovered before rebuilding this trip.', 409);

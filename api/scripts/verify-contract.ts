@@ -100,7 +100,7 @@ export function verifyContract(document: Contract): void {
       assert.equal(Boolean(operation.security?.some(requirement => 'bearerAuth' in requirement)), !publicOperations.has(`${method} ${path}`), `Incorrect authentication contract for ${method} ${path}`);
     }
   }
-  assert.equal(operationCount, 18);
+  assert.equal(operationCount, 19);
   assert.equal(document.paths['/v1/trips/{tripId}/live']?.get?.responses?.['101'] !== undefined, true);
   assert.deepEqual(document.components?.securitySchemes?.['bearerAuth'], {
     type: 'http', scheme: 'bearer', bearerFormat: 'opaque',

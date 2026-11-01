@@ -38,6 +38,9 @@ final class SyncServer: @unchecked Sendable {
   var failFirst = false
   var conflict = false
   var omitResults = false
+  /// Set once the owner deletes the trip: every trip route then answers 404.
+  var deleted = false
+  var deletes = 0
   init(snapshot: TripSnapshot) { self.snapshot = snapshot }
   func handle(_ request: URLRequest) throws -> (Int, Data) {
     lock.lock()
@@ -52,6 +55,14 @@ final class SyncServer: @unchecked Sendable {
       return (200, try JSONEncoder().encode(session))
     }
     if request.url!.path.hasSuffix("/auth/logout") { return (200, Data("{\"ok\":true}".utf8)) }
+    if request.httpMethod == "DELETE", request.url!.path.hasSuffix("/trips/\(snapshot.id)") {
+      deletes += 1
+      deleted = true
+      return (200, Data("{\"ok\":true}".utf8))
+    }
+    if deleted, request.url!.path.contains("/trips/") {
+      return (404, Data("{\"error\":{\"code\":\"TRIP_NOT_FOUND\",\"message\":\"Gone\"}}".utf8))
+    }
     if request.url!.path.hasSuffix("/trips"), request.httpMethod == "POST" {
       struct Create: Decodable {
         var operationId: String
@@ -239,6 +250,36 @@ final class SyncServer: @unchecked Sendable {
     try sync.approveRestore(trip.id)
     try await sync.syncTrip(trip.id, token: "test", account: "account")
     #expect(server.batches.count == 1)
+  }
+  @Test func deletingACloudTripRemovesItEverywhereThenLocally() async throws {
+    let (store, sync, server, trip) = try fixture()
+    try await sync.deleteTrip(trip.id)
+    #expect(server.deletes == 1)
+    #expect(store.envelopes[trip.id] == nil)
+    #expect(store.trip(trip.id) == nil)
+  }
+  @Test func deletingATripTheServerNeverSawStaysOffline() async throws {
+    let (store, sync, server, trip) = try fixture()
+    var local = trip
+    local.syncEpoch = "local"
+    try store.persist(.init(confirmed: local, accountID: "account", installationID: "test"))
+    try await sync.deleteTrip(trip.id)
+    #expect(server.requests.isEmpty)
+    #expect(store.trip(trip.id) == nil)
+  }
+  @Test func deletingAnAlreadyDeletedTripStillForgetsIt() async throws {
+    let (store, sync, server, trip) = try fixture()
+    server.deleted = true
+    server.snapshot.id = "another"
+    try await sync.deleteTrip(trip.id)
+    #expect(store.trip(trip.id) == nil)
+  }
+  @Test func syncDropsTripsTheOwnerDeleted() async throws {
+    let (store, sync, server, trip) = try fixture()
+    server.deleted = true
+    await sync.syncAll()
+    #expect(store.trip(trip.id) == nil)
+    #expect(sync.message == nil)
   }
   @Test func malformedAcknowledgementNeverDropsPendingOperation() async throws {
     let (store, sync, server, trip) = try fixture()

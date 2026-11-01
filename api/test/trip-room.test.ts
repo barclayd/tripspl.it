@@ -99,5 +99,33 @@ describe('authoritative trip operations in SQLite', () => {
     await request(`/trips/${trip.id}/invites/${another.id}`, owner, undefined, 'DELETE');
     expect((await request(`/trips/${trip.id}/invites/${another.id}/accept`, member, { token: another.token })).status).toBe(403);
   });
-
+  it('deletes a trip for every traveller, owner only and idempotently, and frees their trip slots', async () => {
+    const owner = await session(), member = await session(), original = draft(), operationId = crypto.randomUUID();
+    const trip = await (await request('/trips', owner, { operationId, trip: original })).json<TripSnapshot>();
+    await join(trip, owner, member); await sync(trip, owner, [addExpense(trip)]);
+    const targets = async () => (await env.DB.prepare('SELECT count(*) AS n FROM user_trip_targets WHERE trip_id=?').bind(trip.id).first<{ n: number }>())!.n;
+    expect(await targets()).toBe(2);
+    const forbidden = await request(`/trips/${trip.id}`, member, undefined, 'DELETE');
+    expect(forbidden.status).toBe(403); expect((await forbidden.json<{ error: { code: string } }>()).error.code).toBe('OWNER_REQUIRED');
+    expect((await request(`/trips/${trip.id}`, owner, undefined, 'DELETE')).status).toBe(200);
+    expect((await request(`/trips/${trip.id}`, owner, undefined, 'DELETE')).status).toBe(200);
+    expect(await targets()).toBe(0);
+    for (const user of [owner, member]) {
+      const read = await request(`/trips/${trip.id}`, user);
+      expect(read.status).toBe(404); expect((await read.json<{ error: { code: string } }>()).error.code).toBe('TRIP_NOT_FOUND');
+      expect((await request(`/trips/${trip.id}/sync`, user, { cursor: trip.revision, syncEpoch: trip.syncEpoch, operations: [addExpense(trip)] })).status).toBe(404);
+    }
+    // A device that never heard the first create acknowledged can't bring the trip back.
+    expect((await request('/trips', owner, { operationId, trip: original })).status).toBe(404);
+    expect((await request('/trips', owner, { operationId: crypto.randomUUID(), trip: original })).status).toBe(409);
+    expect((await (await request('/trips', owner)).json<{ trips: TripSnapshot[] }>()).trips).toEqual([]);
+    expect(await targets()).toBe(0);
+    const stored = await runInDurableObject(env.TRIPS.getByName(trip.id), (_instance, state) => ({
+      live: state.storage.sql.exec<{ n: number }>('SELECT count(*) AS n FROM entities WHERE data IS NOT NULL').one().n,
+      changes: state.storage.sql.exec<{ n: number }>('SELECT count(*) AS n FROM changes').one().n,
+    }));
+    expect(stored).toEqual({ live: 0, changes: 0 });
+    await runDurableObjectAlarm(env.TRIPS.getByName(trip.id));
+    expect(await env.DB.prepare('SELECT count(*) AS n FROM user_trips WHERE trip_id=? AND active=1').bind(trip.id).first()).toEqual({ n: 0 });
+  });
 });

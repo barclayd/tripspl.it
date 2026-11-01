@@ -130,6 +130,41 @@ import TripSplitSync
     onboarding = .newTrip()
     saveOnboarding()
   }
+  /// Deletes a trip for everyone on it. Only its owner can.
+  public func deleteTrip(_ trip: TripSnapshot) async {
+    do {
+      try await sync.deleteTrip(trip.id)
+      if selectedTripID == trip.id {
+        selectedAttachment = nil
+        selectedTripID = nil
+      }
+      if globeTripID == trip.id { globeTripID = nil }
+      notify("Deleted \(trip.name)")
+    } catch { self.error = error.localizedDescription }
+  }
+  /// Moves expenses to another day or leg. Paid ones count as paid on its date.
+  public func moveExpenses(_ items: [Expense], to attachment: Attachment, trip: TripSnapshot) {
+    let moving = items.filter { $0.attachment != attachment }
+    guard !moving.isEmpty else { return }
+    perform {
+      for item in moving {
+        var moved = item
+        moved.attachment = attachment
+        if moved.status == .paid { moved.paidOn = trip.date(for: attachment) }
+        try store.saveExpense(moved, tripID: trip.id)
+      }
+      let what = moving.count == 1 ? moving[0].title : "\(moving.count) expenses"
+      notify("Moved \(what) to \(trip.title(for: attachment))")
+      changed()
+    }
+  }
+  /// Deletes every expense on a day or leg.
+  public func clearDay(_ attachment: Attachment, trip: TripSnapshot) {
+    perform {
+      for item in trip.expenses(for: attachment) { try store.deleteExpense(item, tripID: trip.id) }
+      changed()
+    }
+  }
   public func toggleExpense(_ expense: Expense, trip: TripSnapshot) {
     perform {
       var edited = expense
