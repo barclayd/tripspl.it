@@ -11,18 +11,27 @@ JSON over HTTPS under `/v1`. Bearer access token required except challenge, Appl
 | POST | `/auth/logout` | `{refreshToken}` | `{ok:true}` |
 | GET | `/me` | — | `User` |
 | DELETE | `/me` | `{}` | 202 `{status:'pending'}` |
+| POST | `/me/devices` | `{token, environment:'sandbox'|'production'}` | `{ok:true}` |
+| DELETE | `/me/devices` | `{token}` | `{ok:true}` |
 | GET | `/trips` | optional `cursor` | `{trips:TripSnapshot[], nextCursor:string|null}` |
 | POST | `/trips` | `{operationId, trip:TripSnapshot}` | `TripSnapshot` |
 | GET | `/trips/:tripId` | — | `TripSnapshot` |
+| DELETE | `/trips/:tripId` | — (owner only; repeats succeed) | `{ok:true}` |
 | POST | `/trips/:tripId/sync` | `SyncRequest` | `SyncResponse` |
 | POST | `/trips/:tripId/invites` | `{travellerId}` | `{id, token, expiresAt, url:string|null}` |
 | POST | `/trips/:tripId/invites/:inviteId/accept` | `{token}` | `TripSnapshot` |
 | DELETE | `/trips/:tripId/invites/:inviteId` | — | `{ok:true}` |
 | DELETE | `/trips/:tripId/members/:travellerId` | — | `{ok:true}` |
+| POST | `/trips/:tripId/nudges` | `{travellerId}` | `{status:'sent'|'notJoined', nudgedOn}` |
 | GET | `/fx` | `from`, `to`, `date` query parameters | `FXQuote` |
+| GET | `/fx/rates` | `base`, `date` query parameters | `FXTable` |
 | GET | `/trips/:tripId/live` | WebSocket upgrade (authenticated) | `{type:'changed', revision, syncEpoch}` messages |
 
 Apple challenge `nonce` is a random raw nonce. The app sends its SHA-256 hex digest to Apple's native request. The server checks that digest against Apple's token and consumes the matching challenge exactly once. Verify cryptographic signatures through a maintained library and Apple's keys; require configured bundle audience. Account deletion persists a cleanup job, invalidates app sessions and revokes the stored Apple grant, retrying temporary provider failures. It does not require a fresh Apple sign-in. Shared-trip records remain with account links removed and the linked traveller anonymised; ownership passes to the earliest remaining active member. Trips with no other linked member are removed. These consequences must be disclosed in the native confirmation.
+
+A nudge reminds a traveller who owes the caller, according to the trip's current settlements, to pay them. Each member may nudge each traveller once per civil day in the trip's `timeZone` (`nudgedOn`); a repeat that day answers 429 `NUDGE_LIMIT`. Nudging someone who owes the caller nothing answers 409 `NOTHING_OWED`, and the caller themself or an unknown/archived traveller 400 `TRAVELLER`. A traveller without a linked account answers `notJoined`, which isn't recorded, so the caller can still nudge them after they join. A `sent` nudge is pushed as an alert to the recipient's registered devices (category `tripsplit.nudge`, with `trip` and `traveller` in the payload); delivery is best effort and never affects the response. Device tokens are hex APNs tokens with their environment. A token belongs to whichever account registered it last, each account keeps its ten most recently registered devices, tokens APNs reports as unregistered are dropped, and account deletion removes them. Clients remove the token on sign-out.
+
+Deleting a trip is owner only and applies to every traveller: the room purges its records, tombstones its expenses and closes live subscriptions with 1008. Afterwards every route for that trip answers 404 `TRIP_NOT_FOUND`, including replayed creates, and each member's trip slot is freed. Clients drop a synced trip from the device when it answers `TRIP_NOT_FOUND` or `MEMBERSHIP`.
 
 Trip creation is idempotent on operation ID and trip ID, assigns the authenticated user to `ownerTravellerId`, and rejects impersonation. Ignore client-provided role/currentTravellerId as authority. `revision = 0` and `syncEpoch = 'local'` are permitted only in local draft creation; the server returns its own initial revision/epoch. Create must resolve the same original operation after uncertain acknowledgement.
 
@@ -40,7 +49,7 @@ Invitation URLs must use a configured origin/application link; otherwise return 
 
 Every amount/budget, including a converted home amount, is a nonnegative integer no greater than `999999999999` minor units. Expense and repayment amounts must be positive. A trip has at most 10,000 expenses and repayments combined. Rates have at most 18 significant digits and at most 18 fractional digits. These bounds allow exact Swift Decimal conversion and safe Int64 aggregate arithmetic. SQL/TypeScript may use larger integer representations internally, but must enforce the transport bounds. Settlement suggestions sort creditors/debtors by descending initial amount with ascending ID tie-break, then consume each list in order without re-sorting after a transfer.
 
-The v1 trip directory returns one complete snapshot per page to bound Worker memory; clients follow `nextCursor` until null. Rate lookup is public with an IP-based rate limit so local-only users can convert amounts before signing in. It contains no user expense data.
+The v1 trip directory returns one complete snapshot per page to bound Worker memory; clients follow `nextCursor` until null. Rate lookup is public with an IP-based rate limit so local-only users can convert amounts before signing in. It contains no user expense data. `FXTable` lists every supported reference rate from one base so clients can convert between any pair offline, such as the watch's quick convert. It is indicative and edge-cached, not stored: expenses still cite an immutable `FXQuote`.
 
 
 ## Contract ownership and expressiveness

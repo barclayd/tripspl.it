@@ -21,7 +21,7 @@ Tests use the canonical money/currency fixtures in `../../api/contracts/fixtures
 
 The app is a composition shell for four local packages in `../Packages/`: `TripSplitDomain`, `TripSplitInfrastructure`, `TripSplitApplication` and `TripSplitFeatures`. Infrastructure exposes networking, persistence and sync separately. Features exposes design system, shared UI, Apple adapters and six vertical UI products. See [the architecture and dependency rules](../../docs/architecture.md#package-architecture) before adding a feature.
 
-Domain, networking, persistence, sync, application coordination and conversion are usable without iOS presentation code. Their minimum platforms are iOS 26, macOS 26 and watchOS 26. Run macOS package tests locally; when changing shared services, also compile the affected products for watchOS. CI keeps only fast validation and does not repeat these builds or tests. Watch and Mac application interfaces remain future work.
+Domain, networking, persistence, sync, application coordination and conversion are usable without iOS presentation code. Their minimum platforms are iOS 26, macOS 26 and watchOS 26. Run macOS package tests locally; when changing shared services, also compile the affected products for watchOS. CI keeps only fast validation and does not repeat these builds or tests. The Apple Watch app is in [`../watch/`](../watch/README.md) and shares this project; a Mac interface remains future work.
 
 From `apple/ios/`, check the watchOS consumers with:
 

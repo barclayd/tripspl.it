@@ -18,6 +18,14 @@ it('hibernates authenticated live subscriptions, sends hints and closes revoked 
   await request(`/trips/${trip.id}/members/b`, owner, undefined, 'DELETE'); expect(await closed).toBe(1008);
 });
 
+it('closes every subscription when the owner deletes the trip', async () => {
+  const owner = await session(), trip = await create(owner);
+  const response = await import('cloudflare:workers').then(({ exports }) => exports.default.fetch(`https://api.example.com/v1/trips/${trip.id}/live`, { headers: { Upgrade: 'websocket', authorization: `Bearer ${owner.accessToken}` } }));
+  expect(response.status).toBe(101); const socket = response.webSocket!; socket.accept();
+  const closed = new Promise<number>(resolve => socket.addEventListener('close', event => resolve(event.code), { once: true }));
+  expect((await request(`/trips/${trip.id}`, owner, undefined, 'DELETE')).status).toBe(200); expect(await closed).toBe(1008);
+});
+
 it('rolls back ledger writes when the receipt cannot commit and recovers from a changed server epoch', async () => {
   const owner = await session(), trip = await create(owner), stub = env.TRIPS.getByName(trip.id), op = addExpense(trip);
   await runInDurableObject(stub, (_instance, state) => { state.storage.sql.exec("CREATE TRIGGER reject_receipt BEFORE INSERT ON operation_receipts BEGIN SELECT RAISE(ABORT, 'injected failure'); END"); });

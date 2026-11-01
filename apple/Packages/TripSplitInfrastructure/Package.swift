@@ -8,6 +8,7 @@ let package = Package(
     .library(name: "TripSplitNetworking", targets: ["TripSplitNetworking"]),
     .library(name: "TripSplitPersistence", targets: ["TripSplitPersistence"]),
     .library(name: "TripSplitSync", targets: ["TripSplitSync"]),
+    .library(name: "TripSplitCompanion", targets: ["TripSplitCompanion"]),
   ],
   dependencies: [.package(path: "../TripSplitDomain")],
   targets: [
@@ -22,6 +23,14 @@ let package = Package(
       dependencies: [
         .product(name: "TripSplitDomain", package: "TripSplitDomain"), "TripSplitNetworking",
         "TripSplitPersistence",
+      ]),
+    .target(
+      name: "TripSplitCompanion",
+      dependencies: [.product(name: "TripSplitDomain", package: "TripSplitDomain")]),
+    .testTarget(
+      name: "TripSplitCompanionTests",
+      dependencies: [
+        "TripSplitCompanion", .product(name: "TripSplitDomain", package: "TripSplitDomain"),
       ]),
   ]
 )

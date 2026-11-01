@@ -61,6 +61,7 @@ public struct SettingsView: View {
             Text(error).font(.footnote).foregroundStyle(Theme.bad)
           }
         }
+        WatchFaceSection()
         Section("Local data & recovery") {
           Text(
             "Normal device backups can include your saved trips, drafts and unsent changes. A replacement device requires Apple sign-in again; restored changes are reviewed before syncing."
@@ -225,7 +226,7 @@ public struct TripSettingsView: View {
                   model.perform {
                     let traveller = Traveller(
                       name: newPerson.trimmingCharacters(in: .whitespaces),
-                      hue: Double((trip.travellers.count * 75) % 360))
+                      hue: AvatarPalette.hue(at: trip.travellers.count))
                     try model.store.enqueue(
                       .init(
                         syncEpoch: trip.syncEpoch, type: "traveller.upsert", entityId: traveller.id,

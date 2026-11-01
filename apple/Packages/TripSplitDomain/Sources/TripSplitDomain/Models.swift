@@ -650,6 +650,28 @@ public struct Invite: Codable, Identifiable, Sendable {
   public var expiresAt: String
   public var url: String?
 }
+/// The outcome of `POST /trips/{tripId}/nudges`. A traveller without an account can't be
+/// reached, so `notJoined` leaves their day free for when they join.
+public struct NudgeResult: Codable, Hashable, Sendable {
+  public enum Status: String, Codable, Sendable { case sent, notJoined }
+  public init(status: Status, nudgedOn: String) {
+    self.status = status
+    self.nudgedOn = nudgedOn
+  }
+  public var status: Status
+  /// The trip day the nudge counts against, in the trip's time zone.
+  public var nudgedOn: String
+}
+/// Where APNs should deliver to: the device token as hex, and which gateway issued it.
+public struct PushDevice: Codable, Hashable, Sendable {
+  public enum Environment: String, Codable, Sendable { case sandbox, production }
+  public init(token: String, environment: Environment) {
+    self.token = token
+    self.environment = environment
+  }
+  public var token: String
+  public var environment: Environment
+}
 extension String {
   public var flag: String {
     unicodeScalars.compactMap { UnicodeScalar(127397 + $0.value) }.map(String.init).joined()

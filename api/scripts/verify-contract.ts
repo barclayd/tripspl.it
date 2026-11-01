@@ -89,7 +89,7 @@ export function verifyContract(document: Contract): void {
 
   // Only explicitly public endpoints omit bearer authentication. A 101
   // response is documented as a WebSocket upgrade, never a JSON response.
-  const publicOperations = new Set(['get /v1/health', 'post /v1/auth/apple/challenge', 'post /v1/auth/apple', 'post /v1/auth/refresh', 'get /v1/fx']);
+  const publicOperations = new Set(['get /v1/health', 'post /v1/auth/apple/challenge', 'post /v1/auth/apple', 'post /v1/auth/refresh', 'get /v1/fx', 'get /v1/fx/rates']);
   let operationCount = 0;
   for (const [path, item] of Object.entries(document.paths)) {
     assert(path.startsWith('/v1/'));
@@ -100,14 +100,16 @@ export function verifyContract(document: Contract): void {
       assert.equal(Boolean(operation.security?.some(requirement => 'bearerAuth' in requirement)), !publicOperations.has(`${method} ${path}`), `Incorrect authentication contract for ${method} ${path}`);
     }
   }
-  assert.equal(operationCount, 17);
+  assert.equal(operationCount, 22);
   assert.equal(document.paths['/v1/trips/{tripId}/live']?.get?.responses?.['101'] !== undefined, true);
   assert.deepEqual(document.components?.securitySchemes?.['bearerAuth'], {
     type: 'http', scheme: 'bearer', bearerFormat: 'opaque',
     description: 'TripSplit access token in the Authorization header, including WebSocket upgrades. Never put credentials in URLs.',
   });
-  for (const parameter of document.paths['/v1/fx']?.get?.parameters ?? []) {
-    if ('$ref' in parameter) throw new Error('FX query parameters must be directly inspectable.');
-    assert.equal(parameter.required, true, `FX requires ${parameter.name}.`);
+  for (const path of ['/v1/fx', '/v1/fx/rates']) {
+    for (const parameter of document.paths[path]?.get?.parameters ?? []) {
+      if ('$ref' in parameter) throw new Error('FX query parameters must be directly inspectable.');
+      assert.equal(parameter.required, true, `FX requires ${parameter.name}.`);
+    }
   }
 }

@@ -1,7 +1,7 @@
 /** API transport types inferred from the schemas used by Hono and TripRoom. */
 import type { z } from '@hono/zod-openapi';
 import type { challengeSchema, sessionSchema, userSchema } from '../schemas/auth';
-import type { createTripSchema, deletionPendingSchema, errorSchema, fxQuoteSchema, invitationSchema, liveHintSchema, okSchema, operationResultSchema, syncResponseSchema, tripListSchema } from '../schemas/http';
+import type { createTripSchema, deletionPendingSchema, errorSchema, fxQuoteSchema, fxTableSchema, invitationSchema, liveHintSchema, nudgeResultSchema, okSchema, operationResultSchema, syncResponseSchema, tripListSchema } from '../schemas/http';
 import type { amount, categorySchema, civil, conversionSchema, currency, daySchema, expenseSchema, id, legSchema, operationSchema, repaymentSchema, settingsSchema, snapshotSchema, stopSchema, syncSchema, travellerSchema } from '../schemas/trip';
 
 export type ID = z.infer<typeof id>;
@@ -26,6 +26,7 @@ export type User = z.infer<typeof userSchema>;
 export type Session = z.infer<typeof sessionSchema>;
 export type AuthChallenge = z.infer<typeof challengeSchema>;
 export type FXQuote = z.infer<typeof fxQuoteSchema>;
+export type FXTable = z.infer<typeof fxTableSchema>;
 export type APIError = z.infer<typeof errorSchema>;
 export type Invitation = z.infer<typeof invitationSchema>;
 export type Success = z.infer<typeof okSchema>;
@@ -33,3 +34,4 @@ export type CreateTripRequest = z.infer<typeof createTripSchema>;
 export type TripList = z.infer<typeof tripListSchema>;
 export type DeletionPending = z.infer<typeof deletionPendingSchema>;
 export type LiveHint = z.infer<typeof liveHintSchema>;
+export type NudgeResult = z.infer<typeof nudgeResultSchema>;

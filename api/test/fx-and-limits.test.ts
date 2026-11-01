@@ -30,6 +30,21 @@ describe('FX provenance, limits and public rate service', () => {
     expect(transient.status).toBe(500); expect(await transient.json()).toMatchObject({ error: { retryable: true } });
     await env.DB.prepare('ALTER TABLE unavailable_quotes RENAME TO fx_quotes').run();
   });
+  it('returns a cached table of exact rates from one base, without unsupported quotes', async () => {
+    const body = '[{"date":"2026-09-30","base":"GBP","quote":"EUR","rate":1.1612},{"date":"2026-10-01","base":"GBP","quote":"JPY","rate":1.9867e2},'
+      + '{"date":"2026-10-01","base":"GBP","quote":"BTC","rate":0.0000105},{"date":"2026-10-01","base":"USD","quote":"CAD","rate":1.4}]';
+    const mock = vi.spyOn(globalThis, 'fetch').mockImplementation(async () => new Response(body, { headers: { 'Content-Type': 'application/json' } }));
+    const first = await request('/fx/rates?base=GBP&date=2026-10-01'); expect(first.status).toBe(200);
+    expect(await first.json()).toEqual({ base: 'GBP', requestedDate: '2026-10-01', rateDate: '2026-10-01', source: 'Frankfurter reference', rates: { GBP: '1', EUR: '1.1612', JPY: '198.67' } });
+    expect(String(mock.mock.calls[0]?.[0])).toBe('https://api.frankfurter.dev/v2/rates?base=GBP&date=2026-10-01');
+    expect((await request('/fx/rates?base=GBP&date=2026-10-01')).status).toBe(200); expect(mock).toHaveBeenCalledTimes(1);
+    expect((await request('/fx/rates?base=ZZZ&date=2026-10-01')).status).toBe(400);
+    expect((await request('/fx/rates?base=GBP&date=2999-01-01')).status).toBe(400);
+    mock.mockImplementation(async () => new Response('[{"date":"2026-10-03","base":"EUR","quote":"GBP","rate":0.86}]'));
+    expect((await request('/fx/rates?base=EUR&date=2026-10-02')).status).toBe(502);
+    mock.mockImplementation(async () => new Response('Unavailable', { status: 500 }));
+    expect((await request('/fx/rates?base=USD&date=2026-10-02')).status).toBe(503);
+  });
   it('retains unresolved foreign originals and allows explicit card-charge manual amounts', async () => {
     const owner = await session(), trip = await create(owner), unresolved = expense(), manual = expense();
     unresolved.currency = 'USD'; manual.currency = 'USD';

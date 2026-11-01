@@ -21,16 +21,61 @@ import TripSplitSync
   public var onboarding: OnboardingDraft
   public var toast: String?
   public var error: String?
-  public var mapFilter = "All"
+  public var globeFilter = GlobeFilter.all {
+    didSet { if globeFilter != oldValue { globeTripID = nil } }
+  }
+  /// The trip highlighted on the globe, kept across tab switches.
+  public var globeTripID: String?
   public var inviteURL: URL?
   public var pendingInvitation: URL?
+  /// The last reference rates from pounds, kept for indicative amounts such as a suggested
+  /// budget, so they still show offline. Expenses never convert with these.
+  public private(set) var referenceRates: FXTable?
   public var selectedTrip: TripSnapshot? { selectedTripID.flatMap { store.trip($0) } }
   public init(store: LocalStore, sync: SyncCoordinator? = nil) {
     self.store = store
     self.sync = sync ?? SyncCoordinator(store: store)
-    onboarding = store.read(OnboardingDraft.self, key: "onboarding") ?? OnboardingDraft()
-    if !onboarding.flowSteps.contains(onboarding.step) { onboarding.step = 7 }
+    onboarding = store.read(OnboardingDraft.self, key: "onboarding") ?? .newTrip()
+    onboarding.reconcileRoute()
     if onboarding.step == 6 { selectedTripID = onboarding.createdTripID }
+    referenceRates = store.read(FXTable.self, key: "referenceRates")
+  }
+  /// An indicative rate between any two currencies the cached table lists.
+  /// The currency most trips are kept in, for totals that span trips.
+  public var displayCurrency: String {
+    let counts = Dictionary(grouping: store.trips, by: \.homeCurrency).mapValues(\.count)
+    return counts.max { $0.value < $1.value || $0.value == $1.value && $0.key > $1.key }?.key
+      ?? Locale.current.currency?.identifier ?? "GBP"
+  }
+  /// What trips that have started cost, converted at reference rates. Nil while a rate is missing.
+  public func spentSoFar(in currency: String) -> Int64? {
+    var total: Int64 = 0
+    for trip in store.trips where trip.phase != .upcoming {
+      let amount = Ledger(trip).total
+      guard
+        let rate = trip.homeCurrency == currency
+          ? "1" : referenceRates?.rate(from: trip.homeCurrency, to: currency),
+        let converted = try? Money.convert(amount, from: trip.homeCurrency, to: currency, rate: rate)
+      else { return nil }
+      total += converted
+    }
+    return total
+  }
+  public func indicativeRate(from: String, to: String) -> Double? {
+    if from == to { return 1 }
+    return referenceRates?.rate(from: from, to: to).flatMap(Double.init)
+  }
+  /// Fetches today's reference rates once a day when the cloud service is configured.
+  public func refreshReferenceRates() async {
+    let today = CivilDate.today(timeZone: TimeZone.current.identifier)
+    guard sync.configured, referenceRates?.requestedDate != today,
+      let table = try? await sync.api.rates(base: "GBP", date: today)
+    else { return }
+    cacheReferenceRates(table)
+  }
+  public func cacheReferenceRates(_ table: FXTable) {
+    referenceRates = table
+    try? store.write(table, key: "referenceRates")
   }
   public func open(_ trip: TripSnapshot) {
     selectedTripID = trip.id
@@ -82,8 +127,43 @@ import TripSplitSync
     if planTravel, let trip = selectedTrip, let leg = trip.legs.first {
       selectedAttachment = .init(kind: .leg, id: leg.id)
     }
-    onboarding = OnboardingDraft()
+    onboarding = .newTrip()
     saveOnboarding()
+  }
+  /// Deletes a trip for everyone on it. Only its owner can.
+  public func deleteTrip(_ trip: TripSnapshot) async {
+    do {
+      try await sync.deleteTrip(trip.id)
+      if selectedTripID == trip.id {
+        selectedAttachment = nil
+        selectedTripID = nil
+      }
+      if globeTripID == trip.id { globeTripID = nil }
+      notify("Deleted \(trip.name)")
+    } catch { self.error = error.localizedDescription }
+  }
+  /// Moves expenses to another day or leg. Paid ones count as paid on its date.
+  public func moveExpenses(_ items: [Expense], to attachment: Attachment, trip: TripSnapshot) {
+    let moving = items.filter { $0.attachment != attachment }
+    guard !moving.isEmpty else { return }
+    perform {
+      for item in moving {
+        var moved = item
+        moved.attachment = attachment
+        if moved.status == .paid { moved.paidOn = trip.date(for: attachment) }
+        try store.saveExpense(moved, tripID: trip.id)
+      }
+      let what = moving.count == 1 ? moving[0].title : "\(moving.count) expenses"
+      notify("Moved \(what) to \(trip.title(for: attachment))")
+      changed()
+    }
+  }
+  /// Deletes every expense on a day or leg.
+  public func clearDay(_ attachment: Attachment, trip: TripSnapshot) {
+    perform {
+      for item in trip.expenses(for: attachment) { try store.deleteExpense(item, tripID: trip.id) }
+      changed()
+    }
   }
   public func toggleExpense(_ expense: Expense, trip: TripSnapshot) {
     perform {

@@ -140,6 +140,7 @@ export async function deleteAccount(env: Env, userId: string): Promise<void> {
     env.DB.prepare('INSERT OR IGNORE INTO deletion_jobs(user_id,encrypted_grant,created_at) SELECT u.id,a.encrypted_grant,? FROM users u LEFT JOIN apple_identities a ON a.user_id=u.id WHERE u.id=?').bind(new Date().toISOString(), userId),
     env.DB.prepare('UPDATE users SET deleting=1,display_name=? WHERE id=?').bind('Deleted account', userId),
     env.DB.prepare('DELETE FROM sessions WHERE user_id=?').bind(userId),
+    env.DB.prepare('DELETE FROM device_tokens WHERE user_id=?').bind(userId),
   ]);
 }
 export async function processDeletions(env: Env): Promise<void> {
@@ -161,6 +162,7 @@ export async function processDeletions(env: Env): Promise<void> {
         env.DB.prepare('DELETE FROM user_trip_targets WHERE user_id=?').bind(job.user_id),
         env.DB.prepare('DELETE FROM apple_identities WHERE user_id=?').bind(job.user_id),
         env.DB.prepare('DELETE FROM sessions WHERE user_id=?').bind(job.user_id),
+        env.DB.prepare('DELETE FROM device_tokens WHERE user_id=?').bind(job.user_id),
         env.DB.prepare('DELETE FROM users WHERE id=?').bind(job.user_id),
         env.DB.prepare('DELETE FROM deletion_jobs WHERE user_id=?').bind(job.user_id),
       ]);

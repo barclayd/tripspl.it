@@ -42,6 +42,7 @@ let package = Package(
       name: "TripSplitTripsUI",
       dependencies: [
         .product(name: "TripSplitDomain", package: "TripSplitDomain"),
+        .product(name: "TripSplitNetworking", package: "TripSplitInfrastructure"),
         .product(name: "TripSplitPersistence", package: "TripSplitInfrastructure"),
         .product(name: "TripSplitSync", package: "TripSplitInfrastructure"),
         .product(name: "TripSplitApplication", package: "TripSplitApplication"),
@@ -91,6 +92,12 @@ let package = Package(
         .product(name: "TripSplitPersistence", package: "TripSplitInfrastructure"),
         .product(name: "TripSplitApplication", package: "TripSplitApplication"),
         "TripSplitDesignSystem",
+      ]),
+    .testTarget(
+      name: "TripSplitFeaturesTests",
+      dependencies: [
+        .product(name: "TripSplitDomain", package: "TripSplitDomain"),
+        "TripSplitDesignSystem", "TripSplitSharedUI",
       ]),
   ]
 )

@@ -11,6 +11,7 @@ public struct TripsView: View {
     self.compact = compact
   }
   @Environment(AppModel.self) private var model
+  /// The open Duo's leading pane: a plain sidebar of every trip, with the trip beside it.
   var compact = false
   private var trips: [TripSnapshot] { model.store.trips }
   public var body: some View {
@@ -23,67 +24,96 @@ public struct TripsView: View {
   private var content: some View {
     ScrollView {
       VStack(alignment: .leading, spacing: 26) {
-        if !compact {
-          if !trips.isEmpty {
-            HStack {
-              Text(
-                Array(Set(trips.flatMap { $0.stops.map(\.flag) })).sorted().joined(separator: " ")
-              ).font(.title2)
-              Spacer()
-              Text(
-                "\(trips.count) trips · \(Set(trips.flatMap { $0.stops.map(\.countryCode) }).count) countries"
-              ).font(.caption.weight(.semibold)).foregroundStyle(Theme.secondary)
-            }
-          }
-        }
+        if compact { sidebarHeader } else { header }
         if trips.isEmpty {
           empty
         } else if compact {
           sidebar
         } else {
-          ForEach(trips.filter { $0.phase == .now }) { trip in
-            VStack(alignment: .leading, spacing: 10) {
-              HStack(spacing: 8) {
-                Circle().fill(Theme.accent).frame(width: 7, height: 7)
-                Kicker(title: "Happening now")
+          if let now = trips.first(where: { $0.phase == .now }) {
+            VStack(alignment: .leading, spacing: 14) {
+              VStack(alignment: .leading, spacing: 10) {
+                HStack(spacing: 9) {
+                  LiveDot()
+                  Kicker(title: "Happening now")
+                }
+                CurrentTripCard(trip: now)
               }
-              CurrentTripCard(trip: trip)
-              if trip.showsHomeConverter {
-                Button {
-                  model.open(trip)
-                  model.showConverter = true
-                } label: {
-                  Card(padding: 16) {
-                    HStack {
-                      Text(trip.stop(for: trip.currentAttachment)?.flag ?? "🌍").font(.title)
-                      VStack(alignment: .leading, spacing: 3) {
-                        Text("Quick convert").font(.headline)
-                        Text(
-                          "\(trip.stop(for: trip.currentAttachment)?.currency ?? "") → \(trip.homeCurrency)"
-                        ).font(.caption).foregroundStyle(Theme.secondary)
-                      }
-                      Spacer()
-                      Image(systemName: "arrow.left.arrow.right").padding(10).background(
-                        Theme.accentSoft, in: Capsule()
-                      ).foregroundStyle(Theme.accent)
-                    }
-                  }
-                }.buttonStyle(.plain).accessibilityIdentifier("home.quickConvert")
-              }
+              if now.showsHomeConverter { QuickConvertCard(trip: now) }
             }
           }
-          departures
-          if trips.contains(where: { $0.phase == .past }) { passport }
+          DeparturesBoard(trips: trips)
+          if trips.contains(where: { $0.phase == .past }) { PassportStamps(trips: trips) }
         }
       }.pagePadding().padding(.bottom, 28)
-    }.scrollBounceBehavior(.basedOnSize).background(Theme.background).toolbar {
-      ToolbarItem(placement: .primaryAction) {
-        Button("New trip", systemImage: "plus") { model.showOnboarding = true }
+    }
+    .scrollBounceBehavior(.basedOnSize)
+    .scrollEdgeEffectHidden(compact, for: .top)
+    .background(Theme.background)
+  }
+  private var header: some View {
+    VStack(alignment: .leading, spacing: 6) {
+      HStack {
+        Text("Trips").screenTitle(34).accessibilityAddTraits(.isHeader)
+        Spacer()
+        account(size: 36)
       }
-      ToolbarItem {
-        Button("Account & sync", systemImage: "person.crop.circle") { model.showSettings = true }
+      if !trips.isEmpty {
+        let flags = Self.flags(trips)
+        HStack(spacing: 8) {
+          HStack(spacing: 3) {
+            ForEach(Array(flags.enumerated()), id: \.offset) { index, flag in
+              Text(flag).font(.system(size: 16)).popIn(delay: Double(index) * 0.06)
+            }
+          }
+          .accessibilityHidden(true)
+          Text(tally).typeface(14, relativeTo: .subheadline).foregroundStyle(Theme.secondary)
+            .lineLimit(1)
+        }
       }
     }
+    .padding(.top, 6)
+  }
+  /// The sidebar's quieter header: title and tally, with the account tucked beside them.
+  private var sidebarHeader: some View {
+    HStack(alignment: .top) {
+      VStack(alignment: .leading, spacing: 4) {
+        Text("Trips").screenTitle(26).accessibilityAddTraits(.isHeader)
+        if !trips.isEmpty {
+          Text(tally).typeface(12.5, .semibold, relativeTo: .caption).foregroundStyle(Theme.secondary)
+            .lineLimit(1)
+        }
+      }
+      Spacer()
+      account(size: 30)
+    }
+    .padding(.top, 6).padding(.bottom, -6)
+  }
+  private var tally: String {
+    let countries = Set(trips.flatMap { $0.stops.map(\.countryCode) }).count
+    return
+      "\(trips.count) \(trips.count == 1 ? "trip" : "trips") · \(countries) \(countries == 1 ? "country" : "countries")"
+  }
+  private func account(size: CGFloat) -> some View {
+    Button {
+      model.showSettings = true
+    } label: {
+      if let me = trips.first.flatMap({ trip in
+        trip.travellers.first { $0.id == trip.currentTravellerId }
+      }) {
+        Avatar(traveller: me, size: size)
+      } else {
+        Image(systemName: "person.crop.circle.fill").font(.system(size: size - 2))
+          .foregroundStyle(Theme.secondary)
+      }
+    }
+    .buttonStyle(PressStyle(scale: 0.9))
+    .accessibilityLabel("Account & sync")
+  }
+  /// Every flag across every trip once, in the order they were first visited.
+  private static func flags(_ trips: [TripSnapshot]) -> [String] {
+    var seen = Set<String>()
+    return trips.flatMap(\.stops).map(\.flag).filter { seen.insert($0).inserted }
   }
   private var empty: some View {
     VStack(alignment: .leading, spacing: 28) {
@@ -100,205 +130,96 @@ public struct TripsView: View {
     }
   }
   private var sidebar: some View {
-    VStack(alignment: .leading, spacing: 24) {
+    VStack(alignment: .leading, spacing: 22) {
       ForEach(TripSnapshot.Phase.allCases, id: \.self) { phase in
         let group = trips.filter { $0.phase == phase }
         if !group.isEmpty {
-          VStack(alignment: .leading, spacing: 10) {
-            Kicker(title: phase == .now ? "Now" : phase == .upcoming ? "Coming up" : "Been there")
+          VStack(alignment: .leading, spacing: 4) {
+            Text(phase == .now ? "NOW" : phase == .upcoming ? "COMING UP" : "BEEN THERE")
+              .typeface(11.5, .heavy, tracking: 0.06, relativeTo: .caption, maximum: 1.4)
+              .foregroundStyle(Theme.secondary).accessibilityAddTraits(.isHeader)
+              .padding(.horizontal, 10).padding(.bottom, 4)
             ForEach(group) { trip in
-              Button {
-                model.open(trip)
-              } label: {
-                HStack(spacing: 12) {
-                  Text(trip.stops.first?.flag ?? "🌍").font(.title2).frame(width: 40, height: 44)
-                    .background(Theme.surface, in: RoundedRectangle(cornerRadius: 12))
-                  VStack(alignment: .leading, spacing: 4) {
-                    Text(trip.name).font(.subheadline.weight(.heavy))
-                    Text(
-                      "\(CivilDate.display(trip.startsOn)) · \(trip.activeTravellers.count) \(trip.activeTravellers.count == 1 ? "person" : "people")"
-                    ).font(.caption).foregroundStyle(Theme.secondary)
-                  }
-                  Spacer()
-                  Text(Money.format(Ledger(trip).total, trip.homeCurrency, compact: true)).font(
-                    .subheadline.weight(.bold))
-                }.padding(12).background(
-                  model.selectedTripID == trip.id ? Theme.accentSoft : .clear,
-                  in: RoundedRectangle(cornerRadius: 16))
-              }.buttonStyle(.plain)
+              SidebarRow(trip: trip, selected: model.selectedTripID == trip.id) { model.open(trip) }
             }
           }
         }
       }
     }
-  }
-  private var departures: some View {
-    VStack(alignment: .leading, spacing: 16) {
-      HStack {
-        Label("DEPARTURES", systemImage: "airplane").font(
-          .system(size: 12, weight: .black, design: .monospaced)
-        ).tracking(2).foregroundStyle(Theme.amber)
-        Spacer()
-        Image(systemName: "clock").foregroundStyle(.white.opacity(0.6))
-      }
-      HStack {
-        Text("DESTINATION")
-        Spacer()
-        Text("DATE")
-        Text("STATUS").frame(width: 63)
-      }.font(.system(size: 8, weight: .bold, design: .monospaced)).foregroundStyle(
-        .white.opacity(0.40)
-      ).tracking(1)
-      ForEach(trips.filter { $0.phase != .past }) { trip in
-        Button {
-          model.open(trip)
-        } label: {
-          HStack(spacing: 7) {
-            Text(trip.stops.first?.flag ?? "🌍").font(.subheadline)
-            FlapText(
-              value: (trip.stops.first?.place ?? trip.name)
-                + (trip.stops.count > 1 ? " +\(trip.stops.count - 1)" : ""), count: 9, size: 12)
-            Spacer(minLength: 0)
-            FlapText(value: CivilDate.display(trip.startsOn, format: "dd MMM"), count: 6, size: 10)
-            FlapText(
-              value: trip.phase == .now ? "ON TRIP" : "SOON", count: 7, size: 10,
-              color: trip.phase == .now ? Color(hex: 0x5BE49B) : Theme.amber)
-          }
-        }.buttonStyle(.plain).accessibilityLabel(
-          "\(trip.name), \(CivilDate.display(trip.startsOn)), \(trip.phase == .now ? "On trip" : "Upcoming")"
-        )
-      }
-      Button {
-        model.showOnboarding = true
-      } label: {
-        Label("ADD A TRIP", systemImage: "plus").font(
-          .system(size: 11, weight: .bold, design: .monospaced)
-        ).foregroundStyle(.white.opacity(0.50)).frame(maxWidth: .infinity, alignment: .leading)
-          .padding(.top, 6)
-      }
-    }.padding(19).background(Theme.board, in: RoundedRectangle(cornerRadius: 22))
-  }
-  private var passport: some View {
-    VStack(alignment: .leading, spacing: 18) {
-      HStack {
-        Kicker(title: "Passport · visas")
-        Spacer()
-        Text("\(trips.filter { $0.phase == .past }.count) STAMPS").font(
-          .system(size: 9, weight: .heavy, design: .monospaced)
-        ).foregroundStyle(Theme.secondary)
-      }
-      LazyVGrid(columns: [.init(.flexible()), .init(.flexible())], spacing: 20) {
-        ForEach(Array(trips.filter { $0.phase == .past }.enumerated()), id: \.element.id) {
-          index, trip in
-          Button {
-            model.open(trip)
-          } label: {
-            VStack(spacing: 5) {
-              Text("ARRIVED").font(.system(size: 10, weight: .black, design: .monospaced)).tracking(
-                3)
-              Text(trip.stops.first?.place.uppercased() ?? trip.name.uppercased()).font(
-                .system(size: 17, weight: .black, design: .default))
-              Text(trip.flags).font(.title2)
-              Text(CivilDate.display(trip.startsOn, format: "MMM yyyy").uppercased()).font(
-                .system(size: 10, weight: .bold, design: .monospaced))
-              Text(Money.format(Ledger(trip).total, trip.homeCurrency, compact: true)).font(
-                .system(size: 17, weight: .black, design: .default))
-            }.frame(maxWidth: .infinity).padding(.vertical, 17).overlay(
-              RoundedRectangle(cornerRadius: index % 2 == 0 ? 70 : 14).stroke(lineWidth: 2.5)
-            ).padding(4).overlay(
-              RoundedRectangle(cornerRadius: index % 2 == 0 ? 74 : 18).stroke(lineWidth: 1)
-            ).rotationEffect(.degrees(index % 2 == 0 ? -7 : 6)).foregroundStyle(
-              index % 2 == 0 ? Color(hex: 0x9B4A42) : Color(hex: 0x615396))
-          }.buttonStyle(.plain)
-        }
-      }.padding(.vertical, 8)
-    }.padding(20).background(
-      Color.adaptive(0xF5EFDF, 0x2B2821), in: RoundedRectangle(cornerRadius: 20))
+    .padding(.horizontal, -10)
   }
 }
-struct CurrentTripCard: View {
-  init(trip: TripSnapshot) {
-    self.trip = trip
-  }
-  @Environment(AppModel.self) private var model
-  var trip: TripSnapshot
+
+/// One trip in the open Duo's sidebar: flag, name, dates and people, total.
+private struct SidebarRow: View {
+  let trip: TripSnapshot
+  let selected: Bool
+  let action: () -> Void
+
   var body: some View {
-    let ledger = Ledger(trip)
-    let budget = Money.minor(trip.budgetMinor) ?? 0
-    VStack(alignment: .leading, spacing: 15) {
-      Button {
-        model.open(trip)
-      } label: {
-        VStack(alignment: .leading, spacing: 10) {
-          HStack {
-            Text(trip.flags).font(.title)
-            Spacer()
-            Text(
-              "Day \((trip.days.firstIndex(where: { $0.id == trip.currentAttachment.id }) ?? 0) + 1) of \(trip.days.count)"
-            ).font(.caption.weight(.bold)).padding(.horizontal, 12).padding(.vertical, 6)
-              .background(.white.opacity(0.2), in: Capsule())
-          }
-          Text(trip.name).font(.system(size: 25, weight: .heavy, design: .default)).tracking(-0.6)
-          Text(
-            "\(CivilDate.display(trip.startsOn)) – \(CivilDate.display(trip.endsOn)) · \(trip.activeTravellers.count) \(trip.activeTravellers.count == 1 ? "person" : "people")"
-          ).font(.subheadline).opacity(0.85)
-          Text(ledger.unresolved > 0 ? "Known cost · conversion pending" : "This trip costs").font(
-            .subheadline.weight(.semibold)
-          ).padding(.top, 5)
-          MoneyText(amount: ledger.total, currency: trip.homeCurrency, size: 52)
-          Text(
-            "\(Money.format(ledger.total / Int64(max(1, trip.activeTravellers.count)), trip.homeCurrency)) average each"
-          ).font(.subheadline).opacity(0.88)
-          BudgetBar(
-            paid: ledger.paid, planned: ledger.planned, budget: budget, currency: trip.homeCurrency,
-            hero: true)
-          HStack {
-            Text("\(Money.format(ledger.paid, trip.homeCurrency, compact: true)) paid")
-            Spacer()
-            Text(
-              ledger.total > budget
-                ? "\(Money.format(ledger.total - budget, trip.homeCurrency, compact: true)) over"
-                : "\(Money.format(budget - ledger.total, trip.homeCurrency, compact: true)) left")
-          }.font(.caption.weight(.semibold))
-        }.frame(maxWidth: .infinity, alignment: .leading)
-      }.buttonStyle(.plain)
-      HStack(alignment: .bottom, spacing: 5) {
-        ForEach(trip.days) { day in
-          let amount = Ledger(trip, expenses: trip.expenses(for: .init(kind: .day, id: day.id)))
-            .total
-          Capsule().fill(
-            .white.opacity(day.date > trip.today(for: .init(kind: .day, id: day.id)) ? 0.35 : 0.9)
-          ).frame(
-            height: max(6, min(44, CGFloat(amount) / CGFloat(max(1, ledger.total)) * 150))
-          ).overlay(alignment: .bottom) {
-            if trip.isToday(day) {
-              Circle().fill(.white).frame(width: 4, height: 4).offset(y: 7)
-            }
-          }
+    Button(action: action) {
+      HStack(spacing: 12) {
+        Text(trip.stops.first?.flag ?? "🌍").font(.system(size: 20))
+          .frame(width: 40, height: 40)
+          .background(
+            selected ? Theme.surface : Theme.inset,
+            in: RoundedRectangle(cornerRadius: 12, style: .continuous))
+        VStack(alignment: .leading, spacing: 2) {
+          Text(trip.name).typeface(15, .heavy, relativeTo: .subheadline, maximum: 1.4)
+            .foregroundStyle(Theme.ink).lineLimit(1)
+          Text(subtitle).typeface(12.5, relativeTo: .caption, maximum: 1.4)
+            .foregroundStyle(Theme.secondary).lineLimit(1)
         }
-      }.frame(height: 48).padding(.bottom, 8).accessibilityHidden(true)
-      HStack {
-        Button {
-          model.open(trip)
-          model.openDay(trip.currentAttachment)
-        } label: {
-          Text(
-            "Today in \(trip.stop(for: trip.currentAttachment)?.place ?? "your trip") \(trip.stop(for: trip.currentAttachment)?.flag ?? "")"
-          ).font(.caption.weight(.heavy)).padding(12).background(
-            .white.opacity(0.18), in: Capsule())
-        }
-        Spacer()
-        Button {
-          model.open(trip)
-          model.editExpense(trip: trip, attachment: trip.currentAttachment)
-        } label: {
-          Image(systemName: "plus").font(.title2.weight(.bold)).foregroundStyle(Theme.accent).frame(
-            width: 46, height: 46
-          ).background(.white, in: RoundedRectangle(cornerRadius: 16))
-        }.accessibilityLabel("Add today’s expense")
+        .frame(maxWidth: .infinity, alignment: .leading)
+        Text(Money.whole(Ledger(trip).total, trip.homeCurrency))
+          .typeface(14, .heavy, relativeTo: .subheadline, maximum: 1.4).monospacedDigit()
+          .foregroundStyle(Theme.ink).fixedSize()
       }
-    }.padding(21).foregroundStyle(.white).background(
-      Theme.accent, in: RoundedRectangle(cornerRadius: 28)
-    ).shadow(color: Theme.accent.opacity(0.23), radius: 18, y: 10)
+      .padding(10)
+      .background(
+        selected ? Theme.accentSoft : .clear,
+        in: RoundedRectangle(cornerRadius: 16, style: .continuous))
+      .overlay(alignment: .topTrailing) {
+        if trip.phase == .now {
+          Text("NOW").typeface(10, .black, tracking: 0.06, relativeTo: .caption2, maximum: 1.3)
+            .foregroundStyle(Theme.accentInk)
+            .padding(.vertical, 3).padding(.horizontal, 8)
+            .background(Theme.accent, in: Capsule())
+            .offset(x: -8, y: -9)
+            .accessibilityHidden(true)
+        }
+      }
+      .contentShape(RoundedRectangle(cornerRadius: 16))
+    }
+    .buttonStyle(PressStyle(scale: 0.98))
+    .accessibilityElement(children: .combine)
+    .accessibilityAddTraits(selected ? .isSelected : [])
+  }
+
+  private var subtitle: String {
+    let year = trip.phase == .past ? " \(CivilDate.display(trip.endsOn, format: "yyyy"))" : ""
+    let people = trip.activeTravellers.count
+    return
+      "\(CivilDate.display(trip.startsOn)) – \(CivilDate.display(trip.endsOn))\(year) · \(people) \(people == 1 ? "person" : "people")"
+  }
+}
+
+/// The "happening now" marker: a solid dot with a ring pulsing out of it.
+private struct LiveDot: View {
+  @Environment(\.accessibilityReduceMotion) private var reduceMotion
+  @State private var pulsing = false
+  var body: some View {
+    ZStack {
+      if !reduceMotion {
+        Circle().fill(Theme.accent)
+          .scaleEffect(pulsing ? 2.6 : 1).opacity(pulsing ? 0 : 0.9)
+      }
+      Circle().fill(Theme.accent)
+    }
+    .frame(width: 8, height: 8)
+    .accessibilityHidden(true)
+    .onAppear {
+      withAnimation(.easeOut(duration: 1.8).repeatForever(autoreverses: false)) { pulsing = true }
+    }
   }
 }

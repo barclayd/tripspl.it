@@ -89,12 +89,14 @@ public enum ConversionSide: String, Identifiable {
     let previous = (from.code, to.code)
     if side == .from { from = currency } else { to = currency }
     guard previous != (from.code, to.code) else { return nil }
+    fitAmount()
     return refresh()
   }
   @discardableResult public func swap() -> Task<Void, Never>? {
     let previousFrom = from
     from = to
     to = previousFrom
+    fitAmount()
     return refresh()
   }
   @discardableResult public func reset(from: ConversionCurrency, to: ConversionCurrency)
@@ -102,6 +104,7 @@ public enum ConversionSide: String, Identifiable {
   {
     self.from = from
     self.to = to
+    fitAmount()
     return refresh()
   }
   public func enterManualRate(_ value: String = "") {
@@ -154,15 +157,17 @@ public enum ConversionSide: String, Identifiable {
     request = task
     return task
   }
+  /// Any positive amount can be logged in the currency it was typed in. Only a conversion into
+  /// home carries its rate across, so only then must that rate be valid.
   public func canLogExpense(homeCurrency: String) -> Bool {
-    to.code == homeCurrency && (parsedAmount ?? 0) > 0 && conversionIssue == nil
+    (parsedAmount ?? 0) > 0 && (to.code != homeCurrency || conversionIssue == nil)
   }
   public func expenseDraft(trip: TripSnapshot, attachment: Attachment) throws -> ExpenseDraft {
     guard canLogExpense(homeCurrency: trip.homeCurrency) else { throw MoneyError.invalid }
     var draft = ExpenseDraft(trip: trip, attachment: attachment)
     draft.amount = amount
     draft.currency = from.code
-    if !isIdentity, let result {
+    if to.code == trip.homeCurrency, !isIdentity, let result {
       if let quote, !usesManualRate, effectiveRate != nil {
         draft.conversion = Conversion(
           homeAmountMinor: String(result), rate: quote.rate, rateDate: quote.rateDate,
@@ -174,6 +179,14 @@ public enum ConversionSide: String, Identifiable {
       }
     }
     return draft
+  }
+  /// Trims typed decimals the new `from` currency can't hold, e.g. "12.50" becomes "12" in JPY,
+  /// since the keypad can't remove a decimal point it no longer shows.
+  private func fitAmount() {
+    let parts = amount.split(separator: ".", omittingEmptySubsequences: false)
+    guard parts.count == 2 else { return }
+    let digits = Money.precision(from.code)
+    amount = digits == 0 ? String(parts[0]) : "\(parts[0]).\(parts[1].prefix(digits))"
   }
   private func validRate(_ rate: String) -> Bool {
     (try? Money.convert(0, from: from.code, to: to.code, rate: rate)) != nil

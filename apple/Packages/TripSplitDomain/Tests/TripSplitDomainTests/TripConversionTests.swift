@@ -43,6 +43,13 @@ struct TripConversionTests {
     #expect(trip.showsHomeConverter(on: trip.days[0].date))
   }
 
+  @Test func abroadMeansADayAwayFromTheHomeCurrency() throws {
+    let trip = try trip()
+    #expect(!trip.isAbroad(.init(kind: .day, id: trip.days[0].id)))
+    #expect(trip.isAbroad(.init(kind: .day, id: trip.days[1].id)))
+    #expect(!trip.isAbroad(.init(kind: .leg, id: trip.legs[0].id)))
+  }
+
   @Test func missingStopDoesNotProduceAnEmptyShortcut() throws {
     var trip = try trip()
     trip.stops = []

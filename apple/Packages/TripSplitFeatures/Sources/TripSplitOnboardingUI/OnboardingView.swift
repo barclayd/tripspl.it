@@ -1,755 +1,479 @@
 import SwiftUI
-import TripSplitAppleAdapters
 import TripSplitApplication
 import TripSplitDesignSystem
 import TripSplitDomain
-import TripSplitSharedUI
 
+/// New trip setup: each answer fills in the boarding pass above it.
 public struct OnboardingView: View {
   public init() {
   }
   @Environment(AppModel.self) private var model
   @Environment(\.dismiss) private var dismiss
   @Environment(\.accessibilityReduceMotion) private var reduceMotion
-  @Environment(\.dynamicTypeSize) private var dynamicTypeSize
-  @State private var query = ""
-  @State private var personName = ""
-  @State private var custom = false
-  @State private var destinationSearch = DestinationSearch()
-  @State private var searchedMapQuery: String?
-  @State private var currencyDestination: Destination?
-  @State private var timeZoneSelection: DestinationTimeZoneSelection?
+  @Environment(\.horizontalSizeClass) private var sizeClass
+  @State private var forward = true
+  @State private var landscape = false
+  @State private var verticalRail = false
+  @State private var fanned = false
+  @State private var rejected = 0
   @FocusState private var inputFocused: Bool
-  @ScaledMetric(relativeTo: .subheadline) private var routeHeight = 78.0
-  private var title: String {
-    switch model.onboarding.step {
-    case 0: "Where are you going?"
-    case 1: "When do you leave?"
-    case 7: "When are you home?"
-    case 2: "Nights by destination"
-    case 3: "Who’s coming?"
-    case 4: "Home currency"
-    case 5: "Trip budget"
-    default: "Trip created"
-    }
+
+  private var draft: OnboardingDraft { model.onboarding }
+  private var step: Int { draft.step }
+
+  /// Compact on the phone; on the open Duo a step sidebar in landscape, a full pass above the
+  /// step in portrait.
+  private enum Layout { case compact, sidebar, pane }
+  private var layout: Layout {
+    guard sizeClass == .regular else { return .compact }
+    return landscape ? .sidebar : .pane
   }
+
   public var body: some View {
     NavigationStack {
-      VStack(spacing: 0) {
-        ProgressView(
-          value: Double(model.onboarding.stepPosition), total: Double(model.onboarding.totalSteps)
-        ).tint(Theme.accent)
-          .scaleEffect(y: 2).padding(.horizontal, 24).padding(.vertical, 12)
+      Group {
+        switch layout {
+        case .compact: compactLayout
+        case .sidebar: sidebarLayout
+        case .pane: paneLayout
+        }
+      }
+      .background(Theme.background)
+      .environment(\.onboardingWide, layout != .compact)
+      .toolbarVisibility(verticalRail ? .automatic : .hidden, for: .navigationBar)
+      .toolbar {
+        if verticalRail {
+          ToolbarItemGroup(placement: .cancellationAction) {
+            Button("Close", systemImage: "xmark", action: close)
+              .accessibilityIdentifier("onboarding.close")
+            if canGoBack {
+              Button("Back", systemImage: "chevron.backward", action: goBack)
+                .accessibilityIdentifier("onboarding.back")
+            }
+          }
+        }
+      }
+    }
+    .readVerticalRail($verticalRail)
+    .taskRail()
+    .onGeometryChange(for: Bool.self) { $0.size.width > $0.size.height } action: { landscape = $0 }
+    .animation(reduceMotion ? nil : Motion.sheet, value: inputFocused)
+    .animation(reduceMotion ? nil : Motion.sheet, value: fanned)
+    .onChange(of: model.onboarding) { _, _ in model.saveOnboarding() }
+    .onChange(of: step) { _, _ in fanned = false }
+    .task { await model.refreshReferenceRates() }
+  }
+
+  // MARK: Compact
+
+  private var compactLayout: some View {
+    VStack(spacing: 0) {
+      header
+      if !inputFocused {
+        passArea.transition(.move(edge: .top).combined(with: .opacity))
+      }
+      if !fanned {
+        ScrollView {
+          ZStack(alignment: .topLeading) {
+            stepContent.id(step).transition(stepTransition)
+          }
           .frame(maxWidth: 680).frame(maxWidth: .infinity)
-        ScrollViewReader { scroll in
-          ScrollView {
-            VStack(alignment: .leading, spacing: 24) {
-              if model.onboarding.step > 0, let trip = try? model.onboarding.previewTrip() {
-                BoardingPassStack(trip: trip, cleared: model.onboarding.step == 6)
-              }
-              Text(title).font(.largeTitle.weight(.heavy)).tracking(-1)
-              step
-            }.pagePadding().padding(.bottom, 20).id("onboarding-top")
-          }.scrollDismissesKeyboard(.interactively).scrollBounceBehavior(.basedOnSize)
-            .onChange(of: model.onboarding.step) { _, _ in
-              inputFocused = false
-              scroll.scrollTo("onboarding-top", anchor: .top)
-            }
         }
-        footer
-      }.overlay { if model.onboarding.step == 6 { Celebration() } }.background(Theme.background)
-        .navigationTitle(
-          model.onboarding.step == 6
-            ? "" : "\(model.onboarding.stepPosition) of \(model.onboarding.totalSteps)"
-        )
-        .navigationBarTitleDisplayMode(.inline)
-        .toolbar {
-          ToolbarItem(placement: .cancellationAction) {
-            Button("Close", systemImage: "xmark") {
-              model.saveOnboarding()
-              dismiss()
-            }
-          }
-        }
-        .onChange(of: model.onboarding) { _, _ in model.saveOnboarding() }
-        .onChange(of: query) { _, _ in
-          destinationSearch.cancel()
-          searchedMapQuery = nil
-        }
-        .onDisappear { destinationSearch.cancel() }
-        .sheet(isPresented: $custom) {
-          CustomDestinationSheet(isSelected: isSelected) { destination in
-            addDestination(destination)
-          }
-        }
-        .sheet(item: $currencyDestination) { destination in
-          DestinationCurrencySheet(destination: destination) { currency in
-            var confirmed = destination
-            confirmed.currency = currency
-            addDestination(confirmed)
-          }
-        }
-        .sheet(item: $timeZoneSelection) { selection in
-          if let stop = model.onboarding.stops.first(where: { $0.id == selection.id }) {
-            TimeZonePicker(
-              selection: timeZoneBinding(for: stop.id),
-              allowedIdentifiers: DestinationTimeZones.identifiers(countryCode: stop.countryCode),
-              title: stop.place, referenceDate: CivilDate.date(model.onboarding.startsOn))
-          }
-        }
+        .scrollDismissesKeyboard(.interactively).scrollBounceBehavior(.basedOnSize)
+        .transition(.opacity)
+      }
+      footer
+    }
+    .overlay { celebration.ignoresSafeArea() }
+  }
+
+  @ViewBuilder private var celebration: some View {
+    if step == 6 {
+      Celebration(flags: OnboardingCopy.flags(draft)).allowsHitTesting(false)
     }
   }
 
-  private var footer: some View {
-    VStack(spacing: 8) {
-      let layout =
-        dynamicTypeSize.isAccessibilitySize
-        ? AnyLayout(VStackLayout(spacing: 8)) : AnyLayout(HStackLayout(spacing: 16))
-      layout {
-        if model.onboarding.step == 6 {
-          Button("Go to trip") { model.finishOnboarding(planTravel: false) }
-            .font(.subheadline.weight(.semibold)).frame(minWidth: 78, minHeight: 50)
-        } else {
-          Button(action: goBack) {
-            Label("Back", systemImage: "chevron.backward")
-              .font(.headline).frame(minWidth: 78, minHeight: 50)
-              .contentShape(Rectangle())
-          }.buttonStyle(.plain).foregroundStyle(Theme.ink)
-            .accessibilityIdentifier("onboarding.back")
-            .disabled(model.onboarding.step == 0)
-            .opacity(model.onboarding.step == 0 ? 0.4 : 1)
-        }
-        if !dynamicTypeSize.isAccessibilitySize { Spacer(minLength: 0) }
-        Button(action: advance) {
-          HStack(spacing: 12) {
-            Text(
-              model.onboarding.step == 5
-                ? "Create trip"
-                : model.onboarding.step == 6 ? "Add travel" : "Continue")
-            Image(systemName: model.onboarding.step == 6 ? "airplane" : "arrow.right")
-          }.font(.headline).foregroundStyle(.white)
-            .padding(.horizontal, 20).padding(.vertical, 12)
-            .frame(maxWidth: .infinity, minHeight: 50)
-            .background(Theme.accent, in: RoundedRectangle(cornerRadius: 16))
-            .contentShape(RoundedRectangle(cornerRadius: 16))
-        }.buttonStyle(.plain).frame(maxWidth: 320).fixedSize(horizontal: false, vertical: true)
-          .accessibilityIdentifier("onboarding.continue")
-          .disabled(!valid).opacity(valid ? 1 : 0.45)
-      }
-    }.frame(maxWidth: 640).padding(.horizontal, 20).padding(.vertical, 12)
-      .frame(maxWidth: .infinity).background(Theme.background)
-      .overlay(alignment: .top) { Rectangle().fill(Theme.inset).frame(height: 1) }
-      .fixedSize(horizontal: false, vertical: true)
-  }
-  @ViewBuilder private var step: some View {
-    switch model.onboarding.step {
-    case 0:
-      routeSelection
-      TextField("Search by city or country", text: $query)
-        .textFieldStyle(.roundedBorder).focused($inputFocused)
-        .accessibilityIdentifier("onboarding.search")
-        .textInputAutocapitalization(.words).submitLabel(.search)
-        .onSubmit { inputFocused = false }
-        .accessibilityHint("Search countries and cities, or use Apple Maps for another place")
-      VStack(alignment: .leading, spacing: 12) {
-        Text(searchQuery.isEmpty ? "Destinations" : "Results")
-          .font(.headline)
-        if catalogueMatches.isEmpty {
-          Text("No matching destinations.")
-            .font(.subheadline).foregroundStyle(Theme.secondary)
-        } else {
-          LazyVGrid(columns: [.init(.adaptive(minimum: 240), spacing: 10)], spacing: 10) {
-            ForEach(catalogueMatches) { destination in
-              destinationRow(destination)
+  // MARK: Open landscape
+
+  /// The pass and every step down the left, so you can see what's answered and jump back.
+  private var sidebarLayout: some View {
+    HStack(spacing: 0) {
+      ScrollView {
+        VStack(alignment: .leading, spacing: 18) {
+          VStack(alignment: .leading, spacing: 10) {
+            HStack(alignment: .firstTextBaseline) {
+              Text("New trip").typeface(26, .heavy, tracking: -0.02, relativeTo: .title, maximum: 1.3)
+                .foregroundStyle(Theme.ink).accessibilityAddTraits(.isHeader)
+              Spacer(minLength: 8)
+              Text(step == 6 ? "All done" : "Step \(draft.stepPosition) of \(draft.totalSteps)")
+                .typeface(13, .bold, relativeTo: .footnote, maximum: 1.3)
+                .foregroundStyle(Theme.tertiary)
             }
+            progress
           }
-        }
-      }
-      if !searchQuery.isEmpty {
-        VStack(alignment: .leading, spacing: 12) {
-          Button(action: searchMaps) {
-            Label("Search Apple Maps", systemImage: "magnifyingglass")
-              .frame(minHeight: 44)
-          }.disabled(destinationSearch.isSearching || model.onboarding.stops.count >= 6)
-            .accessibilityIdentifier("onboarding.searchMaps")
-          if searchedMapQuery == searchQuery {
-            if destinationSearch.isSearching {
-              ProgressView("Searching Apple Maps…")
-            } else if let error = destinationSearch.error {
-              Text(error).font(.footnote).foregroundStyle(Theme.bad)
-            } else if destinationSearch.matches.isEmpty {
-              Text("No places found. Try adding the country to your search.")
-                .font(.footnote).foregroundStyle(Theme.secondary)
-            } else {
-              LazyVGrid(columns: [.init(.adaptive(minimum: 240), spacing: 10)], spacing: 10) {
-                ForEach(destinationSearch.matches) { destination in
-                  destinationRow(destination)
-                }
-              }
-            }
-          }
-        }
-      }
-      Button("Can’t find your destination?", systemImage: "mappin.and.ellipse") {
-        inputFocused = false
-        custom = true
-      }.frame(minHeight: 44).disabled(model.onboarding.stops.count >= 6)
-        .accessibilityIdentifier("onboarding.addCustom")
-    case 1:
-      DatePicker(
-        "Departure",
-        selection: Binding(
-          get: { CivilDate.date(model.onboarding.startsOn) },
-          set: { model.onboarding.setDeparture(CivilDate.string($0)) }), displayedComponents: .date
-      ).datePickerStyle(.graphical).environment(\.timeZone, TimeZone(secondsFromGMT: 0)!).padding(
-        12
-      ).background(Theme.surface, in: RoundedRectangle(cornerRadius: 22))
-        .accessibilityIdentifier("onboarding.departureDate")
-      destinationTimeZones
-    case 7:
-      DatePicker(
-        "Return",
-        selection: Binding(
-          get: { CivilDate.date(model.onboarding.returnDate) },
-          set: { model.onboarding.setReturn(CivilDate.string($0)) }),
-        in: CivilDate.date(
-          model.onboarding.minimumReturnDate)...CivilDate.date(model.onboarding.maximumReturnDate),
-        displayedComponents: .date
-      ).datePickerStyle(.graphical).environment(\.timeZone, TimeZone(secondsFromGMT: 0)!)
-        .padding(12).background(Theme.surface, in: RoundedRectangle(cornerRadius: 22))
-        .accessibilityIdentifier("onboarding.returnDate")
-    case 2:
-      HStack(alignment: .firstTextBaseline) {
-        Text("\(model.onboarding.totalNights + 1)").font(
-          .system(size: 68, weight: .heavy, design: .default)
-        ).foregroundStyle(Theme.accent).contentTransition(.numericText())
-        Text("days").font(.title2.weight(.bold))
-      }
-      Text(
-        "\(CivilDate.display(model.onboarding.startsOn)) → \(CivilDate.display(model.onboarding.returnDate)) · \(model.onboarding.totalNights) nights"
-      ).font(.subheadline).foregroundStyle(Theme.secondary)
-      ForEach(model.onboarding.stops.indices, id: \.self) { index in
-        Card(padding: 16) {
-          HStack {
-            Text(model.onboarding.stops[index].flag).font(.title)
-            VStack(alignment: .leading, spacing: 4) {
-              Text(model.onboarding.stops[index].place).font(.headline)
-              Text(
-                "\(model.onboarding.stops[index].nights) \(model.onboarding.stops[index].nights == 1 ? "night" : "nights")"
-              ).font(.caption).foregroundStyle(
-                Theme.secondary)
-            }
-            Spacer()
-            Stepper(
-              "Nights",
-              value: Binding(
-                get: { model.onboarding.stops[index].nights },
-                set: { model.onboarding.setNights($0, at: index) }),
-              in: 1...max(1, model.onboarding.maximumNights(at: index))
-            ).labelsHidden().accessibilityLabel("Nights in \(model.onboarding.stops[index].place)")
-          }
-        }
-      }
-      if model.onboarding.unallocatedNights != 0 {
-        Text(
-          model.onboarding.unallocatedNights > 0
-            ? "\(model.onboarding.unallocatedNights) \(model.onboarding.unallocatedNights == 1 ? "night" : "nights") to allocate"
-            : "Remove \(-model.onboarding.unallocatedNights) \(model.onboarding.unallocatedNights == -1 ? "night" : "nights")"
-        )
-        .font(.subheadline.weight(.semibold)).foregroundStyle(Theme.accent)
-        .accessibilityIdentifier("onboarding.unallocatedNights")
-      }
-    case 3:
-      HStack {
-        TextField("Their name", text: $personName).textFieldStyle(.roundedBorder).focused(
-          $inputFocused
-        ).onSubmit(
-          addPerson)
-        Button("Add", systemImage: "plus", action: addPerson).labelStyle(.iconOnly).buttonStyle(
-          .borderedProminent
-        ).frame(minWidth: 44, minHeight: 44).disabled(
-          personName.trimmingCharacters(in: .whitespaces).isEmpty
-            || model.onboarding.travellers.count >= 8)
-      }
-      LazyVGrid(columns: [.init(.adaptive(minimum: 240), spacing: 14)], spacing: 14) {
-        ForEach(Array(model.onboarding.travellers.enumerated()), id: \.element.id) {
-          index, person in
-          HStack(spacing: 12) {
-            Circle().fill(Theme.background).frame(width: 10, height: 10)
-            VStack(alignment: .leading, spacing: 5) {
-              Text(index == 0 ? "LEAD PASSENGER" : "PASSENGER").font(
-                .system(size: 7, weight: .black)
-              ).tracking(1)
-              Text(person.name).font(.headline)
-              Text("SEAT \(index + 1)\(index % 2 == 0 ? "A" : "B")").font(
-                .system(size: 8, weight: .black, design: .monospaced))
-            }
-            Spacer(minLength: 0)
-            if index > 0 {
-              Button("Remove \(person.name)", systemImage: "xmark") {
-                model.onboarding.travellers.removeAll { $0.id == person.id }
-              }.labelStyle(.iconOnly).font(.caption2).frame(minWidth: 44, minHeight: 44)
-            }
-          }.foregroundStyle(Color(hue: person.hue / 360, saturation: 0.6, brightness: 0.4)).padding(
-            13
-          ).background(
-            Color(hue: person.hue / 360, saturation: 0.18, brightness: 0.97),
-            in: RoundedRectangle(cornerRadius: 10)
-          ).rotationEffect(.degrees(index % 2 == 0 ? -2 : 2))
-        }
-      }
-    case 4:
-      LazyVGrid(columns: [.init(.flexible()), .init(.flexible())], spacing: 14) {
-        ForEach(["GBP", "EUR", "USD", "AUD"], id: \.self) { currency in
-          Button {
-            model.onboarding.currency = currency
-          } label: {
-            VStack(alignment: .leading, spacing: 8) {
-              Text(["GBP": "🇬🇧", "EUR": "🇪🇺", "USD": "🇺🇸", "AUD": "🇦🇺"][currency] ?? "🌍").font(
-                .largeTitle)
-              Text(currency).font(.title2.weight(.heavy))
-              Text(Locale.current.localizedString(forCurrencyCode: currency) ?? currency).font(
-                .caption
-              ).foregroundStyle(Theme.secondary)
-            }.frame(maxWidth: .infinity, alignment: .leading).padding(20).background(
-              Theme.surface, in: RoundedRectangle(cornerRadius: 20)
-            ).overlay(
-              RoundedRectangle(cornerRadius: 20).stroke(
-                model.onboarding.currency == currency ? Theme.accent : .clear, lineWidth: 2.5))
-          }.buttonStyle(.plain)
-        }
-      }
-      Picker(
-        "Other currency",
-        selection: Binding(
-          get: { model.onboarding.currency }, set: { model.onboarding.currency = $0 })
-      ) { ForEach(CurrencyMetadata.codes, id: \.self) { Text($0).tag($0) } }
-    case 5:
-      HStack {
-        Text(model.onboarding.currency).font(.title3.weight(.bold)).foregroundStyle(Theme.secondary)
-        TextField(
-          "2400",
-          text: Binding(get: { model.onboarding.budget }, set: { model.onboarding.budget = $0 })
-        ).keyboardType(.decimalPad).focused($inputFocused).font(
-          .system(size: 58, weight: .bold, design: .default)
-        )
-        .monospacedDigit()
-      }
-      if let budget = try? Money.parse(model.onboarding.budget, currency: model.onboarding.currency)
-      {
-        Text(
-          "\(Money.format(budget / Int64(max(1, (model.onboarding.nights + 1) * model.onboarding.travellers.count)), model.onboarding.currency)) per person, per day"
-        ).font(.subheadline).foregroundStyle(Theme.secondary)
-      }
-      Slider(
-        value: Binding(
-          get: { Double(model.onboarding.budget) ?? 0 },
-          set: { model.onboarding.budget = String(Int($0)) }),
-        in:
-          100...Double(
-            max(1000, (model.onboarding.nights + 1) * model.onboarding.travellers.count * 240)),
-        step: 50)
-      HStack {
-        ForEach(
-          Array(zip(["Shoestring", "Comfy", "Treat us", "Go big"], [30, 70, 135, 240])), id: \.0
-        ) { label, amount in
-          Button(label) {
-            model.onboarding.budget = String(
-              amount * (model.onboarding.nights + 1) * model.onboarding.travellers.count)
-          }.font(.caption.weight(.bold)).padding(10).background(Theme.inset, in: Capsule())
-        }
-      }
-      TextField(
-        "Trip name (optional)",
-        text: Binding(get: { model.onboarding.name }, set: { model.onboarding.name = $0 })
-      ).textFieldStyle(.roundedBorder).focused($inputFocused)
-    default:
-      Text(model.onboarding.tripName).font(.title3.weight(.semibold))
-      Label("Saved on this device", systemImage: "checkmark.circle.fill").foregroundStyle(
-        Theme.good)
-    }
-  }
-  private var valid: Bool { model.onboarding.canAdvance }
-  private var destinationTimeZones: some View {
-    VStack(alignment: .leading, spacing: 10) {
-      Text("Time zones").font(.headline)
-      ForEach(model.onboarding.stops) { stop in
-        Button {
-          timeZoneSelection = .init(id: stop.id)
-        } label: {
-          DestinationTimeZoneRow(
-            place: stop.place, identifier: stop.resolvedTimeZone,
-            date: CivilDate.date(model.onboarding.startsOn)
+          TripPass(
+            OnboardingCopy.tripPass(draft, size: .sidebar), size: .sidebar, cleared: step == 6
           )
-          .padding(14).background(Theme.surface, in: RoundedRectangle(cornerRadius: 18))
-        }.buttonStyle(.plain).accessibilityIdentifier("onboarding.timezone.\(stop.id)")
+          .modifier(Floating(active: step == 6))
+          stepList
+        }
+        .padding(.top, 24).padding(.leading, 22).padding(.trailing, 20).padding(.bottom, 20)
+      }
+      .scrollBounceBehavior(.basedOnSize)
+      .frame(width: 340)
+      .overlay(alignment: .trailing) { Rectangle().fill(Theme.line).frame(width: 1) }
+      VStack(spacing: 0) {
+        ScrollView {
+          ZStack(alignment: .topLeading) {
+            stepContent.id(step).transition(stepTransition)
+          }
+          .frame(maxWidth: 560).frame(maxWidth: .infinity)
+        }
+        .scrollDismissesKeyboard(.interactively).scrollBounceBehavior(.basedOnSize)
+        footer
+      }
+      // Leaves a gutter for the round controls when the bar isn't carrying them.
+      .padding(.trailing, verticalRail ? 0 : 50)
+      .overlay(alignment: .topTrailing) { if !verticalRail { paneControls } }
+      .overlay { celebration }
+      .clipped()
+    }
+  }
+
+  private var stepList: some View {
+    VStack(spacing: 2) {
+      ForEach(Array(draft.flowSteps.filter { $0 != 6 }.enumerated()), id: \.element) { index, target in
+        stepRow(index: index, target: target)
       }
     }
   }
-  private func timeZoneBinding(for stopID: String) -> Binding<String> {
-    Binding(
-      get: {
-        model.onboarding.stops.first(where: { $0.id == stopID })?.resolvedTimeZone ?? ""
-      },
-      set: { zone in
-        guard let index = model.onboarding.stops.firstIndex(where: { $0.id == stopID }) else {
-          return
+
+  private func stepRow(index: Int, target: Int) -> some View {
+    let done = target < step || step == 6
+    let current = target == step
+    let title = OnboardingCopy.stepTitles[min(target, OnboardingCopy.stepTitles.count - 1)]
+    return Button {
+      guard done, step != 6 else { return }
+      inputFocused = false
+      forward = false
+      Haptics.selection()
+      withAnimation(stepAnimation) { model.onboarding.revisit(target) }
+    } label: {
+      HStack(spacing: 12) {
+        ZStack {
+          Circle().fill(done ? Theme.good : current ? Theme.accent : Theme.inset)
+          if done {
+            Image(systemName: "checkmark").font(.system(size: 12, weight: .black))
+              .foregroundStyle(.white)
+          } else {
+            Text("\(index + 1)").font(.system(size: 13, weight: .heavy))
+              .foregroundStyle(current ? .white : Theme.tertiary)
+          }
         }
-        model.onboarding.stops[index].timeZone = zone
-        if index == 0 { model.onboarding.timeZone = zone }
-      })
+        .frame(width: 28, height: 28)
+        VStack(alignment: .leading, spacing: 1) {
+          Text(title).typeface(15, .heavy, relativeTo: .subheadline, maximum: 1.3)
+            .foregroundStyle(done || current ? Theme.ink : Theme.tertiary)
+          if done {
+            Text(OnboardingCopy.answer(target, draft))
+              .typeface(13, .semibold, relativeTo: .footnote, maximum: 1.3)
+              .foregroundStyle(Theme.secondary).lineLimit(1)
+          }
+        }
+        Spacer(minLength: 4)
+        if done, step != 6 {
+          Text("Edit").typeface(12, .heavy, relativeTo: .caption, maximum: 1.3)
+            .foregroundStyle(Theme.tertiary)
+        }
+      }
+      .padding(.vertical, 9).padding(.horizontal, 12)
+      .background(current ? Theme.accentSoft : .clear, in: RoundedRectangle(cornerRadius: 16))
+      .contentShape(RoundedRectangle(cornerRadius: 16))
+    }
+    .buttonStyle(PressStyle(scale: 0.98))
+    .disabled(!(done && step != 6))
+    .accessibilityElement(children: .combine)
+    .accessibilityValue(done ? "Done" : current ? "Current step" : "Not started")
+    .accessibilityHint(done && step != 6 ? "Edit this answer" : "")
+    .accessibilityIdentifier("onboarding.step.\(target)")
   }
-  private func reconcileRoute() {
+
+  /// Close and Back as round buttons when the bar isn't showing them.
+  private var paneControls: some View {
+    VStack(spacing: 10) {
+      roundButton("xmark", label: "Close", identifier: "onboarding.close", action: close)
+      if canGoBack {
+        roundButton(
+          "chevron.backward", label: "Back", identifier: "onboarding.back", action: goBack)
+      }
+    }
+    .padding(.top, 12).padding(.trailing, 14)
+  }
+
+  private func roundButton(
+    _ symbol: String, label: String, identifier: String, action: @escaping () -> Void
+  ) -> some View {
+    Button(action: action) {
+      Image(systemName: symbol).font(.system(size: 15, weight: .bold))
+        .foregroundStyle(Theme.ink).frame(width: 40, height: 40)
+        .background(Theme.surface, in: Circle())
+        .shadow(color: .black.opacity(0.08), radius: 4, y: 2)
+        .frame(width: 44, height: 44).contentShape(Rectangle())
+    }
+    .buttonStyle(PressStyle(scale: 0.9)).accessibilityLabel(label)
+    .accessibilityIdentifier(identifier)
+  }
+
+  // MARK: Open portrait
+
+  /// The full pass above the step, centred in a calm column.
+  private var paneLayout: some View {
+    VStack(spacing: 0) {
+      header
+      ScrollView {
+        VStack(alignment: .leading, spacing: 4) {
+          TripPass(
+            OnboardingCopy.tripPass(draft, size: .full), size: .full, cleared: step == 6
+          )
+          .modifier(Floating(active: step == 6))
+          .padding(.top, 14).padding(.horizontal, 20)
+          ZStack(alignment: .topLeading) {
+            stepContent.id(step).transition(stepTransition)
+          }
+        }
+        .frame(maxWidth: 640).frame(maxWidth: .infinity)
+      }
+      .scrollDismissesKeyboard(.interactively).scrollBounceBehavior(.basedOnSize)
+      footer
+    }
+    .overlay { celebration.ignoresSafeArea() }
+  }
+
+  // MARK: Header
+
+  private var header: some View {
+    HStack(spacing: 14) {
+      if !verticalRail { closeButton }
+      progress
+      if !verticalRail { backButton }
+    }.padding(.horizontal, 12).padding(.top, verticalRail ? 12 : 4)
+  }
+
+  private var progress: some View {
+    ProgressTrack(progress: max(0.05, Double(step) / Double(draft.totalSteps)))
+      .accessibilityElement()
+      .accessibilityLabel("Step \(draft.stepPosition) of \(draft.totalSteps)")
+  }
+
+  private var closeButton: some View {
+    Button(action: close) {
+      Image(systemName: "xmark").font(.system(size: 14, weight: .bold))
+        .foregroundStyle(Theme.secondary).frame(width: 36, height: 36)
+        .background(Theme.inset, in: Circle())
+        .frame(width: 44, height: 44).contentShape(Rectangle())
+    }.buttonStyle(PressStyle()).accessibilityLabel("Close")
+      .accessibilityIdentifier("onboarding.close")
+  }
+
+  private var backButton: some View {
+    Button(action: goBack) {
+      Text("Back").typeface(14, .heavy, relativeTo: .subheadline, maximum: 1.3)
+        .foregroundStyle(Theme.secondary).frame(minWidth: 38, minHeight: 44)
+        .contentShape(Rectangle())
+    }.buttonStyle(.plain).opacity(canGoBack ? 1 : 0).disabled(!canGoBack)
+      .accessibilityIdentifier("onboarding.back")
+  }
+
+  private var canGoBack: Bool { step != 0 && step != 6 }
+
+  // MARK: Boarding pass
+
+  private var passes: [BoardingPassContent] {
+    let travelClass = OnboardingCopy.travelClass(
+      draft, homePerGBP: model.indicativeRate(from: "GBP", to: draft.currency))
+    var passes = BoardingPassContent.itinerary(
+      stops: draft.stops, start: draft.startsOn, homeCurrency: draft.currency
+    ) { _ in
+      [.init("PAX", "\(draft.travellers.count)"), .init("CLASS", travelClass ?? "—")]
+    }
+    let highlight: BoardingPassContent.Highlight? =
+      switch step {
+      case 0: .destination
+      case 1, 2: .field(1)
+      case 3: .field(2)
+      case 5: .field(3)
+      default: nil
+      }
+    for index in passes.indices { passes[index].highlight = highlight }
+    return passes
+  }
+
+  private var passArea: some View {
+    ScrollView {
+      BoardingPassStack(
+        passes: passes, expanded: $fanned, cleared: step == 6,
+        open: step == 0 ? { removeStop($0) } as (Int) -> Void : nil
+      )
+      .modifier(Floating(active: step == 6))
+      .padding(.top, 16).padding(.horizontal, 20).padding(.bottom, 4)
+      .frame(maxWidth: 560).frame(maxWidth: .infinity)
+    }
+    .scrollDisabled(!fanned).scrollBounceBehavior(.basedOnSize)
+    .fixedSize(horizontal: false, vertical: !fanned)
+    .frame(maxHeight: fanned ? .infinity : nil, alignment: .top)
+  }
+
+  private func removeStop(_ index: Int) {
+    guard model.onboarding.stops.indices.contains(index) else { return }
+    Haptics.lightImpact()
+    model.onboarding.stops.remove(at: index)
     model.onboarding.reconcileRoute()
     if let zone = model.onboarding.stops.first?.resolvedTimeZone {
       model.onboarding.timeZone = zone
     }
   }
-  private var searchQuery: String { query.trimmingCharacters(in: .whitespacesAndNewlines) }
-  private var catalogueMatches: [Destination] {
-    searchQuery.isEmpty ? Destination.suggestions : Destination.search(searchQuery, limit: 40)
-  }
-  private var routeSelection: some View {
-    VStack(alignment: .leading, spacing: 8) {
-      HStack {
-        Text("Route").font(.headline)
-        Spacer()
-        Text("\(model.onboarding.stops.count) of 6 stops").font(.caption)
-          .foregroundStyle(Theme.secondary)
+
+  // MARK: Steps
+
+  private var stepContent: some View {
+    VStack(alignment: .leading, spacing: 14) {
+      switch step {
+      case 0: RouteStep(focus: $inputFocused)
+      case 1: DepartureStep()
+      case 2: NightsStep()
+      case 3: TravellersStep(focus: $inputFocused)
+      case 4: HomeCurrencyStep()
+      case 5: BudgetStep(focus: $inputFocused)
+      default: BonVoyageStep()
       }
-      ScrollView(.horizontal) {
-        HStack(spacing: 10) {
-          if model.onboarding.stops.isEmpty {
-            Label("No destinations selected", systemImage: "mappin.and.ellipse")
-              .font(.subheadline).foregroundStyle(Theme.secondary)
-              .padding(.horizontal, 16).frame(height: routeHeight)
-          }
-          ForEach(Array(model.onboarding.stops.enumerated()), id: \.element.id) { index, stop in
-            HStack(spacing: 0) {
-              Menu {
-                Button("Move earlier", systemImage: "arrow.left") { moveStop(stop.id, by: -1) }
-                  .disabled(index == 0)
-                Button("Move later", systemImage: "arrow.right") { moveStop(stop.id, by: 1) }
-                  .disabled(index == model.onboarding.stops.count - 1)
-                Button("Visit again", systemImage: "plus") { repeatStop(stop) }
-                  .disabled(model.onboarding.stops.count >= 6)
-              } label: {
-                HStack(spacing: 8) {
-                  Text(stop.flag).font(.title2)
-                  VStack(alignment: .leading, spacing: 4) {
-                    Text("STOP \(index + 1)").font(.caption2.weight(.bold)).tracking(1)
-                    Text(stop.place).font(.subheadline.weight(.bold)).lineLimit(2)
-                  }
-                  Image(systemName: "arrow.up.arrow.down").font(.caption)
-                }.padding(.leading, 14).padding(.trailing, 8).frame(minHeight: 44)
-              }.accessibilityLabel("Stop \(index + 1), \(stop.place)")
-                .accessibilityHint("Move this stop or add another visit")
-                .accessibilityIdentifier("onboarding.route.\(index).menu")
-              Button {
-                model.onboarding.stops.removeAll { $0.id == stop.id }
-                reconcileRoute()
-              } label: {
-                Image(systemName: "xmark.circle.fill").font(.body)
-                  .frame(width: 44, height: 44).contentShape(Rectangle())
-              }.accessibilityLabel("Remove \(stop.place)")
-                .accessibilityIdentifier("onboarding.route.\(index).remove")
-            }.buttonStyle(.plain).foregroundStyle(Theme.accent)
-              .frame(height: routeHeight)
-              .background(Theme.accentSoft, in: RoundedRectangle(cornerRadius: 16))
-          }
-        }
-      }.scrollIndicators(.hidden).scrollBounceBehavior(.basedOnSize, axes: .horizontal).frame(
-        height: routeHeight
-      )
-      .background(Theme.surface, in: RoundedRectangle(cornerRadius: 16))
     }
+    .padding(.top, layout == .sidebar ? 34 : 22)
+    .padding(.horizontal, layout == .sidebar ? 34 : 20).padding(.bottom, 8)
+    .frame(maxWidth: .infinity, alignment: .leading)
   }
-  private func destinationRow(_ destination: Destination) -> some View {
-    let selected = isSelected(destination)
-    return Button {
-      selectDestination(destination)
-    } label: {
-      DestinationLabel(destination: destination, selected: selected)
-        .padding(13).frame(maxWidth: .infinity, minHeight: 72, alignment: .leading)
-        .background(
-          selected ? Theme.accentSoft : Theme.surface, in: RoundedRectangle(cornerRadius: 15))
-    }.buttonStyle(.plain)
-      .disabled(model.onboarding.stops.count >= 6 && !selected)
-      .accessibilityLabel(
-        "\(destination.city), \(destination.secondaryLabel)\(selected ? ", added to your route" : "")"
-      )
-      .accessibilityHint(
-        selected
-          ? "Use its route menu to visit again" : "Adds a stop. Continue when your route is ready"
-      )
-      .accessibilityAddTraits(selected ? .isSelected : [])
-      .accessibilityIdentifier("onboarding.destination.\(destination.id)")
+
+  private var stepTransition: AnyTransition {
+    if reduceMotion { return .opacity }
+    return .asymmetric(
+      insertion: .offset(x: forward ? 48 : -48).combined(with: .opacity),
+      removal: .opacity.animation(.easeOut(duration: 0.12)))
   }
-  private func isSelected(_ destination: Destination) -> Bool {
-    model.onboarding.stops.contains {
-      $0.countryCode == destination.countryCode
-        && $0.place.compare(destination.city, options: [.caseInsensitive, .diacriticInsensitive])
-          == .orderedSame
-        && abs($0.latitude - destination.latitude) <= 0.0001
-        && abs($0.longitude - destination.longitude) <= 0.0001
+
+  // MARK: Footer
+
+  private var footer: some View {
+    VStack(spacing: 12) {
+      let cheer = OnboardingCopy.cheer(draft)
+      Text(cheer).typeface(14, .heavy, relativeTo: .subheadline, maximum: 1.3)
+        .foregroundStyle(Theme.secondary).lineLimit(1).minimumScaleFactor(0.75)
+        .frame(minHeight: 20).bump(on: cheer)
+      Button(action: advance) {
+        Text(step == 5 ? "Create trip" : step == 6 ? "Plan getting there" : "Continue")
+      }
+      .buttonStyle(LipButtonStyle(inactive: !draft.canAdvance))
+      .shake(on: rejected)
+      .accessibilityIdentifier("onboarding.continue")
+      if step == 6 {
+        Button("Go to trip") { model.finishOnboarding(planTravel: false) }
+          .typeface(15, .heavy, relativeTo: .subheadline, maximum: 1.3)
+          .foregroundStyle(Theme.secondary).frame(minHeight: 44)
+          .accessibilityIdentifier("onboarding.goToTrip")
+      }
     }
+    .padding(.top, 10).padding(.horizontal, layout == .sidebar ? 34 : 20)
+    .padding(.bottom, layout == .sidebar ? 16 : 6)
+    .frame(maxWidth: layout == .compact ? 680 : layout == .pane ? 640 : 628)
+    .frame(maxWidth: .infinity)
   }
-  private func selectDestination(_ destination: Destination) {
-    inputFocused = false
-    guard model.onboarding.stops.count < 6, !isSelected(destination) else { return }
-    if destination.requiresCurrencySelection {
-      inputFocused = false
-      currencyDestination = destination
-    } else {
-      addDestination(destination)
-    }
-  }
-  private func addDestination(_ destination: Destination) {
-    guard model.onboarding.stops.count < 6, !isSelected(destination),
-      CurrencyMetadata.codes.contains(destination.currency)
-    else { return }
-    // Keep the list in place: selection changes only this reserved route area and the row checkmark.
-    model.onboarding.stops.append(destination.stop())
-    reconcileRoute()
-  }
-  private func moveStop(_ id: String, by offset: Int) {
-    guard let index = model.onboarding.stops.firstIndex(where: { $0.id == id }),
-      model.onboarding.stops.indices.contains(index + offset)
-    else { return }
-    model.onboarding.stops.swapAt(index, index + offset)
-    reconcileRoute()
-  }
-  private func repeatStop(_ stop: Stop) {
-    guard model.onboarding.stops.count < 6 else { return }
-    var repeated = stop
-    repeated.id = UUID().uuidString
-    model.onboarding.stops.append(repeated)
-    reconcileRoute()
-  }
-  private func searchMaps() {
-    let requested = searchQuery
-    guard !requested.isEmpty, !destinationSearch.isSearching,
-      model.onboarding.stops.count < 6
-    else { return }
-    inputFocused = false
-    searchedMapQuery = requested
-    Task { await destinationSearch.searchMaps(requested) }
-  }
-  private func addPerson() {
-    let name = personName.trimmingCharacters(in: .whitespaces)
-    guard !name.isEmpty, model.onboarding.travellers.count < 8 else { return }
-    let hues: [Double] = [350, 250, 75, 160, 300, 30, 200, 120]
-    model.onboarding.travellers.append(
-      Traveller(name: name, hue: hues[model.onboarding.travellers.count]))
-    personName = ""
-  }
+
+  // MARK: Actions
+
   private func advance() {
-    guard valid else { return }
+    guard draft.canAdvance else {
+      rejected += 1
+      Haptics.error()
+      return
+    }
     inputFocused = false
-    if model.onboarding.step == 5 {
-      model.perform { _ = try model.createTrip() }
-    } else if model.onboarding.step == 6 {
+    forward = true
+    switch step {
+    case 5:
+      withAnimation(stepAnimation) { model.perform { _ = try model.createTrip() } }
+      Haptics.success()
+    case 6:
       model.finishOnboarding(planTravel: true)
-    } else {
-      animate { model.onboarding.advanceStep() }
+    default:
+      if step == 4, draft.budget.isEmpty,
+        let rate = model.indicativeRate(from: "GBP", to: draft.currency)
+      {
+        model.onboarding.budget = String(draft.suggestedBudget(homePerGBP: rate))
+      }
+      Haptics.selection()
+      withAnimation(stepAnimation) { model.onboarding.advanceStep() }
     }
-    model.saveOnboarding()
   }
+
   private func goBack() {
-    guard model.onboarding.stepPosition > 1, model.onboarding.step != 6 else { return }
+    guard canGoBack else { return }
     inputFocused = false
-    animate { model.onboarding.previousStep() }
-    model.saveOnboarding()
+    forward = false
+    withAnimation(stepAnimation) { model.onboarding.previousStep() }
   }
-  private func animate(_ action: () -> Void) {
-    withAnimation(reduceMotion ? nil : .spring(response: 0.35, dampingFraction: 0.9), action)
-  }
-}
 
-private struct DestinationLabel: View {
-  let destination: Destination
-  var selected = false
-  var body: some View {
-    HStack(spacing: 10) {
-      Text(destination.flag).font(.title2).accessibilityHidden(true)
-      VStack(alignment: .leading, spacing: 3) {
-        Text(destination.city).font(.subheadline.weight(.bold)).foregroundStyle(Theme.ink)
-        Text(destination.secondaryLabel)
-          .font(.caption).foregroundStyle(Theme.secondary)
-      }
-      Spacer(minLength: 4)
-      Image(systemName: selected ? "checkmark.circle.fill" : "plus.circle")
-        .foregroundStyle(selected ? Theme.accent : Theme.secondary).accessibilityHidden(true)
-    }
-  }
-}
-
-private struct DestinationCurrencyPicker: View {
-  let countryCode: String
-  @Binding var currency: String
-  private var currencies: [String] { CountryMetadata.country(countryCode)?.currencies ?? [] }
-  var body: some View {
-    if currencies.count == 1, let code = currencies.first {
-      LabeledContent("Currency", value: currencyLabel(code))
+  private func close() {
+    if step == 6 {
+      model.finishOnboarding(planTravel: false)
     } else {
-      if currencies.isEmpty {
-        Text(
-          "This destination has no national currency. Choose the travel currency you’ll use for costs here."
-        )
-        .font(.footnote).foregroundStyle(Theme.secondary)
-      }
-      Picker(currencies.isEmpty ? "Travel currency" : "Currency", selection: $currency) {
-        Text("Choose a currency").tag("")
-        ForEach(currencies.isEmpty ? CurrencyMetadata.codes : currencies, id: \.self) { code in
-          Text(currencyLabel(code)).tag(code)
-        }
-      }
+      model.saveOnboarding()
+      dismiss()
     }
   }
-  private func currencyLabel(_ code: String) -> String {
-    "\(code) · \(Locale.current.localizedString(forCurrencyCode: code) ?? code)"
+
+  private var stepAnimation: Animation? {
+    reduceMotion ? nil : .timingCurve(0.22, 1, 0.36, 1, duration: 0.45)
   }
 }
 
-private struct DestinationCurrencySheet: View {
-  @Environment(\.dismiss) private var dismiss
-  let destination: Destination
-  let onConfirm: (String) -> Void
-  @State private var currency = ""
+/// The header's chunky progress bar, with a glossy highlight along its fill.
+private struct ProgressTrack: View {
+  let progress: Double
   var body: some View {
-    NavigationStack {
-      Form {
-        Section {
-          Label("\(destination.flag) \(destination.city)", systemImage: "mappin.and.ellipse")
-          DestinationCurrencyPicker(countryCode: destination.countryCode, currency: $currency)
-            .accessibilityIdentifier("onboarding.travelCurrency")
-        }
-        Section {
-          Button("Add to route", systemImage: "plus") {
-            guard CurrencyMetadata.codes.contains(currency) else { return }
-            onConfirm(currency)
-            dismiss()
-          }.disabled(!CurrencyMetadata.codes.contains(currency)).frame(minHeight: 44)
-            .accessibilityIdentifier("onboarding.confirmCurrency")
-        }
-      }.navigationTitle("Choose a currency").navigationBarTitleDisplayMode(.inline)
-        .toolbar {
-          ToolbarItem(placement: .cancellationAction) {
-            Button("Cancel", systemImage: "xmark") { dismiss() }
+    GeometryReader { proxy in
+      let width = proxy.size.width * min(max(progress, 0), 1)
+      ZStack(alignment: .leading) {
+        Capsule().fill(Theme.inset)
+        Capsule().fill(Theme.accent).frame(width: width)
+          .overlay(alignment: .top) {
+            if width > 24 {
+              Capsule().fill(.white.opacity(0.38)).frame(height: 4)
+                .padding(.horizontal, 8).padding(.top, 3)
+            }
           }
-        }
-        .onAppear {
-          currency = CountryMetadata.country(destination.countryCode)?.defaultCurrency ?? ""
-        }
-    }.tint(Theme.accent).scrollBounceBehavior(.basedOnSize)
+      }
+    }
+    .frame(height: 14)
+    .animation(Motion.spring, value: progress)
   }
 }
 
-private struct CustomDestinationSheet: View {
-  @Environment(\.dismiss) private var dismiss
-  let isSelected: (Destination) -> Bool
-  let onSelect: (Destination) -> Void
-  @State private var city = ""
-  @State private var countryCode = "GB"
-  @State private var currency = "GBP"
-  @State private var search = DestinationSearch()
-  @State private var hasSearched = false
-  @State private var adding = false
-  @FocusState private var cityFocused: Bool
-  private var country: CountryMetadata.Country? { CountryMetadata.country(countryCode) }
-  private var matches: [Destination] { search.matches.filter { $0.countryCode == countryCode } }
-  private var currencyIsValid: Bool {
-    let allowed = country?.currencies ?? []
-    return allowed.isEmpty ? CurrencyMetadata.codes.contains(currency) : allowed.contains(currency)
+/// Bobs the finished boarding pass gently, as if it were being waved about.
+private struct Floating: ViewModifier {
+  let active: Bool
+  @State private var lifted = false
+  @Environment(\.accessibilityReduceMotion) private var reduceMotion
+
+  func body(content: Content) -> some View {
+    content.offset(y: lifted ? -6 : 0).rotationEffect(.degrees(lifted ? -1.5 : 0))
+      .onChange(of: active, initial: true) { _, active in
+        guard active, !reduceMotion, !lifted else { return }
+        withAnimation(.easeInOut(duration: 1.5).repeatForever(autoreverses: true).delay(0.8)) {
+          lifted = true
+        }
+      }
   }
-  var body: some View {
-    NavigationStack {
-      Form {
-        Section("Destination") {
-          TextField("City or place", text: $city).focused($cityFocused)
-            .textInputAutocapitalization(.words).submitLabel(.search).onSubmit(searchMaps)
-            .accessibilityIdentifier("onboarding.custom.search")
-          Picker("Country", selection: $countryCode) {
-            ForEach(CountryMetadata.all, id: \.code) { country in
-              Text("\(country.code.flag) \(country.name)").tag(country.code)
-            }
-          }.accessibilityIdentifier("onboarding.custom.country")
-          DestinationCurrencyPicker(countryCode: countryCode, currency: $currency)
-            .accessibilityIdentifier("onboarding.custom.currency")
-        }
-        Section {
-          Button(action: searchMaps) {
-            Label("Search Apple Maps", systemImage: "magnifyingglass").frame(minHeight: 44)
-          }.disabled(
-            city.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty || search.isSearching
-          )
-          .accessibilityIdentifier("onboarding.custom.searchMaps")
-        } footer: {
-          Text(
-            "Requires an internet connection."
-          )
-        }
-        if hasSearched {
-          Section("Choose a place") {
-            if search.isSearching {
-              ProgressView("Searching Apple Maps…")
-            } else if let error = search.error {
-              Text(error).foregroundStyle(Theme.bad)
-            } else if matches.isEmpty {
-              Text(
-                "No places found in \(country?.name ?? countryCode). Try a nearby city or a more specific name."
-              )
-              .foregroundStyle(Theme.secondary)
-            } else {
-              ForEach(matches) { destination in
-                Button {
-                  guard currencyIsValid, !adding, !isSelected(destination) else { return }
-                  adding = true
-                  var confirmed = destination
-                  confirmed.currency = currency
-                  onSelect(confirmed)
-                  dismiss()
-                } label: {
-                  DestinationLabel(destination: destination, selected: isSelected(destination))
-                    .frame(minHeight: 56)
-                }.disabled(!currencyIsValid || adding || isSelected(destination))
-                  .accessibilityIdentifier("onboarding.custom.destination.\(destination.id)")
-                  .accessibilityHint(
-                    isSelected(destination)
-                      ? "Already in your route" : "Add this place to your route")
-              }
-              if !currencyIsValid {
-                Text("Choose a travel currency above before adding this stop.")
-                  .font(.footnote).foregroundStyle(Theme.secondary)
-              }
-            }
-          }
-        }
-      }.navigationTitle("Another destination").navigationBarTitleDisplayMode(.inline)
-        .toolbar {
-          ToolbarItem(placement: .cancellationAction) {
-            Button("Cancel", systemImage: "xmark") { dismiss() }
-          }
-        }
-        .onChange(of: countryCode) { _, _ in
-          let allowed = country?.currencies ?? []
-          if !allowed.contains(currency) { currency = country?.defaultCurrency ?? "" }
-          invalidateSearch()
-        }
-        .onChange(of: city) { _, _ in invalidateSearch() }
-        .onDisappear { search.cancel() }
-    }.tint(Theme.accent).scrollBounceBehavior(.basedOnSize)
-  }
-  private func invalidateSearch() {
-    search.cancel()
-    hasSearched = false
-  }
-  private func searchMaps() {
-    let place = city.trimmingCharacters(in: .whitespacesAndNewlines)
-    guard !place.isEmpty, !search.isSearching else { return }
-    cityFocused = false
-    hasSearched = true
-    let requested = "\(place), \(country?.name ?? countryCode)"
-    Task { await search.searchMaps(requested) }
-  }
+}
+
+extension EnvironmentValues {
+  /// Steps lay themselves out for the open Duo: bigger titles, two months, a budget card.
+  @Entry var onboardingWide = false
 }
