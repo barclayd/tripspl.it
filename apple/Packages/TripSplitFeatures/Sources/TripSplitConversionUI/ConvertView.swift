@@ -17,11 +17,15 @@ public struct ConvertView: View {
   @Environment(AppModel.self) private var app
   @Environment(\.dismiss) private var dismiss
   @Environment(\.accessibilityReduceMotion) private var reduceMotion
+  @Environment(\.horizontalSizeClass) private var sizeClass
   var tripID: String
   var attachment: Attachment
   @State private var conversion: ConversionModel?
   @State private var picking: ConversionSide?
-  @State private var wide = false
+  @State private var size = CGSize.zero
+  private var wide: Bool { size.width >= 590 }
+  /// Tent: compact width but wider than tall, read from arm's length on a counter.
+  private var tent: Bool { sizeClass == .compact && size.width > size.height }
   @State private var verticalRail = false
   @State private var swapTurns = 0.0
   @State private var handingOff = false
@@ -38,7 +42,8 @@ public struct ConvertView: View {
           }
         }
         .background(Theme.surface)
-        .navigationTitle("Quick convert")
+        // The tent reads from arm's length, so the rail carries the controls and no title.
+        .navigationTitle(tent ? "" : "Quick convert")
         .navigationBarTitleDisplayMode(.inline)
         .toolbarVisibility(verticalRail ? .automatic : .hidden, for: .navigationBar)
         .toolbar {
@@ -48,9 +53,11 @@ public struct ConvertView: View {
             }
             if let conversion {
               ToolbarItem(placement: .confirmationAction) {
-                Button("Log as expense", systemImage: "plus") { logExpense(conversion, trip: trip) }
-                  .disabled(!conversion.canLogExpense(homeCurrency: trip.homeCurrency) || handingOff)
-                  .accessibilityIdentifier("converter.log")
+                Button("Log as expense", systemImage: tent ? "checkmark" : "plus") {
+                  logExpense(conversion, trip: trip)
+                }
+                .disabled(!conversion.canLogExpense(homeCurrency: trip.homeCurrency) || handingOff)
+                .accessibilityIdentifier("converter.log")
               }
             }
           }
@@ -102,29 +109,98 @@ public struct ConvertView: View {
     let keypad = NumberPad(
       value: $conversion.amount, currency: conversion.from.code, keyHeight: 48, spacing: 4)
     return VStack(spacing: 0) {
-      if !verticalRail { header.padding(.horizontal, 18) }
-      if wide {
-        HStack(alignment: .bottom, spacing: 24) {
-          ScrollView { readout(conversion, trip: trip) }.scrollBounceBehavior(.basedOnSize)
-          VStack(spacing: 8) {
-            keypad
-            if !verticalRail { logButton(conversion, trip: trip) }
-          }
-          .frame(width: 240).padding(.trailing, 18)
-        }
+      if tent {
+        tentContent(conversion, trip: trip)
       } else {
-        ScrollView { readout(conversion, trip: trip) }.scrollBounceBehavior(.basedOnSize)
-        VStack(spacing: 8) {
-          keypad
-          if !verticalRail { logButton(conversion, trip: trip) }
-        }
-        .padding(.horizontal, 18).padding(.top, 8)
+        if !verticalRail { header.padding(.horizontal, 18) }
+        regularContent(conversion, trip: trip, keypad: keypad)
       }
     }
     .padding(.bottom, 4)
     .frame(maxWidth: .infinity, maxHeight: .infinity)
     .scrollDismissesKeyboard(.interactively)
-    .onGeometryChange(for: Bool.self) { $0.size.width >= 590 } action: { wide = $0 }
+    .onGeometryChange(for: CGSize.self) {
+      $0.size
+    } action: {
+      size = $0
+    }
+  }
+
+  @ViewBuilder private func regularContent(
+    _ conversion: ConversionModel, trip: TripSnapshot, keypad: NumberPad
+  ) -> some View {
+    if wide {
+      HStack(alignment: .bottom, spacing: 24) {
+        ScrollView { readout(conversion, trip: trip) }.scrollBounceBehavior(.basedOnSize)
+        VStack(spacing: 8) {
+          keypad
+          if !verticalRail { logButton(conversion, trip: trip) }
+        }
+        .frame(width: 240).padding(.trailing, 18)
+      }
+    } else {
+      ScrollView { readout(conversion, trip: trip) }.scrollBounceBehavior(.basedOnSize)
+      VStack(spacing: 8) {
+        keypad
+        if !verticalRail { logButton(conversion, trip: trip) }
+      }
+      .padding(.horizontal, 18).padding(.top, 8)
+    }
+  }
+
+  /// Tent: the result at display size on the leading side, big keys on the trailing side.
+  private func tentContent(_ conversion: ConversionModel, trip: TripSnapshot) -> some View {
+    @Bindable var conversion = conversion
+    // As tall as the space allows, up to 80pt, so the pad still fits a landscape phone.
+    let key = min(80, max(44, (size.height - 30) / 4))
+    let typed = (conversion.parsedAmount ?? 0) > 0
+    let shown = Money.typed(conversion.amount, currency: conversion.from.code)
+    let result = resultText(conversion)
+    return HStack(alignment: .top, spacing: 20) {
+      VStack(alignment: .leading, spacing: 0) {
+        HStack(spacing: 10) {
+          if !verticalRail {
+            Button("Close", systemImage: "xmark") { close() }
+              .labelStyle(.iconOnly).buttonStyle(.glass)
+          }
+          currencies(conversion, compact: true)
+        }
+        Spacer(minLength: 8)
+        Text(shown)
+          .typeface(30, .bold, tracking: -0.03, relativeTo: .title, maximum: 1.2)
+          .monospacedDigit()
+          .foregroundStyle(typed ? Theme.secondary : Theme.tertiary)
+          .lineLimit(1).minimumScaleFactor(0.5)
+          .bump(on: shown)
+          .accessibilityLabel("Amount in \(conversion.from.currencyName), \(shown)")
+          .accessibilityIdentifier("converter.amount")
+        Text(result)
+          .typeface(88, .heavy, tracking: -0.05, relativeTo: .largeTitle, maximum: 1.2)
+          .monospacedDigit()
+          .foregroundStyle(Theme.accentText)
+          .lineLimit(1).minimumScaleFactor(0.4)
+          .contentTransition(.numericText())
+          .animation(reduceMotion ? nil : Motion.bump, value: result)
+          .accessibilityLabel("\(boardLabel(conversion)), \(result)")
+          .accessibilityIdentifier("converter.result")
+        if conversion.result == nil || conversion.amountIssue != nil {
+          Text(boardLabel(conversion))
+            .typeface(13, .bold, relativeTo: .footnote, maximum: 1.4)
+            .foregroundStyle(Theme.secondary)
+        }
+        rateControls(conversion)
+        Spacer(minLength: 8)
+        insight(conversion, trip: trip)
+        if !verticalRail { logButton(conversion, trip: trip, height: 48).padding(.top, 10) }
+      }
+      .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
+      NumberPad(
+        value: $conversion.amount, currency: conversion.from.code, keyHeight: key, spacing: 6,
+        filled: true)
+      .frame(width: key * 3 + 12)
+      .frame(maxHeight: .infinity)
+    }
+    .padding(.horizontal, 20).padding(.vertical, 12)
   }
 
   private var header: some View {
@@ -160,8 +236,8 @@ public struct ConvertView: View {
 
   // MARK: - Currencies
 
-  private func currencies(_ conversion: ConversionModel) -> some View {
-    HStack(spacing: 12) {
+  private func currencies(_ conversion: ConversionModel, compact: Bool = false) -> some View {
+    HStack(spacing: compact ? 6 : 12) {
       pill(conversion.from, side: .from)
       Button {
         rateFocused = false
@@ -172,11 +248,11 @@ public struct ConvertView: View {
         }
       } label: {
         Image(systemName: "arrow.right.arrow.left")
-          .font(.system(size: 16, weight: .bold))
-          .foregroundStyle(Theme.background)
+          .font(.system(size: compact ? 13 : 16, weight: .bold))
+          .foregroundStyle(compact ? Theme.secondary : Theme.background)
           .rotationEffect(.degrees(swapTurns))
-          .frame(width: 42, height: 42)
-          .background(Theme.ink, in: Circle())
+          .frame(width: compact ? 32 : 42, height: compact ? 32 : 42)
+          .background(compact ? .clear : Theme.ink, in: Circle())
           .contentShape(Circle())
       }
       .buttonStyle(PressStyle(scale: 0.92))
@@ -328,7 +404,8 @@ public struct ConvertView: View {
 
   /// "12% of a day's budget" against the trip budget spread over its days, with a bar that turns
   /// from good to accent past half and bad once it's over.
-  @ViewBuilder private func insight(_ conversion: ConversionModel, trip: TripSnapshot) -> some View {
+  @ViewBuilder private func insight(_ conversion: ConversionModel, trip: TripSnapshot) -> some View
+  {
     if trip.dailyBudget > 0 {
       let daily = trip.dailyBudget
       let typed = (conversion.parsedAmount ?? 0) > 0
@@ -343,7 +420,9 @@ public struct ConvertView: View {
               : home == nil ? "Waiting for a rate" : "\(Int(percent.rounded()))% of a day’s budget"
           )
           Spacer(minLength: 8)
-          Text("\(Money.format(Money.wholeUnits(daily, trip.homeCurrency), trip.homeCurrency, compact: true)) a day")
+          Text(
+            "\(Money.format(Money.wholeUnits(daily, trip.homeCurrency), trip.homeCurrency, compact: true)) a day"
+          )
         }
         .typeface(13, .bold, relativeTo: .footnote, maximum: 1.4)
         .foregroundStyle(Theme.secondary)
@@ -355,7 +434,9 @@ public struct ConvertView: View {
             }
           }
           .clipShape(Capsule())
-          .animation(reduceMotion ? nil : .timingCurve(0.34, 1.3, 0.64, 1, duration: 0.5), value: percent)
+          .animation(
+            reduceMotion ? nil : .timingCurve(0.34, 1.3, 0.64, 1, duration: 0.5), value: percent
+          )
           .accessibilityHidden(true)
       }
       .accessibilityElement(children: .combine)
@@ -381,12 +462,15 @@ public struct ConvertView: View {
         conversion.amount = String(value)
         Haptics.selection()
       } label: {
-        Text(Money.format(value * Money.factor(conversion.from.code), conversion.from.code, compact: true))
-          .typeface(13, .heavy, relativeTo: .footnote, maximum: 1.4)
-          .foregroundStyle(Theme.secondary)
-          .padding(.vertical, 7).padding(.horizontal, 12)
-          .background(Theme.inset, in: Capsule())
-          .fixedSize()
+        Text(
+          Money.format(
+            value * Money.factor(conversion.from.code), conversion.from.code, compact: true)
+        )
+        .typeface(13, .heavy, relativeTo: .footnote, maximum: 1.4)
+        .foregroundStyle(Theme.secondary)
+        .padding(.vertical, 7).padding(.horizontal, 12)
+        .background(Theme.inset, in: Capsule())
+        .fixedSize()
       }
       .buttonStyle(PressStyle(scale: 0.9))
     }
@@ -417,11 +501,15 @@ public struct ConvertView: View {
 
   // MARK: - Actions
 
-  private func logButton(_ conversion: ConversionModel, trip: TripSnapshot) -> some View {
+  private func logButton(
+    _ conversion: ConversionModel, trip: TripSnapshot, height: CGFloat = 56
+  ) -> some View {
     Button("Log it as an expense") { logExpense(conversion, trip: trip) }
-      .buttonStyle(LipButtonStyle(height: 56))
+      .buttonStyle(LipButtonStyle(height: height))
       .disabled(!conversion.canLogExpense(homeCurrency: trip.homeCurrency) || handingOff)
-      .animation(.easeOut(duration: 0.25), value: conversion.canLogExpense(homeCurrency: trip.homeCurrency))
+      .animation(
+        .easeOut(duration: 0.25), value: conversion.canLogExpense(homeCurrency: trip.homeCurrency)
+      )
       .accessibilityIdentifier("converter.log")
   }
 

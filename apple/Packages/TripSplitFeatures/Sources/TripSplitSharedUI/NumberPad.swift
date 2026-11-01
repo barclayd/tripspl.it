@@ -5,17 +5,21 @@ import TripSplitDomain
 /// A plain three-column keypad that types an amount in a currency's precision.
 package struct NumberPad: View {
   package init(
-    value: Binding<String>, currency: String, keyHeight: CGFloat = 48, spacing: CGFloat = 8
+    value: Binding<String>, currency: String, keyHeight: CGFloat = 48, spacing: CGFloat = 8,
+    filled: Bool = false
   ) {
     self._value = value
     self.currency = currency
     self.keyHeight = keyHeight
     self.spacing = spacing
+    self.filled = filled
   }
   @Binding var value: String
   package var currency: String
   package var keyHeight: CGFloat
   package var spacing: CGFloat
+  /// Keys sit on tiles, for one-finger taps from arm's length.
+  package var filled: Bool
   @State private var rejected = 0
 
   private static let keys = ["1", "2", "3", "4", "5", "6", "7", "8", "9", ".", "0", "⌫"]
@@ -34,14 +38,16 @@ package struct NumberPad: View {
               } label: {
                 Group {
                   if key == "⌫" {
-                    Image(systemName: "delete.left").font(.system(size: 21, weight: .bold))
+                    Image(systemName: "delete.left").font(
+                      .system(size: keyHeight >= 72 ? 25 : 21, weight: .bold))
                   } else {
-                    Text(key).font(.system(size: keyHeight > 50 ? 25 : 24, weight: .bold))
+                    Text(key).font(
+                      .system(size: keyHeight >= 72 ? 30 : keyHeight > 50 ? 25 : 24, weight: .bold))
                   }
                 }
                 .frame(maxWidth: .infinity).frame(height: keyHeight)
               }
-              .buttonStyle(KeyStyle())
+              .buttonStyle(KeyStyle(filled: filled))
               .accessibilityLabel(
                 key == "⌫" ? "Delete digit" : key == "." ? "Decimal point" : key)
             }
@@ -78,11 +84,13 @@ package struct NumberPad: View {
 }
 
 private struct KeyStyle: ButtonStyle {
+  var filled = false
   func makeBody(configuration: Configuration) -> some View {
+    let pressed = configuration.isPressed
     configuration.label
       .foregroundStyle(Theme.ink)
       .background(
-        configuration.isPressed ? Theme.inset : .clear,
+        filled ? (pressed ? Theme.line2 : Theme.inset) : (pressed ? Theme.inset : .clear),
         in: RoundedRectangle(cornerRadius: Theme.Radius.key, style: .continuous)
       )
       .scaleEffect(configuration.isPressed ? 0.92 : 1)

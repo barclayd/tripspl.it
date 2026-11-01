@@ -29,21 +29,20 @@ public struct DayView: View {
   public var body: some View {
     if let trip = model.store.trip(tripID) {
       let items = trip.expenses(for: attachment)
-      ScrollView {
-        ViewThatFits(in: .horizontal) {
-          if tent {
-            HStack(alignment: .top, spacing: 28) {
-              summary(trip, items: items).frame(minWidth: 220, maxWidth: .infinity)
-              list(trip, items: items).frame(minWidth: 240, maxWidth: .infinity)
+      ZStack {
+        if tent {
+          tentLayout(trip, items: items)
+        } else {
+          ScrollView {
+            VStack(alignment: .leading, spacing: 18) {
+              summary(trip, items: items)
+              list(trip, items: items)
             }
-          }
-          VStack(alignment: .leading, spacing: 18) {
-            summary(trip, items: items)
-            list(trip, items: items)
+            .pagePadding().padding(.bottom, 18)
           }
         }
-        .pagePadding().padding(.bottom, 18)
       }
+      .frame(maxWidth: .infinity, maxHeight: .infinity)
       .background(Theme.background)
       .scrollEdgeEffectHidden(showsPaneControls, for: .top)
       .onGeometryChange(for: Bool.self) {
@@ -52,7 +51,7 @@ public struct DayView: View {
         landscape = $0
       }
       .safeAreaInset(edge: .bottom, spacing: 0) {
-        if !usesVerticalRail { actions(trip) }
+        if !usesVerticalRail && !tent { actions(trip) }
       }
       .safeAreaInset(edge: .top) {
         if showsPaneControls {
@@ -99,6 +98,101 @@ public struct DayView: View {
       try? await Task.sleep(for: .seconds(1.6))
       fresh.subtract(added)
     }
+  }
+
+  private func isToday(_ trip: TripSnapshot) -> Bool {
+    trip.days.first { $0.id == attachment.id }.map { trip.isToday($0) } ?? false
+  }
+
+  // MARK: - Tent
+
+  /// Standing on a table: the day's number at display size on the leading side, its items on the
+  /// trailing side, and nothing important on the bottom edge.
+  private func tentLayout(_ trip: TripSnapshot, items: [Expense]) -> some View {
+    HStack(alignment: .top, spacing: 24) {
+      tentSummary(trip, items: items)
+        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
+      VStack(spacing: 10) {
+        ScrollView {
+          list(trip, items: items, compact: true).padding(.bottom, 12)
+        }
+        .scrollIndicators(.hidden)
+        .scrollBounceBehavior(.basedOnSize)
+        // Without the rail, the actions sit under the list rather than along the bottom edge.
+        if !usesVerticalRail { actionButtons(trip) }
+      }
+      .frame(maxWidth: .infinity)
+    }
+    .padding(.horizontal, 20).padding(.top, 10).padding(.bottom, 8)
+  }
+
+  private func tentSummary(_ trip: TripSnapshot, items: [Expense]) -> some View {
+    let ledger = Ledger(trip, expenses: items)
+    let today = isToday(trip)
+    return VStack(alignment: .leading, spacing: 0) {
+      HStack(spacing: 10) {
+        Group {
+          if let leg = leg(trip) {
+            Image(systemName: symbol(leg)).font(.system(size: 22, weight: .semibold))
+              .foregroundStyle(Theme.accentText)
+          } else {
+            Text(trip.stop(for: attachment)?.flag ?? "🌍").font(.system(size: 28))
+          }
+        }
+        .accessibilityHidden(true)
+        VStack(alignment: .leading, spacing: 1) {
+          Text(kicker(trip))
+            .typeface(11, .black, tracking: 0.06, relativeTo: .caption, maximum: 1.4)
+            .foregroundStyle(Theme.accentText)
+          Text(place(trip))
+            .typeface(17, .heavy, relativeTo: .headline, maximum: 1.4)
+            .foregroundStyle(Theme.ink).lineLimit(1)
+            .accessibilityAddTraits(.isHeader)
+        }
+      }
+      Spacer(minLength: 12)
+      VStack(alignment: .leading, spacing: 0) {
+        Text(today ? "Today, paid + planned" : "Spent + planned")
+          .typeface(14, .bold, relativeTo: .subheadline, maximum: 1.4)
+          .foregroundStyle(Theme.secondary)
+        MoneyText(amount: ledger.total, currency: trip.homeCurrency, size: 92, weight: .heavy)
+      }
+      Spacer(minLength: 12)
+      VStack(alignment: .leading, spacing: 8) {
+        if attachment.kind == .day, trip.dailyBudget > 0 {
+          let budget = trip.dailyBudget
+          let over = ledger.total > budget
+          let day = today ? "today’s" : "the day’s"
+          BudgetBar(
+            paid: ledger.paid, planned: ledger.planned, budget: budget, currency: trip.homeCurrency
+          )
+          .frame(maxWidth: 240)
+          Text(
+            "\(Money.whole(abs(budget - ledger.total), trip.homeCurrency)) \(over ? "over" : "left of") \(day) \(Money.whole(budget, trip.homeCurrency))"
+          )
+          .foregroundStyle(over ? Theme.bad : Theme.secondary)
+        } else if let local = local(trip, items: items) {
+          Text(local).foregroundStyle(Theme.secondary)
+        }
+        if ledger.unresolved > 0 {
+          Label(
+            "\(ledger.unresolved) conversion\(ledger.unresolved == 1 ? "" : "s") pending",
+            systemImage: "exclamationmark.circle"
+          )
+          .foregroundStyle(Theme.bad)
+        }
+      }
+      .typeface(14, .heavy, relativeTo: .subheadline, maximum: 1.4).monospacedDigit()
+    }
+  }
+
+  /// "Porto, Portugal" for a day, or the leg's title.
+  private func place(_ trip: TripSnapshot) -> String {
+    guard attachment.kind == .day, let stop = trip.stop(for: attachment) else {
+      return trip.title(for: attachment)
+    }
+    let name = CountryMetadata.country(stop.countryCode)?.name ?? stop.place
+    return name == stop.place ? name : "\(stop.place), \(name)"
   }
 
   // MARK: - Summary
@@ -166,8 +260,7 @@ public struct DayView: View {
       case .transfer: return leg.dayId.flatMap(number) ?? "ON THE MOVE"
       }
     }
-    let today = trip.days.first { $0.id == attachment.id }.map { trip.isToday($0) } ?? false
-    return (number(attachment.id) ?? "") + (today ? " · TODAY" : "")
+    return (number(attachment.id) ?? "") + (isToday(trip) ? " · TODAY" : "")
   }
 
   /// "Lisbon, Portugal · €1 = £0.86" for a day, or the leg's date and route.
@@ -211,7 +304,8 @@ public struct DayView: View {
           Text(local(trip, items: items) ?? "\(items.count) item\(items.count == 1 ? "" : "s")")
           if !items.isEmpty {
             Text(
-              planned == 0 ? "All paid" : paid == 0 ? "All planned" : "\(paid) paid · \(planned) planned")
+              planned == 0
+                ? "All paid" : paid == 0 ? "All planned" : "\(paid) paid · \(planned) planned")
           }
         }
         .typeface(13, .semibold, relativeTo: .footnote, maximum: 1.4).monospacedDigit()
@@ -245,23 +339,25 @@ public struct DayView: View {
 
   // MARK: - Expenses
 
-  private func list(_ trip: TripSnapshot, items: [Expense]) -> some View {
+  private func list(_ trip: TripSnapshot, items: [Expense], compact: Bool = false) -> some View {
     VStack(alignment: .leading, spacing: 12) {
       if items.isEmpty {
         empty(trip)
       } else {
         VStack(spacing: 0) {
           ForEach(Array(items.enumerated()), id: \.element.id) { index, expense in
-            ExpenseRow(trip: trip, expense: expense, fresh: fresh.contains(expense.id))
-              .overlay(alignment: .top) {
-                if index > 0 { Rectangle().fill(Theme.line).frame(height: 1) }
-              }
-              .rise(delay: 0.1 + Double(index) * 0.05)
+            ExpenseRow(
+              trip: trip, expense: expense, fresh: fresh.contains(expense.id), compact: compact
+            )
+            .overlay(alignment: .top) {
+              if index > 0 { Rectangle().fill(Theme.line).frame(height: 1) }
+            }
+            .rise(delay: 0.1 + Double(index) * 0.05)
           }
         }
         .background(Theme.surface)
         .clipShape(RoundedRectangle(cornerRadius: Theme.Radius.card, style: .continuous))
-        if items.contains(where: { $0.status == .planned }) {
+        if !compact, items.contains(where: { $0.status == .planned }) {
           HStack(spacing: 8) {
             Circle()
               .strokeBorder(Theme.tertiary, style: StrokeStyle(lineWidth: 1.5, dash: [3, 2.5]))
@@ -308,6 +404,23 @@ public struct DayView: View {
 
   /// Quick convert for a foreign stop, then the main add button, over a fade.
   private func actions(_ trip: TripSnapshot) -> some View {
+    actionButtons(trip)
+      .padding(.horizontal, Theme.Spacing.screen).padding(.top, 18).padding(.bottom, 6)
+      .frame(maxWidth: 680).frame(maxWidth: .infinity)
+      .background {
+        LinearGradient(
+          stops: [
+            .init(color: Theme.background.opacity(0), location: 0),
+            .init(color: Theme.background, location: 0.4),
+          ],
+          startPoint: .top, endPoint: .bottom
+        )
+        .ignoresSafeArea()
+        .allowsHitTesting(false)
+      }
+  }
+
+  private func actionButtons(_ trip: TripSnapshot) -> some View {
     HStack(spacing: 10) {
       if trip.isAbroad(attachment) {
         Button {
@@ -323,19 +436,6 @@ public struct DayView: View {
         model.editExpense(trip: trip, attachment: attachment)
       }
     }
-    .padding(.horizontal, Theme.Spacing.screen).padding(.top, 18).padding(.bottom, 6)
-    .frame(maxWidth: 680).frame(maxWidth: .infinity)
-    .background {
-      LinearGradient(
-        stops: [
-          .init(color: Theme.background.opacity(0), location: 0),
-          .init(color: Theme.background, location: 0.4),
-        ],
-        startPoint: .top, endPoint: .bottom
-      )
-      .ignoresSafeArea()
-      .allowsHitTesting(false)
-    }
   }
 }
 
@@ -344,6 +444,8 @@ private struct ExpenseRow: View {
   var trip: TripSnapshot
   var expense: Expense
   var fresh: Bool
+  /// Tent: a smaller icon and the home amount only, with no byline.
+  var compact = false
   @Environment(AppModel.self) private var model
 
   var body: some View {
@@ -354,7 +456,7 @@ private struct ExpenseRow: View {
         if paid { Haptics.lightImpact() } else { Haptics.success() }
         model.toggleExpense(expense, trip: trip)
       } label: {
-        StatusCircle(category: expense.category, paid: paid)
+        StatusCircle(category: expense.category, paid: paid, size: compact ? 38 : 44)
       }
       .buttonStyle(PressStyle(scale: 0.88))
       .accessibilityLabel(paid ? "Paid" : "Planned")
@@ -368,30 +470,48 @@ private struct ExpenseRow: View {
             Text(expense.title)
               .typeface(15.5, .heavy, relativeTo: .subheadline, maximum: 1.4)
               .foregroundStyle(Theme.ink).lineLimit(1)
-            Text(byline).typeface(13, relativeTo: .footnote, maximum: 1.4)
-              .foregroundStyle(Theme.secondary).lineLimit(1)
-          }
-          .frame(maxWidth: .infinity, alignment: .leading)
-          VStack(alignment: .trailing, spacing: 3) {
-            Text(Money.format(amount, expense.currency, compact: true))
-              .typeface(15.5, .heavy, relativeTo: .subheadline, maximum: 1.4).monospacedDigit()
-              .foregroundStyle(paid ? Theme.ink : Theme.secondary)
-            if let detail = detail(amount) {
-              Text(detail.text)
-                .typeface(12, .semibold, relativeTo: .caption, maximum: 1.4).monospacedDigit()
-                .foregroundStyle(detail.pending ? Theme.bad : Theme.tertiary)
+            if !compact {
+              Text(byline).typeface(13, relativeTo: .footnote, maximum: 1.4)
+                .foregroundStyle(Theme.secondary).lineLimit(1)
             }
           }
-          .fixedSize()
+          .frame(maxWidth: .infinity, alignment: .leading)
+          if compact {
+            Text(homeAmount(amount))
+              .typeface(15.5, .heavy, relativeTo: .subheadline, maximum: 1.4).monospacedDigit()
+              .foregroundStyle(paid ? Theme.ink : Theme.secondary)
+              .fixedSize()
+          } else {
+            VStack(alignment: .trailing, spacing: 3) {
+              Text(Money.format(amount, expense.currency, compact: true))
+                .typeface(15.5, .heavy, relativeTo: .subheadline, maximum: 1.4).monospacedDigit()
+                .foregroundStyle(paid ? Theme.ink : Theme.secondary)
+              if let detail = detail(amount) {
+                Text(detail.text)
+                  .typeface(12, .semibold, relativeTo: .caption, maximum: 1.4).monospacedDigit()
+                  .foregroundStyle(detail.pending ? Theme.bad : Theme.tertiary)
+              }
+            }
+            .fixedSize()
+          }
         }
         .contentShape(Rectangle())
       }
       .buttonStyle(.plain)
       .accessibilityHint("Edits the expense")
     }
-    .padding(.vertical, 13).padding(.horizontal, 16)
+    .padding(.vertical, compact ? 10 : 13).padding(.horizontal, compact ? 12 : 16)
     .background(fresh ? Theme.accentSoft : .clear)
     .animation(.easeOut(duration: fresh ? 0.2 : 0.8), value: fresh)
+  }
+
+  /// The amount back home, or as spent while its conversion is pending.
+  private func homeAmount(_ amount: Int64) -> String {
+    if expense.currency == trip.homeCurrency { return Money.format(amount, expense.currency) }
+    guard let home = expense.homeMinor(in: trip.homeCurrency) else {
+      return Money.format(amount, expense.currency, compact: true)
+    }
+    return Money.format(home, trip.homeCurrency)
   }
 
   /// "Tom paid · Split 3 ways" or "Planned · Just you".
@@ -429,9 +549,10 @@ private struct ExpenseRow: View {
 private struct StatusCircle: View {
   var category: ExpenseCategory
   var paid: Bool
+  var size: CGFloat = 44
 
   var body: some View {
-    CategoryIcon(category: category, paid: paid)
+    CategoryIcon(category: category, paid: paid, size: size)
       .overlay(alignment: .bottomTrailing) {
         if paid {
           Image(systemName: "checkmark")
