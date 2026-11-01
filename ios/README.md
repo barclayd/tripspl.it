@@ -53,4 +53,8 @@ The initial itinerary is built with stable day/leg IDs and a user-visible trip t
 - Verify signed-device Apple sign-in, token rotation/revocation, cloud multi-user invites and live collaboration; the supplied Apple key must authorise this app’s primary App ID.
 - Verify real universal-link opening after Apple fetches the association file.
 - Device ergonomics and real Duo fold/hinge behavior; simulator coverage is not device verification.
-- Complete the App Store Connect app record, privacy declarations and internal TestFlight delivery. A signed development build is not a distributed beta.
+- Complete App Store privacy declarations before any public release. Internal TestFlight delivery is configured for Dan; installation and device acceptance remain separate checks.
+
+## Internal beta delivery
+
+App Store Connect app `6829340844` is named **TripSplit: Travel Budget** because “TripSplit” was already taken. The installed app name remains TripSplit. The internal group **Dan** contains only the account holder and automatically receives uploaded Xcode builds. Use the existing signed-in Xcode account: archive the `TripSplit` scheme, then choose **TestFlight Internal Only** in Organizer. Increase `CURRENT_PROJECT_VERSION` for every upload and keep its source revision recorded in the PR. Do not use the Sign in with Apple `.p8` key as an App Store Connect API key.
