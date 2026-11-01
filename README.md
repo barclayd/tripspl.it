@@ -4,8 +4,9 @@ A native iOS trip budget that keeps original currencies, planned costs, paid exp
 
 ## Architecture
 
-- **App:** SwiftUI, local SwiftData persistence and an explicit sync outbox
-- **Backend:** TypeScript Cloudflare Workers, one SQLite Durable Object per trip, D1 for accounts and discovery
+- **App:** a thin SwiftUI iOS shell composed from local Swift Package Manager products
+- **Shared Swift:** Foundation domain and accounting, networking, SwiftData persistence, explicit sync and independently composed feature UI
+- **API:** Bun tooling, TypeScript, Hono and Zod on Cloudflare Workers; one SQLite Durable Object per trip, D1 for accounts and discovery
 - **Sync:** Cloudflare serves both personal devices and shared trip members; automatic CloudKit sync is disabled
 - **Recovery:** normal device backup eligibility for local drafts/pending edits, plus separate server recovery
 
@@ -21,22 +22,29 @@ xcodegen generate
 open TripSplit.xcodeproj
 ```
 
-The backend uses the Cloudflare `cf` CLI. Install dependencies, run the checks and start a local Worker:
+The API uses Bun 1.4.0 for dependency management and scripts. Node 24 or newer remains available for the Cloudflare `cf` CLI and its test/build tools. Cloudflare Workers is the deployed runtime. Install the locked dependencies, run the checks and start a local Worker:
 
 ```sh
-cd backend
-npm ci
-npm run check
-npm test
-npm run dev
+cd api
+bun install --frozen-lockfile
+bun run check
+bun run test
+bun run dev
 ```
 
-The Cloudflare API is deployed at [api.tripspl.it](https://api.tripspl.it/v1/health), with public exchange rates available before sign-in. Apple credentials and HTTPS invitation association are configured. Signed-device Apple sign-in and multi-user collaboration still need end-to-end verification. Local trip creation works without signing in. Never put credentials in the repository. Backend-specific configuration and deployment instructions live in [backend/README.md](backend/README.md).
+The Cloudflare API is deployed at [api.tripspl.it](https://api.tripspl.it/v1/health), with public exchange rates available before sign-in. Apple credentials and HTTPS invitation association are configured. Signed-device Apple sign-in and multi-user collaboration still need end-to-end verification. Local trip creation works without signing in. Never put credentials in the repository. Service configuration and deployment instructions live in [api/README.md](api/README.md).
+
+## Swift packages
+
+`Packages/TripSplitDomain` owns models, exact money calculations, civil dates, shared transport values and bundled destination data. `Packages/TripSplitInfrastructure` separates networking, persistence and sync. `Packages/TripSplitApplication` coordinates those services. `Packages/TripSplitFeatures` provides separate UI products, following the local-package and vertical-feature structure used by KeepFresh.
+
+The reusable service layers are intended for iOS, watchOS and macOS consumers. Existing feature UI remains designed for iPhone and iPad; this repository does not yet ship a Watch or Mac app. New platforms compose their own presentation around the shared products. See [the dependency graph and migration plan](docs/architecture.md#package-architecture) for boundaries and extension guidance.
 
 ## Checks
 
 ```sh
-swift test --package-path ios
+swift test --package-path Packages/TripSplitDomain
+swift test --package-path Packages/TripSplitApplication
 xcodebuild -project ios/TripSplit.xcodeproj -scheme TripSplit \
   -destination 'platform=iOS Simulator,name=iPhone Duo,OS=27.1' \
   CODE_SIGNING_ALLOWED=NO test

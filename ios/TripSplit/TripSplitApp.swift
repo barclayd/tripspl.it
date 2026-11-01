@@ -1,12 +1,23 @@
 import SwiftUI
+import TripSplitApplication
+import TripSplitDesignSystem
+import TripSplitNetworking
+import TripSplitPersistence
+import TripSplitSync
 
 @main struct TripSplitApp: App {
   @State private var model: AppModel?
   @State private var error: String?
+  @State private var connectivity: Connectivity?
   init() {
     do {
       let store = try LocalStore()
-      let model = AppModel(store: store)
+      let sync = SyncCoordinator(store: store, api: APIClient(baseURL: APIConfiguration.baseURL))
+      let model = AppModel(store: store, sync: sync)
+      _connectivity = State(
+        initialValue: Connectivity { [weak sync] in
+          Task { await sync?.syncAll() }
+        })
       if ProcessInfo.processInfo.arguments.contains("--demo"), store.trips.isEmpty {
         try DemoData.install(into: store)
       }

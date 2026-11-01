@@ -2,7 +2,7 @@
 
 The 2026-11-01 catalogue contains **250 countries and territories** and **exactly 500 city or region destinations**, covering 242 country/territory codes. These are travel-search choices, not an official tourism ranking or the world's 500 largest cities. Country inclusion follows the current GeoNames country-code dataset: 252 source rows, excluding obsolete `AN` (Netherlands Antilles) and `CS` (Serbia and Montenegro), retaining `XK` (Kosovo). This count is not a claim about the number of sovereign states.
 
-The app bundles four files in `ios/TripSplit/Domain/Resources/`:
+The `TripSplitDomain` package bundles four files in `Packages/TripSplitDomain/Sources/TripSplitDomain/Resources/`:
 
 - `Countries.json`: code, English display name, ordered current tender currency codes, representative latitude/longitude and search aliases.
 - `Destinations.json`: stable `geonames-<ID>` identity, display name, country code, coordinates and search aliases.
