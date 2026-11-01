@@ -301,16 +301,17 @@ package struct BoardingPass: View {
     }
   }
 
+  /// Spread edge to edge with even gaps between, each field centred on its label.
   private func fields(_ palette: PassPalette) -> some View {
-    HStack(spacing: 6) {
+    HStack(spacing: 0) {
       ForEach(Array(content.fields.prefix(3).enumerated()), id: \.offset) { index, field in
-        VStack(alignment: .leading, spacing: 0) {
+        if index > 0 { Spacer(minLength: 14) }
+        VStack(spacing: 0) {
           Text(field.label).font(.system(size: 8.5, weight: .black)).tracking(1)
             .foregroundStyle(palette.text)
           Text(field.value).font(.system(size: 13, weight: .black)).lineLimit(1)
         }
         .padding(.horizontal, 6).padding(.vertical, 2)
-        .frame(maxWidth: .infinity, alignment: .leading)
         .background(
           content.highlight == .field(index + 1) ? palette.highlight : .clear,
           in: RoundedRectangle(cornerRadius: 8)
