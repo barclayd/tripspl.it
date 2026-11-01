@@ -1,0 +1,708 @@
+{
+  "countries": {
+    "GB": [
+      "UK",
+      "U.K.",
+      "Britain",
+      "Great Britain"
+    ],
+    "US": [
+      "USA",
+      "U.S.A.",
+      "United States of America",
+      "America"
+    ],
+    "NL": [
+      "Holland",
+      "Nederland"
+    ],
+    "TR": [
+      "Turkey",
+      "Türkiye",
+      "Turkiye"
+    ],
+    "TW": [
+      "Taiwan",
+      "Taiwan ROC",
+      "Formosa",
+      "臺灣",
+      "台灣"
+    ],
+    "CN": [
+      "China",
+      "People's Republic of China",
+      "PRC",
+      "中国",
+      "中國"
+    ],
+    "JP": [
+      "Nippon",
+      "Nihon",
+      "日本"
+    ],
+    "KR": [
+      "Republic of Korea",
+      "Korea",
+      "대한민국",
+      "한국"
+    ],
+    "KP": [
+      "DPRK",
+      "Democratic People's Republic of Korea",
+      "조선"
+    ],
+    "DE": [
+      "Deutschland"
+    ],
+    "ES": [
+      "España",
+      "Espana"
+    ],
+    "IT": [
+      "Italia"
+    ],
+    "FR": [
+      "République française"
+    ],
+    "GR": [
+      "Hellas",
+      "Ελλάδα"
+    ],
+    "CH": [
+      "Schweiz",
+      "Suisse",
+      "Svizzera"
+    ],
+    "AT": [
+      "Österreich",
+      "Osterreich"
+    ],
+    "BE": [
+      "Belgique",
+      "België",
+      "Belgien"
+    ],
+    "PT": [
+      "República Portuguesa"
+    ],
+    "CZ": [
+      "Czech Republic",
+      "Česko",
+      "Cesko"
+    ],
+    "SK": [
+      "Slovensko"
+    ],
+    "SE": [
+      "Sverige"
+    ],
+    "NO": [
+      "Norge",
+      "Noreg"
+    ],
+    "FI": [
+      "Suomi"
+    ],
+    "DK": [
+      "Danmark"
+    ],
+    "IS": [
+      "Ísland",
+      "Island"
+    ],
+    "IE": [
+      "Éire",
+      "Eire"
+    ],
+    "PL": [
+      "Polska"
+    ],
+    "HU": [
+      "Magyarország",
+      "Magyarorszag"
+    ],
+    "RO": [
+      "România",
+      "Romania"
+    ],
+    "HR": [
+      "Hrvatska"
+    ],
+    "UA": [
+      "Україна",
+      "Ukraina"
+    ],
+    "RU": [
+      "Russian Federation",
+      "Россия",
+      "Rossiya"
+    ],
+    "AE": [
+      "UAE",
+      "Emirates",
+      "الإمارات العربية المتحدة"
+    ],
+    "SA": [
+      "KSA",
+      "Saudi",
+      "السعودية"
+    ],
+    "EG": [
+      "Misr",
+      "مصر"
+    ],
+    "MA": [
+      "Maroc",
+      "المغرب"
+    ],
+    "ZA": [
+      "RSA",
+      "South Africa"
+    ],
+    "CI": [
+      "Ivory Coast",
+      "Côte d'Ivoire",
+      "Cote d Ivoire"
+    ],
+    "CD": [
+      "DR Congo",
+      "DRC",
+      "Congo Kinshasa"
+    ],
+    "CG": [
+      "Congo Brazzaville"
+    ],
+    "SZ": [
+      "Swaziland"
+    ],
+    "CV": [
+      "Cape Verde"
+    ],
+    "MM": [
+      "Burma",
+      "မြန်မာ"
+    ],
+    "TL": [
+      "East Timor",
+      "Timor Leste"
+    ],
+    "LA": [
+      "Lao PDR",
+      "Lao People's Democratic Republic"
+    ],
+    "VN": [
+      "Viet Nam",
+      "Việt Nam"
+    ],
+    "TH": [
+      "Thailand",
+      "Siam",
+      "ประเทศไทย"
+    ],
+    "IN": [
+      "Bharat",
+      "भारत"
+    ],
+    "LK": [
+      "Ceylon",
+      "ශ්‍රී ලංකාව"
+    ],
+    "NP": [
+      "नेपाल"
+    ],
+    "BT": [
+      "Druk Yul",
+      "འབྲུག་ཡུལ"
+    ],
+    "IR": [
+      "Iran",
+      "Persia",
+      "ایران"
+    ],
+    "IL": [
+      "ישראל"
+    ],
+    "PS": [
+      "Palestine",
+      "Palestinian Territories",
+      "فلسطين"
+    ],
+    "VA": [
+      "Vatican City",
+      "Holy See"
+    ],
+    "XK": [
+      "Kosova",
+      "Kosovë",
+      "Косово"
+    ],
+    "HK": [
+      "Hong Kong SAR",
+      "香港"
+    ],
+    "MO": [
+      "Macao",
+      "Macau SAR",
+      "澳門",
+      "澳门"
+    ],
+    "NZ": [
+      "Aotearoa"
+    ],
+    "AU": [
+      "Australia",
+      "Oz"
+    ],
+    "BR": [
+      "Brasil"
+    ],
+    "MX": [
+      "México",
+      "Mexico"
+    ],
+    "PE": [
+      "Perú",
+      "Peru"
+    ],
+    "BO": [
+      "Bolivia",
+      "Plurinational State of Bolivia"
+    ],
+    "VE": [
+      "Venezuela",
+      "Bolivarian Republic of Venezuela"
+    ],
+    "AX": [
+      "Åland",
+      "Aland"
+    ],
+    "CW": [
+      "Curaçao",
+      "Curacao"
+    ],
+    "BL": [
+      "Saint Barthélemy",
+      "St Barts",
+      "St Barth"
+    ],
+    "MF": [
+      "St Martin"
+    ],
+    "SX": [
+      "St Maarten"
+    ],
+    "BQ": [
+      "Caribbean Netherlands",
+      "Bonaire",
+      "Sint Eustatius",
+      "Saba"
+    ]
+  },
+  "destinations": {
+    "Lisbon": [
+      "Lisboa"
+    ],
+    "Porto": [
+      "Oporto"
+    ],
+    "Seville": [
+      "Sevilla"
+    ],
+    "Rome": [
+      "Roma"
+    ],
+    "Florence": [
+      "Firenze"
+    ],
+    "Venice": [
+      "Venezia"
+    ],
+    "Milan": [
+      "Milano"
+    ],
+    "Naples": [
+      "Napoli"
+    ],
+    "Turin": [
+      "Torino"
+    ],
+    "Munich": [
+      "München",
+      "Munchen"
+    ],
+    "Cologne": [
+      "Köln",
+      "Koln"
+    ],
+    "Vienna": [
+      "Wien"
+    ],
+    "Prague": [
+      "Praha"
+    ],
+    "Brussels": [
+      "Bruxelles",
+      "Brussel"
+    ],
+    "Bruges": [
+      "Brugge"
+    ],
+    "Ghent": [
+      "Gent"
+    ],
+    "Antwerp": [
+      "Antwerpen"
+    ],
+    "The Hague": [
+      "Den Haag",
+      "'s-Gravenhage"
+    ],
+    "Athens": [
+      "Athina",
+      "Αθήνα"
+    ],
+    "Warsaw": [
+      "Warszawa"
+    ],
+    "Kraków": [
+      "Krakow",
+      "Cracow"
+    ],
+    "Copenhagen": [
+      "København",
+      "Kobenhavn"
+    ],
+    "Gothenburg": [
+      "Göteborg",
+      "Goteborg"
+    ],
+    "Marrakesh": [
+      "Marrakech",
+      "مراكش"
+    ],
+    "Fes": [
+      "Fez",
+      "فاس"
+    ],
+    "Tokyo": [
+      "Tokio",
+      "東京",
+      "東京都"
+    ],
+    "Kyoto": [
+      "京都",
+      "京都市"
+    ],
+    "Osaka": [
+      "大阪",
+      "大阪市"
+    ],
+    "Hiroshima": [
+      "広島",
+      "広島市"
+    ],
+    "Nara": [
+      "奈良"
+    ],
+    "Kanazawa": [
+      "金沢"
+    ],
+    "Fukuoka": [
+      "福岡"
+    ],
+    "Sapporo": [
+      "札幌"
+    ],
+    "Yokohama": [
+      "横浜"
+    ],
+    "Kobe": [
+      "神戸"
+    ],
+    "Taipei": [
+      "Taipei City",
+      "Taipeh",
+      "臺北",
+      "台北",
+      "臺北市",
+      "台北市"
+    ],
+    "Taichung": [
+      "Taichung City",
+      "Taizhong",
+      "臺中",
+      "台中",
+      "臺中市",
+      "台中市"
+    ],
+    "Kaohsiung": [
+      "Kaohsiung City",
+      "Gaoxiong",
+      "Takao",
+      "高雄",
+      "高雄市"
+    ],
+    "Tainan": [
+      "Tainan City",
+      "臺南",
+      "台南",
+      "臺南市",
+      "台南市"
+    ],
+    "Hualien City": [
+      "Hualien",
+      "花蓮",
+      "花莲"
+    ],
+    "Taitung": [
+      "臺東",
+      "台東"
+    ],
+    "Beijing": [
+      "Peking",
+      "北京"
+    ],
+    "Shanghai": [
+      "上海"
+    ],
+    "Xi’an": [
+      "Xi'an",
+      "Xian",
+      "西安"
+    ],
+    "Chengdu": [
+      "成都"
+    ],
+    "Guangzhou": [
+      "Canton",
+      "广州",
+      "廣州"
+    ],
+    "Shenzhen": [
+      "深圳"
+    ],
+    "Hangzhou": [
+      "杭州"
+    ],
+    "Guilin": [
+      "桂林"
+    ],
+    "Suzhou": [
+      "苏州",
+      "蘇州"
+    ],
+    "Hong Kong": [
+      "香港"
+    ],
+    "Macau": [
+      "Macao",
+      "澳門",
+      "澳门"
+    ],
+    "Seoul": [
+      "서울",
+      "서울특별시"
+    ],
+    "Busan": [
+      "Pusan",
+      "부산"
+    ],
+    "Jeju City": [
+      "Jeju",
+      "Cheju",
+      "제주"
+    ],
+    "Incheon": [
+      "Inchon",
+      "인천"
+    ],
+    "Bangkok": [
+      "Krung Thep",
+      "กรุงเทพมหานคร"
+    ],
+    "Chiang Mai": [
+      "เชียงใหม่"
+    ],
+    "Phuket": [
+      "ภูเก็ต"
+    ],
+    "Hanoi": [
+      "Hà Nội",
+      "Ha Noi"
+    ],
+    "Ho Chi Minh City": [
+      "Saigon",
+      "Sài Gòn",
+      "Hồ Chí Minh"
+    ],
+    "Hoi An": [
+      "Hội An"
+    ],
+    "Da Nang": [
+      "Đà Nẵng",
+      "Danang"
+    ],
+    "Hue": [
+      "Huế"
+    ],
+    "Siem Reap": [
+      "សៀមរាប"
+    ],
+    "Kuala Lumpur": [
+      "KL",
+      "吉隆坡"
+    ],
+    "Melaka": [
+      "Malacca"
+    ],
+    "Mumbai": [
+      "Bombay",
+      "मुंबई"
+    ],
+    "Kolkata": [
+      "Calcutta",
+      "কলকাতা"
+    ],
+    "Chennai": [
+      "Madras",
+      "சென்னை"
+    ],
+    "Bengaluru": [
+      "Bangalore",
+      "ಬೆಂಗಳೂರು"
+    ],
+    "New Delhi": [
+      "Delhi",
+      "नई दिल्ली"
+    ],
+    "Jaipur": [
+      "जयपुर"
+    ],
+    "Varanasi": [
+      "Benares",
+      "Banaras",
+      "वाराणसी"
+    ],
+    "Kochi": [
+      "Cochin",
+      "കൊച്ചി"
+    ],
+    "Kathmandu": [
+      "काठमाडौँ"
+    ],
+    "Colombo": [
+      "කොළඹ"
+    ],
+    "Dubai": [
+      "دبي"
+    ],
+    "Abu Dhabi": [
+      "أبو ظبي"
+    ],
+    "Cairo": [
+      "Al Qahirah",
+      "القاهرة"
+    ],
+    "Istanbul": [
+      "İstanbul",
+      "Constantinople"
+    ],
+    "Izmir": [
+      "İzmir",
+      "Smyrna"
+    ],
+    "New York": [
+      "New York City",
+      "NYC"
+    ],
+    "Washington": [
+      "Washington DC",
+      "Washington D.C.",
+      "DC"
+    ],
+    "Los Angeles": [
+      "LA",
+      "L.A."
+    ],
+    "San Francisco": [
+      "SF"
+    ],
+    "Mexico City": [
+      "Ciudad de México",
+      "Ciudad de Mexico",
+      "CDMX"
+    ],
+    "Cancún": [
+      "Cancun"
+    ],
+    "São Paulo": [
+      "Sao Paulo"
+    ],
+    "Rio de Janeiro": [
+      "Rio"
+    ],
+    "Cusco": [
+      "Cuzco",
+      "Qosqo"
+    ],
+    "Bogotá": [
+      "Bogota"
+    ],
+    "Medellín": [
+      "Medellin"
+    ],
+    "Montréal": [
+      "Montreal"
+    ],
+    "Québec": [
+      "Quebec",
+      "Quebec City",
+      "Ville de Québec"
+    ],
+    "Cape Town": [
+      "Kaapstad",
+      "iKapa"
+    ],
+    "Johannesburg": [
+      "Joburg",
+      "Jozi"
+    ],
+    "Gqeberha": [
+      "Port Elizabeth"
+    ],
+    "Zanzibar": [
+      "Zanzibar City",
+      "Stone Town"
+    ],
+    "Queenstown": [
+      "Tāhuna",
+      "Tahuna"
+    ],
+    "Auckland": [
+      "Tāmaki Makaurau",
+      "Tamaki Makaurau"
+    ],
+    "Wellington": [
+      "Te Whanganui-a-Tara"
+    ],
+    "Christchurch": [
+      "Ōtautahi",
+      "Otautahi"
+    ],
+    "Santorini": [
+      "Thira",
+      "Thera",
+      "Santorin",
+      "Σαντορίνη",
+      "Θήρα"
+    ]
+  },
+  "scopedDestinations": {
+    "MY:George Town": [
+      "Georgetown",
+      "Penang",
+      "槟城",
+      "檳城"
+    ]
+  }
+}

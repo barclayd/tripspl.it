@@ -1,0 +1,134 @@
+[
+  {
+    "name": "Lisbon",
+    "countryCode": "PT",
+    "latitude": 38.7223,
+    "longitude": -9.1393
+  },
+  {
+    "name": "Porto",
+    "countryCode": "PT",
+    "latitude": 41.1579,
+    "longitude": -8.6291
+  },
+  {
+    "name": "Seville",
+    "countryCode": "ES",
+    "latitude": 37.3891,
+    "longitude": -5.9845
+  },
+  {
+    "name": "Barcelona",
+    "countryCode": "ES",
+    "latitude": 41.3874,
+    "longitude": 2.1686
+  },
+  {
+    "name": "Paris",
+    "countryCode": "FR",
+    "latitude": 48.8566,
+    "longitude": 2.3522
+  },
+  {
+    "name": "Rome",
+    "countryCode": "IT",
+    "latitude": 41.9028,
+    "longitude": 12.4964
+  },
+  {
+    "name": "Tokyo",
+    "countryCode": "JP",
+    "latitude": 35.6762,
+    "longitude": 139.6503
+  },
+  {
+    "name": "Kyoto",
+    "countryCode": "JP",
+    "latitude": 35.0116,
+    "longitude": 135.7681
+  },
+  {
+    "name": "London",
+    "countryCode": "GB",
+    "latitude": 51.5074,
+    "longitude": -0.1278
+  },
+  {
+    "name": "New York",
+    "countryCode": "US",
+    "latitude": 40.7128,
+    "longitude": -74.006
+  },
+  {
+    "name": "Sydney",
+    "countryCode": "AU",
+    "latitude": -33.8688,
+    "longitude": 151.2093
+  },
+  {
+    "name": "Bangkok",
+    "countryCode": "TH",
+    "latitude": 13.7563,
+    "longitude": 100.5018
+  },
+  {
+    "name": "Bali",
+    "countryCode": "ID",
+    "latitude": -8.4095,
+    "longitude": 115.1889
+  },
+  {
+    "name": "Hanoi",
+    "countryCode": "VN",
+    "latitude": 21.0278,
+    "longitude": 105.8342
+  },
+  {
+    "name": "Marrakesh",
+    "countryCode": "MA",
+    "latitude": 31.6295,
+    "longitude": -7.9811
+  },
+  {
+    "name": "Athens",
+    "countryCode": "GR",
+    "latitude": 37.9838,
+    "longitude": 23.7275
+  },
+  {
+    "name": "Zermatt",
+    "countryCode": "CH",
+    "latitude": 46.0207,
+    "longitude": 7.7491
+  },
+  {
+    "name": "Vancouver",
+    "countryCode": "CA",
+    "latitude": 49.2827,
+    "longitude": -123.1207
+  },
+  {
+    "name": "Mexico City",
+    "countryCode": "MX",
+    "latitude": 19.4326,
+    "longitude": -99.1332
+  },
+  {
+    "name": "Seoul",
+    "countryCode": "KR",
+    "latitude": 37.5665,
+    "longitude": 126.978
+  },
+  {
+    "name": "Dubai",
+    "countryCode": "AE",
+    "latitude": 25.2048,
+    "longitude": 55.2708
+  },
+  {
+    "name": "Auckland",
+    "countryCode": "NZ",
+    "latitude": -36.8509,
+    "longitude": 174.7645
+  }
+]

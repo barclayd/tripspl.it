@@ -9,7 +9,7 @@ A native iOS trip budget that keeps original currencies, planned costs, paid exp
 - **Sync:** Cloudflare serves both personal devices and shared trip members; automatic CloudKit sync is disabled
 - **Recovery:** normal device backup eligibility for local drafts/pending edits, plus separate server recovery
 
-See [architecture](docs/architecture.md), [HTTP contract](contracts/api.md), [transport types](contracts/tripsplit-v1.ts) and [shared money examples](contracts/money-examples.json).
+See [destination data and currencies](docs/destination-data.md), [architecture](docs/architecture.md), [HTTP contract](contracts/api.md), [transport types](contracts/tripsplit-v1.ts) and [shared money examples](contracts/money-examples.json).
 
 ## Development
 

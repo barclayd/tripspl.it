@@ -22,10 +22,14 @@
 		64F829BEE7FF73DF3421F6E2 /* BoardingPass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D3A3A3942ACC23F39473671 /* BoardingPass.swift */; };
 		737AC2514B66E3BB73A28B9B /* InstallationIdentity.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC867889817D402E2E0864CC /* InstallationIdentity.swift */; };
 		746516C981B0A4D7A7A32B2F /* DayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 351A898F5C2C65447A0C937E /* DayView.swift */; };
+		7B370B8B4B25260B28E499FB /* Countries.json in Resources */ = {isa = PBXBuildFile; fileRef = D9A73B4F58B03E97128ECC68 /* Countries.json */; };
 		84793E299489224C9B1B15ED /* LocalStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50DABD926E02D5A263A5152F /* LocalStore.swift */; };
 		91CDC9B60806EABCCA61E7E3 /* ConvertView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A028627A11857F99040BE293 /* ConvertView.swift */; };
 		9366C8BDBC3F8D5C35BA48CE /* TripSplitApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECF15BF32A826DF42AE46AF7 /* TripSplitApp.swift */; };
+		97357C110EFD5FAE62E414FF /* Destinations.json in Resources */ = {isa = PBXBuildFile; fileRef = 6A00A18919E8E3B6A41B77F5 /* Destinations.json */; };
 		97577E76716BEA541611811C /* Money.swift in Sources */ = {isa = PBXBuildFile; fileRef = 530DA2C4F9522D484B9092DD /* Money.swift */; };
+		9835796FECE2860A0E8BD9A7 /* DestinationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E98CE50F4E54604D70FFE9E /* DestinationTests.swift */; };
+		ACDF0129526CF4EAA0C19E9B /* CountryMetadata.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81D03BE83C0D4EE59AEF3A56 /* CountryMetadata.swift */; };
 		AFFFC5EFB58BDA66727E796E /* ExpenseEditor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8DCFF27607FA889654E7BBFC /* ExpenseEditor.swift */; };
 		B51CC7A08B52B354DF9C42E2 /* TripsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F46E00664FEDE2CE339C098 /* TripsView.swift */; };
 		B85A51442A2C7E39B8EBB3FF /* LocalStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7389AEF73E44DA8AF523249 /* LocalStoreTests.swift */; };
@@ -34,9 +38,11 @@
 		C87F7BF785AF373705A60D0C /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = DBC7D0CB5EA99035F367F932 /* Assets.xcassets */; };
 		C9528D1FE56F06431044C0D1 /* WireEncoding.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B4E47BBBE73FD8517AE214F /* WireEncoding.swift */; };
 		CA3DA9ADF83C5C6AE8953DB2 /* Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = FCAFB6652387BAE5CEE305E6 /* Theme.swift */; };
+		CAD2266905381923EA4C1AA0 /* DestinationDataLicenses.txt in Resources */ = {isa = PBXBuildFile; fileRef = CD9F6BA10C395D55BE4A16AA /* DestinationDataLicenses.txt */; };
 		E233BAB3BB96902E45623E6C /* Catalog.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF633F3E71F718E674EB302E /* Catalog.swift */; };
 		E6850F8647AC26925288EE3F /* CurrencyMetadata.swift in Sources */ = {isa = PBXBuildFile; fileRef = 673B1378BCDD511CB89C77C7 /* CurrencyMetadata.swift */; };
 		E9E5B9BDE5800ACAA4458B2F /* TripDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4599928ADB9A9A71567089AD /* TripDetailView.swift */; };
+		F865E43A8CA80BDA3EAEB80A /* DestinationSearch.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB13DAAD9BCE129793DE6AAC /* DestinationSearch.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -66,21 +72,27 @@
 		6198DCB225990BFEDB7B7635 /* Celebration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Celebration.swift; sourceTree = "<group>"; };
 		63E6217BAE6D1166B0C7694D /* MoneyTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MoneyTests.swift; sourceTree = "<group>"; };
 		673B1378BCDD511CB89C77C7 /* CurrencyMetadata.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CurrencyMetadata.swift; sourceTree = "<group>"; };
+		6A00A18919E8E3B6A41B77F5 /* Destinations.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = Destinations.json; sourceTree = "<group>"; };
 		6B4E47BBBE73FD8517AE214F /* WireEncoding.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WireEncoding.swift; sourceTree = "<group>"; };
+		81D03BE83C0D4EE59AEF3A56 /* CountryMetadata.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CountryMetadata.swift; sourceTree = "<group>"; };
 		829A4DF7FBD3E53C3A26E237 /* SessionVault.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionVault.swift; sourceTree = "<group>"; };
 		8DCFF27607FA889654E7BBFC /* ExpenseEditor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpenseEditor.swift; sourceTree = "<group>"; };
+		9E98CE50F4E54604D70FFE9E /* DestinationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DestinationTests.swift; sourceTree = "<group>"; };
 		A028627A11857F99040BE293 /* ConvertView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConvertView.swift; sourceTree = "<group>"; };
 		BC867889817D402E2E0864CC /* InstallationIdentity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InstallationIdentity.swift; sourceTree = "<group>"; };
 		C66DE23A8B0ED7340294D15D /* Models.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Models.swift; sourceTree = "<group>"; };
 		C98C7DDA4F5CF96E27C75CE8 /* APIClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIClient.swift; sourceTree = "<group>"; };
+		CD9F6BA10C395D55BE4A16AA /* DestinationDataLicenses.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = DestinationDataLicenses.txt; sourceTree = "<group>"; };
 		CFB1D198926122BE48165D98 /* TripSplit.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = TripSplit.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		D7389AEF73E44DA8AF523249 /* LocalStoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalStoreTests.swift; sourceTree = "<group>"; };
+		D9A73B4F58B03E97128ECC68 /* Countries.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = Countries.json; sourceTree = "<group>"; };
 		DBC7D0CB5EA99035F367F932 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		DC30A5B78F675213D509078F /* AppModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppModel.swift; sourceTree = "<group>"; };
 		DF633F3E71F718E674EB302E /* Catalog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Catalog.swift; sourceTree = "<group>"; };
 		EC3945DC7F05E2AAF59DFF17 /* Connectivity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Connectivity.swift; sourceTree = "<group>"; };
 		ECF15BF32A826DF42AE46AF7 /* TripSplitApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TripSplitApp.swift; sourceTree = "<group>"; };
 		F921C78625139F57831D88F1 /* SyncTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyncTests.swift; sourceTree = "<group>"; };
+		FB13DAAD9BCE129793DE6AAC /* DestinationSearch.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DestinationSearch.swift; sourceTree = "<group>"; };
 		FCAFB6652387BAE5CEE305E6 /* Theme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Theme.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -98,6 +110,7 @@
 		1A8A2C7096045F6F5DFCE619 /* DomainTests */ = {
 			isa = PBXGroup;
 			children = (
+				9E98CE50F4E54604D70FFE9E /* DestinationTests.swift */,
 				63E6217BAE6D1166B0C7694D /* MoneyTests.swift */,
 			);
 			path = DomainTests;
@@ -110,6 +123,7 @@
 				DC30A5B78F675213D509078F /* AppModel.swift */,
 				EC3945DC7F05E2AAF59DFF17 /* Connectivity.swift */,
 				0F6CBB92A7FF53A66738C0BE /* DemoData.swift */,
+				FB13DAAD9BCE129793DE6AAC /* DestinationSearch.swift */,
 				BC867889817D402E2E0864CC /* InstallationIdentity.swift */,
 				50DABD926E02D5A263A5152F /* LocalStore.swift */,
 				829A4DF7FBD3E53C3A26E237 /* SessionVault.swift */,
@@ -138,10 +152,12 @@
 			isa = PBXGroup;
 			children = (
 				DF633F3E71F718E674EB302E /* Catalog.swift */,
+				81D03BE83C0D4EE59AEF3A56 /* CountryMetadata.swift */,
 				673B1378BCDD511CB89C77C7 /* CurrencyMetadata.swift */,
 				C66DE23A8B0ED7340294D15D /* Models.swift */,
 				530DA2C4F9522D484B9092DD /* Money.swift */,
 				6B4E47BBBE73FD8517AE214F /* WireEncoding.swift */,
+				7FE3B5573FF0DFA0706264DD /* Resources */,
 			);
 			path = Domain;
 			sourceTree = "<group>";
@@ -157,6 +173,16 @@
 				573174458936BF4B2498FB65 /* Features */,
 			);
 			path = TripSplit;
+			sourceTree = "<group>";
+		};
+		7FE3B5573FF0DFA0706264DD /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				D9A73B4F58B03E97128ECC68 /* Countries.json */,
+				CD9F6BA10C395D55BE4A16AA /* DestinationDataLicenses.txt */,
+				6A00A18919E8E3B6A41B77F5 /* Destinations.json */,
+			);
+			path = Resources;
 			sourceTree = "<group>";
 		};
 		8C682E5F7493AD0736A75D51 /* Products */ = {
@@ -271,6 +297,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				C87F7BF785AF373705A60D0C /* Assets.xcassets in Resources */,
+				7B370B8B4B25260B28E499FB /* Countries.json in Resources */,
+				CAD2266905381923EA4C1AA0 /* DestinationDataLicenses.txt in Resources */,
+				97357C110EFD5FAE62E414FF /* Destinations.json in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -288,9 +317,11 @@
 				0913DABCCC76D3FD558EF97A /* Celebration.swift in Sources */,
 				16CD2E5D9311416CADE1B57F /* Connectivity.swift in Sources */,
 				91CDC9B60806EABCCA61E7E3 /* ConvertView.swift in Sources */,
+				ACDF0129526CF4EAA0C19E9B /* CountryMetadata.swift in Sources */,
 				E6850F8647AC26925288EE3F /* CurrencyMetadata.swift in Sources */,
 				746516C981B0A4D7A7A32B2F /* DayView.swift in Sources */,
 				305B463C1A826ADE8577C2AB /* DemoData.swift in Sources */,
+				F865E43A8CA80BDA3EAEB80A /* DestinationSearch.swift in Sources */,
 				AFFFC5EFB58BDA66727E796E /* ExpenseEditor.swift in Sources */,
 				3C6250A3405819FED8A1A7F8 /* GlobeView.swift in Sources */,
 				737AC2514B66E3BB73A28B9B /* InstallationIdentity.swift in Sources */,
@@ -314,6 +345,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9835796FECE2860A0E8BD9A7 /* DestinationTests.swift in Sources */,
 				B85A51442A2C7E39B8EBB3FF /* LocalStoreTests.swift in Sources */,
 				48F969DEFFE11927EFC95B75 /* MoneyTests.swift in Sources */,
 				43900AA0E1236C035E5EAF21 /* SyncTests.swift in Sources */,
@@ -354,7 +386,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = Config/TripSplit.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 3;
 				INFOPLIST_FILE = Config/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -391,7 +423,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = Config/TripSplit.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 3;
 				INFOPLIST_FILE = Config/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",

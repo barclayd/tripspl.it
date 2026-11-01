@@ -1,0 +1,2151 @@
+{
+  "version": 1,
+  "asOf": "2026-11-01",
+  "count": 500,
+  "legacyPrefixCount": 22,
+  "countryCentreFallbacks": {
+    "AX": "3041732",
+    "BL": "3579132",
+    "BQ": "3513563",
+    "CW": "3513090",
+    "MF": "3578851",
+    "SS": "373303",
+    "SX": "3513392"
+  },
+  "destinations": [
+    {
+      "geonameId": "2267057",
+      "reason": "legacy-demo-order",
+      "overrides": {
+        "name": "Lisbon",
+        "latitude": 38.7223,
+        "longitude": -9.1393
+      }
+    },
+    {
+      "geonameId": "2735943",
+      "reason": "legacy-demo-order",
+      "overrides": {
+        "name": "Porto",
+        "latitude": 41.1579,
+        "longitude": -8.6291
+      }
+    },
+    {
+      "geonameId": "2510911",
+      "reason": "legacy-demo-order",
+      "overrides": {
+        "name": "Seville",
+        "latitude": 37.3891,
+        "longitude": -5.9845
+      }
+    },
+    {
+      "geonameId": "3128760",
+      "reason": "legacy-demo-order",
+      "overrides": {
+        "name": "Barcelona",
+        "latitude": 41.3874,
+        "longitude": 2.1686
+      }
+    },
+    {
+      "geonameId": "2988507",
+      "reason": "legacy-demo-order",
+      "overrides": {
+        "name": "Paris",
+        "latitude": 48.8566,
+        "longitude": 2.3522
+      }
+    },
+    {
+      "geonameId": "3169070",
+      "reason": "legacy-demo-order",
+      "overrides": {
+        "name": "Rome",
+        "latitude": 41.9028,
+        "longitude": 12.4964
+      }
+    },
+    {
+      "geonameId": "1850147",
+      "reason": "legacy-demo-order",
+      "overrides": {
+        "name": "Tokyo",
+        "latitude": 35.6762,
+        "longitude": 139.6503
+      }
+    },
+    {
+      "geonameId": "1857910",
+      "reason": "legacy-demo-order",
+      "overrides": {
+        "name": "Kyoto",
+        "latitude": 35.0116,
+        "longitude": 135.7681
+      }
+    },
+    {
+      "geonameId": "2643743",
+      "reason": "legacy-demo-order",
+      "overrides": {
+        "name": "London",
+        "latitude": 51.5074,
+        "longitude": -0.1278
+      }
+    },
+    {
+      "geonameId": "5128581",
+      "reason": "legacy-demo-order",
+      "overrides": {
+        "name": "New York",
+        "latitude": 40.7128,
+        "longitude": -74.006
+      }
+    },
+    {
+      "geonameId": "2147714",
+      "reason": "legacy-demo-order",
+      "overrides": {
+        "name": "Sydney",
+        "latitude": -33.8688,
+        "longitude": 151.2093
+      }
+    },
+    {
+      "geonameId": "1609350",
+      "reason": "legacy-demo-order",
+      "overrides": {
+        "name": "Bangkok",
+        "latitude": 13.7563,
+        "longitude": 100.5018
+      }
+    },
+    {
+      "geonameId": "1650535",
+      "reason": "legacy-demo-order",
+      "overrides": {
+        "name": "Bali",
+        "latitude": -8.4095,
+        "longitude": 115.1889
+      }
+    },
+    {
+      "geonameId": "1581130",
+      "reason": "legacy-demo-order",
+      "overrides": {
+        "name": "Hanoi",
+        "latitude": 21.0278,
+        "longitude": 105.8342
+      }
+    },
+    {
+      "geonameId": "2542997",
+      "reason": "legacy-demo-order",
+      "overrides": {
+        "name": "Marrakesh",
+        "latitude": 31.6295,
+        "longitude": -7.9811
+      }
+    },
+    {
+      "geonameId": "264371",
+      "reason": "legacy-demo-order",
+      "overrides": {
+        "name": "Athens",
+        "latitude": 37.9838,
+        "longitude": 23.7275
+      }
+    },
+    {
+      "geonameId": "2657928",
+      "reason": "legacy-demo-order",
+      "overrides": {
+        "name": "Zermatt",
+        "latitude": 46.0207,
+        "longitude": 7.7491
+      }
+    },
+    {
+      "geonameId": "6173331",
+      "reason": "legacy-demo-order",
+      "overrides": {
+        "name": "Vancouver",
+        "latitude": 49.2827,
+        "longitude": -123.1207
+      }
+    },
+    {
+      "geonameId": "3530597",
+      "reason": "legacy-demo-order",
+      "overrides": {
+        "name": "Mexico City",
+        "latitude": 19.4326,
+        "longitude": -99.1332
+      }
+    },
+    {
+      "geonameId": "1835848",
+      "reason": "legacy-demo-order",
+      "overrides": {
+        "name": "Seoul",
+        "latitude": 37.5665,
+        "longitude": 126.978
+      }
+    },
+    {
+      "geonameId": "292223",
+      "reason": "legacy-demo-order",
+      "overrides": {
+        "name": "Dubai",
+        "latitude": 25.2048,
+        "longitude": 55.2708
+      }
+    },
+    {
+      "geonameId": "2193733",
+      "reason": "legacy-demo-order",
+      "overrides": {
+        "name": "Auckland",
+        "latitude": -36.8509,
+        "longitude": 174.7645
+      }
+    },
+    {
+      "geonameId": "1668341",
+      "reason": "required-taiwan"
+    },
+    {
+      "geonameId": "1668399",
+      "reason": "required-taiwan"
+    },
+    {
+      "geonameId": "1673820",
+      "reason": "required-taiwan"
+    },
+    {
+      "geonameId": "1668355",
+      "reason": "required-taiwan"
+    },
+    {
+      "geonameId": "3041563",
+      "reason": "capital-breadth"
+    },
+    {
+      "geonameId": "292968",
+      "reason": "capital-breadth"
+    },
+    {
+      "geonameId": "1138958",
+      "reason": "capital-breadth"
+    },
+    {
+      "geonameId": "3576022",
+      "reason": "capital-breadth"
+    },
+    {
+      "geonameId": "3573374",
+      "reason": "capital-breadth"
+    },
+    {
+      "geonameId": "3183875",
+      "reason": "capital-breadth"
+    },
+    {
+      "geonameId": "616052",
+      "reason": "capital-breadth"
+    },
+    {
+      "geonameId": "2240449",
+      "reason": "capital-breadth"
+    },
+    {
+      "geonameId": "3435910",
+      "reason": "capital-breadth"
+    },
+    {
+      "geonameId": "5881576",
+      "reason": "capital-breadth"
+    },
+    {
+      "geonameId": "2761369",
+      "reason": "capital-breadth"
+    },
+    {
+      "geonameId": "2172517",
+      "reason": "capital-breadth"
+    },
+    {
+      "geonameId": "3577154",
+      "reason": "capital-breadth"
+    },
+    {
+      "geonameId": "3041732",
+      "reason": "capital-breadth"
+    },
+    {
+      "geonameId": "587084",
+      "reason": "capital-breadth"
+    },
+    {
+      "geonameId": "3191281",
+      "reason": "capital-breadth"
+    },
+    {
+      "geonameId": "3374036",
+      "reason": "capital-breadth"
+    },
+    {
+      "geonameId": "1185241",
+      "reason": "capital-breadth"
+    },
+    {
+      "geonameId": "2800866",
+      "reason": "capital-breadth"
+    },
+    {
+      "geonameId": "2357048",
+      "reason": "capital-breadth"
+    },
+    {
+      "geonameId": "727011",
+      "reason": "capital-breadth"
+    },
+    {
+      "geonameId": "290340",
+      "reason": "capital-breadth"
+    },
+    {
+      "geonameId": "426272",
+      "reason": "capital-breadth"
+    },
+    {
+      "geonameId": "2392087",
+      "reason": "capital-breadth"
+    },
+    {
+      "geonameId": "3579132",
+      "reason": "capital-breadth"
+    },
+    {
+      "geonameId": "3573197",
+      "reason": "capital-breadth"
+    },
+    {
+      "geonameId": "1820906",
+      "reason": "capital-breadth"
+    },
+    {
+      "geonameId": "3903987",
+      "reason": "capital-breadth"
+    },
+    {
+      "geonameId": "3513563",
+      "reason": "capital-breadth"
+    },
+    {
+      "geonameId": "3469058",
+      "reason": "capital-breadth"
+    },
+    {
+      "geonameId": "3571824",
+      "reason": "capital-breadth"
+    },
+    {
+      "geonameId": "1252416",
+      "reason": "capital-breadth"
+    },
+    {
+      "geonameId": "933773",
+      "reason": "capital-breadth"
+    },
+    {
+      "geonameId": "625144",
+      "reason": "capital-breadth"
+    },
+    {
+      "geonameId": "3582672",
+      "reason": "capital-breadth"
+    },
+    {
+      "geonameId": "6094817",
+      "reason": "capital-breadth"
+    },
+    {
+      "geonameId": "7304591",
+      "reason": "capital-breadth"
+    },
+    {
+      "geonameId": "2314302",
+      "reason": "capital-breadth"
+    },
+    {
+      "geonameId": "2389853",
+      "reason": "capital-breadth"
+    },
+    {
+      "geonameId": "2260535",
+      "reason": "capital-breadth"
+    },
+    {
+      "geonameId": "2661552",
+      "reason": "capital-breadth"
+    },
+    {
+      "geonameId": "2279755",
+      "reason": "capital-breadth"
+    },
+    {
+      "geonameId": "4035715",
+      "reason": "capital-breadth"
+    },
+    {
+      "geonameId": "3871336",
+      "reason": "capital-breadth"
+    },
+    {
+      "geonameId": "2220957",
+      "reason": "capital-breadth"
+    },
+    {
+      "geonameId": "1816670",
+      "reason": "capital-breadth"
+    },
+    {
+      "geonameId": "3688689",
+      "reason": "capital-breadth"
+    },
+    {
+      "geonameId": "3621849",
+      "reason": "capital-breadth"
+    },
+    {
+      "geonameId": "3553478",
+      "reason": "capital-breadth"
+    },
+    {
+      "geonameId": "3374333",
+      "reason": "capital-breadth"
+    },
+    {
+      "geonameId": "3513090",
+      "reason": "capital-breadth"
+    },
+    {
+      "geonameId": "2078127",
+      "reason": "capital-breadth"
+    },
+    {
+      "geonameId": "146268",
+      "reason": "capital-breadth"
+    },
+    {
+      "geonameId": "3067696",
+      "reason": "capital-breadth"
+    },
+    {
+      "geonameId": "2950159",
+      "reason": "capital-breadth"
+    },
+    {
+      "geonameId": "223817",
+      "reason": "capital-breadth"
+    },
+    {
+      "geonameId": "2618425",
+      "reason": "capital-breadth"
+    },
+    {
+      "geonameId": "3575635",
+      "reason": "capital-breadth"
+    },
+    {
+      "geonameId": "3492908",
+      "reason": "capital-breadth"
+    },
+    {
+      "geonameId": "2507480",
+      "reason": "capital-breadth"
+    },
+    {
+      "geonameId": "3652462",
+      "reason": "capital-breadth"
+    },
+    {
+      "geonameId": "588409",
+      "reason": "capital-breadth"
+    },
+    {
+      "geonameId": "360630",
+      "reason": "capital-breadth"
+    },
+    {
+      "geonameId": "343300",
+      "reason": "capital-breadth"
+    },
+    {
+      "geonameId": "3117735",
+      "reason": "capital-breadth"
+    },
+    {
+      "geonameId": "344979",
+      "reason": "capital-breadth"
+    },
+    {
+      "geonameId": "658225",
+      "reason": "capital-breadth"
+    },
+    {
+      "geonameId": "2198148",
+      "reason": "capital-breadth"
+    },
+    {
+      "geonameId": "3426691",
+      "reason": "capital-breadth"
+    },
+    {
+      "geonameId": "2081986",
+      "reason": "capital-breadth"
+    },
+    {
+      "geonameId": "2611396",
+      "reason": "capital-breadth"
+    },
+    {
+      "geonameId": "2399697",
+      "reason": "capital-breadth"
+    },
+    {
+      "geonameId": "3579925",
+      "reason": "capital-breadth"
+    },
+    {
+      "geonameId": "611717",
+      "reason": "capital-breadth"
+    },
+    {
+      "geonameId": "3382160",
+      "reason": "capital-breadth"
+    },
+    {
+      "geonameId": "3042287",
+      "reason": "capital-breadth"
+    },
+    {
+      "geonameId": "2306104",
+      "reason": "capital-breadth"
+    },
+    {
+      "geonameId": "2411585",
+      "reason": "capital-breadth"
+    },
+    {
+      "geonameId": "3421319",
+      "reason": "capital-breadth"
+    },
+    {
+      "geonameId": "2413876",
+      "reason": "capital-breadth"
+    },
+    {
+      "geonameId": "2422465",
+      "reason": "capital-breadth"
+    },
+    {
+      "geonameId": "3579732",
+      "reason": "capital-breadth"
+    },
+    {
+      "geonameId": "12226438",
+      "reason": "capital-breadth"
+    },
+    {
+      "geonameId": "3426466",
+      "reason": "capital-breadth"
+    },
+    {
+      "geonameId": "3598132",
+      "reason": "capital-breadth"
+    },
+    {
+      "geonameId": "4044012",
+      "reason": "capital-breadth"
+    },
+    {
+      "geonameId": "2374775",
+      "reason": "capital-breadth"
+    },
+    {
+      "geonameId": "3378644",
+      "reason": "capital-breadth"
+    },
+    {
+      "geonameId": "1819729",
+      "reason": "capital-breadth"
+    },
+    {
+      "geonameId": "3600949",
+      "reason": "capital-breadth"
+    },
+    {
+      "geonameId": "3186886",
+      "reason": "capital-breadth"
+    },
+    {
+      "geonameId": "3718426",
+      "reason": "capital-breadth"
+    },
+    {
+      "geonameId": "3054643",
+      "reason": "capital-breadth"
+    },
+    {
+      "geonameId": "1642911",
+      "reason": "capital-breadth"
+    },
+    {
+      "geonameId": "2964574",
+      "reason": "capital-breadth"
+    },
+    {
+      "geonameId": "3042237",
+      "reason": "capital-breadth"
+    },
+    {
+      "geonameId": "1261481",
+      "reason": "capital-breadth"
+    },
+    {
+      "geonameId": "98182",
+      "reason": "capital-breadth"
+    },
+    {
+      "geonameId": "112931",
+      "reason": "capital-breadth"
+    },
+    {
+      "geonameId": "3413829",
+      "reason": "capital-breadth"
+    },
+    {
+      "geonameId": "3042091",
+      "reason": "capital-breadth"
+    },
+    {
+      "geonameId": "3489854",
+      "reason": "capital-breadth"
+    },
+    {
+      "geonameId": "250441",
+      "reason": "capital-breadth"
+    },
+    {
+      "geonameId": "184745",
+      "reason": "capital-breadth"
+    },
+    {
+      "geonameId": "1528675",
+      "reason": "capital-breadth"
+    },
+    {
+      "geonameId": "1821306",
+      "reason": "capital-breadth"
+    },
+    {
+      "geonameId": "2110257",
+      "reason": "capital-breadth"
+    },
+    {
+      "geonameId": "921772",
+      "reason": "capital-breadth"
+    },
+    {
+      "geonameId": "3575551",
+      "reason": "capital-breadth"
+    },
+    {
+      "geonameId": "1871859",
+      "reason": "capital-breadth"
+    },
+    {
+      "geonameId": "285787",
+      "reason": "capital-breadth"
+    },
+    {
+      "geonameId": "3580661",
+      "reason": "capital-breadth"
+    },
+    {
+      "geonameId": "1526273",
+      "reason": "capital-breadth"
+    },
+    {
+      "geonameId": "1651944",
+      "reason": "capital-breadth"
+    },
+    {
+      "geonameId": "276781",
+      "reason": "capital-breadth"
+    },
+    {
+      "geonameId": "3576812",
+      "reason": "capital-breadth"
+    },
+    {
+      "geonameId": "3042030",
+      "reason": "capital-breadth"
+    },
+    {
+      "geonameId": "1248991",
+      "reason": "capital-breadth"
+    },
+    {
+      "geonameId": "2274895",
+      "reason": "capital-breadth"
+    },
+    {
+      "geonameId": "932505",
+      "reason": "capital-breadth"
+    },
+    {
+      "geonameId": "593116",
+      "reason": "capital-breadth"
+    },
+    {
+      "geonameId": "2960316",
+      "reason": "capital-breadth"
+    },
+    {
+      "geonameId": "456172",
+      "reason": "capital-breadth"
+    },
+    {
+      "geonameId": "2210247",
+      "reason": "capital-breadth"
+    },
+    {
+      "geonameId": "2538475",
+      "reason": "capital-breadth"
+    },
+    {
+      "geonameId": "2993458",
+      "reason": "capital-breadth"
+    },
+    {
+      "geonameId": "618426",
+      "reason": "capital-breadth"
+    },
+    {
+      "geonameId": "3193044",
+      "reason": "capital-breadth"
+    },
+    {
+      "geonameId": "3578851",
+      "reason": "capital-breadth"
+    },
+    {
+      "geonameId": "1070940",
+      "reason": "capital-breadth"
+    },
+    {
+      "geonameId": "2113779",
+      "reason": "capital-breadth"
+    },
+    {
+      "geonameId": "785842",
+      "reason": "capital-breadth"
+    },
+    {
+      "geonameId": "2460596",
+      "reason": "capital-breadth"
+    },
+    {
+      "geonameId": "6611854",
+      "reason": "capital-breadth"
+    },
+    {
+      "geonameId": "2028462",
+      "reason": "capital-breadth"
+    },
+    {
+      "geonameId": "1821274",
+      "reason": "capital-breadth"
+    },
+    {
+      "geonameId": "7828758",
+      "reason": "capital-breadth"
+    },
+    {
+      "geonameId": "3570675",
+      "reason": "capital-breadth"
+    },
+    {
+      "geonameId": "2377450",
+      "reason": "capital-breadth"
+    },
+    {
+      "geonameId": "3578069",
+      "reason": "capital-breadth"
+    },
+    {
+      "geonameId": "2562305",
+      "reason": "capital-breadth"
+    },
+    {
+      "geonameId": "934154",
+      "reason": "capital-breadth"
+    },
+    {
+      "geonameId": "1282027",
+      "reason": "capital-breadth"
+    },
+    {
+      "geonameId": "927967",
+      "reason": "capital-breadth"
+    },
+    {
+      "geonameId": "1735161",
+      "reason": "capital-breadth"
+    },
+    {
+      "geonameId": "1040652",
+      "reason": "capital-breadth"
+    },
+    {
+      "geonameId": "3352136",
+      "reason": "capital-breadth"
+    },
+    {
+      "geonameId": "2139521",
+      "reason": "capital-breadth"
+    },
+    {
+      "geonameId": "2440485",
+      "reason": "capital-breadth"
+    },
+    {
+      "geonameId": "2161314",
+      "reason": "capital-breadth"
+    },
+    {
+      "geonameId": "2352778",
+      "reason": "capital-breadth"
+    },
+    {
+      "geonameId": "3617763",
+      "reason": "capital-breadth"
+    },
+    {
+      "geonameId": "2759794",
+      "reason": "capital-breadth"
+    },
+    {
+      "geonameId": "3143244",
+      "reason": "capital-breadth"
+    },
+    {
+      "geonameId": "1283240",
+      "reason": "capital-breadth"
+    },
+    {
+      "geonameId": "7626461",
+      "reason": "capital-breadth"
+    },
+    {
+      "geonameId": "4036284",
+      "reason": "capital-breadth"
+    },
+    {
+      "geonameId": "2179537",
+      "reason": "capital-breadth"
+    },
+    {
+      "geonameId": "287286",
+      "reason": "capital-breadth"
+    },
+    {
+      "geonameId": "3703443",
+      "reason": "capital-breadth"
+    },
+    {
+      "geonameId": "3936456",
+      "reason": "capital-breadth"
+    },
+    {
+      "geonameId": "4033936",
+      "reason": "capital-breadth"
+    },
+    {
+      "geonameId": "2088122",
+      "reason": "capital-breadth"
+    },
+    {
+      "geonameId": "1701668",
+      "reason": "capital-breadth"
+    },
+    {
+      "geonameId": "1176615",
+      "reason": "capital-breadth"
+    },
+    {
+      "geonameId": "756135",
+      "reason": "capital-breadth"
+    },
+    {
+      "geonameId": "3424934",
+      "reason": "capital-breadth"
+    },
+    {
+      "geonameId": "4030723",
+      "reason": "capital-breadth"
+    },
+    {
+      "geonameId": "4568127",
+      "reason": "capital-breadth"
+    },
+    {
+      "geonameId": "8063361",
+      "reason": "capital-breadth"
+    },
+    {
+      "geonameId": "3439389",
+      "reason": "capital-breadth"
+    },
+    {
+      "geonameId": "290030",
+      "reason": "capital-breadth"
+    },
+    {
+      "geonameId": "935264",
+      "reason": "capital-breadth"
+    },
+    {
+      "geonameId": "683506",
+      "reason": "capital-breadth"
+    },
+    {
+      "geonameId": "792680",
+      "reason": "capital-breadth"
+    },
+    {
+      "geonameId": "524901",
+      "reason": "capital-breadth"
+    },
+    {
+      "geonameId": "202061",
+      "reason": "capital-breadth"
+    },
+    {
+      "geonameId": "108410",
+      "reason": "capital-breadth"
+    },
+    {
+      "geonameId": "2108502",
+      "reason": "capital-breadth"
+    },
+    {
+      "geonameId": "241131",
+      "reason": "capital-breadth"
+    },
+    {
+      "geonameId": "379252",
+      "reason": "capital-breadth"
+    },
+    {
+      "geonameId": "2673730",
+      "reason": "capital-breadth"
+    },
+    {
+      "geonameId": "1880252",
+      "reason": "capital-breadth"
+    },
+    {
+      "geonameId": "3370903",
+      "reason": "capital-breadth"
+    },
+    {
+      "geonameId": "3196359",
+      "reason": "capital-breadth"
+    },
+    {
+      "geonameId": "2729907",
+      "reason": "capital-breadth"
+    },
+    {
+      "geonameId": "3060972",
+      "reason": "capital-breadth"
+    },
+    {
+      "geonameId": "2409306",
+      "reason": "capital-breadth"
+    },
+    {
+      "geonameId": "3168070",
+      "reason": "capital-breadth"
+    },
+    {
+      "geonameId": "2253354",
+      "reason": "capital-breadth"
+    },
+    {
+      "geonameId": "53654",
+      "reason": "capital-breadth"
+    },
+    {
+      "geonameId": "3383330",
+      "reason": "capital-breadth"
+    },
+    {
+      "geonameId": "373303",
+      "reason": "capital-breadth"
+    },
+    {
+      "geonameId": "2410763",
+      "reason": "capital-breadth"
+    },
+    {
+      "geonameId": "3583361",
+      "reason": "capital-breadth"
+    },
+    {
+      "geonameId": "3513392",
+      "reason": "capital-breadth"
+    },
+    {
+      "geonameId": "170654",
+      "reason": "capital-breadth"
+    },
+    {
+      "geonameId": "934985",
+      "reason": "capital-breadth"
+    },
+    {
+      "geonameId": "3576994",
+      "reason": "capital-breadth"
+    },
+    {
+      "geonameId": "2427123",
+      "reason": "capital-breadth"
+    },
+    {
+      "geonameId": "1546102",
+      "reason": "capital-breadth"
+    },
+    {
+      "geonameId": "2365267",
+      "reason": "capital-breadth"
+    },
+    {
+      "geonameId": "1221874",
+      "reason": "capital-breadth"
+    },
+    {
+      "geonameId": "1645457",
+      "reason": "capital-breadth"
+    },
+    {
+      "geonameId": "162183",
+      "reason": "capital-breadth"
+    },
+    {
+      "geonameId": "2464470",
+      "reason": "capital-breadth"
+    },
+    {
+      "geonameId": "4032402",
+      "reason": "capital-breadth"
+    },
+    {
+      "geonameId": "323786",
+      "reason": "capital-breadth"
+    },
+    {
+      "geonameId": "3573890",
+      "reason": "capital-breadth"
+    },
+    {
+      "geonameId": "2110394",
+      "reason": "capital-breadth"
+    },
+    {
+      "geonameId": "160196",
+      "reason": "capital-breadth"
+    },
+    {
+      "geonameId": "703448",
+      "reason": "capital-breadth"
+    },
+    {
+      "geonameId": "232422",
+      "reason": "capital-breadth"
+    },
+    {
+      "geonameId": "4140963",
+      "reason": "capital-breadth"
+    },
+    {
+      "geonameId": "3441575",
+      "reason": "capital-breadth"
+    },
+    {
+      "geonameId": "1512569",
+      "reason": "capital-breadth"
+    },
+    {
+      "geonameId": "6691831",
+      "reason": "capital-breadth"
+    },
+    {
+      "geonameId": "3577887",
+      "reason": "capital-breadth"
+    },
+    {
+      "geonameId": "3646738",
+      "reason": "capital-breadth"
+    },
+    {
+      "geonameId": "3577430",
+      "reason": "capital-breadth"
+    },
+    {
+      "geonameId": "4795467",
+      "reason": "capital-breadth"
+    },
+    {
+      "geonameId": "2135171",
+      "reason": "capital-breadth"
+    },
+    {
+      "geonameId": "4034821",
+      "reason": "capital-breadth"
+    },
+    {
+      "geonameId": "4035413",
+      "reason": "capital-breadth"
+    },
+    {
+      "geonameId": "786714",
+      "reason": "capital-breadth"
+    },
+    {
+      "geonameId": "71137",
+      "reason": "capital-breadth"
+    },
+    {
+      "geonameId": "921815",
+      "reason": "capital-breadth"
+    },
+    {
+      "geonameId": "964137",
+      "reason": "capital-breadth"
+    },
+    {
+      "geonameId": "909137",
+      "reason": "capital-breadth"
+    },
+    {
+      "geonameId": "890299",
+      "reason": "capital-breadth"
+    },
+    {
+      "geonameId": "2548885",
+      "reason": "curated-travel"
+    },
+    {
+      "geonameId": "360502",
+      "reason": "curated-travel"
+    },
+    {
+      "geonameId": "3369157",
+      "reason": "curated-travel"
+    },
+    {
+      "geonameId": "186301",
+      "reason": "curated-travel"
+    },
+    {
+      "geonameId": "148730",
+      "reason": "curated-travel"
+    },
+    {
+      "geonameId": "233508",
+      "reason": "curated-travel"
+    },
+    {
+      "geonameId": "336014",
+      "reason": "curated-travel"
+    },
+    {
+      "geonameId": "2298890",
+      "reason": "curated-travel"
+    },
+    {
+      "geonameId": "2332459",
+      "reason": "curated-travel"
+    },
+    {
+      "geonameId": "2246452",
+      "reason": "curated-travel"
+    },
+    {
+      "geonameId": "2464915",
+      "reason": "curated-travel"
+    },
+    {
+      "geonameId": "2485926",
+      "reason": "curated-travel"
+    },
+    {
+      "geonameId": "1045114",
+      "reason": "curated-travel"
+    },
+    {
+      "geonameId": "3352844",
+      "reason": "curated-travel"
+    },
+    {
+      "geonameId": "910111",
+      "reason": "curated-travel"
+    },
+    {
+      "geonameId": "879431",
+      "reason": "curated-travel"
+    },
+    {
+      "geonameId": "2553604",
+      "reason": "curated-travel"
+    },
+    {
+      "geonameId": "359792",
+      "reason": "curated-travel"
+    },
+    {
+      "geonameId": "993800",
+      "reason": "curated-travel"
+    },
+    {
+      "geonameId": "161325",
+      "reason": "curated-travel"
+    },
+    {
+      "geonameId": "233114",
+      "reason": "curated-travel"
+    },
+    {
+      "geonameId": "332288",
+      "reason": "curated-travel"
+    },
+    {
+      "geonameId": "745044",
+      "reason": "curated-travel"
+    },
+    {
+      "geonameId": "615532",
+      "reason": "curated-travel"
+    },
+    {
+      "geonameId": "616635",
+      "reason": "curated-travel"
+    },
+    {
+      "geonameId": "1853909",
+      "reason": "curated-travel"
+    },
+    {
+      "geonameId": "1796236",
+      "reason": "curated-travel"
+    },
+    {
+      "geonameId": "1838524",
+      "reason": "curated-travel"
+    },
+    {
+      "geonameId": "1153671",
+      "reason": "curated-travel"
+    },
+    {
+      "geonameId": "1566083",
+      "reason": "curated-travel"
+    },
+    {
+      "geonameId": "1822214",
+      "reason": "curated-travel"
+    },
+    {
+      "geonameId": "1655559",
+      "reason": "curated-travel"
+    },
+    {
+      "geonameId": "1622846",
+      "reason": "curated-travel"
+    },
+    {
+      "geonameId": "1735106",
+      "reason": "curated-travel"
+    },
+    {
+      "geonameId": "1717512",
+      "reason": "curated-travel"
+    },
+    {
+      "geonameId": "1275339",
+      "reason": "curated-travel"
+    },
+    {
+      "geonameId": "1282898",
+      "reason": "curated-travel"
+    },
+    {
+      "geonameId": "1241622",
+      "reason": "curated-travel"
+    },
+    {
+      "geonameId": "1205733",
+      "reason": "curated-travel"
+    },
+    {
+      "geonameId": "1172451",
+      "reason": "curated-travel"
+    },
+    {
+      "geonameId": "292672",
+      "reason": "curated-travel"
+    },
+    {
+      "geonameId": "286621",
+      "reason": "curated-travel"
+    },
+    {
+      "geonameId": "105343",
+      "reason": "curated-travel"
+    },
+    {
+      "geonameId": "281184",
+      "reason": "curated-travel"
+    },
+    {
+      "geonameId": "250774",
+      "reason": "curated-travel"
+    },
+    {
+      "geonameId": "1216265",
+      "reason": "curated-travel"
+    },
+    {
+      "geonameId": "1526384",
+      "reason": "curated-travel"
+    },
+    {
+      "geonameId": "323777",
+      "reason": "curated-travel"
+    },
+    {
+      "geonameId": "613607",
+      "reason": "curated-travel"
+    },
+    {
+      "geonameId": "1862415",
+      "reason": "curated-travel"
+    },
+    {
+      "geonameId": "1790630",
+      "reason": "curated-travel"
+    },
+    {
+      "geonameId": "1846266",
+      "reason": "curated-travel"
+    },
+    {
+      "geonameId": "1151254",
+      "reason": "curated-travel"
+    },
+    {
+      "geonameId": "1580541",
+      "reason": "curated-travel"
+    },
+    {
+      "geonameId": "1831797",
+      "reason": "curated-travel"
+    },
+    {
+      "geonameId": "1655087",
+      "reason": "curated-travel"
+    },
+    {
+      "geonameId": "1621177",
+      "reason": "curated-travel"
+    },
+    {
+      "geonameId": "1734759",
+      "reason": "curated-travel"
+    },
+    {
+      "geonameId": "1692685",
+      "reason": "curated-travel"
+    },
+    {
+      "geonameId": "1269515",
+      "reason": "curated-travel"
+    },
+    {
+      "geonameId": "1246294",
+      "reason": "curated-travel"
+    },
+    {
+      "geonameId": "1174872",
+      "reason": "curated-travel"
+    },
+    {
+      "geonameId": "109223",
+      "reason": "curated-travel"
+    },
+    {
+      "geonameId": "293397",
+      "reason": "curated-travel"
+    },
+    {
+      "geonameId": "1217662",
+      "reason": "curated-travel"
+    },
+    {
+      "geonameId": "311046",
+      "reason": "curated-travel"
+    },
+    {
+      "geonameId": "1855612",
+      "reason": "curated-travel",
+      "overrides": {
+        "name": "Nara"
+      }
+    },
+    {
+      "geonameId": "1815286",
+      "reason": "curated-travel"
+    },
+    {
+      "geonameId": "1843564",
+      "reason": "curated-travel"
+    },
+    {
+      "geonameId": "1607532",
+      "reason": "curated-travel"
+    },
+    {
+      "geonameId": "1583992",
+      "reason": "curated-travel"
+    },
+    {
+      "geonameId": "1650357",
+      "reason": "curated-travel"
+    },
+    {
+      "geonameId": "1733432",
+      "reason": "curated-travel"
+    },
+    {
+      "geonameId": "1728930",
+      "reason": "curated-travel"
+    },
+    {
+      "geonameId": "1279259",
+      "reason": "curated-travel"
+    },
+    {
+      "geonameId": "104515",
+      "reason": "curated-travel"
+    },
+    {
+      "geonameId": "294801",
+      "reason": "curated-travel"
+    },
+    {
+      "geonameId": "1513604",
+      "reason": "curated-travel"
+    },
+    {
+      "geonameId": "320995",
+      "reason": "curated-travel"
+    },
+    {
+      "geonameId": "1860243",
+      "reason": "curated-travel"
+    },
+    {
+      "geonameId": "1809858",
+      "reason": "curated-travel"
+    },
+    {
+      "geonameId": "1674504",
+      "reason": "curated-travel"
+    },
+    {
+      "geonameId": "1841603",
+      "reason": "curated-travel"
+    },
+    {
+      "geonameId": "1152633",
+      "reason": "curated-travel"
+    },
+    {
+      "geonameId": "1580240",
+      "reason": "curated-travel"
+    },
+    {
+      "geonameId": "1625822",
+      "reason": "curated-travel"
+    },
+    {
+      "geonameId": "1735634",
+      "reason": "curated-travel"
+    },
+    {
+      "geonameId": "1715348",
+      "reason": "curated-travel"
+    },
+    {
+      "geonameId": "1253405",
+      "reason": "curated-travel"
+    },
+    {
+      "geonameId": "295277",
+      "reason": "curated-travel"
+    },
+    {
+      "geonameId": "314967",
+      "reason": "curated-travel"
+    },
+    {
+      "geonameId": "1863967",
+      "reason": "curated-travel"
+    },
+    {
+      "geonameId": "1795565",
+      "reason": "curated-travel"
+    },
+    {
+      "geonameId": "1668295",
+      "reason": "curated-travel"
+    },
+    {
+      "geonameId": "1153669",
+      "reason": "curated-travel"
+    },
+    {
+      "geonameId": "1572151",
+      "reason": "curated-travel"
+    },
+    {
+      "geonameId": "1214520",
+      "reason": "curated-travel"
+    },
+    {
+      "geonameId": "1732752",
+      "reason": "curated-travel"
+    },
+    {
+      "geonameId": "1253986",
+      "reason": "curated-travel"
+    },
+    {
+      "geonameId": "2128295",
+      "reason": "curated-travel"
+    },
+    {
+      "geonameId": "1808926",
+      "reason": "curated-travel"
+    },
+    {
+      "geonameId": "1678228",
+      "reason": "curated-travel"
+    },
+    {
+      "geonameId": "1153269",
+      "reason": "curated-travel"
+    },
+    {
+      "geonameId": "2650225",
+      "reason": "curated-travel"
+    },
+    {
+      "geonameId": "2964180",
+      "reason": "curated-travel"
+    },
+    {
+      "geonameId": "2990440",
+      "reason": "curated-travel"
+    },
+    {
+      "geonameId": "3176959",
+      "reason": "curated-travel"
+    },
+    {
+      "geonameId": "2509954",
+      "reason": "curated-travel"
+    },
+    {
+      "geonameId": "2268339",
+      "reason": "curated-travel"
+    },
+    {
+      "geonameId": "2867714",
+      "reason": "curated-travel"
+    },
+    {
+      "geonameId": "2747891",
+      "reason": "curated-travel"
+    },
+    {
+      "geonameId": "2800931",
+      "reason": "curated-travel"
+    },
+    {
+      "geonameId": "2657896",
+      "reason": "curated-travel"
+    },
+    {
+      "geonameId": "2766824",
+      "reason": "curated-travel"
+    },
+    {
+      "geonameId": "3078610",
+      "reason": "curated-travel"
+    },
+    {
+      "geonameId": "734077",
+      "reason": "curated-travel"
+    },
+    {
+      "geonameId": "3190261",
+      "reason": "curated-travel"
+    },
+    {
+      "geonameId": "3195506",
+      "reason": "curated-travel"
+    },
+    {
+      "geonameId": "3161732",
+      "reason": "curated-travel"
+    },
+    {
+      "geonameId": "2711537",
+      "reason": "curated-travel"
+    },
+    {
+      "geonameId": "638936",
+      "reason": "curated-travel"
+    },
+    {
+      "geonameId": "2624652",
+      "reason": "curated-travel"
+    },
+    {
+      "geonameId": "2633274",
+      "reason": "curated-travel"
+    },
+    {
+      "geonameId": "3094802",
+      "reason": "curated-travel"
+    },
+    {
+      "geonameId": "721472",
+      "reason": "curated-travel"
+    },
+    {
+      "geonameId": "683844",
+      "reason": "curated-travel"
+    },
+    {
+      "geonameId": "588335",
+      "reason": "curated-travel"
+    },
+    {
+      "geonameId": "457954",
+      "reason": "curated-travel"
+    },
+    {
+      "geonameId": "598316",
+      "reason": "curated-travel"
+    },
+    {
+      "geonameId": "3203106",
+      "reason": "curated-travel"
+    },
+    {
+      "geonameId": "363243",
+      "reason": "curated-travel"
+    },
+    {
+      "geonameId": "3194360",
+      "reason": "curated-travel"
+    },
+    {
+      "geonameId": "3194828",
+      "reason": "curated-travel"
+    },
+    {
+      "geonameId": "498817",
+      "reason": "curated-travel"
+    },
+    {
+      "geonameId": "702550",
+      "reason": "curated-travel"
+    },
+    {
+      "geonameId": "2643123",
+      "reason": "curated-travel"
+    },
+    {
+      "geonameId": "2965140",
+      "reason": "curated-travel"
+    },
+    {
+      "geonameId": "2996944",
+      "reason": "curated-travel"
+    },
+    {
+      "geonameId": "3164603",
+      "reason": "curated-travel"
+    },
+    {
+      "geonameId": "2517117",
+      "reason": "curated-travel"
+    },
+    {
+      "geonameId": "2740637",
+      "reason": "curated-travel"
+    },
+    {
+      "geonameId": "2911298",
+      "reason": "curated-travel"
+    },
+    {
+      "geonameId": "2745912",
+      "reason": "curated-travel"
+    },
+    {
+      "geonameId": "2797656",
+      "reason": "curated-travel"
+    },
+    {
+      "geonameId": "2660646",
+      "reason": "curated-travel"
+    },
+    {
+      "geonameId": "2775220",
+      "reason": "curated-travel"
+    },
+    {
+      "geonameId": "260114",
+      "reason": "curated-travel"
+    },
+    {
+      "geonameId": "3201047",
+      "reason": "curated-travel"
+    },
+    {
+      "geonameId": "3133895",
+      "reason": "curated-travel"
+    },
+    {
+      "geonameId": "2692969",
+      "reason": "curated-travel"
+    },
+    {
+      "geonameId": "633679",
+      "reason": "curated-travel"
+    },
+    {
+      "geonameId": "3099434",
+      "reason": "curated-travel"
+    },
+    {
+      "geonameId": "3046526",
+      "reason": "curated-travel"
+    },
+    {
+      "geonameId": "681290",
+      "reason": "curated-travel"
+    },
+    {
+      "geonameId": "3186084",
+      "reason": "curated-travel"
+    },
+    {
+      "geonameId": "551487",
+      "reason": "curated-travel"
+    },
+    {
+      "geonameId": "698740",
+      "reason": "curated-travel"
+    },
+    {
+      "geonameId": "2644210",
+      "reason": "curated-travel"
+    },
+    {
+      "geonameId": "2995469",
+      "reason": "curated-travel"
+    },
+    {
+      "geonameId": "3173435",
+      "reason": "curated-travel"
+    },
+    {
+      "geonameId": "2514256",
+      "reason": "curated-travel"
+    },
+    {
+      "geonameId": "2267827",
+      "reason": "curated-travel"
+    },
+    {
+      "geonameId": "2886242",
+      "reason": "curated-travel"
+    },
+    {
+      "geonameId": "2747373",
+      "reason": "curated-travel"
+    },
+    {
+      "geonameId": "2803138",
+      "reason": "curated-travel"
+    },
+    {
+      "geonameId": "2659811",
+      "reason": "curated-travel"
+    },
+    {
+      "geonameId": "2778067",
+      "reason": "curated-travel"
+    },
+    {
+      "geonameId": "5368361",
+      "reason": "curated-travel"
+    },
+    {
+      "geonameId": "6167865",
+      "reason": "curated-travel"
+    },
+    {
+      "geonameId": "3531673",
+      "reason": "curated-travel"
+    },
+    {
+      "geonameId": "3623076",
+      "reason": "curated-travel"
+    },
+    {
+      "geonameId": "3536729",
+      "reason": "curated-travel"
+    },
+    {
+      "geonameId": "3489460",
+      "reason": "curated-travel"
+    },
+    {
+      "geonameId": "3494242",
+      "reason": "curated-travel"
+    },
+    {
+      "geonameId": "3599699",
+      "reason": "curated-travel"
+    },
+    {
+      "geonameId": "3581164",
+      "reason": "curated-travel"
+    },
+    {
+      "geonameId": "5391959",
+      "reason": "curated-travel"
+    },
+    {
+      "geonameId": "6077243",
+      "reason": "curated-travel"
+    },
+    {
+      "geonameId": "3522507",
+      "reason": "curated-travel"
+    },
+    {
+      "geonameId": "3534915",
+      "reason": "curated-travel"
+    },
+    {
+      "geonameId": "3489239",
+      "reason": "curated-travel"
+    },
+    {
+      "geonameId": "3595725",
+      "reason": "curated-travel"
+    },
+    {
+      "geonameId": "5506956",
+      "reason": "curated-travel"
+    },
+    {
+      "geonameId": "6325494",
+      "reason": "curated-travel"
+    },
+    {
+      "geonameId": "4005539",
+      "reason": "curated-travel"
+    },
+    {
+      "geonameId": "4887398",
+      "reason": "curated-travel"
+    },
+    {
+      "geonameId": "6174041",
+      "reason": "curated-travel"
+    },
+    {
+      "geonameId": "3523349",
+      "reason": "curated-travel"
+    },
+    {
+      "geonameId": "4164138",
+      "reason": "curated-travel"
+    },
+    {
+      "geonameId": "5913490",
+      "reason": "curated-travel"
+    },
+    {
+      "geonameId": "3991328",
+      "reason": "curated-travel"
+    },
+    {
+      "geonameId": "4930956",
+      "reason": "curated-travel"
+    },
+    {
+      "geonameId": "6324729",
+      "reason": "curated-travel"
+    },
+    {
+      "geonameId": "3521342",
+      "reason": "curated-travel"
+    },
+    {
+      "geonameId": "5809844",
+      "reason": "curated-travel"
+    },
+    {
+      "geonameId": "3521081",
+      "reason": "curated-travel"
+    },
+    {
+      "geonameId": "4167147",
+      "reason": "curated-travel"
+    },
+    {
+      "geonameId": "3985344",
+      "reason": "curated-travel"
+    },
+    {
+      "geonameId": "4335045",
+      "reason": "curated-travel"
+    },
+    {
+      "geonameId": "3515040",
+      "reason": "curated-travel"
+    },
+    {
+      "geonameId": "5856195",
+      "reason": "curated-travel"
+    },
+    {
+      "geonameId": "5391811",
+      "reason": "curated-travel"
+    },
+    {
+      "geonameId": "3451190",
+      "reason": "curated-travel"
+    },
+    {
+      "geonameId": "3844421",
+      "reason": "curated-travel"
+    },
+    {
+      "geonameId": "3868626",
+      "reason": "curated-travel"
+    },
+    {
+      "geonameId": "3941584",
+      "reason": "curated-travel"
+    },
+    {
+      "geonameId": "3674962",
+      "reason": "curated-travel"
+    },
+    {
+      "geonameId": "3657509",
+      "reason": "curated-travel"
+    },
+    {
+      "geonameId": "3911925",
+      "reason": "curated-travel"
+    },
+    {
+      "geonameId": "3448439",
+      "reason": "curated-travel"
+    },
+    {
+      "geonameId": "3860259",
+      "reason": "curated-travel"
+    },
+    {
+      "geonameId": "3868121",
+      "reason": "curated-travel"
+    },
+    {
+      "geonameId": "3947322",
+      "reason": "curated-travel"
+    },
+    {
+      "geonameId": "3687238",
+      "reason": "curated-travel"
+    },
+    {
+      "geonameId": "3658666",
+      "reason": "curated-travel"
+    },
+    {
+      "geonameId": "3450554",
+      "reason": "curated-travel"
+    },
+    {
+      "geonameId": "3838233",
+      "reason": "curated-travel"
+    },
+    {
+      "geonameId": "3874787",
+      "reason": "curated-travel"
+    },
+    {
+      "geonameId": "3931276",
+      "reason": "curated-travel"
+    },
+    {
+      "geonameId": "3687925",
+      "reason": "curated-travel"
+    },
+    {
+      "geonameId": "3390760",
+      "reason": "curated-travel"
+    },
+    {
+      "geonameId": "7647007",
+      "reason": "curated-travel"
+    },
+    {
+      "geonameId": "3696183",
+      "reason": "curated-travel"
+    },
+    {
+      "geonameId": "3668605",
+      "reason": "curated-travel"
+    },
+    {
+      "geonameId": "3399415",
+      "reason": "curated-travel"
+    },
+    {
+      "geonameId": "3833367",
+      "reason": "curated-travel"
+    },
+    {
+      "geonameId": "3463237",
+      "reason": "curated-travel"
+    },
+    {
+      "geonameId": "3663517",
+      "reason": "curated-travel"
+    },
+    {
+      "geonameId": "3463030",
+      "reason": "curated-travel"
+    },
+    {
+      "geonameId": "3838583",
+      "reason": "regional-major-city"
+    },
+    {
+      "geonameId": "3904906",
+      "reason": "regional-major-city"
+    },
+    {
+      "geonameId": "3172394",
+      "reason": "curated-travel"
+    },
+    {
+      "geonameId": "252919",
+      "reason": "curated-travel"
+    },
+    {
+      "geonameId": "3689147",
+      "reason": "regional-major-city"
+    },
+    {
+      "geonameId": "3183130",
+      "reason": "curated-travel"
+    },
+    {
+      "geonameId": "2158177",
+      "reason": "curated-travel"
+    },
+    {
+      "geonameId": "6204696",
+      "reason": "curated-travel"
+    },
+    {
+      "geonameId": "2202064",
+      "reason": "curated-travel"
+    },
+    {
+      "geonameId": "2172797",
+      "reason": "curated-travel"
+    },
+    {
+      "geonameId": "2192362",
+      "reason": "curated-travel"
+    },
+    {
+      "geonameId": "2174003",
+      "reason": "curated-travel"
+    },
+    {
+      "geonameId": "6241325",
+      "reason": "curated-travel"
+    },
+    {
+      "geonameId": "2063523",
+      "reason": "curated-travel"
+    },
+    {
+      "geonameId": "2191562",
+      "reason": "curated-travel"
+    }
+  ],
+  "countryFeatureFallbacks": {
+    "UM": "5854968"
+  },
+  "initialContinentTargets": {
+    "AF": 80,
+    "AS": 135,
+    "EU": 121,
+    "NA": 78,
+    "SA": 47,
+    "OC": 37,
+    "AN": 2
+  },
+  "continentCounts": {
+    "EU": 124,
+    "AS": 135,
+    "NA": 78,
+    "OC": 37,
+    "AF": 80,
+    "SA": 44,
+    "AN": 2
+  }
+}
