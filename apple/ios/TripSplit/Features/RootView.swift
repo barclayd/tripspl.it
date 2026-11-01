@@ -188,17 +188,19 @@ struct RootView: View {
     .onGeometryChange(for: Bool.self) { $0.size.width > $0.size.height } action: { landscape = $0 }
     // The globe sits in dark space, so the tab bar and its sheets go dark with it.
     .preferredColorScheme(model.selectedTab == 1 ? .dark : nil)
-    .sheet(isPresented: $model.showSettings) { SettingsView().trailingSheet() }
+    .sheet(isPresented: $model.showSettings) { SettingsView().trailingSheet(open: unfolded) }
     .sheet(isPresented: $model.showTripSettings) {
-      if let trip = model.selectedTrip { TripSettingsView(tripID: trip.id).trailingSheet() }
+      if let trip = model.selectedTrip { TripSettingsView(tripID: trip.id).trailingSheet(open: unfolded) }
     }
     .sheet(item: $model.expenseDraft, onDismiss: { model.expenseDraft = nil }) { _ in
-      ExpenseEditor().trailingSheet()
+      ExpenseEditor().trailingSheet(open: unfolded)
     }
     .sheet(isPresented: $model.showConverter) {
       if let trip = model.selectedTrip ?? model.store.trips.first(where: \.showsHomeConverter) {
-        ConvertView(tripID: trip.id, attachment: model.selectedAttachment ?? trip.currentAttachment)
-          .trailingSheet()
+        ConvertView(
+          tripID: trip.id, attachment: model.selectedAttachment ?? trip.currentAttachment, tent: tent
+        )
+        .trailingSheet(open: unfolded)
       }
     }
     .fullScreenCover(isPresented: $model.showOnboarding) { OnboardingView() }
@@ -322,8 +324,14 @@ struct RootView: View {
   }
 }
 extension RootView {
+  /// The Duo's inner display, or an iPad.
+  private var unfolded: Bool { sizeClass == .regular }
+
   /// Unfolded on its side: the Duo's two panes, or an iPad in landscape.
-  private var twoPane: Bool { sizeClass == .regular && landscape }
+  private var twoPane: Bool { unfolded && landscape }
+
+  /// Folded on its side and stood on a counter (or a phone on its side): read from arm's length.
+  private var tent: Bool { sizeClass == .compact && landscape }
 
   /// Both panes showing, rather than a Day full screen.
   private var sidebarShown: Bool { twoPane && !(model.fullScreenDay && model.selectedAttachment != nil) }
