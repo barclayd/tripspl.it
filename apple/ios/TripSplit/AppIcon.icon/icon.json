@@ -1,0 +1,73 @@
+{
+  "fill-specializations": [
+    {
+      "value": {
+        "solid": "srgb:0.898039,0.149020,0.419608,1.000000"
+      }
+    },
+    {
+      "appearance": "dark",
+      "value": {
+        "solid": "srgb:0.207843,0.070588,0.121569,1.000000"
+      }
+    }
+  ],
+  "groups": [
+    {
+      "name": "Boarding pass",
+      "layers": [
+        {
+          "name": "04 Barcode",
+          "image-name": "04-barcode.svg",
+          "opacity": 0.78,
+          "fill-specializations": [
+            { "value": { "solid": "srgb:0.898039,0.149020,0.419608,1.000000" } },
+            { "appearance": "dark", "value": { "solid": "srgb:0.898039,0.149020,0.419608,1.000000" } }
+          ]
+        },
+        {
+          "name": "03 Perforation",
+          "image-name": "03-perforation.svg",
+          "opacity": 0.26,
+          "fill-specializations": [
+            { "value": { "solid": "srgb:0.898039,0.149020,0.419608,1.000000" } },
+            { "appearance": "dark", "value": { "solid": "srgb:0.898039,0.149020,0.419608,1.000000" } }
+          ]
+        },
+        {
+          "name": "02 Airplane",
+          "image-name": "02-airplane.svg",
+          "fill-specializations": [
+            { "value": { "solid": "srgb:0.898039,0.149020,0.419608,1.000000" } },
+            { "appearance": "dark", "value": { "solid": "srgb:0.898039,0.149020,0.419608,1.000000" } }
+          ]
+        },
+        {
+          "name": "01 Ticket",
+          "image-name": "01-ticket.svg",
+          "fill-specializations": [
+            { "value": { "solid": "srgb:1.000000,1.000000,1.000000,1.000000" } },
+            { "appearance": "dark", "value": { "solid": "srgb:0.952941,0.913725,0.929412,1.000000" } }
+          ]
+        }
+      ],
+      "lighting": "combined",
+      "shadow": {
+        "kind": "neutral",
+        "opacity": 0.2
+      },
+      "translucency": {
+        "enabled": false,
+        "value": 0
+      },
+      "position": {
+        "scale": 1.32,
+        "translation-in-points": [0, 0]
+      }
+    }
+  ],
+  "supported-platforms": {
+    "circles": ["watchOS"],
+    "squares": "shared"
+  }
+}
