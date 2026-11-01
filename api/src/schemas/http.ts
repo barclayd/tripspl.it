@@ -1,5 +1,5 @@
 import { z } from '@hono/zod-openapi';
-import { id, snapshotSchema } from './trip';
+import { civil, id, snapshotSchema } from './trip';
 
 export const okSchema = z.object({ ok: z.literal(true) }).openapi('Success');
 export const errorSchema = z.object({ error: z.object({ code: z.string(), message: z.string(), retryable: z.boolean() }) }).openapi('APIError');
@@ -9,6 +9,14 @@ export const inviteParamsSchema = tripParamsSchema.extend({ inviteId: id });
 export const memberParamsSchema = tripParamsSchema.extend({ travellerId: id });
 export const inviteSchema = z.strictObject({ travellerId: id }).openapi('CreateInvitationRequest');
 export const acceptInviteSchema = z.strictObject({ token: z.string().regex(/^[a-f0-9]{64}$/) }).openapi('AcceptInvitationRequest');
+export const nudgeSchema = z.strictObject({ travellerId: id }).openapi('NudgeRequest');
+export const nudgeResultSchema = z.object({
+  status: z.enum(['sent', 'notJoined']).openapi({ description: '`notJoined` when the traveller has no TripSplit account on this trip, so nobody can be buzzed. It is not recorded.' }),
+  nudgedOn: civil,
+}).openapi('NudgeResult');
+const deviceToken = z.string().regex(/^[a-f0-9]{64,200}$/).openapi({ description: 'Hex APNs device token.' });
+export const deviceSchema = z.strictObject({ token: deviceToken, environment: z.enum(['sandbox', 'production']) }).openapi('DeviceRegistration');
+export const deviceTokenSchema = z.strictObject({ token: deviceToken }).openapi('DeviceToken');
 export const invitationSchema = z.object({ id: z.string(), token: z.string(), expiresAt: z.string(), url: z.string().nullable() }).openapi('Invitation');
 export const operationResultSchema = z.object({
   id: z.string(), status: z.enum(['accepted', 'duplicate', 'conflict', 'rejected']),

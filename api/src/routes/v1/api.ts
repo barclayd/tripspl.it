@@ -2,6 +2,7 @@ import { OpenAPIHono } from '@hono/zod-openapi';
 import { authenticateUser, authRateLimit } from '../../middleware/auth';
 import { appleSignIn, challenge, deleteAccount, logout, processDeletions, refresh } from '../../services/auth';
 import { getFX, getFXTable } from '../../services/fx';
+import { push, registerDevice, removeDevice } from '../../services/push';
 import { createTrip, executeRoom, listTrips } from '../../services/trips';
 import type { HonoEnvironment } from '../../types/hono';
 import { assert } from '../../utils/errors';
@@ -46,13 +47,21 @@ export function createV1Routes() {
     c.executionCtx.waitUntil(processDeletions(c.env));
     return c.json({ status: 'pending' }, 202, jsonHeaders);
   });
+  app.openapi(routes.me.registerDevice, async c => {
+    await registerDevice(c.env, c.get('principal').id, c.req.valid('json'));
+    return c.json({ ok: true }, 200, jsonHeaders);
+  });
+  app.openapi(routes.me.removeDevice, async c => {
+    await removeDevice(c.env, c.get('principal').id, c.req.valid('json').token);
+    return c.json({ ok: true }, 200, jsonHeaders);
+  });
   app.openapi(routes.trips.list, async c => c.json(await listTrips(c.env, c.get('principal'), c.req.valid('query').cursor), 200, jsonHeaders));
   app.openapi(routes.trips.create, async c => c.json(await createTrip(c.env, c.get('principal'), c.req.valid('json')), 201, jsonHeaders));
 
   app.use('/trips/*', async (c, next) => {
     // Validate the raw path before Hono decodes parameters. Encoded aliases,
     // overlong IDs and unknown suffixes retain the original 404 contract.
-    if (!/^\/v1\/trips\/[A-Za-z0-9_-]{1,128}(?:\/(?:sync|live|invites(?:\/[A-Za-z0-9_-]{1,128}(?:\/accept)?)?|members\/[A-Za-z0-9_-]{1,128})?)?$/.test(c.req.path)) notFound();
+    if (!/^\/v1\/trips\/[A-Za-z0-9_-]{1,128}(?:\/(?:sync|live|nudges|invites(?:\/[A-Za-z0-9_-]{1,128}(?:\/accept)?)?|members\/[A-Za-z0-9_-]{1,128})?)?$/.test(c.req.path)) notFound();
     await next();
   });
   app.openapi(routes.trips.get, async c => c.json(await executeRoom(c.env, c.get('principal'), c.req.valid('param').tripId, { type: 'read' }), 200, jsonHeaders));
@@ -73,6 +82,11 @@ export function createV1Routes() {
     return c.json(await executeRoom(c.env, c.get('principal'), tripId, { type: 'revokeInvite', inviteId }), 200, jsonHeaders);
   });
   app.openapi(routes.trips.delete, async c => c.json(await executeRoom(c.env, c.get('principal'), c.req.valid('param').tripId, { type: 'delete' }), 200, jsonHeaders));
+  app.openapi(routes.trips.nudge, async c => {
+    const { push: recipient, ...result } = await executeRoom(c.env, c.get('principal'), c.req.valid('param').tripId, { type: 'nudge', travellerId: c.req.valid('json').travellerId });
+    if (recipient) c.executionCtx.waitUntil(push(c.env, recipient.userId, recipient.message));
+    return c.json(result, 200, jsonHeaders);
+  });
   app.openapi(routes.trips.removeMember, async c => {
     const { tripId, travellerId } = c.req.valid('param');
     return c.json(await executeRoom(c.env, c.get('principal'), tripId, { type: 'removeMember', travellerId }), 200, jsonHeaders);

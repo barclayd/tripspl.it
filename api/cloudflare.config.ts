@@ -16,6 +16,8 @@ export default defineConfig({
       APPLE_TEAM_ID: bindings.text('R2GGK3VN2C' as string),
       APPLE_KEY_ID: bindings.text('422YN3K8Y9' as string),
       APPLE_PRIVATE_KEY: bindings.secret(),
+      // Empty until an APNs key is set up; nudges are still recorded, just not pushed.
+      APNS_KEY_ID: bindings.text('' as string),
       SESSION_ENCRYPTION_KEY: bindings.secret(),
       INVITE_ORIGIN: bindings.text('https://api.tripspl.it' as string),
       APPLE_APP_ID: bindings.text('R2GGK3VN2C.it.tripspl.TripSplit' as string),

@@ -2,7 +2,7 @@ import { createRoute } from '@hono/zod-openapi';
 import { appleConfigured, fxRateLimit } from '../../middleware/auth';
 import { boundedJSON } from '../../middleware/json';
 import { appleSignInSchema, challengeSchema, emptyBodySchema, refreshTokenSchema, sessionSchema, userSchema } from '../../schemas/auth';
-import { acceptInviteSchema, createTripSchema, deletionPendingSchema, errorResponses, fxQuerySchema, fxQuoteSchema, fxTableQuerySchema, fxTableSchema, invitationSchema, inviteParamsSchema, inviteSchema, jsonBody, jsonResponse, memberParamsSchema, okSchema, syncResponseSchema, tripListQuerySchema, tripListSchema, tripParamsSchema } from '../../schemas/http';
+import { acceptInviteSchema, createTripSchema, deletionPendingSchema, deviceSchema, deviceTokenSchema, errorResponses, fxQuerySchema, fxQuoteSchema, fxTableQuerySchema, fxTableSchema, invitationSchema, inviteParamsSchema, inviteSchema, jsonBody, jsonResponse, memberParamsSchema, nudgeResultSchema, nudgeSchema, okSchema, syncResponseSchema, tripListQuerySchema, tripListSchema, tripParamsSchema } from '../../schemas/http';
 import { snapshotSchema, syncSchema } from '../../schemas/trip';
 
 const security = [{ bearerAuth: [] }];
@@ -19,6 +19,8 @@ export const routes = {
   fxRates: createRoute({ method: 'get', path: '/fx/rates', middleware: [fxRateLimit], request: { query: fxTableQuerySchema }, responses: { 200: jsonResponse(fxTableSchema, 'Indicative reference rates from one base, for display-only conversions between any pair.'), ...errorResponses } }),
   me: {
     get: createRoute({ method: 'get', path: '/me', security, responses: { 200: jsonResponse(userSchema, 'Current account.'), ...errorResponses } }),
+    registerDevice: createRoute({ method: 'post', path: '/me/devices', security, middleware: [boundedJSON(1024)], request: { body: jsonBody(deviceSchema) }, responses: { 200: jsonResponse(okSchema, 'Device registered for this account\'s notifications. Registering a token again moves it to this account; each account keeps its 10 most recent devices.'), ...errorResponses } }),
+    removeDevice: createRoute({ method: 'delete', path: '/me/devices', security, middleware: [boundedJSON(1024)], request: { body: jsonBody(deviceTokenSchema) }, responses: { 200: jsonResponse(okSchema, 'Device no longer notified for this account. Call before signing out.'), ...errorResponses } }),
     delete: createRoute({ method: 'delete', path: '/me', security, middleware: [boundedJSON(1024)], request: { body: jsonBody(emptyBodySchema) }, responses: { 202: jsonResponse(deletionPendingSchema, 'Durable account deletion queued.'), ...errorResponses } }),
   },
   trips: {
@@ -31,6 +33,7 @@ export const routes = {
     invite: createRoute({ method: 'post', path: '/trips/{tripId}/invites', security, middleware: [boundedJSON(1024)], request: { params: tripParamsSchema, body: jsonBody(inviteSchema) }, responses: { 200: jsonResponse(invitationSchema, 'One-recipient invitation.'), ...errorResponses } }),
     accept: createRoute({ method: 'post', path: '/trips/{tripId}/invites/{inviteId}/accept', security, middleware: [boundedJSON(1024)], request: { params: inviteParamsSchema, body: jsonBody(acceptInviteSchema) }, responses: { 200: jsonResponse(snapshotSchema, 'Joined trip snapshot.'), ...errorResponses } }),
     revokeInvite: createRoute({ method: 'delete', path: '/trips/{tripId}/invites/{inviteId}', security, request: { params: inviteParamsSchema }, responses: { 200: jsonResponse(okSchema, 'Invitation revoked.'), ...errorResponses } }),
+    nudge: createRoute({ method: 'post', path: '/trips/{tripId}/nudges', security, middleware: [boundedJSON(1024)], request: { params: tripParamsSchema, body: jsonBody(nudgeSchema) }, responses: { 200: jsonResponse(nudgeResultSchema, 'Reminds a traveller who owes you, with a push to their devices. Once per pair per trip day (NUDGE_LIMIT 429 after); NOTHING_OWED 409 when they owe you nothing.'), ...errorResponses } }),
     removeMember: createRoute({ method: 'delete', path: '/trips/{tripId}/members/{travellerId}', security, request: { params: memberParamsSchema }, responses: { 200: jsonResponse(okSchema, 'Membership removed.'), ...errorResponses } }),
   },
 };

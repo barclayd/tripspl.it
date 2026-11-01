@@ -1,5 +1,5 @@
 import type { CreateTripRequest, Invitation, Success, SyncResponse, TripList, TripSnapshot } from '../types/contract';
-import type { RoomAction } from '../durable-objects/trip-room';
+import type { Nudge, RoomAction } from '../durable-objects/trip-room';
 import { id, parse } from '../schemas/trip';
 import { AppError } from '../utils/errors';
 import { registerTarget, type Principal } from './auth';
@@ -8,6 +8,7 @@ type ActionValue<A extends RoomAction> =
   A['type'] extends 'read' | 'create' | 'accept' ? TripSnapshot :
   A['type'] extends 'sync' ? SyncResponse :
   A['type'] extends 'invite' ? Invitation :
+  A['type'] extends 'nudge' ? Nudge :
   Success;
 
 export async function executeRoom<A extends RoomAction>(env: Env, user: Principal, tripId: string, action: A): Promise<ActionValue<A>> {
