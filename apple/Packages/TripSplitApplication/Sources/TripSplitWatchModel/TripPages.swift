@@ -4,7 +4,7 @@ import TripSplitDomain
 /// The figures behind a trip on the watch: today (D1), the budget (D2), who owes who (D3), the
 /// days (D4) and each person (E1, E2). Derived from one snapshot so every page agrees.
 public struct TripPages {
-  public enum Page: Hashable, Sendable {
+  public enum Page: String, Hashable, Sendable {
     case today, budget, balances, days
   }
 
