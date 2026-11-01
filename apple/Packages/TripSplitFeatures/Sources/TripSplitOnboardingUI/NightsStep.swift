@@ -3,7 +3,8 @@ import TripSplitApplication
 import TripSplitDesignSystem
 import TripSplitDomain
 
-/// Step 3: nights at each stop, which together decide the trip's length and return date.
+/// Step 3, for a route with more than one stop: how the dates you picked split between places.
+/// Adding a night somewhere takes it from a neighbour, so the trip keeps its length.
 struct NightsStep: View {
   @Environment(AppModel.self) private var model
 
@@ -59,10 +60,12 @@ struct NightsStep: View {
       }
       Spacer(minLength: 8)
       NightsStepper(
-        place: stop.place, nights: stop.nights, range: draft.nightRange
-      ) { nights in
+        place: stop.place, nights: stop.nights,
+        canDecrease: draft.canShiftNight(at: index, by: -1),
+        canIncrease: draft.canShiftNight(at: index, by: 1)
+      ) { delta in
         Haptics.selection()
-        withAnimation(Motion.bump) { model.onboarding.setNights(nights, at: index) }
+        withAnimation(Motion.bump) { model.onboarding.shiftNight(at: index, by: delta) }
       }
     }
     .padding(.vertical, 12).padding(.leading, 16).padding(.trailing, 12)
@@ -73,12 +76,13 @@ struct NightsStep: View {
 private struct NightsStepper: View {
   let place: String
   let nights: Int
-  let range: ClosedRange<Int>
+  let canDecrease: Bool
+  let canIncrease: Bool
   let change: (Int) -> Void
 
   var body: some View {
     HStack(spacing: 4) {
-      button("minus", enabled: nights > range.lowerBound) { change(nights - 1) }
+      button("minus", enabled: canDecrease) { change(-1) }
       VStack(spacing: 0) {
         Text("\(nights)").typeface(18, .black, relativeTo: .headline, maximum: 1.3)
           .monospacedDigit().foregroundStyle(Theme.ink)
@@ -86,7 +90,7 @@ private struct NightsStepper: View {
         Text("NIGHTS").typeface(10.5, .heavy, tracking: 0.08, relativeTo: .caption2, maximum: 1.3)
           .foregroundStyle(Theme.secondary).lineLimit(1).fixedSize()
       }.frame(minWidth: 46)
-      button("plus", enabled: nights < range.upperBound) { change(nights + 1) }
+      button("plus", enabled: canIncrease) { change(1) }
     }
     .padding(5)
     .background(Theme.inset, in: Capsule())
@@ -95,8 +99,8 @@ private struct NightsStepper: View {
     .accessibilityValue("\(nights) night\(nights == 1 ? "" : "s")")
     .accessibilityAdjustableAction { direction in
       switch direction {
-      case .increment where nights < range.upperBound: change(nights + 1)
-      case .decrement where nights > range.lowerBound: change(nights - 1)
+      case .increment where canIncrease: change(1)
+      case .decrement where canDecrease: change(-1)
       default: break
       }
     }

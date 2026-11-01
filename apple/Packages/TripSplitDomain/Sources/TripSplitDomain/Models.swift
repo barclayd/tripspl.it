@@ -325,10 +325,10 @@ public struct TripSnapshot: Codable, Identifiable, Hashable, Sendable {
   public var archived = false
   public var updatedAt = ISO8601DateFormatter().string(from: Date())
   public var endsOn: String { days.last?.date ?? startsOn }
+  /// The itinerary day you're on, or the phone's date when the trip isn't under way.
   public var today: String {
     let now = Date()
-    return currentDay(at: now)?.date
-      ?? CivilDate.string(now, timeZone: stops.first?.resolvedTimeZone ?? timeZone)
+    return currentDay(at: now)?.date ?? CivilDate.string(now, timeZone: TimeZone.current.identifier)
   }
   public var phase: Phase { phase(at: Date()) }
   public enum Phase: String, CaseIterable { case now, upcoming, past }
@@ -347,7 +347,12 @@ public struct TripSnapshot: Codable, Identifiable, Hashable, Sendable {
       ?? days.first
     return .init(kind: .day, id: day?.id ?? "")
   }
-  public func currentDay(at instant: Date) -> TripDay? {
+  /// The day under way at `instant`. Nothing starts until the phone's own date reaches the first
+  /// day, so a trip planned from London waits for London's midnight, not the destination's.
+  public func currentDay(
+    at instant: Date, localTimeZone: String = TimeZone.current.identifier
+  ) -> TripDay? {
+    guard CivilDate.string(instant, timeZone: localTimeZone) >= startsOn else { return nil }
     // Crossing zones can make two itinerary dates locally current. Prefer the later stop.
     var datesByZone: [String: String] = [:]
     var datesByStop: [String: String] = [:]
@@ -359,12 +364,14 @@ public struct TripSnapshot: Codable, Identifiable, Hashable, Sendable {
     }
     return days.last { $0.date == datesByStop[$0.stopId] }
   }
-  public func phase(at instant: Date) -> Phase {
-    if currentDay(at: instant) != nil { return .now }
-    let firstDate = CivilDate.string(instant, timeZone: stops.first?.resolvedTimeZone ?? timeZone)
+  /// Upcoming until the phone's date reaches the start, and past once both the phone and the
+  /// last destination have moved beyond the day home.
+  public func phase(at instant: Date, localTimeZone: String = TimeZone.current.identifier) -> Phase {
+    let local = CivilDate.string(instant, timeZone: localTimeZone)
+    if local < startsOn { return .upcoming }
+    if currentDay(at: instant, localTimeZone: localTimeZone) != nil { return .now }
     let lastDate = CivilDate.string(instant, timeZone: stops.last?.resolvedTimeZone ?? timeZone)
-    if firstDate < startsOn { return .upcoming }
-    if lastDate > endsOn { return .past }
+    if lastDate > endsOn, local > endsOn { return .past }
     return .now
   }
   public func timeZone(for attachment: Attachment) -> String {
