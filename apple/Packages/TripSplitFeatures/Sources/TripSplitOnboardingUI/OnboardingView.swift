@@ -253,9 +253,9 @@ public struct OnboardingView: View {
 
   private var header: some View {
     HStack(spacing: 14) {
-      if !verticalRail { closeButton }
-      progress
       if !verticalRail { backButton }
+      progress
+      if !verticalRail { closeButton }
     }.padding(.horizontal, 12).padding(.top, verticalRail ? 12 : 4)
   }
 
@@ -276,13 +276,19 @@ public struct OnboardingView: View {
       .accessibilityIdentifier("onboarding.close")
   }
 
+  /// An ink circle that fades out where there's nowhere to go back to.
   private var backButton: some View {
-    Button(action: goBack) {
-      Text("Back").typeface(14, .heavy, relativeTo: .subheadline, maximum: 1.3)
-        .foregroundStyle(Theme.secondary).frame(minWidth: 38, minHeight: 44)
-        .contentShape(Rectangle())
-    }.buttonStyle(.plain).opacity(canGoBack ? 1 : 0).disabled(!canGoBack)
-      .accessibilityIdentifier("onboarding.back")
+    let size: CGFloat = layout == .pane ? 40 : 36
+    return Button(action: goBack) {
+      Image(systemName: "arrow.left").font(.system(size: size * 0.42, weight: .semibold))
+        .foregroundStyle(Theme.background).frame(width: size, height: size)
+        .background(Theme.ink, in: Circle())
+        .frame(width: 44, height: 44).contentShape(Rectangle())
+    }
+    .buttonStyle(PressStyle(scale: 0.88)).accessibilityLabel("Back")
+    .accessibilityIdentifier("onboarding.back")
+    .opacity(canGoBack ? 1 : 0).allowsHitTesting(canGoBack).accessibilityHidden(!canGoBack)
+    .animation(reduceMotion ? nil : .easeOut(duration: 0.25), value: canGoBack)
   }
 
   private var canGoBack: Bool { step != 0 && step != 6 }
