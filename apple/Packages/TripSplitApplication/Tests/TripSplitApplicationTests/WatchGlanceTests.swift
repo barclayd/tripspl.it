@@ -134,10 +134,9 @@ import TripSplitWatchModel
     #expect(total.percent == "124%")
   }
 
-  @Test func countdownFillsAsDepartureNears() {
+  @Test func countdownSaysDayOnTheLastOne() {
     let place = WatchGlance.Place(flag: "🇨🇭", code: "CH", name: "Zurich")
-    #expect(WatchGlance.Countdown(tripID: "", place: place, days: 120).fraction == 0)
-    #expect(WatchGlance.Countdown(tripID: "", place: place, days: 45).fraction == 0.5)
+    #expect(WatchGlance.Countdown(tripID: "", place: place, days: 45).unit == "DAYS")
     #expect(WatchGlance.Countdown(tripID: "", place: place, days: 1).unit == "DAY")
   }
 

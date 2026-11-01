@@ -40,7 +40,7 @@ public struct WatchGlance: Hashable, Sendable {
     self.symbol = symbol
   }
 
-  /// Where a figure belongs: its flag, and the country code tinted faces show instead.
+  /// Where a figure belongs: its flag, and the country code for when there is none.
   public struct Place: Hashable, Sendable {
     public var flag: String
     /// Two letters, e.g. "PT".
@@ -148,10 +148,8 @@ public struct WatchGlance: Hashable, Sendable {
     public var line: String { "\(from) = \(to)" }
   }
 
-  /// Days until the next trip, filling as departure nears.
+  /// Days until the next trip, and where it starts.
   public struct Countdown: Hashable, Sendable {
-    public static let horizon = 90
-
     public var tripID: String
     public var place: Place
     public var days: Int
@@ -162,10 +160,6 @@ public struct WatchGlance: Hashable, Sendable {
       self.days = days
     }
 
-    /// Empty three months out, full on the day.
-    public var fraction: Double {
-      min(max(1 - Double(days) / Double(Self.horizon), 0), 1)
-    }
     /// "DAYS", or "DAY" on the last one.
     public var unit: String { days == 1 ? "DAY" : "DAYS" }
     /// "Kyoto in 49 days".
