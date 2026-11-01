@@ -254,7 +254,7 @@ struct RootView: View {
             Destination.country(code)?.stop(nights: nights)
           }
           draft.reconcileRoute()
-          if step > 1 { draft.setDeparture(CivilDate.adding(12, to: draft.startsOn)) }
+          if step >= 1 { draft.setDeparture(CivilDate.adding(12, to: draft.startsOn)) }
           if step >= 3 {
             draft.travellers += zip(["Sam", "Priya", "Jonah"], [250.0, 75, 160]).map {
               Traveller(name: $0, hue: $1)

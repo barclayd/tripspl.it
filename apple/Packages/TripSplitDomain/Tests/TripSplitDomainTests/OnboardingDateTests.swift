@@ -12,17 +12,94 @@ struct OnboardingDateTests {
     return draft
   }
 
-  @Test func everyRouteAsksHowLongInEachPlace() {
+  @Test func onlyARouteWithSeveralStopsAsksHowLongInEachPlace() {
+    var single = draft()
+    #expect(single.flowSteps == [0, 1, 3, 4, 5, 6])
+    #expect(single.totalSteps == 5)
+    single.step = 1
+    single.advanceStep()
+    #expect(single.step == 3)
+    single.previousStep()
+    #expect(single.step == 1)
+
+    var route = draft(multiple: true)
+    #expect(route.flowSteps == [0, 1, 2, 3, 4, 5, 6])
+    route.step = 1
+    route.advanceStep()
+    #expect(route.step == 2)
+    route.advanceStep()
+    #expect(route.step == 3)
+    route.previousStep()
+    #expect(route.step == 2)
+  }
+
+  @Test func droppingToOneStopSkipsHowLong() {
+    var draft = draft(multiple: true)
+    draft.step = 2
+    draft.stops.removeLast()
+    draft.reconcileRoute()
+    #expect(draft.step == 1)
+  }
+
+  @Test func aThirteenDayTripCanBePickedFromTheCalendar() throws {
     var draft = draft()
-    #expect(draft.flowSteps == [0, 1, 2, 3, 4, 5, 6])
-    #expect(draft.totalSteps == 6)
+    draft.setReturn("2026-11-13")
+    #expect(draft.nights == 12)
+    #expect(draft.days == 13)
+    #expect(draft.returnDate == "2026-11-13")
     draft.step = 1
-    draft.advanceStep()
-    #expect(draft.step == 2)
-    draft.advanceStep()
-    #expect(draft.step == 3)
-    draft.previousStep()
-    #expect(draft.step == 2)
+    #expect(draft.canAdvance)
+    #expect(try draft.makeTrip().endsOn == "2026-11-13")
+  }
+
+  @Test func movingTheDepartureKeepsTheTripLength() {
+    var draft = draft()
+    draft.setReturn("2026-11-13")
+    draft.setDeparture("2026-12-01")
+    #expect(draft.returnDate == "2026-12-13")
+  }
+
+  @Test func returnDatesSplitNightsInProportionAcrossStops() {
+    var draft = draft(multiple: true)
+    draft.stops.append(Destination.all[2].stop(nights: 2))
+    draft.setReturn("2026-11-17")
+    #expect(draft.stops.map(\.nights) == [6, 6, 4])
+    draft.setReturn("2026-11-03")
+    #expect(draft.stops.map(\.nights) == [1, 1, 1])
+    #expect(draft.returnDate == "2026-11-04")
+    draft.setReturn("2026-11-06")
+    #expect(draft.stops.map(\.nights) == [2, 2, 1])
+  }
+
+  @Test func tripsStopAtAYear() {
+    var draft = draft()
+    draft.setReturn("2028-01-01")
+    #expect(draft.nights == OnboardingDraft.maximumNights)
+  }
+
+  @Test func pickingAnEarlierStartKeepsTheDayHome() {
+    var draft = draft()
+    draft.setDates(leaving: "2026-10-30", home: draft.returnDate)
+    #expect(draft.startsOn == "2026-10-30")
+    #expect(draft.returnDate == "2026-11-04")
+  }
+
+  @Test func howLongMovesNightsBetweenStopsWithoutChangingTheDates() {
+    var draft = draft(multiple: true)
+    draft.stops.append(Destination.all[2].stop(nights: 1))
+    let home = draft.returnDate
+    draft.shiftNight(at: 0, by: 1)
+    #expect(draft.stops.map(\.nights) == [4, 2, 1])
+    draft.shiftNight(at: 0, by: 2)
+    #expect(draft.stops.map(\.nights) == [5, 1, 1])
+    #expect(!draft.canShiftNight(at: 0, by: 1))
+    draft.shiftNight(at: 2, by: -1)
+    #expect(draft.stops.map(\.nights) == [5, 1, 1])
+    draft.shiftNight(at: 2, by: 1)
+    #expect(draft.stops.map(\.nights) == [4, 1, 2])
+    draft.shiftNight(at: 0, by: -1)
+    #expect(draft.stops.map(\.nights) == [3, 2, 2])
+    #expect(draft.returnDate == home)
   }
 
   @Test func nightsDefineTheReturnDate() throws {
@@ -37,12 +114,12 @@ struct OnboardingDateTests {
     #expect(trip.legs.map(\.date) == ["2026-11-01", "2026-11-04", "2026-11-08"])
   }
 
-  @Test func nightsStayWithinOneToThirtyPerStop() {
+  @Test func nightsStayWithinOneToAYearPerStop() {
     var draft = draft(multiple: true)
     draft.setNights(0, at: 0)
     #expect(draft.stops[0].nights == 1)
-    draft.setNights(45, at: 1)
-    #expect(draft.stops[1].nights == 30)
+    draft.setNights(400, at: 1)
+    #expect(draft.stops[1].nights == OnboardingDraft.maximumNights)
   }
 
   @Test func oneDestinationCanBeADayTrip() throws {

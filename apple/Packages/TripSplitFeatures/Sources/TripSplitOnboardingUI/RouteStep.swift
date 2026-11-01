@@ -237,9 +237,6 @@ struct RouteStep: View {
 
   private func reconcile() {
     model.onboarding.reconcileRoute()
-    if let zone = model.onboarding.stops.first?.resolvedTimeZone {
-      model.onboarding.timeZone = zone
-    }
   }
 
   private func searchMaps() {

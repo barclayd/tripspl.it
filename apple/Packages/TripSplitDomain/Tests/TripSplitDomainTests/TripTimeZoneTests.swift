@@ -30,20 +30,39 @@ struct TripTimeZoneTests {
     #expect(trip.isToday(trip.days[0], at: now))
     #expect(trip.isToday(trip.days[1], at: now))
     #expect(trip.currentAttachment(at: now) == tokyo)
-    #expect(trip.phase(at: now) == .now)
+    #expect(trip.phase(at: now, localTimeZone: "Asia/Tokyo") == .now)
     #expect(trip.timeZone == "America/Los_Angeles")
     #expect(trip.timeZone(for: .init(kind: .leg, id: trip.legs.last!.id)) == "Asia/Tokyo")
   }
 
-  @Test func tripStartsAndEndsOnDestinationDatesInsteadOfPhoneDates() throws {
+  @Test func tripRunsOnDestinationDatesOnceYouAreThere() throws {
     var draft = OnboardingDraft()
     draft.startsOn = "2026-11-01"
     draft.stops = [try stop("Tokyo", zone: "Asia/Tokyo")]
     let trip = try draft.makeTrip()
-    #expect(trip.phase(at: try instant("2026-10-31T14:59:00Z")) == .upcoming)
-    #expect(trip.phase(at: try instant("2026-10-31T15:00:00Z")) == .now)
-    #expect(trip.phase(at: try instant("2026-11-02T14:59:00Z")) == .now)
-    #expect(trip.phase(at: try instant("2026-11-02T15:00:00Z")) == .past)
+    let phone = "Asia/Tokyo"
+    #expect(trip.phase(at: try instant("2026-10-31T14:59:00Z"), localTimeZone: phone) == .upcoming)
+    #expect(trip.phase(at: try instant("2026-10-31T15:00:00Z"), localTimeZone: phone) == .now)
+    #expect(trip.phase(at: try instant("2026-11-02T14:59:00Z"), localTimeZone: phone) == .now)
+    #expect(trip.phase(at: try instant("2026-11-02T15:00:00Z"), localTimeZone: phone) == .past)
+  }
+
+  @Test func tripPlannedFromHomeStartsOnTheHomeDate() throws {
+    var draft = OnboardingDraft()
+    draft.startsOn = "2026-11-01"
+    draft.stops = [try stop("Tokyo", zone: "Asia/Tokyo")]
+    let trip = try draft.makeTrip()
+    let phone = "Europe/London"
+    // Tokyo's already on 1 November, but London isn't.
+    let tokyoMidnight = try instant("2026-10-31T15:00:00Z")
+    #expect(trip.phase(at: tokyoMidnight, localTimeZone: phone) == .upcoming)
+    #expect(trip.currentDay(at: tokyoMidnight, localTimeZone: phone) == nil)
+    let londonMidnight = try instant("2026-11-01T00:00:00Z")
+    #expect(trip.phase(at: londonMidnight, localTimeZone: phone) == .now)
+    #expect(trip.currentDay(at: londonMidnight, localTimeZone: phone)?.date == "2026-11-01")
+    // Back home, the last day lasts until London's midnight too.
+    #expect(trip.phase(at: try instant("2026-11-02T23:59:00Z"), localTimeZone: phone) == .now)
+    #expect(trip.phase(at: try instant("2026-11-03T00:00:00Z"), localTimeZone: phone) == .past)
   }
 
   @Test func regionalDaylightSavingRulesApplyToLoggedDates() throws {

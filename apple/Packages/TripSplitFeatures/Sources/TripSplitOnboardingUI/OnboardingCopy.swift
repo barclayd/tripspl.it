@@ -5,9 +5,7 @@ import TripSplitDomain
 /// The words and derived figures that react to each onboarding answer.
 enum OnboardingCopy {
   /// The encouraging line above the continue button.
-  static func cheer(
-    _ draft: OnboardingDraft, today: String = CivilDate.today(timeZone: TimeZone.current.identifier)
-  ) -> String {
+  static func cheer(_ draft: OnboardingDraft) -> String {
     switch draft.step {
     case 0:
       switch draft.stops.count {
@@ -17,13 +15,11 @@ enum OnboardingCopy {
       case let count: return "\(count) stops. Ambitious!"
       }
     case 1:
-      let days = CivilDate.days(from: today, to: draft.startsOn)
-      if days == 0 { return "Leaving today!" }
-      if days > 0 { return "That’s \(days) day\(days == 1 ? "" : "s") away" }
-      return "Started \(-days) day\(days == -1 ? "" : "s") ago"
-    case 2:
+      if draft.nights == 0 { return "A day trip. Easy." }
       return draft.nights >= 14
         ? "A proper adventure" : draft.nights >= 6 ? "A good long trip" : "Short and sweet"
+    case 2:
+      return "\(draft.nights) nights across \(draft.stops.count) places"
     case 3:
       switch draft.travellers.count {
       case 1: return "Solo trip. Respect."
@@ -103,9 +99,9 @@ enum OnboardingCopy {
   static func answer(_ step: Int, _ draft: OnboardingDraft) -> String {
     switch step {
     case 0: return draft.stops.map { "\($0.flag) \($0.place)" }.joined(separator: " → ")
-    case 1: return CivilDate.display(draft.startsOn, format: "EEE d MMM")
+    case 1: return "\(dateRange(draft)) · \(draft.days) day\(draft.days == 1 ? "" : "s")"
     case 2:
-      return "\(draft.nights) night\(draft.nights == 1 ? "" : "s") · \(draft.days) days"
+      return draft.stops.map { "\($0.flag) \($0.nights)" }.joined(separator: " · ")
     case 3: return draft.travellers.map(\.name).joined(separator: ", ")
     case 4: return "\(ConversionCurrency.forCurrency(draft.currency).flag) \(draft.currency)"
     case 5: return Money.typed(draft.budget, currency: draft.currency)

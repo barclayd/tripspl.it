@@ -260,7 +260,8 @@ public struct OnboardingView: View {
   }
 
   private var progress: some View {
-    ProgressTrack(progress: max(0.05, Double(step) / Double(draft.totalSteps)))
+    ProgressTrack(
+      progress: max(0.05, Double(draft.flowSteps.firstIndex(of: step) ?? 0) / Double(draft.totalSteps)))
       .accessibilityElement()
       .accessibilityLabel("Step \(draft.stepPosition) of \(draft.totalSteps)")
   }
@@ -328,9 +329,6 @@ public struct OnboardingView: View {
     Haptics.lightImpact()
     model.onboarding.stops.remove(at: index)
     model.onboarding.reconcileRoute()
-    if let zone = model.onboarding.stops.first?.resolvedTimeZone {
-      model.onboarding.timeZone = zone
-    }
   }
 
   // MARK: Steps

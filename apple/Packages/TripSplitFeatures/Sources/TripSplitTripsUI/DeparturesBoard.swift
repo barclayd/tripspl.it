@@ -134,9 +134,13 @@ struct DeparturesBoard: View {
     return others > 0 ? "\(first.prefix(7)) +\(others)" : String(first.prefix(10))
   }
 
+  /// Counts down on the phone's calendar: you leave from where you are now.
+  private func daysToGo(_ trip: TripSnapshot) -> Int {
+    CivilDate.days(from: CivilDate.today(timeZone: TimeZone.current.identifier), to: trip.startsOn)
+  }
+
   private func status(_ trip: TripSnapshot) -> String {
-    let zone = trip.stops.first?.resolvedTimeZone ?? trip.timeZone
-    let days = CivilDate.days(from: CivilDate.today(timeZone: zone), to: trip.startsOn)
+    let days = daysToGo(trip)
     return days <= 0 ? "TODAY" : "IN \(min(days, 999))D"
   }
 
@@ -145,8 +149,7 @@ struct DeparturesBoard: View {
       trip.phase == .now
       ? "on trip now"
       : {
-        let zone = trip.stops.first?.resolvedTimeZone ?? trip.timeZone
-        let days = CivilDate.days(from: CivilDate.today(timeZone: zone), to: trip.startsOn)
+        let days = daysToGo(trip)
         return days <= 0 ? "departs today" : "departs in \(days) \(days == 1 ? "day" : "days")"
       }()
     return "\(trip.name), \(CivilDate.display(trip.startsOn, format: "d MMMM")), \(when)"
