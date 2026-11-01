@@ -1,0 +1,556 @@
+---
+import tripsDark from '../assets/screens/iphone-trips-dark.png';
+import tripsLight from '../assets/screens/iphone-trips-light.png';
+import { passes } from '../data/passes';
+import { tearPaperBR, tearPaperTL, tearRimBR, tearRimTL } from '../data/tear';
+import BoardingPass from './BoardingPass.astro';
+import Plane from './Plane.astro';
+import Screen from './Screen.astro';
+
+// `start` is the solo progress (--b, 0 → 1, which only begins once Japan has settled) where each piece drops in.
+const soloChips = [
+  { name: 'Tokyo', icon: '🗼', bg: 'oklch(0.94 0.045 350)', start: 0 },
+  { name: 'Kyoto', icon: '⛩️', bg: 'oklch(0.93 0.06 25)', start: 0.06 },
+  { name: 'Osaka', icon: '🏯', bg: 'oklch(0.93 0.05 190)', start: 0.12 },
+];
+
+const soloRows = [
+  { icon: '✈️', hue: 235, title: 'Flights to Tokyo', sub: 'London → Haneda', cost: 1180, start: 0.22 },
+  { icon: '🚄', hue: 160, title: 'Shinkansen to Kyoto', sub: 'Bullet train', cost: 96, start: 0.38 },
+  { icon: '🗻', hue: 195, title: 'Taxi to Mount Fuji', sub: 'Day trip', cost: 140, start: 0.54 },
+  { icon: '🍣', hue: 45, title: 'Omakase in Osaka', sub: 'Dinner for one', cost: 85, start: 0.7 },
+];
+
+const halves = [
+  { side: 'br', rim: tearRimBR, paper: tearPaperBR, primary: false },
+  { side: 'tl', rim: tearRimTL, paper: tearPaperTL, primary: true },
+] as const;
+---
+
+<section class="hero" data-sc="hero" aria-labelledby="hero-title">
+  <div class="sticky-stage hero-stage">
+    <div class="bg" aria-hidden="true"></div>
+
+    <div class="tear">
+      {
+        halves.map((h) => (
+          <div class:list={['half', h.side]} aria-hidden={h.primary ? undefined : 'true'}>
+            <div class="rim" style={`clip-path:polygon(${h.rim})`} />
+            <div class="clip" style={`clip-path:polygon(${h.paper})`}>
+              <div class="paper">
+                <div class="globe" aria-hidden="true">
+                  <canvas data-globe={h.primary ? 'main' : 'mirror'} />
+                </div>
+                <div class="badge">
+                  <span class="dot">
+                    <span />
+                    <span class="pulse" />
+                  </span>
+                  Getting ready for takeoff
+                </div>
+                {h.primary ? (
+                  <h1 class="title" id="hero-title">
+                    <span class="sr-only">TripSplit</span>
+                    <span class="title-art" aria-hidden="true">
+                      <span class="app-icon">
+                        <Plane size="0.5em" class="r45" />
+                      </span>
+                      <span>
+                        Trip<span class="slash">/</span>Split
+                      </span>
+                    </span>
+                  </h1>
+                ) : (
+                  <div class="title">
+                    <span class="title-art">
+                      <span class="app-icon">
+                        <Plane size="0.5em" class="r45" />
+                      </span>
+                      <span>
+                        Trip<span class="slash">/</span>Split
+                      </span>
+                    </span>
+                  </div>
+                )}
+                {h.primary ? (
+                  <p class="sub">Enjoy your trip without breaking the bank</p>
+                ) : (
+                  <div class="sub">Enjoy your trip without breaking the bank</div>
+                )}
+              </div>
+            </div>
+          </div>
+        ))
+      }
+      <div class="cue" aria-hidden="true">
+        <svg
+          width="22"
+          height="22"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2.4"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg>
+      </div>
+    </div>
+
+    <div class="hero-scene fan">
+      {
+        passes.map((p, i) => (
+          <div class:list={['lp', `lp${i + 1}`]}>
+            <BoardingPass pass={p} />
+          </div>
+        ))
+      }
+      <div class="phone">
+        <div class="phone-screen">
+          <div class="island" aria-hidden="true"></div>
+          <Screen
+            light={tripsLight}
+            dark={tripsDark}
+            width={280}
+            loading="eager"
+            alt="TripSplit on iPhone: the Trips list, with the trip happening now at the top"
+          />
+        </div>
+      </div>
+    </div>
+
+    <div class="hero-scene stage solo">
+      <div class="stage-head">
+        <span class="stage-pill">🇯🇵 SOLO TRIP</span>
+        <h2 class="stage-h2">
+          Heading <span class="hi">solo?</span><span class="sticker bob" style="--r:-12deg;right:-0.75em" aria-hidden="true"
+            >🎒</span
+          >
+        </h2>
+      </div>
+      <div class="solo-card sf">
+        <div class="solo-top">
+          <div class="solo-trip">
+            <span class="solo-flag" aria-hidden="true">🇯🇵</span>
+            <div>
+              <div class="solo-name">Japan</div>
+              <div class="solo-meta">12 days · Budget £5,000</div>
+            </div>
+          </div>
+          <div class="solo-left">
+            <div class="solo-left-l">Left</div>
+            <div class="stage-big tnum" data-bind="soloLeft">£5,000</div>
+          </div>
+        </div>
+        <div class="solo-chips">
+          {
+            soloChips.map((c) => (
+              <span class="solo-chip pastel" style={`background:${c.bg};--s:${c.start}`}>
+                <span class="solo-chip-i" aria-hidden="true">
+                  {c.icon}
+                </span>
+                {c.name}
+              </span>
+            ))
+          }
+        </div>
+        <div class="solo-bar"><div class="solo-fill" data-bind-style="width:soloPct" style="width:100%"></div></div>
+        <div class="solo-day">
+          <span class="solo-day-l">Per day</span>
+          <span class="solo-day-v tnum" data-bind="soloDay">£417 a day</span>
+        </div>
+      </div>
+      {
+        soloRows.map((r) => (
+          <div
+            class="stage-row sf solo-row"
+            style={`--s:${r.start}`}
+            data-start={r.start}
+            data-cost={r.cost}
+          >
+            <div class="stage-tile pastel" style={`background:oklch(0.94 0.045 ${r.hue})`} aria-hidden="true">
+              {r.icon}
+            </div>
+            <div class="stage-mid">
+              <span class="stage-title">{r.title}</span>
+              <span class="stage-sub">{r.sub}</span>
+            </div>
+            <span class="stage-amt bad tnum">−£{r.cost.toLocaleString('en-GB')}</span>
+          </div>
+        ))
+      }
+    </div>
+  </div>
+</section>
+
+<style>
+  .hero {
+    --t: 0;
+    --te: 0;
+    --a: 0;
+    --h: 0;
+    --hy: 0px;
+    --travel: 85vh;
+    --b: 0;
+    --px: 340px;
+    --py: 112px;
+    --pscale: 1;
+    --phS: 1;
+    /* Covers every beat in scripts/scroll.ts (HERO), plus a short hold on the finished Japan card. */
+    height: 620vh;
+    margin-top: -66px;
+  }
+  .hero-stage {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+  }
+  .bg {
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(60% 50% at 50% 60%, oklch(0.95 0.035 4) 0%, #f4f2ee 70%);
+  }
+
+  /* Torn paper */
+  .tear {
+    position: absolute;
+    inset: 0;
+    z-index: 10;
+    pointer-events: none;
+  }
+  .half {
+    position: absolute;
+    inset: 0;
+    filter: drop-shadow(0 18px 30px rgba(22, 18, 15, calc(min(var(--t) * 6, 1) * 0.22)));
+    opacity: calc(1 - max(var(--t) - 0.9, 0) * 10);
+  }
+  .br {
+    transform-origin: 100% 100%;
+    transform: translate(calc(var(--te) * 58vw), calc(var(--te) * 52vh)) rotate(calc(var(--te) * 6deg));
+  }
+  .tl {
+    transform-origin: 0 0;
+    transform: translate(calc(var(--te) * -58vw), calc(var(--te) * -52vh)) rotate(calc(var(--te) * -7deg));
+  }
+  .rim,
+  .clip {
+    position: absolute;
+    inset: 0;
+  }
+  .rim {
+    background: #fff;
+    opacity: min(var(--t) * 30, 1);
+  }
+  .paper {
+    position: absolute;
+    inset: 0;
+    background-color: #fbf9f5;
+    background-image:
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.09 0 0 0 0 0.07 0 0 0 0 0.06 0 0 0 0.05 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"),
+      radial-gradient(60% 55% at 50% 52%, oklch(0.95 0.035 4) 0%, rgba(251, 249, 245, 0) 70%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 22px;
+    text-align: center;
+    padding: 0 24px;
+    isolation: isolate;
+  }
+  .globe {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: min(80vh, 96vw);
+    height: min(80vh, 96vw);
+    transform: translate(-50%, -50%);
+    z-index: -1;
+  }
+  .globe canvas {
+    width: 100%;
+    height: 100%;
+  }
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 7px 14px;
+    border-radius: 999px;
+    background: var(--sf);
+    font-size: 13px;
+    font-weight: 800;
+    color: var(--acText);
+    box-shadow: 0 8px 20px -14px rgba(22, 18, 15, 0.3);
+  }
+  .dot {
+    position: relative;
+    width: 8px;
+    height: 8px;
+  }
+  .dot span {
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    background: var(--ac);
+  }
+  .dot .pulse {
+    animation: lpPulse 1.6s ease-out infinite;
+  }
+  .title {
+    font-size: clamp(56px, 14vw, 190px);
+    font-weight: 800;
+    letter-spacing: -0.06em;
+    line-height: 0.9;
+    color: var(--ink);
+  }
+  .title-art {
+    display: flex;
+    align-items: center;
+    gap: 0.16em;
+  }
+  .app-icon {
+    width: 0.78em;
+    height: 0.78em;
+    border-radius: 0.22em;
+    background: var(--ac);
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 0.06em 0 oklch(0.47 0.2 4);
+    flex-shrink: 0;
+  }
+  .app-icon :global(.r45) {
+    transform: rotate(45deg);
+  }
+  .slash {
+    font-weight: 300;
+    color: var(--acHi);
+    margin: 0 0.02em;
+  }
+  .sub {
+    padding: 10px 22px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.55);
+    -webkit-backdrop-filter: blur(14px) saturate(1.4);
+    backdrop-filter: blur(14px) saturate(1.4);
+    box-shadow:
+      inset 0 0 0 1px rgba(255, 255, 255, 0.7),
+      0 10px 30px -14px rgba(60, 0, 20, 0.25);
+    font-size: clamp(15px, 2.1vw, 25px);
+    font-weight: 400;
+    letter-spacing: -0.03em;
+    line-height: 1.15;
+    color: #6f6862;
+  }
+  .cue {
+    position: absolute;
+    left: 50%;
+    bottom: 28px;
+    transform: translateX(-50%);
+    color: var(--ink3);
+    opacity: calc(1 - var(--t) * 10);
+  }
+  .cue svg {
+    animation: lpCue 1.6s ease-in-out infinite;
+  }
+
+  /* Phone and boarding passes */
+  .fan {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: min(92vw, 1100px);
+    height: 620px;
+    /* During the handover the fan scrolls up with the page, fading only as it nears the top. */
+    transform: translate(-50%, calc(-50% + (1 - min(var(--a) * 2.2, 1)) * 95vh - var(--hy)));
+    opacity: calc(min(var(--a) * 4, 1) - max(var(--h) - 0.6, 0) * 2.5);
+  }
+  .lp {
+    --m: min(var(--a) * 1.6, 1);
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 340px;
+    z-index: 1;
+  }
+  .lp1 {
+    transform: translate(calc(-50% - var(--m) * var(--px)), calc(-50% - var(--m) * var(--py))) scale(var(--pscale))
+      rotate(calc(var(--m) * -6deg));
+  }
+  .lp2 {
+    transform: translate(calc(-50% + var(--m) * var(--px)), calc(-50% - var(--m) * var(--py))) scale(var(--pscale))
+      rotate(calc(var(--m) * 5deg));
+  }
+  .lp3 {
+    transform: translate(calc(-50% - var(--m) * var(--px)), calc(-50% + var(--m) * var(--py))) scale(var(--pscale))
+      rotate(calc(var(--m) * 4deg));
+  }
+  .lp4 {
+    transform: translate(calc(-50% + var(--m) * var(--px)), calc(-50% + var(--m) * var(--py))) scale(var(--pscale))
+      rotate(calc(var(--m) * -4deg));
+  }
+  .phone {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 300px;
+    height: 620px;
+    transform: translate(-50%, -50%) scale(calc((0.86 + min(var(--a) * 1.6, 1) * 0.14) * var(--phS)));
+    z-index: 2;
+    border-radius: 52px;
+    background: #0e0f12;
+    padding: 10px;
+    box-shadow: 0 50px 90px -40px rgba(22, 18, 15, 0.55);
+  }
+  .phone-screen {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    border-radius: 42px;
+    overflow: hidden;
+    background: var(--bg);
+  }
+  .island {
+    position: absolute;
+    top: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 92px;
+    height: 28px;
+    border-radius: 999px;
+    background: #000;
+    z-index: 2;
+  }
+
+  /* Solo card */
+  /* Japan follows the fan up from below, at the same speed, and settles before anything on it moves. */
+  .solo {
+    transform: translate(-50%, calc(-50% + var(--travel) - var(--hy))) scale(var(--fitB, 1));
+    opacity: min(var(--h) * 5, 1);
+  }
+  .solo .stage-head {
+    transform: none;
+  }
+  .solo-card {
+    border-radius: 28px;
+    padding: 20px 22px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    box-shadow: 0 30px 60px -36px rgba(22, 18, 15, 0.4);
+  }
+  .solo-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 12px;
+  }
+  .solo-trip {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .solo-flag {
+    font-size: 40px;
+    line-height: 1;
+  }
+  .solo-name {
+    font-size: 22px;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+  }
+  .solo-meta,
+  .solo-left-l {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--ink2);
+  }
+  .solo-left {
+    text-align: right;
+  }
+  .solo-left-l {
+    font-size: 13px;
+    font-weight: 800;
+  }
+  .solo-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .solo-chip {
+    --v: clamp(0, calc((var(--b) - var(--s)) / 0.12), 1);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 14px;
+    border-radius: 999px;
+    font-size: 15px;
+    font-weight: 800;
+    box-shadow: 0 10px 22px -16px rgba(22, 18, 15, 0.4);
+    opacity: var(--v);
+    transform: translateY(calc((1 - var(--v)) * 16px)) rotate(calc((1 - var(--v)) * -8deg));
+  }
+  .solo-chip-i {
+    font-size: 18px;
+  }
+  .solo-bar {
+    height: 12px;
+    border-radius: 999px;
+    background: var(--sf2);
+    overflow: hidden;
+  }
+  .solo-fill {
+    height: 100%;
+    border-radius: 999px;
+    background: oklch(0.6 0.15 155);
+    transition: width 0.45s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+  .solo-day {
+    display: flex;
+    justify-content: space-between;
+    font-size: 14px;
+    font-weight: 800;
+  }
+  .solo-day-l {
+    color: var(--ink2);
+  }
+  .solo-day-v {
+    color: var(--acText);
+  }
+  .solo-row {
+    /* The 0.16 drop length is mirrored in scripts/scroll.ts, which takes the cost off at 60%. */
+    --v: clamp(0, calc((var(--b) - var(--s)) / 0.16), 1);
+    opacity: var(--v);
+    transform: translateY(calc((1 - var(--v)) * 40px)) scale(calc(0.92 + var(--v) * 0.08));
+  }
+
+  @media (prefers-color-scheme: dark) {
+    .bg {
+      background: radial-gradient(60% 50% at 50% 58%, oklch(0.2 0.07 4) 0%, #000 70%);
+    }
+    .rim {
+      background: #3a3633;
+    }
+    .paper {
+      background-color: #0d0c0b;
+      background-image: radial-gradient(60% 55% at 50% 52%, oklch(0.21 0.07 4) 0%, rgba(13, 12, 11, 0) 70%);
+    }
+    .badge {
+      box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.06);
+    }
+    .sub {
+      background: rgba(20, 18, 17, 0.55);
+      box-shadow:
+        inset 0 0 0 1px rgba(255, 255, 255, 0.12),
+        0 10px 30px -14px rgba(0, 0, 0, 0.6);
+      color: #aba49c;
+    }
+    .phone {
+      box-shadow:
+        0 0 0 1px rgba(255, 255, 255, 0.14),
+        0 40px 80px -40px rgba(0, 0, 0, 0.9);
+    }
+  }
+</style>

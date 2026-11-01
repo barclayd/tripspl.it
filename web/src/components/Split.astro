@@ -1,0 +1,366 @@
+---
+import Memoji from './Memoji.astro';
+
+type Face = 1 | 2 | 3 | 4;
+type Line = { kind: 'head'; l: string } | { kind: 'dash' } | { kind: 'item'; l: string; r: string; who?: Face; sub?: string };
+
+// The receipt prints itself as you scroll (see scripts/scroll.ts). It is rendered here fully printed,
+// which is also what visitors without JavaScript see.
+const receipt: Line[] = [
+  { kind: 'head', l: 'MALLORCA · 4 OF US' },
+  { kind: 'dash' },
+  { kind: 'item', l: 'VILLA IN DEIÀ', r: '£720', who: 2, sub: 'PAID BY YOU' },
+  { kind: 'item', l: 'BOAT DAY', r: '£300', who: 1, sub: 'PAID BY MAYA' },
+  { kind: 'item', l: 'PAELLA NIGHT', r: '£180', who: 3, sub: 'PAID BY TOM' },
+  { kind: 'dash' },
+  { kind: 'item', l: 'TOTAL', r: '£1,200' },
+  { kind: 'item', l: 'EACH', r: '£300' },
+];
+
+const people: { face: Face; name: string; value: string; tone: string; said: string }[] = [
+  { face: 2, name: 'You', value: '+£420', tone: '#4CD38A', said: 'You are owed £420' },
+  { face: 1, name: 'Maya', value: '£0', tone: '#ABA49E', said: 'Maya is settled up' },
+  { face: 3, name: 'Tom', value: '−£120', tone: '#FF6A5C', said: 'Tom owes £120' },
+  { face: 4, name: 'Priya', value: '−£300', tone: '#FF6A5C', said: 'Priya owes £300' },
+];
+
+const moves: { from: Face; to: Face; value: string; said: string }[] = [
+  { from: 4, to: 2, value: '£300', said: 'Priya pays you £300' },
+  { from: 3, to: 2, value: '£120', said: 'Tom pays you £120' },
+];
+---
+
+<section id="split" class="split" data-sc="split" aria-labelledby="split-title">
+  <div class="sticky-stage fit-stage split-stage">
+    <div class="split-head">
+      <span class="eyebrow split-eyebrow">SPLIT</span>
+      <h2 class="split-h2" id="split-title">Who owes who, sorted.</h2>
+    </div>
+    <div class="split-body">
+      <div class="rcw">
+        <div class="slot" aria-hidden="true"></div>
+        <div class="rc" data-rc>
+          {
+            receipt.map((ln) =>
+              ln.kind === 'dash' ? (
+                <div class="ln dash" data-ln="dash" />
+              ) : ln.kind === 'head' ? (
+                <div class="ln head" data-ln="text" data-l={ln.l} data-r="">
+                  <span>{ln.l}</span>
+                  <span />
+                </div>
+              ) : (
+                <>
+                  <div class="ln" data-ln="text" data-l={ln.l} data-r={ln.r}>
+                    <span>{ln.l}</span>
+                    <span>{ln.r}</span>
+                  </div>
+                  {ln.sub && (
+                    <div class="ln sub" data-ln="sub" data-l={ln.sub}>
+                      <span>{ln.sub}</span>
+                      <span />
+                      <div class="face" data-face aria-hidden="true">
+                        <Memoji n={ln.who ?? 2} size={56} class="face-img" />
+                        <div class="string" />
+                      </div>
+                    </div>
+                  )}
+                </>
+              ),
+            )
+          }
+        </div>
+      </div>
+      <div class="balances">
+        <ul class="people">
+          {
+            people.map((p) => (
+              <li class="person">
+                <Memoji n={p.face} size={58} class="person-img" />
+                <span class="person-name" aria-hidden="true">
+                  {p.name}
+                </span>
+                <span class="person-v" style={`color:${p.tone}`} aria-hidden="true">
+                  {p.value}
+                </span>
+                <span class="sr-only">{p.said}</span>
+              </li>
+            ))
+          }
+        </ul>
+        <ul class="moves">
+          {
+            moves.map((m, i) => (
+              <li class="move" style={`--i:${i}`}>
+                <Memoji n={m.from} size={40} class="move-img" />
+                <svg width="22" height="14" viewBox="0 0 22 14" aria-hidden="true">
+                  <path
+                    d="M1 7h18M14 2l5 5-5 5"
+                    stroke="#A39C94"
+                    stroke-width="2.2"
+                    fill="none"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
+                </svg>
+                <Memoji n={m.to} size={40} class="move-img" />
+                <span class="move-v" aria-hidden="true">
+                  {m.value}
+                </span>
+                <span class="sr-only">{m.said}</span>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .split {
+    height: 320vh;
+    background: #16120f;
+    color: #f4f2ee;
+    /* Balances fade in once the receipt has printed, then each settle-up line follows. */
+    --bq: clamp(0, calc((var(--p) - 0.64) / 0.14), 1);
+  }
+  .split-stage {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: clamp(18px, 3vh, 36px);
+    padding: 64px 24px 0;
+    overflow: hidden;
+  }
+  .split-head {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    align-items: center;
+  }
+  .split-eyebrow {
+    color: oklch(0.78 0.15 4);
+  }
+  .split-h2 {
+    font-size: clamp(40px, 6vw, 80px);
+    font-weight: 800;
+    letter-spacing: -0.05em;
+    line-height: 0.95;
+  }
+  .split-body {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: flex-start;
+    gap: clamp(28px, 6vw, 90px);
+    width: min(100%, 1000px);
+  }
+
+  /* Receipt */
+  .rcw {
+    position: relative;
+    width: 340px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .slot {
+    width: 340px;
+    height: 18px;
+    border-radius: 9px;
+    background: #2a2729;
+    box-shadow: inset 0 3px 6px rgba(0, 0, 0, 0.6);
+    position: relative;
+    z-index: 2;
+  }
+  .rc {
+    position: relative;
+    width: 300px;
+    margin-top: -9px;
+    color: #23201b;
+    padding: 22px 20px 26px;
+    font-family: var(--mono);
+    font-size: 14px;
+    font-weight: 700;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    isolation: isolate;
+  }
+  /* The zig-zag paper sits behind the text so the payers' faces can hang outside it. */
+  .rc::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: #fffdf6;
+    clip-path: polygon(
+      0 0,
+      100% 0,
+      100% calc(100% - 8px),
+      94% 100%,
+      88% calc(100% - 8px),
+      82% 100%,
+      76% calc(100% - 8px),
+      70% 100%,
+      64% calc(100% - 8px),
+      58% 100%,
+      52% calc(100% - 8px),
+      46% 100%,
+      40% calc(100% - 8px),
+      34% 100%,
+      28% calc(100% - 8px),
+      22% 100%,
+      16% calc(100% - 8px),
+      10% 100%,
+      4% calc(100% - 8px),
+      0 100%
+    );
+  }
+  .ln {
+    position: relative;
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    min-height: 18px;
+    white-space: pre;
+  }
+  .ln[hidden] {
+    display: none;
+  }
+  .head {
+    color: #7a7368;
+    font-size: 12px;
+  }
+  .sub {
+    color: #7a7368;
+    font-size: 11px;
+  }
+  .dash {
+    border-top: 1.5px dashed #cfc8bb;
+  }
+  .face {
+    position: absolute;
+    left: calc(100% + 34px);
+    top: -20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    pointer-events: none;
+  }
+  .face[hidden] {
+    display: none;
+  }
+  .face :global(.face-img) {
+    filter: drop-shadow(0 8px 10px rgba(0, 0, 0, 0.45));
+  }
+  .string {
+    width: 1.5px;
+    height: 0;
+    background: rgba(244, 242, 238, 0.35);
+    margin-top: -2px;
+  }
+
+  /* Balances */
+  .balances {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    width: min(100%, 360px);
+    padding-top: 30px;
+    opacity: var(--bq);
+    transform: translateY(calc((1 - var(--bq)) * 30px));
+  }
+  .people,
+  .moves {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .people {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+  }
+  .person {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+  }
+  .person :global(.person-img) {
+    filter: drop-shadow(0 6px 8px rgba(0, 0, 0, 0.4));
+  }
+  .person-name {
+    font-size: 14px;
+    font-weight: 800;
+  }
+  .person-v {
+    padding: 4px 10px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.08);
+    font-size: 13px;
+    font-weight: 800;
+  }
+  .moves {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+  .move {
+    --mq: clamp(0, calc((var(--p) - 0.74 - var(--i) * 0.08) / 0.1), 1);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    border-radius: 22px;
+    background: rgba(255, 255, 255, 0.06);
+    opacity: var(--mq);
+    transform: translateY(calc((1 - var(--mq)) * 24px));
+  }
+  .move :global(.move-img) {
+    filter: none;
+  }
+  .move-v {
+    margin-left: auto;
+    font-size: 22px;
+    font-weight: 800;
+    letter-spacing: -0.03em;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    .split {
+      background: #0e0d0c;
+      box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.06),
+        inset 0 -1px 0 rgba(255, 255, 255, 0.06);
+    }
+  }
+
+  @media (max-width: 640px) {
+    .rcw {
+      width: 100%;
+      align-items: flex-start;
+    }
+    .slot {
+      width: calc(100% - 50px);
+    }
+    .rc {
+      width: calc(100% - 74px);
+      margin-left: 12px;
+      font-size: 12.5px;
+      padding: 18px 14px 22px;
+    }
+    .face {
+      left: calc(100% + 10px);
+      top: -16px;
+    }
+    .face :global(.face-img) {
+      width: 44px;
+      height: 44px;
+    }
+  }
+</style>

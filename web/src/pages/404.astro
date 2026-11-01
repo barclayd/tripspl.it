@@ -1,0 +1,47 @@
+---
+import Footer from '../components/Footer.astro';
+import Nav from '../components/Nav.astro';
+import Base from '../layouts/Base.astro';
+---
+
+<Base title="Page not found · TripSplit" description="This page has taken off without you.">
+  <Nav />
+  <main class="lost">
+    <span class="eyebrow">GATE CHANGE</span>
+    <h1 class="display">This page has taken off<br />without you.</h1>
+    <p>The link may be old, or the page may have moved.</p>
+    <a class="home" href="/">Back to TripSplit</a>
+  </main>
+  <Footer />
+</Base>
+
+<style>
+  .lost {
+    min-height: calc(100svh - 160px);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 18px;
+    padding: 40px 24px 80px;
+    text-align: center;
+  }
+  p {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--ink2);
+  }
+  .home {
+    margin-top: 8px;
+    padding: 13px 22px;
+    border-radius: 999px;
+    background: var(--ac);
+    color: var(--acInk);
+    font-size: 16px;
+    font-weight: 800;
+    box-shadow: 0 5px 0 var(--acDeep);
+  }
+  .home:hover {
+    color: var(--acInk);
+  }
+</style>

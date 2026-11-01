@@ -1,0 +1,273 @@
+---
+import { barcode, type Pass, palette } from '../data/passes';
+import Plane from './Plane.astro';
+
+interface Props {
+  pass: Pass;
+  class?: string;
+}
+
+const { pass, class: cls } = Astro.props;
+const pal = palette(pass.flag);
+const vars = `--pp:${pal.pp};--pt:${pal.pt};--ps:${pal.ps};--p3:${pal.p3};--pb:${pal.pb}`;
+---
+
+<div class:list={['pass', cls]} data-pass style={vars}>
+  <div class="card">
+    <div class="head">
+      <div class="head-main">
+        <div class="airline"><Plane size={14} class="r90" /><span>TRIPSPLIT AIR</span></div>
+        <div class="leg">{pass.leg}</div>
+      </div>
+      <div class="head-stub">PASS</div>
+    </div>
+    <div class="body">
+      <div class="main">
+        <div class="vbar" style={`background:${barcode(`${pass.key}v`, 110, '180deg')}`}></div>
+        <div class="info">
+          <div class="route">
+            <div class="end">
+              <div class="lbl">FROM</div>
+              <div class="code">{pass.from}</div>
+              <div class="name">{pass.fromName}</div>
+            </div>
+            <div class="arc">
+              <svg width="100%" height="40" viewBox="0 0 100 40" preserveAspectRatio="none" aria-hidden="true">
+                <path
+                  d="M2 30 Q50 2 98 30"
+                  fill="none"
+                  stroke="var(--ink2)"
+                  stroke-width="1.4"
+                  stroke-dasharray="3.5 3"
+                  vector-effect="non-scaling-stroke"></path>
+              </svg>
+              <Plane size={18} class="arc-plane" />
+            </div>
+            <div class="end to">
+              <div class="lbl">TO</div>
+              <div class="code">{pass.to}</div>
+              <div class="name">{pass.toName}</div>
+            </div>
+          </div>
+          <div class="fields">
+            {
+              pass.fields.map(([label, value]) => (
+                <div class="field">
+                  <div class="lbl">{label}</div>
+                  <div class="val">{value}</div>
+                </div>
+              ))
+            }
+          </div>
+        </div>
+      </div>
+      <div class="stub">
+        <div class="flag">{pass.flag}</div>
+        <div class="stub-mid">
+          <div class="lbl">{pass.stubL}</div>
+          <div class="stub-v">{pass.stubV}</div>
+        </div>
+        <div class="bar" style={`background:${barcode(pass.key, 66)}`}></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  .pass {
+    height: 160px;
+    filter: drop-shadow(0 8px 14px rgba(0, 0, 0, 0.14));
+    text-align: left;
+  }
+  .card {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    background: var(--pb);
+    border-radius: 18px;
+    overflow: hidden;
+    -webkit-mask:
+      radial-gradient(circle at calc(100% - 88px) 0, transparent 9px, #000 9.5px) top / 100% 51% no-repeat,
+      radial-gradient(circle at calc(100% - 88px) 100%, transparent 9px, #000 9.5px) bottom / 100% 51% no-repeat;
+    mask:
+      radial-gradient(circle at calc(100% - 88px) 0, transparent 9px, #000 9.5px) top / 100% 51% no-repeat,
+      radial-gradient(circle at calc(100% - 88px) 100%, transparent 9px, #000 9.5px) bottom / 100% 51% no-repeat;
+  }
+  .head {
+    height: 30px;
+    flex-shrink: 0;
+    display: flex;
+    background: var(--pp);
+    color: #fff;
+    box-shadow: inset 0 -4px 0 var(--ps);
+  }
+  .head-main {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 12px 0 14px;
+  }
+  .airline {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 10.5px;
+    font-weight: 900;
+    letter-spacing: 0.1em;
+    white-space: nowrap;
+    min-width: 0;
+    overflow: hidden;
+  }
+  .airline :global(.r90) {
+    transform: rotate(90deg);
+    flex-shrink: 0;
+  }
+  .leg {
+    font-size: 9px;
+    font-weight: 900;
+    letter-spacing: 0.08em;
+    opacity: 0.85;
+    white-space: nowrap;
+    flex-shrink: 0;
+    margin-left: 8px;
+  }
+  .head-stub {
+    width: 88px;
+    flex-shrink: 0;
+    border-left: 2px dashed rgba(255, 255, 255, 0.55);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+    font-weight: 900;
+    letter-spacing: 0.14em;
+  }
+  .body {
+    flex: 1;
+    min-height: 0;
+    display: flex;
+  }
+  .main {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    gap: 10px;
+    padding: 10px 12px 10px 10px;
+  }
+  .vbar {
+    width: 12px;
+    flex-shrink: 0;
+    border-radius: 2px;
+    color: var(--ink);
+    opacity: 0.85;
+  }
+  .info {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+  .route {
+    display: flex;
+    align-items: flex-start;
+    gap: 6px;
+  }
+  .end {
+    min-width: 0;
+  }
+  .to {
+    text-align: right;
+    padding: 0 6px 2px;
+    margin: 0 -6px;
+    border-radius: 10px;
+  }
+  .lbl {
+    font-size: 8.5px;
+    font-weight: 900;
+    letter-spacing: 0.12em;
+    color: var(--pt);
+  }
+  .code {
+    font-size: 26px;
+    font-weight: 900;
+    letter-spacing: -0.01em;
+    line-height: 1.05;
+    color: var(--pt);
+  }
+  .name {
+    font-size: 11.5px;
+    font-weight: 800;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 86px;
+  }
+  .arc {
+    flex: 1;
+    min-width: 30px;
+    position: relative;
+    height: 40px;
+    margin-top: 6px;
+    color: var(--p3);
+  }
+  .arc svg {
+    position: absolute;
+    inset: 0;
+  }
+  .arc :global(.arc-plane) {
+    position: absolute;
+    left: 50%;
+    top: 6px;
+    margin-left: -9px;
+    transform: rotate(90deg);
+  }
+  .fields {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 6px;
+  }
+  .field {
+    padding: 2px 6px;
+    margin: 0 -6px;
+    border-radius: 8px;
+    min-width: 0;
+  }
+  .val {
+    font-size: 13px;
+    font-weight: 900;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .stub {
+    width: 88px;
+    flex-shrink: 0;
+    border-left: 2px dashed var(--line2);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    padding: 9px 8px 10px;
+  }
+  .flag {
+    font-size: 24px;
+    line-height: 1;
+  }
+  .stub-mid {
+    text-align: center;
+  }
+  .stub-v {
+    font-size: 19px;
+    font-weight: 900;
+    line-height: 1.1;
+  }
+  .bar {
+    width: 66px;
+    height: 20px;
+    color: var(--ink);
+    opacity: 0.85;
+  }
+</style>

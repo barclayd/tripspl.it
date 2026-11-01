@@ -1,0 +1,458 @@
+/* Twemoji flags so country flags render on every platform (Windows has no flag emoji). */
+@font-face {
+  font-family: 'Twemoji Country Flags';
+  unicode-range: U+1F1E6-1F1FF, U+1F3F4, U+E0062-E007F;
+  src: url('/fonts/TwemojiCountryFlags.woff2') format('woff2');
+  font-display: swap;
+}
+
+:root {
+  color-scheme: light dark;
+
+  --bg: #f4f2ee;
+  --sf: #ffffff;
+  --sf2: #ece9e3;
+  --ink: #16120f;
+  --ink2: #6f6862;
+  --ink3: #a39c94;
+  --line: rgba(22, 18, 15, 0.07);
+  --line2: rgba(22, 18, 15, 0.14);
+  --ac: oklch(0.6 0.23 4);
+  --acInk: #ffffff;
+  --acSoft: oklch(0.95 0.035 4);
+  --acDeep: oklch(0.47 0.2 4);
+  --acText: oklch(0.53 0.22 4);
+  --acHi: oklch(0.6 0.23 4);
+  --good: oklch(0.6 0.15 155);
+  --goodText: oklch(0.6 0.15 155);
+  --bad: oklch(0.55 0.2 25);
+  --badText: oklch(0.55 0.2 25);
+  --inv: #16120f;
+  --invInk: #ffffff;
+  --hairline: rgba(22, 18, 15, 0.07);
+  --dash: rgba(22, 18, 15, 0.14);
+  --halo: oklch(0.95 0.035 4);
+  --glass: rgba(255, 255, 255, 0.72);
+  --glassShadow: 0 6px 24px -12px rgba(22, 18, 15, 0.25), inset 0 0 0 0.5px rgba(22, 18, 15, 0.08);
+  --linkHover: oklch(0.47 0.2 4);
+
+  --font:
+    'Twemoji Country Flags', -apple-system, 'SF Pro Display', 'SF Pro Text', system-ui, 'Segoe UI', Roboto, sans-serif;
+  --mono: 'SF Mono', ui-monospace, Menlo, Consolas, monospace;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #000000;
+    --sf: #1c1b1a;
+    --sf2: #2a2826;
+    --ink: #f4f2ee;
+    --ink2: #a39c94;
+    --ink3: #7a746e;
+    --line: rgba(255, 255, 255, 0.07);
+    --line2: rgba(255, 255, 255, 0.14);
+    --acSoft: oklch(0.27 0.07 4);
+    --acDeep: oklch(0.42 0.17 4);
+    --acText: oklch(0.76 0.16 4);
+    --acHi: oklch(0.72 0.19 4);
+    --good: oklch(0.72 0.16 155);
+    --goodText: oklch(0.74 0.16 155);
+    --bad: oklch(0.7 0.18 25);
+    --badText: oklch(0.72 0.17 25);
+    --inv: #f4f2ee;
+    --invInk: #16120f;
+    --hairline: rgba(255, 255, 255, 0.08);
+    --dash: rgba(255, 255, 255, 0.18);
+    --halo: oklch(0.2 0.07 4);
+    --glass: rgba(30, 29, 28, 0.72);
+    --glassShadow: 0 6px 24px -12px rgba(0, 0, 0, 0.9), inset 0 0 0 0.5px rgba(255, 255, 255, 0.14);
+    --linkHover: oklch(0.82 0.13 4);
+  }
+}
+
+/* Boarding passes are always printed on light paper, whatever the theme. */
+[data-pass] {
+  --bg: #f4f2ee;
+  --sf: #ffffff;
+  --sf2: #ece9e3;
+  --ink: #16120f;
+  --ink2: #6f6862;
+  --ink3: #a39c94;
+  --line: rgba(22, 18, 15, 0.07);
+  --line2: rgba(22, 18, 15, 0.14);
+  --acText: oklch(0.53 0.22 4);
+  --acSoft: oklch(0.95 0.035 4);
+  --acDeep: oklch(0.47 0.2 4);
+  color: #16120f;
+  color-scheme: light;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  background: var(--bg);
+}
+
+html {
+  scroll-padding-top: 80px;
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+body {
+  color: var(--ink);
+  font-family: var(--font);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: clip;
+}
+
+img,
+svg,
+canvas {
+  display: block;
+}
+
+a {
+  color: var(--acText);
+  text-decoration: none;
+}
+
+a:hover {
+  color: var(--linkHover);
+}
+
+:focus-visible {
+  outline: 2px solid var(--ac);
+  outline-offset: 3px;
+}
+
+summary {
+  list-style: none;
+  cursor: pointer;
+}
+
+summary::-webkit-details-marker {
+  display: none;
+}
+
+h1,
+h2,
+h3,
+p {
+  margin: 0;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.tnum {
+  font-variant-numeric: tabular-nums;
+}
+
+/* Pastel tiles keep dark text in both themes. */
+.pastel {
+  color: #16120f;
+}
+
+/* Shared scroll-stage pieces. A [data-sc] section gets --p (0 → 1) from the scroll engine. */
+[data-sc] {
+  --p: 0;
+  position: relative;
+}
+
+.sticky-stage {
+  position: sticky;
+  top: 0;
+  height: 100svh;
+}
+
+/* Budget, split and convert stages zoom out together on short or narrow screens (--fit from the scroll engine). */
+.fit-stage {
+  height: calc(100svh / var(--fit, 1));
+  zoom: var(--fit, 1);
+}
+
+.feature {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 420px), 1fr));
+  align-content: center;
+  align-items: center;
+  gap: clamp(16px, 4vh, 48px);
+  max-width: 1160px;
+  margin: 0 auto;
+  padding: 64px 28px 0;
+}
+
+.copy {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.eyebrow {
+  font-size: 14px;
+  font-weight: 900;
+  letter-spacing: 0.14em;
+  color: var(--acText);
+}
+
+.display {
+  font-size: clamp(40px, 6vw, 84px);
+  font-weight: 800;
+  letter-spacing: -0.05em;
+  line-height: 0.95;
+}
+
+.chip-row {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-top: 8px;
+}
+
+.chip {
+  padding: 10px 16px;
+  border-radius: 999px;
+  background: var(--sf);
+  font-size: 15px;
+  font-weight: 800;
+}
+
+.memoji {
+  object-fit: contain;
+  filter: drop-shadow(0 4px 6px rgba(22, 18, 15, 0.18));
+  flex-shrink: 0;
+}
+
+.inv-badge {
+  border-radius: 50%;
+  background: var(--inv);
+  color: var(--invInk);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  flex-shrink: 0;
+}
+
+/* Surface cards: white in light mode, lifted grey with a faint ring in dark mode. */
+.sf {
+  background: var(--sf);
+}
+
+@media (prefers-color-scheme: dark) {
+  .chip {
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.06);
+  }
+  .sf {
+    outline: 1px solid rgba(255, 255, 255, 0.06);
+    outline-offset: -1px;
+  }
+}
+
+/* Solo and group stages share one card language and scale down on short screens. */
+.stage {
+  position: absolute;
+  left: 50%;
+  top: calc(50% + 33px);
+  width: min(92vw, 640px);
+  transform: translate(-50%, -50%) scale(var(--fitB, 1));
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  pointer-events: none;
+  z-index: 3;
+}
+
+.stage-head {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 14px;
+  text-align: center;
+  transform: translateY(calc((1 - min(var(--b) * 4, 1)) * 24px));
+}
+
+.stage-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 14px;
+  border-radius: 999px;
+  background: var(--acSoft);
+  color: var(--acText);
+  font-size: 13px;
+  font-weight: 900;
+  letter-spacing: 0.12em;
+}
+
+.stage-h2 {
+  position: relative;
+  font-size: clamp(44px, 6.4vw, 84px);
+  font-weight: 800;
+  letter-spacing: -0.05em;
+  line-height: 0.95;
+}
+
+.hi {
+  color: var(--acHi);
+}
+
+.sticker {
+  position: absolute;
+  top: -0.35em;
+  font-size: 0.5em;
+}
+
+.stage-row {
+  display: grid;
+  grid-template-columns: 52px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 16px;
+  padding: 14px 18px;
+  border-radius: 24px;
+  box-shadow: 0 18px 40px -28px rgba(22, 18, 15, 0.35);
+}
+
+.stage-tile {
+  width: 52px;
+  height: 52px;
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  font-size: 28px;
+  line-height: 1;
+}
+
+.stage-mid {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.stage-title {
+  font-size: 18px;
+  font-weight: 800;
+}
+
+.stage-sub {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--ink2);
+}
+
+.stage-amt {
+  font-size: 22px;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+}
+
+.stage-amt.bad {
+  color: var(--badText);
+}
+
+.stage-big {
+  font-size: 34px;
+  font-weight: 800;
+  letter-spacing: -0.04em;
+}
+
+@media (max-width: 640px) {
+  .stage .memoji,
+  .stage .inv-badge {
+    width: 28px;
+    height: 28px;
+    font-size: 11px;
+  }
+  .stage-row {
+    grid-template-columns: 40px minmax(0, 1fr) auto;
+    gap: 10px;
+    padding: 12px;
+  }
+  .stage-tile {
+    width: 40px;
+    height: 40px;
+    font-size: 22px;
+    border-radius: 12px;
+  }
+  .stage-amt {
+    font-size: 17px;
+  }
+  .stage-title {
+    font-size: 15px;
+  }
+  .stage-big {
+    font-size: 24px;
+  }
+}
+
+@keyframes lpCue {
+  0%,
+  100% {
+    transform: translateY(0);
+    opacity: 0.5;
+  }
+  50% {
+    transform: translateY(6px);
+    opacity: 1;
+  }
+}
+
+@keyframes lpBob {
+  0%,
+  100% {
+    transform: translateY(0) rotate(var(--r));
+  }
+  50% {
+    transform: translateY(-10px) rotate(calc(var(--r) + 4deg));
+  }
+}
+
+@keyframes lpPulse {
+  0% {
+    transform: scale(1);
+    opacity: 0.8;
+  }
+  100% {
+    transform: scale(2.4);
+    opacity: 0;
+  }
+}
+
+.bob {
+  transform: rotate(var(--r));
+  animation: lpBob 3.6s ease-in-out infinite;
+}
+
+/* Scroll-linked movement stays (it follows the reader's own scrolling); looping and timed animation stops. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    /* biome-ignore lint/complexity/noImportantStyles: must beat every component's own animation rules */
+    animation: none !important;
+    /* biome-ignore lint/complexity/noImportantStyles: must beat every component's own transition rules */
+    transition: none !important;
+  }
+}

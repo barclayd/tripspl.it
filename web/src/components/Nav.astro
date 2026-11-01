@@ -1,0 +1,91 @@
+---
+import Plane from './Plane.astro';
+---
+
+<header class="nav">
+  <nav class="bar" aria-label="Main">
+    <a class="brand" href="/" aria-label="TripSplit home">
+      <span class="icon"><Plane size={14} /></span>
+      <span>TripSplit</span>
+    </a>
+    <div class="links">
+      <a href="/#budget">Budget</a>
+      <a href="/#split">Split</a>
+      <a href="/#convert">Convert</a>
+      <a href="/#faq">FAQ</a>
+    </div>
+    <span class="soon">Coming soon</span>
+  </nav>
+</header>
+
+<style>
+  .nav {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    display: flex;
+    justify-content: center;
+    padding: 14px 16px;
+    pointer-events: none;
+  }
+  .bar {
+    pointer-events: auto;
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    padding: 8px 8px 8px 18px;
+    border-radius: 999px;
+    background: var(--glass);
+    -webkit-backdrop-filter: blur(18px) saturate(180%);
+    backdrop-filter: blur(18px) saturate(180%);
+    box-shadow: var(--glassShadow);
+  }
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 16px;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    color: var(--ink);
+  }
+  .icon {
+    width: 24px;
+    height: 24px;
+    border-radius: 8px;
+    background: var(--ac);
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .links {
+    display: flex;
+    gap: 16px;
+    font-size: 14px;
+    font-weight: 700;
+  }
+  .links a {
+    color: var(--ink2);
+  }
+  .links a:hover {
+    color: var(--ink);
+  }
+  .soon {
+    padding: 9px 14px;
+    border-radius: 999px;
+    background: var(--inv);
+    color: var(--invInk);
+    font-size: 13px;
+    font-weight: 800;
+    white-space: nowrap;
+  }
+  @media (max-width: 640px) {
+    .bar {
+      gap: 12px;
+    }
+    .links {
+      display: none;
+    }
+  }
+</style>

@@ -1,0 +1,105 @@
+---
+const faqs = [
+  {
+    q: 'When can I download it?',
+    a: 'TripSplit is coming to the App Store very soon, for iPhone, iPhone Duo and Apple Watch.',
+  },
+  {
+    q: 'Do my friends need the app to split costs?',
+    a: 'No. Add anyone by name. Everyone with the app sees the same trip and balances update for all of them.',
+  },
+  {
+    q: 'How does Quick convert get its rates?',
+    a: 'Rates refresh through the day and are saved on your device, so converting works without signal.',
+  },
+  {
+    q: 'Can I plan costs before I go?',
+    a: 'Yes. Log flights, deposits and bookings as planned, then mark them paid when they happen.',
+  },
+  {
+    q: 'Which currencies are supported?',
+    a: 'All major currencies. Every expense is converted back to your home currency so the total is always real.',
+  },
+  {
+    q: 'Is my spending private?',
+    a: 'Your trips sync through your iCloud account. Amounts can be hidden on the watch face when your wrist is down.',
+  },
+];
+---
+
+<section id="faq" class="faq" aria-labelledby="faq-title">
+  <h2 class="faq-h2" id="faq-title">Questions</h2>
+  <div class="list">
+    {
+      faqs.map((f) => (
+        <details class="sf">
+          <summary>
+            {f.q}
+            <span class="plus" aria-hidden="true">
+              +
+            </span>
+          </summary>
+          <p>{f.a}</p>
+        </details>
+      ))
+    }
+  </div>
+</section>
+
+<style>
+  .faq {
+    padding: 120px 24px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 36px;
+  }
+  .faq-h2 {
+    font-size: clamp(36px, 5vw, 64px);
+    font-weight: 800;
+    letter-spacing: -0.045em;
+  }
+  .list {
+    width: min(100%, 760px);
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  details {
+    border-radius: 22px;
+    padding: 20px 24px;
+  }
+  summary {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    font-size: 18px;
+    font-weight: 800;
+  }
+  .plus {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background: var(--acSoft);
+    color: var(--acText);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    font-size: 18px;
+    font-weight: 800;
+    transition: transform 0.2s;
+  }
+  details[open] .plus {
+    transform: rotate(45deg);
+  }
+  p {
+    margin-top: 12px;
+    font-size: 16px;
+    line-height: 1.55;
+    color: var(--ink2);
+    font-weight: 500;
+    text-wrap: pretty;
+  }
+</style>

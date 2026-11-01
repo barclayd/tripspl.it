@@ -1,0 +1,32 @@
+---
+import { getImage } from 'astro:assets';
+import m1 from '../assets/memoji/memoji-1.png';
+import m2 from '../assets/memoji/memoji-2.png';
+import m3 from '../assets/memoji/memoji-3.png';
+import m4 from '../assets/memoji/memoji-4.png';
+
+// 1 Maya, 2 You, 3 Tom, 4 Priya. One 128px WebP per face, shared by every size on the page.
+const SRC = { 1: m1, 2: m2, 3: m3, 4: m4 } as const;
+
+interface Props {
+  n: 1 | 2 | 3 | 4;
+  size: number;
+  alt?: string;
+  class?: string;
+  style?: string;
+}
+
+const { n, size, alt = '', class: cls, style } = Astro.props;
+const img = await getImage({ src: SRC[n], width: 128, height: 128, format: 'webp', quality: 82 });
+---
+
+<img
+  src={img.src}
+  width={size}
+  height={size}
+  alt={alt}
+  class:list={['memoji', cls]}
+  style={style}
+  loading="lazy"
+  decoding="async"
+/>

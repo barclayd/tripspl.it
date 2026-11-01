@@ -1,0 +1,70 @@
+---
+import '../styles/global.css';
+
+interface Props {
+  title?: string;
+  description?: string;
+}
+
+const {
+  title = 'TripSplit — Enjoy your trip without breaking the bank',
+  description = 'Plan a budget, log every cost, split it with friends and convert prices on the go. TripSplit is coming soon to iPhone, iPhone Duo and Apple Watch.',
+} = Astro.props;
+
+const canonical = new URL(Astro.url.pathname === '/index' ? '/' : Astro.url.pathname, Astro.site);
+const ogImage = new URL('/og.png', Astro.site);
+---
+
+<!doctype html>
+<html lang="en-GB">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    <meta name="theme-color" content="#F4F2EE" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)" />
+    <meta name="color-scheme" content="light dark" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="icon" href="/favicon.ico" sizes="32x32" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="preload" href="/fonts/TwemojiCountryFlags.woff2" as="font" type="font/woff2" crossorigin />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="TripSplit" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:locale" content="en_GB" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImage} />
+
+    <!-- Without JavaScript every scroll scene shows its finished state and the hero is just the title page.
+         The doubled attribute outranks the components' styles, which Astro scopes with an attribute of their own. -->
+    <noscript>
+      <style>
+        html [data-sc] {
+          --p: 1;
+        }
+        html [data-sc][data-sc='hero'] {
+          height: 100svh;
+        }
+        html [data-sc][data-sc='hero'] .hero-scene {
+          display: none;
+        }
+        html [data-sc][data-sc='dep'] {
+          height: auto;
+        }
+      </style>
+    </noscript>
+  </head>
+  <body>
+    <slot />
+  </body>
+</html>
