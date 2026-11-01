@@ -469,6 +469,16 @@
           "paidOn": {
             "$ref": "#/components/schemas/NullableCivilDate"
           },
+          "returnPairId": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/ID"
+              },
+              {
+                "description": "Shared by both halves of a return ticket, one on the outbound leg and one on the return leg, so they edit and delete together. Optional and never null; an upsert that omits it unlinks that half, and a half without its partner is a plain expense."
+              }
+            ]
+          },
           "revision": {
             "maximum": 9007199254740991,
             "minimum": 0,
