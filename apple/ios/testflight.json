@@ -6,5 +6,10 @@
   "api_profile": "codex-testflight",
   "project_candidates": ["apple/ios/TripSplit.xcodeproj"],
   "scheme": "TripSplit",
+  "targets": {
+    "TripSplit": {"bundle_id": "it.tripspl.TripSplit", "profile": "AppStore.mobileprovision"},
+    "TripSplitWatch": {"bundle_id": "it.tripspl.TripSplit.watchkitapp", "profile": "AppStoreWatch.mobileprovision"},
+    "TripSplitWatchWidgets": {"bundle_id": "it.tripspl.TripSplit.watchkitapp.widgets", "profile": "AppStoreWatchWidgets.mobileprovision"}
+  },
   "test_destination": "platform=iOS Simulator,name=iPhone Duo,OS=27.1"
 }

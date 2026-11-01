@@ -35,13 +35,15 @@ Quick convert (C) dials an amount between today's stop currency and home with th
 
 ## Delivery
 
-The watch app is not embedded in the iPhone app or its TestFlight builds yet. That needs provisioning profiles for `it.tripspl.TripSplit.watchkitapp` and the App Group, and multi-profile signing in the release workflow.
+The iPhone app embeds the watch app and its complications, so TestFlight builds include them and installing TripSplit on an iPhone offers it on the paired watch. Releases sign each target with its own App Store profile, listed under `targets` in `../ios/testflight.json` (see [internal beta delivery](../ios/README.md#internal-beta-delivery)).
+
+`it.tripspl.TripSplit.watchkitapp` and `it.tripspl.TripSplit.watchkitapp.widgets` both need the `group.it.tripspl.TripSplit` App Group. Xcode registers the IDs and the group the first time it signs the watch targets automatically; the App Store profiles are made after that, as the group can't be assigned through the App Store Connect API.
 
 ## TripSplit face
 
 The iPhone app's Account & sync screen offers the "TripSplit" face (G4) through `CLKWatchFaceLibrary`, once a paired watch has TripSplit installed. Faces can only be made on a watch, so it's exported once and bundled:
 
-1. On a watch with TripSplit, set up a face with four corner complications: Quick convert, Budget left, Who owes and Today
+1. On a watch with TripSplit, set up a face with four corners, such as Infograph, and put TripSplit's Quick convert, Budget left, Who owes who and Today in them
 2. In the iPhone's Watch app, open it under My Faces, tap Share and save the `.watchface` file
 3. Save it as `apple/ios/TripSplit/TripSplit.watchface` and run `xcodegen generate` in `apple/ios`, which adds it to the app's resources
 

@@ -42,21 +42,37 @@ def run(args, *, env, log=None, timeout=60, accepted=(0,)):
 
 
 def identity(config, folder, env):
-    profile = plistlib.loads(run(["security", "cms", "-D", "-i", str(folder / "AppStore.mobileprovision")], env=env)[0].encode())
-    entitlements = profile.get("Entitlements", {})
-    if (profile.get("TeamIdentifier") != [config["team_id"]]
-            or entitlements.get("application-identifier") != f'{config["team_id"]}.{config["bundle_id"]}'
-            or entitlements.get("get-task-allow") is not False or profile.get("ProvisionedDevices")
-            or profile.get("ProvisionsAllDevices")
-            or profile["ExpirationDate"].replace(tzinfo=timezone.utc) <= datetime.now(timezone.utc)):
-        raise RuntimeError("Signing profile is expired or does not match this app's App Store identity.")
+    """Each target's App Store profile UUID, and the one distribution identity they're all signed with."""
     keychain = folder / "codex-testflight.keychain-db"
     found, _ = run(["security", "find-identity", "-v", "-p", "codesigning", str(keychain)], env=env)
-    fingerprints = [hashlib.sha1(c).hexdigest().upper() for c in profile["DeveloperCertificates"]]
-    matches = [sha for sha in fingerprints if sha in found.upper()]
-    if len(matches) != 1:
-        raise RuntimeError("The dedicated keychain has no unique valid identity matching the profile. Unlock it or repair signing.")
-    return profile["UUID"], matches[0]
+    profiles, identities = {}, set()
+    for target, signing in config["targets"].items():
+        profile = plistlib.loads(run(["security", "cms", "-D", "-i", str(folder / signing["profile"])], env=env)[0].encode())
+        entitlements = profile.get("Entitlements", {})
+        if (profile.get("TeamIdentifier") != [config["team_id"]]
+                or entitlements.get("application-identifier") != f'{config["team_id"]}.{signing["bundle_id"]}'
+                or entitlements.get("get-task-allow") is not False or profile.get("ProvisionedDevices")
+                or profile.get("ProvisionsAllDevices")
+                or profile["ExpirationDate"].replace(tzinfo=timezone.utc) <= datetime.now(timezone.utc)):
+            raise RuntimeError(f'{signing["profile"]} is expired or does not match the App Store identity of {signing["bundle_id"]}.')
+        fingerprints = [hashlib.sha1(c).hexdigest().upper() for c in profile["DeveloperCertificates"]]
+        matches = [sha for sha in fingerprints if sha in found.upper()]
+        if len(matches) != 1:
+            raise RuntimeError(f'The dedicated keychain has no unique valid identity matching {signing["profile"]}. Unlock it or repair signing.')
+        profiles[target] = profile["UUID"]
+        identities.add(matches[0])
+    if len(identities) != 1:
+        raise RuntimeError("The targets' profiles must share one distribution identity.")
+    return profiles, identities.pop()
+
+
+def bundle_ids(archive):
+    """The bundle IDs of the archived app and every app and extension embedded in it."""
+    apps = list((archive / "Products/Applications").glob("*.app"))
+    if len(apps) != 1:
+        raise RuntimeError("The archive does not contain exactly one app.")
+    return {plistlib.loads(info.read_bytes())["CFBundleIdentifier"]
+            for info in apps[0].rglob("Info.plist") if info.parent.suffix in (".app", ".appex")}
 
 
 def main():
@@ -94,7 +110,7 @@ def main():
     if args.action == "release" and not args.dry_run:
         run(["asc", "signing", "keychain", "unlock", "--keychain", str(signing / "codex-testflight.keychain-db"),
              "--keychain-password-file", str(signing / "keychain-password"), "--timeout", "3600"], env=env)
-    profile, certificate = identity(config, signing, env)
+    profiles, certificate = identity(config, signing, env)
     if args.action == "check":
         report = json.loads(text)
         report["local_signing_identity_and_profile_match"] = True
@@ -108,7 +124,7 @@ def main():
     cache = Path.home() / "Library/Caches/TripSplit/TestFlightDerivedData"
     if args.dry_run:
         print(json.dumps({"source_sha": source, "app_id": config["app_id"], "group_id": config["group_id"],
-                          "signing": "manual", "internal_only": True, "derived_data": str(cache),
+                          "signing": "manual", "targets": sorted(profiles), "internal_only": True, "derived_data": str(cache),
                           "steps": ["test", "allocate number", "unlock signing", "archive", "export", "upload", "resume"]}, indent=2))
         return 0
     state = Path.home() / ".local/state/testflight/tripsplit"
@@ -135,15 +151,21 @@ def main():
         archive = output / "TripSplit.xcarchive"
         run([*common, "-configuration", "Release", "-destination", "generic/platform=iOS", "-archivePath", str(archive),
              f'DEVELOPMENT_TEAM={config["team_id"]}', "CODE_SIGN_STYLE=Manual", f"CODE_SIGN_IDENTITY={certificate}",
-             f"PROVISIONING_PROFILE_SPECIFIER={profile}", f"CURRENT_PROJECT_VERSION={build_number}", "archive"],
+             # Each target signs with its own profile: the app, the watch app and its complications.
+             "PROVISIONING_PROFILE_SPECIFIER=$(TRIPSPLIT_PROFILE_$(TARGET_NAME))",
+             *[f"TRIPSPLIT_PROFILE_{target}={uuid}" for target, uuid in profiles.items()],
+             f"CURRENT_PROJECT_VERSION={build_number}", "archive"],
             env=env, timeout=1800, log=output / "archive.log")
+        if bundle_ids(archive) != {signing["bundle_id"] for signing in config["targets"].values()}:
+            raise RuntimeError("The archived apps and extensions don't match the targets in testflight.json; no export was attempted.")
         current, _ = run(["git", "rev-parse", "HEAD"], env=env)
         dirty, _ = run(["git", "status", "--porcelain"], env=env)
         if current != source or dirty:
             raise RuntimeError("Source changed during archive; no upload was attempted.")
         options = {"method": "app-store-connect", "destination": "export", "signingStyle": "manual",
                    "teamID": config["team_id"], "signingCertificate": certificate,
-                   "provisioningProfiles": {config["bundle_id"]: profile}, "testFlightInternalTestingOnly": True,
+                   "provisioningProfiles": {config["targets"][target]["bundle_id"]: uuid for target, uuid in profiles.items()},
+                   "testFlightInternalTestingOnly": True,
                    "manageAppVersionAndBuildNumber": False, "uploadSymbols": True}
         plist = output / "ExportOptions.plist"
         plist.write_bytes(plistlib.dumps(options))
