@@ -48,6 +48,8 @@ The trip/day selection and editor drafts live above the adaptive layout. `Naviga
 
 The initial itinerary is built with stable day/leg IDs and a user-visible trip time zone. Settings allow title, budget, time zone and traveller changes. Editing the stop sequence/durations after creation is deliberately not exposed yet: it needs an explicit financial-record reassignment workflow, and the app does not silently move expenses. Current financial operations can move an individual expense between existing days/legs in its editor.
 
+Quick Convert opens with the current stop's currency and the trip's home currency. Both sides can be changed by searching countries, cities, currency names/codes or flag emoji; the selected place keeps its flag, and countries with multiple currencies offer separate choices. Swap retains the entered amount and the trip shortcut restores the opening pair. Only the inline home card is hidden when today's currency matches home; trip/day navigation remains available. Identical currencies convert offline at 1:1. Pair changes discard old quotes and manual rates, and only a conversion into the trip's home currency can be carried into an expense's home amount.
+
 ## Remaining release checks
 
 - Verify signed-device Apple sign-in, token rotation/revocation, cloud multi-user invites and live collaboration; the supplied Apple key is associated with this app’s primary App ID.

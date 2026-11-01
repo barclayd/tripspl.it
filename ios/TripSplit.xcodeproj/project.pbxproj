@@ -12,18 +12,25 @@
 		1124B8B7A1D170479F15AE77 /* APIClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = C98C7DDA4F5CF96E27C75CE8 /* APIClient.swift */; };
 		1669DF2235454D760FC51C1F /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CD7B078591C676403FE2EFE /* SettingsView.swift */; };
 		16CD2E5D9311416CADE1B57F /* Connectivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC3945DC7F05E2AAF59DFF17 /* Connectivity.swift */; };
+		2A7D9D73263368D3EC02028B /* TripConversionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11A41A3EB391F1A30CA10BC2 /* TripConversionTests.swift */; };
+		2ACDE26376E29EAC44846067 /* ConversionCurrencyTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AE60BEBF3434E39E461FCB3 /* ConversionCurrencyTests.swift */; };
+		2D292E7D2A8803CDCE8ED770 /* ConversionCurrencyPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0247E9CB0442F95D5AF296CD /* ConversionCurrencyPicker.swift */; };
 		305B463C1A826ADE8577C2AB /* DemoData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0F6CBB92A7FF53A66738C0BE /* DemoData.swift */; };
 		3862352CB72D35DD2B8F642E /* RootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 013B9600951218EB6EF44089 /* RootView.swift */; };
 		3C6250A3405819FED8A1A7F8 /* GlobeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53EDBD306766D175856DAF13 /* GlobeView.swift */; };
+		3EF1E588D8BCB1542006216D /* ConversionModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8CBB8C0310E5AA43183439F /* ConversionModel.swift */; };
 		43900AA0E1236C035E5EAF21 /* SyncTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F921C78625139F57831D88F1 /* SyncTests.swift */; };
 		48F969DEFFE11927EFC95B75 /* MoneyTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63E6217BAE6D1166B0C7694D /* MoneyTests.swift */; };
 		6052B562EB478B5415B0378D /* OnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0514ACB5E40E3AC07D80D392 /* OnboardingView.swift */; };
 		64CFCF08950E8E0917999A70 /* AppModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC30A5B78F675213D509078F /* AppModel.swift */; };
 		64F829BEE7FF73DF3421F6E2 /* BoardingPass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D3A3A3942ACC23F39473671 /* BoardingPass.swift */; };
+		6F2DAD834F9C8786A93DA20D /* ConversionCurrency.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A25D71A769E8D662A506AEA /* ConversionCurrency.swift */; };
 		737AC2514B66E3BB73A28B9B /* InstallationIdentity.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC867889817D402E2E0864CC /* InstallationIdentity.swift */; };
 		746516C981B0A4D7A7A32B2F /* DayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 351A898F5C2C65447A0C937E /* DayView.swift */; };
 		7B370B8B4B25260B28E499FB /* Countries.json in Resources */ = {isa = PBXBuildFile; fileRef = D9A73B4F58B03E97128ECC68 /* Countries.json */; };
 		84793E299489224C9B1B15ED /* LocalStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50DABD926E02D5A263A5152F /* LocalStore.swift */; };
+		84C56392DE451C3D439F4D04 /* TripConversion.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70D39D78831D270B92152C08 /* TripConversion.swift */; };
+		8EBA15BD6464CC2B0B3BFDC2 /* ConversionModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E2B38674F60F463DB23BA7E /* ConversionModelTests.swift */; };
 		91CDC9B60806EABCCA61E7E3 /* ConvertView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A028627A11857F99040BE293 /* ConvertView.swift */; };
 		9366C8BDBC3F8D5C35BA48CE /* TripSplitApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECF15BF32A826DF42AE46AF7 /* TripSplitApp.swift */; };
 		97357C110EFD5FAE62E414FF /* Destinations.json in Resources */ = {isa = PBXBuildFile; fileRef = 6A00A18919E8E3B6A41B77F5 /* Destinations.json */; };
@@ -57,10 +64,13 @@
 
 /* Begin PBXFileReference section */
 		013B9600951218EB6EF44089 /* RootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootView.swift; sourceTree = "<group>"; };
+		0247E9CB0442F95D5AF296CD /* ConversionCurrencyPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConversionCurrencyPicker.swift; sourceTree = "<group>"; };
 		0514ACB5E40E3AC07D80D392 /* OnboardingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingView.swift; sourceTree = "<group>"; };
 		0F6CBB92A7FF53A66738C0BE /* DemoData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DemoData.swift; sourceTree = "<group>"; };
+		11A41A3EB391F1A30CA10BC2 /* TripConversionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TripConversionTests.swift; sourceTree = "<group>"; };
 		2D3A3A3942ACC23F39473671 /* BoardingPass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BoardingPass.swift; sourceTree = "<group>"; };
 		351A898F5C2C65447A0C937E /* DayView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DayView.swift; sourceTree = "<group>"; };
+		3AE60BEBF3434E39E461FCB3 /* ConversionCurrencyTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConversionCurrencyTests.swift; sourceTree = "<group>"; };
 		4599928ADB9A9A71567089AD /* TripDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TripDetailView.swift; sourceTree = "<group>"; };
 		4F46E00664FEDE2CE339C098 /* TripsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TripsView.swift; sourceTree = "<group>"; };
 		50DABD926E02D5A263A5152F /* LocalStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalStore.swift; sourceTree = "<group>"; };
@@ -74,8 +84,11 @@
 		673B1378BCDD511CB89C77C7 /* CurrencyMetadata.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CurrencyMetadata.swift; sourceTree = "<group>"; };
 		6A00A18919E8E3B6A41B77F5 /* Destinations.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = Destinations.json; sourceTree = "<group>"; };
 		6B4E47BBBE73FD8517AE214F /* WireEncoding.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WireEncoding.swift; sourceTree = "<group>"; };
+		70D39D78831D270B92152C08 /* TripConversion.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TripConversion.swift; sourceTree = "<group>"; };
+		7E2B38674F60F463DB23BA7E /* ConversionModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConversionModelTests.swift; sourceTree = "<group>"; };
 		81D03BE83C0D4EE59AEF3A56 /* CountryMetadata.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CountryMetadata.swift; sourceTree = "<group>"; };
 		829A4DF7FBD3E53C3A26E237 /* SessionVault.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionVault.swift; sourceTree = "<group>"; };
+		8A25D71A769E8D662A506AEA /* ConversionCurrency.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConversionCurrency.swift; sourceTree = "<group>"; };
 		8DCFF27607FA889654E7BBFC /* ExpenseEditor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpenseEditor.swift; sourceTree = "<group>"; };
 		9E98CE50F4E54604D70FFE9E /* DestinationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DestinationTests.swift; sourceTree = "<group>"; };
 		A028627A11857F99040BE293 /* ConvertView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConvertView.swift; sourceTree = "<group>"; };
@@ -89,6 +102,7 @@
 		DBC7D0CB5EA99035F367F932 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		DC30A5B78F675213D509078F /* AppModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppModel.swift; sourceTree = "<group>"; };
 		DF633F3E71F718E674EB302E /* Catalog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Catalog.swift; sourceTree = "<group>"; };
+		E8CBB8C0310E5AA43183439F /* ConversionModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConversionModel.swift; sourceTree = "<group>"; };
 		EC3945DC7F05E2AAF59DFF17 /* Connectivity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Connectivity.swift; sourceTree = "<group>"; };
 		ECF15BF32A826DF42AE46AF7 /* TripSplitApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TripSplitApp.swift; sourceTree = "<group>"; };
 		F921C78625139F57831D88F1 /* SyncTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyncTests.swift; sourceTree = "<group>"; };
@@ -110,8 +124,10 @@
 		1A8A2C7096045F6F5DFCE619 /* DomainTests */ = {
 			isa = PBXGroup;
 			children = (
+				3AE60BEBF3434E39E461FCB3 /* ConversionCurrencyTests.swift */,
 				9E98CE50F4E54604D70FFE9E /* DestinationTests.swift */,
 				63E6217BAE6D1166B0C7694D /* MoneyTests.swift */,
+				11A41A3EB391F1A30CA10BC2 /* TripConversionTests.swift */,
 			);
 			path = DomainTests;
 			sourceTree = "<group>";
@@ -122,6 +138,7 @@
 				C98C7DDA4F5CF96E27C75CE8 /* APIClient.swift */,
 				DC30A5B78F675213D509078F /* AppModel.swift */,
 				EC3945DC7F05E2AAF59DFF17 /* Connectivity.swift */,
+				E8CBB8C0310E5AA43183439F /* ConversionModel.swift */,
 				0F6CBB92A7FF53A66738C0BE /* DemoData.swift */,
 				FB13DAAD9BCE129793DE6AAC /* DestinationSearch.swift */,
 				BC867889817D402E2E0864CC /* InstallationIdentity.swift */,
@@ -135,6 +152,7 @@
 		573174458936BF4B2498FB65 /* Features */ = {
 			isa = PBXGroup;
 			children = (
+				0247E9CB0442F95D5AF296CD /* ConversionCurrencyPicker.swift */,
 				A028627A11857F99040BE293 /* ConvertView.swift */,
 				351A898F5C2C65447A0C937E /* DayView.swift */,
 				8DCFF27607FA889654E7BBFC /* ExpenseEditor.swift */,
@@ -152,10 +170,12 @@
 			isa = PBXGroup;
 			children = (
 				DF633F3E71F718E674EB302E /* Catalog.swift */,
+				8A25D71A769E8D662A506AEA /* ConversionCurrency.swift */,
 				81D03BE83C0D4EE59AEF3A56 /* CountryMetadata.swift */,
 				673B1378BCDD511CB89C77C7 /* CurrencyMetadata.swift */,
 				C66DE23A8B0ED7340294D15D /* Models.swift */,
 				530DA2C4F9522D484B9092DD /* Money.swift */,
+				70D39D78831D270B92152C08 /* TripConversion.swift */,
 				6B4E47BBBE73FD8517AE214F /* WireEncoding.swift */,
 				7FE3B5573FF0DFA0706264DD /* Resources */,
 			);
@@ -207,6 +227,7 @@
 		C91262293A20E52314CBC68C /* TripSplitTests */ = {
 			isa = PBXGroup;
 			children = (
+				7E2B38674F60F463DB23BA7E /* ConversionModelTests.swift */,
 				D7389AEF73E44DA8AF523249 /* LocalStoreTests.swift */,
 				F921C78625139F57831D88F1 /* SyncTests.swift */,
 			);
@@ -316,6 +337,9 @@
 				E233BAB3BB96902E45623E6C /* Catalog.swift in Sources */,
 				0913DABCCC76D3FD558EF97A /* Celebration.swift in Sources */,
 				16CD2E5D9311416CADE1B57F /* Connectivity.swift in Sources */,
+				6F2DAD834F9C8786A93DA20D /* ConversionCurrency.swift in Sources */,
+				2D292E7D2A8803CDCE8ED770 /* ConversionCurrencyPicker.swift in Sources */,
+				3EF1E588D8BCB1542006216D /* ConversionModel.swift in Sources */,
 				91CDC9B60806EABCCA61E7E3 /* ConvertView.swift in Sources */,
 				ACDF0129526CF4EAA0C19E9B /* CountryMetadata.swift in Sources */,
 				E6850F8647AC26925288EE3F /* CurrencyMetadata.swift in Sources */,
@@ -334,6 +358,7 @@
 				1669DF2235454D760FC51C1F /* SettingsView.swift in Sources */,
 				BFB36B90D63CB51AC7F046C6 /* SyncCoordinator.swift in Sources */,
 				CA3DA9ADF83C5C6AE8953DB2 /* Theme.swift in Sources */,
+				84C56392DE451C3D439F4D04 /* TripConversion.swift in Sources */,
 				E9E5B9BDE5800ACAA4458B2F /* TripDetailView.swift in Sources */,
 				9366C8BDBC3F8D5C35BA48CE /* TripSplitApp.swift in Sources */,
 				B51CC7A08B52B354DF9C42E2 /* TripsView.swift in Sources */,
@@ -345,10 +370,13 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2ACDE26376E29EAC44846067 /* ConversionCurrencyTests.swift in Sources */,
+				8EBA15BD6464CC2B0B3BFDC2 /* ConversionModelTests.swift in Sources */,
 				9835796FECE2860A0E8BD9A7 /* DestinationTests.swift in Sources */,
 				B85A51442A2C7E39B8EBB3FF /* LocalStoreTests.swift in Sources */,
 				48F969DEFFE11927EFC95B75 /* MoneyTests.swift in Sources */,
 				43900AA0E1236C035E5EAF21 /* SyncTests.swift in Sources */,
+				2A7D9D73263368D3EC02028B /* TripConversionTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -386,7 +414,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = Config/TripSplit.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
-				CURRENT_PROJECT_VERSION = 3;
+				CURRENT_PROJECT_VERSION = 4;
 				INFOPLIST_FILE = Config/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -423,7 +451,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = Config/TripSplit.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
-				CURRENT_PROJECT_VERSION = 3;
+				CURRENT_PROJECT_VERSION = 4;
 				INFOPLIST_FILE = Config/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",

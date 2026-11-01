@@ -60,10 +60,7 @@ struct RootView: View {
                     }
                   }
                 }
-                if model.selectedAttachment == nil,
-                  trip.stop(for: model.selectedAttachment ?? trip.currentAttachment)?.currency
-                    != trip.homeCurrency
-                {
+                if model.selectedAttachment == nil {
                   if #available(iOS 27.0, *) {
                     ToolbarItem {
                       Button("Quick convert", systemImage: "arrow.left.arrow.right") {
