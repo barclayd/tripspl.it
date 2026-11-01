@@ -38,6 +38,13 @@ struct RouteStep: View {
     "PT", "ES", "FR", "IT", "GR", "HR", "CH", "IS", "JP", "TH", "VN", "ID", "US", "MX", "MA", "AU",
   ].compactMap(Destination.country)
 
+  /// Places in the route that aren't suggestions, such as a city found by searching, so coming
+  /// back here still shows everything you picked.
+  private var picked: [Destination] {
+    var seen = Set(Self.suggested.map(\.id))
+    return model.onboarding.stops.map(Destination.init(stop:)).filter { seen.insert($0.id).inserted }
+  }
+
   private var searchQuery: String { query.trimmingCharacters(in: .whitespacesAndNewlines) }
   private var full: Bool { model.onboarding.stops.count >= OnboardingDraft.maximumStops }
 
@@ -46,7 +53,7 @@ struct RouteStep: View {
       StepTitle("Where are you off to?", "Add each country in the order you’ll visit.")
       searchField
       if searchQuery.isEmpty {
-        chips(Self.suggested)
+        chips(picked + Self.suggested)
       } else {
         let results = Destination.search(searchQuery, limit: 40)
         if results.isEmpty {
@@ -88,7 +95,7 @@ struct RouteStep: View {
     HStack(spacing: 10) {
       Image(systemName: "magnifyingglass").font(.system(size: 16, weight: .bold))
         .foregroundStyle(Theme.tertiary).accessibilityHidden(true)
-      TextField("Search countries", text: $query)
+      TextField("Search cities or countries", text: $query)
         .typeface(16, .bold, relativeTo: .body, maximum: 1.4).foregroundStyle(Theme.ink)
         .focused(focus).textInputAutocapitalization(.words).autocorrectionDisabled()
         .submitLabel(.search).onSubmit { focus.wrappedValue = false }
@@ -125,6 +132,10 @@ struct RouteStep: View {
         Text(destination.flag).font(.system(size: 20))
         Text(destination.city).typeface(14.5, .heavy, relativeTo: .subheadline, maximum: 1.4)
           .lineLimit(1)
+        if !destination.isCountry {
+          Text(destination.country).typeface(12.5, .bold, relativeTo: .caption, maximum: 1.4)
+            .foregroundStyle(Theme.tertiary).lineLimit(1)
+        }
         if selected {
           Text("\(count)").typeface(11, .black, relativeTo: .caption2, maximum: 1.3)
             .monospacedDigit().foregroundStyle(Theme.accentInk)
@@ -189,15 +200,7 @@ struct RouteStep: View {
   // MARK: Route changes
 
   private func visits(_ destination: Destination) -> Int {
-    model.onboarding.stops.filter { Self.stop($0, matches: destination) }.count
-  }
-
-  private static func stop(_ stop: Stop, matches destination: Destination) -> Bool {
-    stop.countryCode == destination.countryCode
-      && stop.place.compare(destination.city, options: [.caseInsensitive, .diacriticInsensitive])
-        == .orderedSame
-      && abs(stop.latitude - destination.latitude) <= 0.0001
-      && abs(stop.longitude - destination.longitude) <= 0.0001
+    model.onboarding.stops.filter(destination.matches).count
   }
 
   private func select(_ destination: Destination) {
@@ -226,7 +229,7 @@ struct RouteStep: View {
   }
 
   private func removeOne(_ destination: Destination) {
-    guard let index = model.onboarding.stops.lastIndex(where: { Self.stop($0, matches: destination) })
+    guard let index = model.onboarding.stops.lastIndex(where: destination.matches)
     else { return }
     Haptics.lightImpact()
     withAnimation(Motion.spring) {
