@@ -46,8 +46,9 @@ private struct TravelBlock: View {
           .background(palette.background, in: RoundedRectangle(cornerRadius: Theme.Radius.key, style: .continuous))
           .accessibilityHidden(true)
         VStack(alignment: .leading, spacing: 3) {
+          // The Duo's open Trip pane is narrow, so the title shrinks a touch rather than wrapping.
           Text(leg.title).typeface(16, .heavy, relativeTo: .headline, maximum: 1.4)
-            .foregroundStyle(Theme.ink)
+            .foregroundStyle(Theme.ink).lineLimit(1).minimumScaleFactor(0.8)
           Text(
             items.isEmpty
               ? "Add flights, trains, airport taxis" : items.map(\.title).joined(separator: " · ")

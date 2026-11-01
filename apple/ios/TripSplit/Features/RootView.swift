@@ -77,6 +77,8 @@ struct RootView: View {
               convertItem { model.showConverter = true }
             }
           }
+          // Only takes effect on the sidebar column's content, not on the split view itself.
+          .toolbar(removing: .sidebarToggle)
         } detail: {
           NavigationStack {
             ZStack {
@@ -182,7 +184,6 @@ struct RootView: View {
           }
         #endif
         .animation(.smooth, value: bookFold)
-        .toolbar(removing: .sidebarToggle)
         // Two panes only when unfolded on its side; otherwise one, capped in width.
         .environment(\.horizontalSizeClass, twoPane ? .regular : .compact)
       }
