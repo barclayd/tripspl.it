@@ -183,7 +183,7 @@ struct RootView: View {
         }
         let arguments = ProcessInfo.processInfo.arguments
         if let trip = model.selectedTrip {
-          // `--open-day current|outbound|return` and `--add-expense` reach the day and sheet.
+          // `--open-day current|outbound|return`, `--add-expense` and `--quick-convert` reach the day and sheets.
           if let index = arguments.firstIndex(of: "--open-day"), arguments.indices.contains(index + 1) {
             let kind: TravelLeg.Kind? =
               switch arguments[index + 1] {
@@ -196,6 +196,9 @@ struct RootView: View {
           }
           if arguments.contains("--add-expense") {
             model.editExpense(trip: trip, attachment: model.selectedAttachment ?? trip.currentAttachment)
+          }
+          if arguments.contains("--quick-convert") {
+            model.showConverter = true
           }
         }
       #endif

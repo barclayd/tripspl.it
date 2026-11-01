@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		060DE9CF695BF2632B1C377E /* TripPagesTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAEBB9C9CA3ADFD7D7B14F87 /* TripPagesTests.swift */; };
 		06A74E82C661A0CECBF5EB20 /* WatchFiguresTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C11BFE466510DD62394035A8 /* WatchFiguresTests.swift */; };
 		08FF8D75BC5DD3D6FCB4B7B6 /* DestinationTimeZonesTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C623E222AD4851674325EBAB /* DestinationTimeZonesTests.swift */; };
 		11286A89A23BB12A0F6AD03F /* SyncTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 92D6060E4A912945AC35E53A /* SyncTests.swift */; };
@@ -95,6 +96,7 @@
 		CFB1D198926122BE48165D98 /* TripSplit.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = TripSplit.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		D7DE535E8D5DFC810EBDC693 /* TripTimeZoneTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TripTimeZoneTests.swift; sourceTree = "<group>"; };
 		DBC7D0CB5EA99035F367F932 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		EAEBB9C9CA3ADFD7D7B14F87 /* TripPagesTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TripPagesTests.swift; sourceTree = "<group>"; };
 		ECF15BF32A826DF42AE46AF7 /* TripSplitApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TripSplitApp.swift; sourceTree = "<group>"; };
 		EDDB6A47B58B35D851963D08 /* TripSplitApplication */ = {isa = PBXFileReference; lastKnownFileType = folder; name = TripSplitApplication; path = ../Packages/TripSplitApplication; sourceTree = SOURCE_ROOT; };
 		FAF3E9994895BD62556AECD4 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -239,6 +241,7 @@
 				4C26DAA050366856ED8FEC75 /* LocalStoreTests.swift */,
 				71021F5E7CBBA9943ABED572 /* PublicAPITests.swift */,
 				92D6060E4A912945AC35E53A /* SyncTests.swift */,
+				EAEBB9C9CA3ADFD7D7B14F87 /* TripPagesTests.swift */,
 				AB156440C7AFF05AAA3B26D5 /* WatchCompanionTests.swift */,
 			);
 			name = TripSplitApplicationTests;
@@ -444,6 +447,7 @@
 				D95A0E15C8A9CEE5F55E37DD /* PublicAPITests.swift in Sources */,
 				11286A89A23BB12A0F6AD03F /* SyncTests.swift in Sources */,
 				F88B644B0EE781A06A18E9E4 /* TripConversionTests.swift in Sources */,
+				060DE9CF695BF2632B1C377E /* TripPagesTests.swift in Sources */,
 				95BA3ECA3214176F8DA05E9A /* TripTimeZoneTests.swift in Sources */,
 				3F3BE6C407DA71FEFB78B45B /* WatchCompanionTests.swift in Sources */,
 				06A74E82C661A0CECBF5EB20 /* WatchFiguresTests.swift in Sources */,

@@ -116,7 +116,7 @@ private actor ControlledConversionQuotes {
     #expect(model.rateInput == "0.005")
     #expect(model.result == 5)
   }
-  @Test func swapPreservesAmountAndRevalidatesMinorUnits() async {
+  @Test func swapKeepsAmountTrimmedToMinorUnits() async {
     let server = ControlledConversionQuotes()
     let model = model(server, from: "KWD", to: "JPY")
     model.amount = "12.345"
@@ -124,10 +124,10 @@ private actor ControlledConversionQuotes {
     #expect(model.result == 4938)
     let pending = model.swap()
     await server.waitForCount(1)
-    #expect(model.amount == "12.345")
+    #expect(model.amount == "12")
     #expect(model.from.code == "JPY")
     #expect(model.to.code == "KWD")
-    #expect(model.amountIssue != nil)
+    #expect(model.amountIssue == nil)
     #expect(model.result == nil)
     #expect(model.rateInput.isEmpty)
     await server.resolve(0, rate: "0.0025")
@@ -175,7 +175,7 @@ private actor ControlledConversionQuotes {
     await server.resolve(0, rate: "0.8")
     await request?.value
   }
-  @Test func handoffRequiresHomeTargetAndPreservesVerifiedRate() async throws {
+  @Test func handoffCarriesOnlyAHomeRateAndPreservesIt() async throws {
     var onboarding = OnboardingDraft()
     onboarding.stops = [Destination.all[0].stop()]
     let trip = try onboarding.makeTrip()
@@ -193,10 +193,20 @@ private actor ControlledConversionQuotes {
     #expect(draft.conversion?.homeAmountMinor == "800")
     let changed = model.select(.forCurrency("USD"), for: .to)
     await server.waitForCount(2)
-    #expect(!model.canLogExpense(homeCurrency: "GBP"))
-    #expect(throws: MoneyError.self) { try model.expenseDraft(trip: trip, attachment: attachment) }
     await server.resolve(1, rate: "1.1")
     await changed?.value
+    // EUR to USD on a GBP trip still logs the euros, but the USD rate isn't a home rate.
+    #expect(model.canLogExpense(homeCurrency: "GBP"))
+    let pending2 = try model.expenseDraft(trip: trip, attachment: attachment)
+    #expect(pending2.currency == "EUR")
+    #expect(pending2.conversion == nil)
+    // Swapped to GBP to EUR, the typed pounds log as a home expense.
+    model.reset(from: .forCurrency("GBP"), to: .forCurrency("EUR"))
+    await server.waitForCount(3)
+    let home = try model.expenseDraft(trip: trip, attachment: attachment)
+    #expect(home.currency == "GBP")
+    #expect(home.conversion == nil)
+    await server.resolve(2, rate: "1.2")
   }
   @Test func manualHandoffRetainsRateInsteadOfClaimingAnActualCharge() throws {
     var onboarding = OnboardingDraft()
