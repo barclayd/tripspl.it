@@ -349,6 +349,22 @@
         "pattern": "^[A-Z]{3}$",
         "type": "string"
       },
+      "DayMove": {
+        "additionalProperties": false,
+        "properties": {
+          "fromDayId": {
+            "$ref": "#/components/schemas/ID"
+          },
+          "toDayId": {
+            "$ref": "#/components/schemas/ID"
+          }
+        },
+        "required": [
+          "fromDayId",
+          "toDayId"
+        ],
+        "type": "object"
+      },
       "DecimalRate": {
         "description": "Exact positive decimal text with at most 18 significant digits, 18 fractional digits and 12 whole digits. Zero, exponent notation and binary floating-point conversion are forbidden; precision is checked at runtime.",
         "maxLength": 32,
@@ -930,6 +946,7 @@
             "repayment.upsert": "#/components/schemas/RepaymentUpsertOperation",
             "traveller.upsert": "#/components/schemas/TravellerUpsertOperation",
             "trip.archive": "#/components/schemas/TripArchiveOperation",
+            "trip.reschedule": "#/components/schemas/TripRescheduleOperation",
             "trip.update": "#/components/schemas/TripUpdateOperation"
           },
           "propertyName": "type"
@@ -952,6 +969,9 @@
           },
           {
             "$ref": "#/components/schemas/TripUpdateOperation"
+          },
+          {
+            "$ref": "#/components/schemas/TripRescheduleOperation"
           },
           {
             "$ref": "#/components/schemas/TripArchiveOperation"
@@ -1216,6 +1236,24 @@
           "currency",
           "latitude",
           "longitude"
+        ],
+        "type": "object"
+      },
+      "StopNights": {
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "$ref": "#/components/schemas/ID"
+          },
+          "nights": {
+            "maximum": 365,
+            "minimum": 0,
+            "type": "integer"
+          }
+        },
+        "required": [
+          "id",
+          "nights"
         ],
         "type": "object"
       },
@@ -1523,6 +1561,92 @@
           "countryCode",
           "latitude",
           "longitude"
+        ],
+        "type": "object"
+      },
+      "TripReschedule": {
+        "additionalProperties": false,
+        "description": "New dates for a trip: its first day, the nights at each of its stops in order, and the days and legs that follow from them. Legs keep their IDs and only change date and day. Every day that leaves the trip names a kept day in `moves`, which its expenses move to, including ones added elsewhere since.",
+        "properties": {
+          "days": {
+            "items": {
+              "$ref": "#/components/schemas/TripDay"
+            },
+            "maxItems": 400,
+            "minItems": 1,
+            "type": "array"
+          },
+          "legs": {
+            "items": {
+              "$ref": "#/components/schemas/TravelLeg"
+            },
+            "maxItems": 100,
+            "type": "array"
+          },
+          "moves": {
+            "items": {
+              "$ref": "#/components/schemas/DayMove"
+            },
+            "maxItems": 400,
+            "type": "array"
+          },
+          "startsOn": {
+            "$ref": "#/components/schemas/CivilDate"
+          },
+          "stops": {
+            "items": {
+              "$ref": "#/components/schemas/StopNights"
+            },
+            "maxItems": 30,
+            "minItems": 1,
+            "type": "array"
+          }
+        },
+        "required": [
+          "startsOn",
+          "stops",
+          "days",
+          "legs",
+          "moves"
+        ],
+        "type": "object"
+      },
+      "TripRescheduleOperation": {
+        "additionalProperties": false,
+        "properties": {
+          "entityId": {
+            "$ref": "#/components/schemas/ID"
+          },
+          "expectedRevision": {
+            "maximum": 9007199254740991,
+            "minimum": 0,
+            "type": "integer"
+          },
+          "id": {
+            "$ref": "#/components/schemas/ID"
+          },
+          "payload": {
+            "$ref": "#/components/schemas/TripReschedule"
+          },
+          "syncEpoch": {
+            "maxLength": 128,
+            "minLength": 1,
+            "type": "string"
+          },
+          "type": {
+            "enum": [
+              "trip.reschedule"
+            ],
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "syncEpoch",
+          "entityId",
+          "type",
+          "expectedRevision",
+          "payload"
         ],
         "type": "object"
       },
