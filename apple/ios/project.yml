@@ -117,16 +117,19 @@ targets:
   TripSplitWatch:
     type: application
     platform: watchOS
-    sources: [../watch/TripSplitWatch]
+    sources: [../watch/TripSplitWatch, ../watch/Shared]
     dependencies:
       - package: TripSplitApplication
         product: TripSplitWatchModel
       - package: TripSplitWatchFeatures
         product: TripSplitWatchUI
+      - target: TripSplitWatchWidgets
     info:
       path: ../watch/Config/Info.plist
       properties:
         CFBundleDisplayName: TripSplit
+        CFBundleURLTypes:
+          - CFBundleURLSchemes: [tripsplit]
         CFBundleShortVersionString: $(MARKETING_VERSION)
         CFBundleVersion: $(CURRENT_PROJECT_VERSION)
         WKApplication: true
@@ -142,6 +145,33 @@ targets:
         TRIPSPLIT_API_BASE_URL: https://api.tripspl.it
         ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
         CODE_SIGN_ENTITLEMENTS: ../watch/Config/TripSplitWatch.entitlements
+  TripSplitWatchWidgets:
+    type: app-extension
+    platform: watchOS
+    sources: [../watch/TripSplitWatchWidgets, ../watch/Shared]
+    dependencies:
+      - package: TripSplitApplication
+        product: TripSplitWatchModel
+      - package: TripSplitWatchFeatures
+        product: TripSplitWatchGlances
+      - sdk: WidgetKit.framework
+      - sdk: SwiftUI.framework
+    info:
+      path: ../watch/Config/Widgets-Info.plist
+      properties:
+        CFBundleDisplayName: TripSplit
+        CFBundleShortVersionString: $(MARKETING_VERSION)
+        CFBundleVersion: $(CURRENT_PROJECT_VERSION)
+        NSExtension:
+          NSExtensionPointIdentifier: com.apple.widgetkit-extension
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: it.tripspl.TripSplit.watchkitapp.widgets
+        TARGETED_DEVICE_FAMILY: '4'
+        MARKETING_VERSION: '1.0'
+        CURRENT_PROJECT_VERSION: 6
+        CODE_SIGN_ENTITLEMENTS: ../watch/Config/TripSplitWatchWidgets.entitlements
+        SKIP_INSTALL: YES
 schemes:
   TripSplit:
     build:
