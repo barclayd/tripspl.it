@@ -443,11 +443,13 @@ package struct CategoryIcon: View {
 // MARK: - Platform
 
 extension View {
-  /// Open, the sheet sits beside what opened it. Its own rail started under the status bar there
-  /// (Close hidden, Save half covered on 27.1), so it keeps its bars inside the sheet and stops below
-  /// the status bar instead. Closed, the sheet keeps the rail.
+  /// Open, the sheet sits beside what opened it and takes the rail: Close, then Save. 27.1 started
+  /// that rail under the status bar (Close hidden, Save half covered), so there an open sheet keeps
+  /// its bars inside instead. Closed, the sheet keeps the rail.
   @ViewBuilder public func trailingSheet(open: Bool) -> some View {
-    if #available(iOS 27.1, *) {
+    if #available(iOS 27.2, *) {
+      self.presentationPlacement(.trailing)
+    } else if #available(iOS 27.1, *) {
       self.presentationPlacement(.trailing).toolbarVerticalBehavior(open ? .disabled : .automatic)
     } else {
       self
