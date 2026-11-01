@@ -29,6 +29,8 @@ struct TravellersStep: View {
     return Array(names.prefix(4))
   }
 
+  @Environment(\.onboardingWide) private var wide
+
   var body: some View {
     VStack(alignment: .leading, spacing: 14) {
       StepTitle("Who’s coming?", "Everyone who’ll be splitting costs.")
@@ -71,7 +73,10 @@ struct TravellersStep: View {
         }
       }
       LazyVGrid(
-        columns: [GridItem(.flexible(), spacing: 10), GridItem(.flexible(), spacing: 10)],
+        // The open Duo fits three across; anything narrower keeps two so names don't truncate.
+        columns: wide
+          ? [GridItem(.adaptive(minimum: 150), spacing: 10)]
+          : [GridItem(.flexible(), spacing: 10), GridItem(.flexible(), spacing: 10)],
         spacing: 12
       ) {
         ForEach(Array(travellers.enumerated()), id: \.element.id) { index, traveller in

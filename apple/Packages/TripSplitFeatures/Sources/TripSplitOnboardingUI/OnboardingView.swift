@@ -10,7 +10,10 @@ public struct OnboardingView: View {
   @Environment(AppModel.self) private var model
   @Environment(\.dismiss) private var dismiss
   @Environment(\.accessibilityReduceMotion) private var reduceMotion
+  @Environment(\.horizontalSizeClass) private var sizeClass
   @State private var forward = true
+  @State private var landscape = false
+  @State private var verticalRail = false
   @State private var fanned = false
   @State private var rejected = 0
   @FocusState private var inputFocused: Bool
@@ -18,7 +21,52 @@ public struct OnboardingView: View {
   private var draft: OnboardingDraft { model.onboarding }
   private var step: Int { draft.step }
 
+  /// Compact on the phone; on the open Duo a step sidebar in landscape, a full pass above the
+  /// step in portrait.
+  private enum Layout { case compact, sidebar, pane }
+  private var layout: Layout {
+    guard sizeClass == .regular else { return .compact }
+    return landscape ? .sidebar : .pane
+  }
+
   public var body: some View {
+    NavigationStack {
+      Group {
+        switch layout {
+        case .compact: compactLayout
+        case .sidebar: sidebarLayout
+        case .pane: paneLayout
+        }
+      }
+      .background(Theme.background)
+      .environment(\.onboardingWide, layout != .compact)
+      .toolbarVisibility(verticalRail ? .automatic : .hidden, for: .navigationBar)
+      .toolbar {
+        if verticalRail {
+          ToolbarItemGroup(placement: .cancellationAction) {
+            Button("Close", systemImage: "xmark", action: close)
+              .accessibilityIdentifier("onboarding.close")
+            if canGoBack {
+              Button("Back", systemImage: "chevron.backward", action: goBack)
+                .accessibilityIdentifier("onboarding.back")
+            }
+          }
+        }
+      }
+    }
+    .readVerticalRail($verticalRail)
+    .taskRail()
+    .onGeometryChange(for: Bool.self) { $0.size.width > $0.size.height } action: { landscape = $0 }
+    .animation(reduceMotion ? nil : Motion.sheet, value: inputFocused)
+    .animation(reduceMotion ? nil : Motion.sheet, value: fanned)
+    .onChange(of: model.onboarding) { _, _ in model.saveOnboarding() }
+    .onChange(of: step) { _, _ in fanned = false }
+    .task { await model.refreshReferenceRates() }
+  }
+
+  // MARK: Compact
+
+  private var compactLayout: some View {
     VStack(spacing: 0) {
       header
       if !inputFocused {
@@ -36,41 +84,204 @@ public struct OnboardingView: View {
       }
       footer
     }
-    .background(Theme.background)
-    .overlay {
-      if step == 6 {
-        Celebration(flags: OnboardingCopy.flags(draft)).allowsHitTesting(false)
-          .ignoresSafeArea()
+    .overlay { celebration.ignoresSafeArea() }
+  }
+
+  @ViewBuilder private var celebration: some View {
+    if step == 6 {
+      Celebration(flags: OnboardingCopy.flags(draft)).allowsHitTesting(false)
+    }
+  }
+
+  // MARK: Open landscape
+
+  /// The pass and every step down the left, so you can see what's answered and jump back.
+  private var sidebarLayout: some View {
+    HStack(spacing: 0) {
+      ScrollView {
+        VStack(alignment: .leading, spacing: 18) {
+          VStack(alignment: .leading, spacing: 10) {
+            HStack(alignment: .firstTextBaseline) {
+              Text("New trip").typeface(26, .heavy, tracking: -0.02, relativeTo: .title, maximum: 1.3)
+                .foregroundStyle(Theme.ink).accessibilityAddTraits(.isHeader)
+              Spacer(minLength: 8)
+              Text(step == 6 ? "All done" : "Step \(draft.stepPosition) of \(draft.totalSteps)")
+                .typeface(13, .bold, relativeTo: .footnote, maximum: 1.3)
+                .foregroundStyle(Theme.tertiary)
+            }
+            progress
+          }
+          TripPass(
+            OnboardingCopy.tripPass(draft, size: .sidebar), size: .sidebar, cleared: step == 6
+          )
+          .modifier(Floating(active: step == 6))
+          stepList
+        }
+        .padding(.top, 24).padding(.leading, 22).padding(.trailing, 20).padding(.bottom, 20)
+      }
+      .scrollBounceBehavior(.basedOnSize)
+      .frame(width: 340)
+      .overlay(alignment: .trailing) { Rectangle().fill(Theme.line).frame(width: 1) }
+      VStack(spacing: 0) {
+        ScrollView {
+          ZStack(alignment: .topLeading) {
+            stepContent.id(step).transition(stepTransition)
+          }
+          .frame(maxWidth: 560).frame(maxWidth: .infinity)
+        }
+        .scrollDismissesKeyboard(.interactively).scrollBounceBehavior(.basedOnSize)
+        footer
+      }
+      // Leaves a gutter for the round controls when the bar isn't carrying them.
+      .padding(.trailing, verticalRail ? 0 : 50)
+      .overlay(alignment: .topTrailing) { if !verticalRail { paneControls } }
+      .overlay { celebration }
+      .clipped()
+    }
+  }
+
+  private var stepList: some View {
+    VStack(spacing: 2) {
+      ForEach(Array(draft.flowSteps.filter { $0 != 6 }.enumerated()), id: \.element) { index, target in
+        stepRow(index: index, target: target)
       }
     }
-    .animation(reduceMotion ? nil : Motion.sheet, value: inputFocused)
-    .animation(reduceMotion ? nil : Motion.sheet, value: fanned)
-    .onChange(of: model.onboarding) { _, _ in model.saveOnboarding() }
-    .onChange(of: step) { _, _ in fanned = false }
-    .task { await model.refreshReferenceRates() }
+  }
+
+  private func stepRow(index: Int, target: Int) -> some View {
+    let done = target < step || step == 6
+    let current = target == step
+    let title = OnboardingCopy.stepTitles[min(target, OnboardingCopy.stepTitles.count - 1)]
+    return Button {
+      guard done, step != 6 else { return }
+      inputFocused = false
+      forward = false
+      Haptics.selection()
+      withAnimation(stepAnimation) { model.onboarding.revisit(target) }
+    } label: {
+      HStack(spacing: 12) {
+        ZStack {
+          Circle().fill(done ? Theme.good : current ? Theme.accent : Theme.inset)
+          if done {
+            Image(systemName: "checkmark").font(.system(size: 12, weight: .black))
+              .foregroundStyle(.white)
+          } else {
+            Text("\(index + 1)").font(.system(size: 13, weight: .heavy))
+              .foregroundStyle(current ? .white : Theme.tertiary)
+          }
+        }
+        .frame(width: 28, height: 28)
+        VStack(alignment: .leading, spacing: 1) {
+          Text(title).typeface(15, .heavy, relativeTo: .subheadline, maximum: 1.3)
+            .foregroundStyle(done || current ? Theme.ink : Theme.tertiary)
+          if done {
+            Text(OnboardingCopy.answer(target, draft))
+              .typeface(13, .semibold, relativeTo: .footnote, maximum: 1.3)
+              .foregroundStyle(Theme.secondary).lineLimit(1)
+          }
+        }
+        Spacer(minLength: 4)
+        if done, step != 6 {
+          Text("Edit").typeface(12, .heavy, relativeTo: .caption, maximum: 1.3)
+            .foregroundStyle(Theme.tertiary)
+        }
+      }
+      .padding(.vertical, 9).padding(.horizontal, 12)
+      .background(current ? Theme.accentSoft : .clear, in: RoundedRectangle(cornerRadius: 16))
+      .contentShape(RoundedRectangle(cornerRadius: 16))
+    }
+    .buttonStyle(PressStyle(scale: 0.98))
+    .disabled(!(done && step != 6))
+    .accessibilityElement(children: .combine)
+    .accessibilityValue(done ? "Done" : current ? "Current step" : "Not started")
+    .accessibilityHint(done && step != 6 ? "Edit this answer" : "")
+    .accessibilityIdentifier("onboarding.step.\(target)")
+  }
+
+  /// Close and Back as round buttons when the bar isn't showing them.
+  private var paneControls: some View {
+    VStack(spacing: 10) {
+      roundButton("xmark", label: "Close", identifier: "onboarding.close", action: close)
+      if canGoBack {
+        roundButton(
+          "chevron.backward", label: "Back", identifier: "onboarding.back", action: goBack)
+      }
+    }
+    .padding(.top, 12).padding(.trailing, 14)
+  }
+
+  private func roundButton(
+    _ symbol: String, label: String, identifier: String, action: @escaping () -> Void
+  ) -> some View {
+    Button(action: action) {
+      Image(systemName: symbol).font(.system(size: 15, weight: .bold))
+        .foregroundStyle(Theme.ink).frame(width: 40, height: 40)
+        .background(Theme.surface, in: Circle())
+        .shadow(color: .black.opacity(0.08), radius: 4, y: 2)
+        .frame(width: 44, height: 44).contentShape(Rectangle())
+    }
+    .buttonStyle(PressStyle(scale: 0.9)).accessibilityLabel(label)
+    .accessibilityIdentifier(identifier)
+  }
+
+  // MARK: Open portrait
+
+  /// The full pass above the step, centred in a calm column.
+  private var paneLayout: some View {
+    VStack(spacing: 0) {
+      header
+      ScrollView {
+        VStack(alignment: .leading, spacing: 4) {
+          TripPass(
+            OnboardingCopy.tripPass(draft, size: .full), size: .full, cleared: step == 6
+          )
+          .modifier(Floating(active: step == 6))
+          .padding(.top, 14).padding(.horizontal, 20)
+          ZStack(alignment: .topLeading) {
+            stepContent.id(step).transition(stepTransition)
+          }
+        }
+        .frame(maxWidth: 640).frame(maxWidth: .infinity)
+      }
+      .scrollDismissesKeyboard(.interactively).scrollBounceBehavior(.basedOnSize)
+      footer
+    }
+    .overlay { celebration.ignoresSafeArea() }
   }
 
   // MARK: Header
 
   private var header: some View {
     HStack(spacing: 14) {
-      Button(action: close) {
-        Image(systemName: "xmark").font(.system(size: 14, weight: .bold))
-          .foregroundStyle(Theme.secondary).frame(width: 36, height: 36)
-          .background(Theme.inset, in: Circle())
-          .frame(width: 44, height: 44).contentShape(Rectangle())
-      }.buttonStyle(PressStyle()).accessibilityLabel("Close")
-        .accessibilityIdentifier("onboarding.close")
-      ProgressTrack(progress: max(0.05, Double(step) / Double(draft.totalSteps)))
-        .accessibilityElement()
-        .accessibilityLabel("Step \(draft.stepPosition) of \(draft.totalSteps)")
-      Button(action: goBack) {
-        Text("Back").typeface(14, .heavy, relativeTo: .subheadline, maximum: 1.3)
-          .foregroundStyle(Theme.secondary).frame(minWidth: 38, minHeight: 44)
-          .contentShape(Rectangle())
-      }.buttonStyle(.plain).opacity(canGoBack ? 1 : 0).disabled(!canGoBack)
-        .accessibilityIdentifier("onboarding.back")
-    }.padding(.horizontal, 12).padding(.top, 4)
+      if !verticalRail { closeButton }
+      progress
+      if !verticalRail { backButton }
+    }.padding(.horizontal, 12).padding(.top, verticalRail ? 12 : 4)
+  }
+
+  private var progress: some View {
+    ProgressTrack(progress: max(0.05, Double(step) / Double(draft.totalSteps)))
+      .accessibilityElement()
+      .accessibilityLabel("Step \(draft.stepPosition) of \(draft.totalSteps)")
+  }
+
+  private var closeButton: some View {
+    Button(action: close) {
+      Image(systemName: "xmark").font(.system(size: 14, weight: .bold))
+        .foregroundStyle(Theme.secondary).frame(width: 36, height: 36)
+        .background(Theme.inset, in: Circle())
+        .frame(width: 44, height: 44).contentShape(Rectangle())
+    }.buttonStyle(PressStyle()).accessibilityLabel("Close")
+      .accessibilityIdentifier("onboarding.close")
+  }
+
+  private var backButton: some View {
+    Button(action: goBack) {
+      Text("Back").typeface(14, .heavy, relativeTo: .subheadline, maximum: 1.3)
+        .foregroundStyle(Theme.secondary).frame(minWidth: 38, minHeight: 44)
+        .contentShape(Rectangle())
+    }.buttonStyle(.plain).opacity(canGoBack ? 1 : 0).disabled(!canGoBack)
+      .accessibilityIdentifier("onboarding.back")
   }
 
   private var canGoBack: Bool { step != 0 && step != 6 }
@@ -136,7 +347,8 @@ public struct OnboardingView: View {
       default: BonVoyageStep()
       }
     }
-    .padding(.top, 22).padding(.horizontal, 20).padding(.bottom, 8)
+    .padding(.top, layout == .sidebar ? 34 : 22)
+    .padding(.horizontal, layout == .sidebar ? 34 : 20).padding(.bottom, 8)
     .frame(maxWidth: .infinity, alignment: .leading)
   }
 
@@ -168,8 +380,10 @@ public struct OnboardingView: View {
           .accessibilityIdentifier("onboarding.goToTrip")
       }
     }
-    .padding(.top, 10).padding(.horizontal, 20).padding(.bottom, 6)
-    .frame(maxWidth: 680).frame(maxWidth: .infinity)
+    .padding(.top, 10).padding(.horizontal, layout == .sidebar ? 34 : 20)
+    .padding(.bottom, layout == .sidebar ? 16 : 6)
+    .frame(maxWidth: layout == .compact ? 680 : layout == .pane ? 640 : 628)
+    .frame(maxWidth: .infinity)
   }
 
   // MARK: Actions
@@ -257,4 +471,9 @@ private struct Floating: ViewModifier {
         }
       }
   }
+}
+
+extension EnvironmentValues {
+  /// Steps lay themselves out for the open Duo: bigger titles, two months, a budget card.
+  @Entry var onboardingWide = false
 }

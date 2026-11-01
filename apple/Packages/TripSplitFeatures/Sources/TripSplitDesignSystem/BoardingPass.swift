@@ -324,7 +324,7 @@ package struct BoardingPass: View {
 }
 
 /// The pass outline: rounded card with semicircle notches where the stub tears off.
-private struct PassShape: Shape {
+struct PassShape: Shape {
   var stub: CGFloat
   func path(in rect: CGRect) -> Path {
     let card = Path(roundedRect: rect, cornerRadius: 18, style: .continuous)
@@ -336,7 +336,7 @@ private struct PassShape: Shape {
   }
 }
 
-private struct Arc: Shape {
+struct Arc: Shape {
   func path(in rect: CGRect) -> Path {
     var path = Path()
     path.move(to: CGPoint(x: rect.minX + rect.width * 0.02, y: rect.minY + rect.height * 0.75))
@@ -347,7 +347,7 @@ private struct Arc: Shape {
   }
 }
 
-private struct DashedRule: View {
+struct DashedRule: View {
   var color: Color
   var body: some View {
     GeometryReader { proxy in

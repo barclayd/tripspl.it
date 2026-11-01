@@ -84,6 +84,8 @@ struct DepartureCalendar: View {
   let today: String
   let select: (String) -> Void
   @State private var month: String
+  /// The open Duo shows two months side by side, so a trip across a month end fits in one view.
+  @Environment(\.onboardingWide) private var wide
 
   private static let weekdays = ["M", "T", "W", "T", "F", "S", "S"]
   private static let weekdayNames = [
@@ -91,8 +93,29 @@ struct DepartureCalendar: View {
   ]
 
   var body: some View {
+    Group {
+      if wide {
+        HStack(alignment: .top, spacing: 12) {
+          card(month) { compactHeader(month, symbol: "chevron.left", label: "Previous month", offset: -1) }
+          card(Self.addingMonths(1, to: month)) {
+            compactHeader(
+              Self.addingMonths(1, to: month), symbol: "chevron.right", label: "Next month", offset: 1)
+          }
+        }
+      } else {
+        card(month) { header }
+      }
+    }
+    .onChange(of: start) { _, start in
+      let shown = Self.firstOfMonth(start)
+      let visible = wide ? [month, Self.addingMonths(1, to: month)] : [month]
+      if !visible.contains(shown) { month = shown }
+    }
+  }
+
+  private func card(_ month: String, @ViewBuilder header: () -> some View) -> some View {
     VStack(spacing: 8) {
-      header
+      header()
       HStack(spacing: 0) {
         ForEach(Self.weekdays.indices, id: \.self) { index in
           Text(Self.weekdays[index]).typeface(11, .heavy, relativeTo: .caption2, maximum: 1.3)
@@ -100,14 +123,15 @@ struct DepartureCalendar: View {
             .accessibilityLabel(Self.weekdayNames[index])
         }
       }.accessibilityHidden(true)
+      let weeks = weeks(month)
       VStack(spacing: 2) {
         ForEach(weeks.indices, id: \.self) { row in
           HStack(spacing: 0) {
             ForEach(0..<7, id: \.self) { column in
               if let date = weeks[row][column] {
-                cell(date, column: column)
+                cell(date, column: column, month: month)
               } else {
-                Color.clear.frame(maxWidth: .infinity).frame(height: 40)
+                Color.clear.frame(maxWidth: .infinity).frame(height: cellHeight)
               }
             }
           }
@@ -115,13 +139,29 @@ struct DepartureCalendar: View {
       }
       .id(month)
       .animation(Motion.spring, value: start)
+      // Keeps both months the same height when one runs to six weeks.
+      if wide, weeks.count < 6 {
+        Color.clear.frame(height: CGFloat(6 - weeks.count) * (cellHeight + 2))
+      }
     }
     .padding(.top, 12).padding(.horizontal, 12).padding(.bottom, 10)
     .background(Theme.surface, in: RoundedRectangle(cornerRadius: Theme.Radius.card))
-    .onChange(of: start) { _, start in
-      let shown = Self.firstOfMonth(start)
-      if shown != month { month = shown }
+  }
+
+  private var cellHeight: CGFloat { wide ? 36 : 40 }
+
+  /// The month on the left with one arrow: the open Duo's side-by-side months.
+  private func compactHeader(_ month: String, symbol: String, label: String, offset: Int)
+    -> some View
+  {
+    HStack {
+      Text(CivilDate.display(month, format: "MMMM yyyy"))
+        .typeface(15, .heavy, relativeTo: .headline, maximum: 1.3).foregroundStyle(Theme.ink)
+        .contentTransition(.numericText()).accessibilityAddTraits(.isHeader)
+      Spacer(minLength: 4)
+      monthButton(symbol, label: label, offset: offset, size: 30)
     }
+    .padding(.leading, 6).frame(height: 36)
   }
 
   private var header: some View {
@@ -136,18 +176,20 @@ struct DepartureCalendar: View {
     }
   }
 
-  private func monthButton(_ symbol: String, label: String, offset: Int) -> some View {
+  private func monthButton(_ symbol: String, label: String, offset: Int, size: CGFloat = 34)
+    -> some View
+  {
     Button {
       withAnimation(Motion.push) { month = Self.addingMonths(offset, to: month) }
     } label: {
       Image(systemName: symbol).font(.system(size: 13, weight: .heavy))
-        .foregroundStyle(Theme.ink).frame(width: 34, height: 34)
+        .foregroundStyle(Theme.ink).frame(width: size, height: size)
         .background(Theme.inset, in: Circle())
         .frame(width: 44, height: 44).contentShape(Rectangle())
     }.buttonStyle(PressStyle(scale: 0.9)).accessibilityLabel(label)
   }
 
-  private func cell(_ date: String, column: Int) -> some View {
+  private func cell(_ date: String, column: Int, month: String) -> some View {
     let isStart = date == start
     let isEnd = date == end && end != start
     let inRange = date >= start && date <= end
@@ -171,14 +213,14 @@ struct DepartureCalendar: View {
             topLeadingRadius: roundLeading, bottomLeadingRadius: roundLeading,
             bottomTrailingRadius: roundTrailing, topTrailingRadius: roundTrailing)
         )
-        .frame(height: 36)
+        .frame(height: cellHeight - 4)
         Circle().fill(isStart ? Theme.accent : isEnd ? Theme.ink : .clear)
           .overlay {
             if date == today, !isStart, !isEnd {
               Circle().strokeBorder(Theme.tertiary, lineWidth: 1.5)
             }
           }
-          .frame(width: 36, height: 36).scaleEffect(isStart ? 1.08 : 1)
+          .frame(width: cellHeight - 4, height: cellHeight - 4).scaleEffect(isStart ? 1.08 : 1)
         Text("\(day)")
           .typeface(15, isStart || isEnd ? .heavy : .bold, relativeTo: .body, maximum: 1.25)
           .monospacedDigit()
@@ -187,7 +229,7 @@ struct DepartureCalendar: View {
               ? Theme.accentInk
               : isEnd ? Theme.background : inRange ? Theme.accentText : isPast ? Theme.tertiary : Theme.ink)
       }
-      .frame(maxWidth: .infinity).frame(height: 40).contentShape(Rectangle())
+      .frame(maxWidth: .infinity).frame(height: cellHeight).contentShape(Rectangle())
     }
     .buttonStyle(.plain)
     .accessibilityLabel(CivilDate.display(date, format: "EEEE d MMMM yyyy"))
@@ -197,7 +239,7 @@ struct DepartureCalendar: View {
   }
 
   /// Each week of the shown month, Monday first, with nil padding either side.
-  private var weeks: [[String?]] {
+  private func weeks(_ month: String) -> [[String?]] {
     let calendar = CivilDate.calendar()
     let first = CivilDate.date(month)
     let weekday = calendar.component(.weekday, from: first)
