@@ -135,9 +135,10 @@ public struct TripsView: View {
         }
       }
     }
-    .padding(.horizontal, -10)
-    // A row swiped open for its actions slides under the column's edge rather than into the gutter.
+    // A row swiped open for its actions slides under the edge of the rows' highlight rather than
+    // into the gutter. Clipped before bleeding out, so the clip takes in each row's whole background.
     .clipped()
+    .padding(.horizontal, -10)
   }
 }
 
