@@ -21,7 +21,29 @@ extension View {
   fileprivate func gaugeTint(_ colour: Color, _ look: GlanceLook) -> some View {
     tint(colour.opacity(look.hidden ? 0.5 : 1)).widgetAccentable()
   }
+
+  /// As above, for an open gauge whose marker, at `value` (0–1), is drawn in `Ink.marker` so it
+  /// reads against the ring. The system paints the marker with the tint beneath it, so the
+  /// marker's colour runs a short way either side of the value, which the marker covers.
+  fileprivate func gaugeTint(_ colour: Color, marker value: Double, _ look: GlanceLook) -> some View {
+    let fade = look.hidden ? 0.5 : 1
+    let ring = colour.opacity(fade)
+    let marker = Ink.marker.opacity(fade)
+    let value = min(max(value, 0), 1)
+    let from = max(value - markerReach, 0)
+    let to = min(value + markerReach, 1)
+    // At either end the marker overhangs the ring, so the marker's colour runs to that end
+    // rather than starting with the ring's.
+    var stops: [Gradient.Stop] = []
+    if from > 0 { stops += [.init(color: ring, location: 0), .init(color: ring, location: from)] }
+    stops += [.init(color: marker, location: from), .init(color: marker, location: to)]
+    if to < 1 { stops += [.init(color: ring, location: to), .init(color: ring, location: 1)] }
+    return tint(Gradient(stops: stops)).widgetAccentable()
+  }
 }
+
+/// How far the system's marker reaches either side of its value, as a share of an open gauge.
+private let markerReach = 0.025
 
 /// Budget left · flag: today's flag, ring empties as you spend. Green, amber under 25%, red at 0.
 struct BudgetFlagCircular: View {
@@ -88,7 +110,7 @@ struct BudgetAmountCircular: View {
         ringText(look.amount(remaining.amount, glance), scale)
       }
       .gaugeStyle(.accessoryCircular)
-      .gaugeTint(Ink.level(remaining.level), look)
+      .gaugeTint(Ink.level(remaining.level), marker: remaining.fraction, look)
     }
     .accessibilityElement()
     .accessibilityLabel(look.hidden ? "Budget left" : "\(remaining.amount) left")
@@ -113,7 +135,8 @@ struct TotalSpentCircular: View {
         bound(look.hidden ? "•••" : total.budgetLabel, scale)
       }
       .gaugeStyle(.accessoryCircular)
-      .gaugeTint(total.isOver ? WatchTheme.bad : WatchTheme.accentText, look)
+      .gaugeTint(
+        total.isOver ? WatchTheme.bad : WatchTheme.accentText, marker: total.fraction, look)
     }
     .accessibilityElement()
     .accessibilityLabel(
@@ -142,7 +165,7 @@ struct WhereYouAreCircular: View {
         FlagMark(place: today.place, size: 17 * scale)
       }
       .gaugeStyle(.accessoryCircular)
-      .gaugeTint(WatchTheme.accentText, look)
+      .gaugeTint(WatchTheme.accentText, marker: Double(today.day) / Double(max(today.days, 1)), look)
     }
     .accessibilityElement()
     .accessibilityLabel("\(today.place.name), day \(today.day) of \(today.days)")
@@ -173,26 +196,26 @@ struct ConvertCircular: View {
   }
 }
 
-/// Countdown: the next trip's flag over the days to go. No ring, as days away has nothing to
-/// fill towards.
+/// Countdown: the next trip's flag, large, over the days to go. No ring, as days away has nothing
+/// to fill towards.
 struct CountdownCircular: View {
   let countdown: WatchGlance.Countdown
 
   var body: some View {
     Dial { scale in
-      FlagMark(place: countdown.place, size: 13 * scale).at(25, 14.5, scale)
+      FlagMark(place: countdown.place, size: 21 * scale).at(25, 17, scale)
       Text(countdown.days, format: .number)
-        .font(.glance(16 * scale))
+        .font(.glance(13 * scale))
         .foregroundStyle(.white)
         .lineLimit(1)
         .minimumScaleFactor(0.5)
-        .frame(width: 36 * scale)
-        .at(25, 28.5, scale)
+        .frame(width: 30 * scale)
+        .at(25, 32, scale)
       Text(countdown.unit)
-        .font(.glance(6.5 * scale, .heavy))
+        .font(.glance(5.5 * scale, .heavy))
         .foregroundStyle(WatchTheme.amber)
         .widgetAccentable()
-        .at(25, 39, scale)
+        .at(25, 40, scale)
     }
     .accessibilityElement()
     .accessibilityLabel(countdown.line)
