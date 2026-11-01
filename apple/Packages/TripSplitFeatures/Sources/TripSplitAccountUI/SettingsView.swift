@@ -225,7 +225,7 @@ public struct TripSettingsView: View {
                   model.perform {
                     let traveller = Traveller(
                       name: newPerson.trimmingCharacters(in: .whitespaces),
-                      hue: Double((trip.travellers.count * 75) % 360))
+                      hue: AvatarPalette.hue(at: trip.travellers.count))
                     try model.store.enqueue(
                       .init(
                         syncEpoch: trip.syncEpoch, type: "traveller.upsert", entityId: traveller.id,

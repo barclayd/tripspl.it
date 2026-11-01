@@ -103,7 +103,7 @@ public struct TripDetailView: View {
               $0.homeMinor(in: trip.homeCurrency)
             }.reduce(0, +)
             RoundedRectangle(cornerRadius: 3).fill(
-              Color(hue: category.hue, saturation: 0.40, brightness: 0.86)
+              CategoryPalette(category).foreground
             ).frame(
               width: max(
                 0,
@@ -119,7 +119,7 @@ public struct TripDetailView: View {
       ) {
         ForEach(categories, id: \.self) { category in
           HStack(spacing: 6) {
-            Circle().fill(Color(hue: category.hue, saturation: 0.4, brightness: 0.86)).frame(
+            Circle().fill(CategoryPalette(category).foreground).frame(
               width: 7, height: 7)
             Text(category.title).font(.caption).foregroundStyle(Theme.secondary)
           }
