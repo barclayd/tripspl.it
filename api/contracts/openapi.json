@@ -837,6 +837,9 @@
             "minLength": 1,
             "type": "string"
           },
+          "origin": {
+            "$ref": "#/components/schemas/TripOrigin"
+          },
           "ownerTravellerId": {
             "$ref": "#/components/schemas/ID"
           },
@@ -1491,6 +1494,38 @@
         ],
         "type": "object"
       },
+      "TripOrigin": {
+        "additionalProperties": false,
+        "description": "Where the trip sets off from and returns to. Optional and never null; a settings update that omits it keeps the saved origin.",
+        "properties": {
+          "countryCode": {
+            "pattern": "^[A-Z]{2}$",
+            "type": "string"
+          },
+          "latitude": {
+            "maximum": 90,
+            "minimum": -90,
+            "type": "number"
+          },
+          "longitude": {
+            "maximum": 180,
+            "minimum": -180,
+            "type": "number"
+          },
+          "place": {
+            "maxLength": 120,
+            "minLength": 1,
+            "type": "string"
+          }
+        },
+        "required": [
+          "place",
+          "countryCode",
+          "latitude",
+          "longitude"
+        ],
+        "type": "object"
+      },
       "TripSettings": {
         "additionalProperties": false,
         "properties": {
@@ -1519,6 +1554,9 @@
             "maxLength": 120,
             "minLength": 1,
             "type": "string"
+          },
+          "origin": {
+            "$ref": "#/components/schemas/TripOrigin"
           },
           "startsOn": {
             "$ref": "#/components/schemas/CivilDate"
@@ -1592,6 +1630,9 @@
             "maxLength": 120,
             "minLength": 1,
             "type": "string"
+          },
+          "origin": {
+            "$ref": "#/components/schemas/TripOrigin"
           },
           "ownerTravellerId": {
             "$ref": "#/components/schemas/ID"

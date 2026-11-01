@@ -54,18 +54,21 @@ package struct BoardingPassContent: Identifiable, Hashable, Sendable {
   /// One pass per stop plus the flight home, dated by accumulating nights from `start`.
   ///
   /// `fields` supplies the second and third fields for each pass; the first is always the date.
+  /// The trip leaves from and returns to `origin`, or a generic Home until one is picked.
   /// With no stops yet, returns a single placeholder pass asking where to.
   package static func itinerary(
-    stops: [Stop], start: String?, homeCurrency: String,
+    stops: [Stop], start: String?, homeCurrency: String, origin: TripOrigin? = nil,
     fields: (Int) -> [Field] = { _ in [] }
   ) -> [BoardingPassContent] {
+    let home = origin?.passCode ?? "HOME"
+    let homeName = origin?.place ?? "Home"
     func date(_ value: String?) -> Field {
       Field("DATE", value.map { CivilDate.display($0, format: "d MMM").uppercased() } ?? "—")
     }
     guard let last = stops.last else {
       return [
         BoardingPassContent(
-          id: "placeholder", from: "HOME", fromName: "Home", to: "???", toName: "Where to?",
+          id: "placeholder", from: home, fromName: homeName, to: "???", toName: "Where to?",
           flag: "", leg: "BOARDING PASS", fields: [date(start)] + fields(0), stubLabel: "NIGHTS",
           stubValue: "—", placeholder: true)
       ]
@@ -77,8 +80,8 @@ package struct BoardingPassContent: Identifiable, Hashable, Sendable {
       let previous = index > 0 ? stops[index - 1] : nil
       passes.append(
         BoardingPassContent(
-          id: "l\(index)\(stop.countryCode)\(stop.place)", from: previous?.passCode ?? "HOME",
-          fromName: previous?.place ?? "Home", to: stop.passCode, toName: stop.place,
+          id: "l\(index)\(stop.countryCode)\(stop.place)", from: previous?.passCode ?? home,
+          fromName: previous?.place ?? homeName, to: stop.passCode, toName: stop.place,
           flag: stop.flag, leg: "LEG \(index + 1) OF \(total)",
           fields: [date(day)] + fields(index), stubLabel: stop.nights == 1 ? "NIGHT" : "NIGHTS",
           stubValue: "\(stop.nights)"))
@@ -86,26 +89,31 @@ package struct BoardingPassContent: Identifiable, Hashable, Sendable {
     }
     passes.append(
       BoardingPassContent(
-        id: "home\(last.place)", from: last.passCode, fromName: last.place, to: "HOME",
-        toName: "Home", flag: ConversionCurrency.forCurrency(homeCurrency).flag,
+        id: "home\(last.place)", from: last.passCode, fromName: last.place, to: home,
+        toName: homeName, flag: origin?.flag ?? ConversionCurrency.forCurrency(homeCurrency).flag,
         leg: "LEG \(total) OF \(total)", fields: [date(day)] + fields(stops.count),
         stubLabel: "WELCOME", stubValue: "HOME"))
     return passes
   }
 
   /// Passes for a saved trip, one per travel leg, with that leg's travel spend.
+  ///
+  /// A leg with no stop at one end starts or finishes at the trip's origin.
   package static func passes(for trip: TripSnapshot) -> [BoardingPassContent] {
     let legs = trip.orderedLegs
     let stops = Dictionary(trip.stops.map { ($0.id, $0) }, uniquingKeysWith: { first, _ in first })
     let pax = "\(trip.activeTravellers.count)"
+    let home = trip.origin?.passCode ?? "HOME"
+    let homeName = trip.origin?.place ?? "Home"
+    let homeFlag = trip.origin?.flag ?? ConversionCurrency.forCurrency(trip.homeCurrency).flag
     return legs.enumerated().map { index, leg in
-      let origin = leg.fromStopId.flatMap { stops[$0] }
+      let source = leg.fromStopId.flatMap { stops[$0] }
       let destination = leg.toStopId.flatMap { stops[$0] }
       let spend = trip.travelSpend(on: leg)
       return BoardingPassContent(
-        id: leg.id, from: origin?.passCode ?? "HOME", fromName: origin?.place ?? "Home",
-        to: destination?.passCode ?? "HOME", toName: destination?.place ?? "Home",
-        flag: destination?.flag ?? ConversionCurrency.forCurrency(trip.homeCurrency).flag,
+        id: leg.id, from: source?.passCode ?? home, fromName: source?.place ?? homeName,
+        to: destination?.passCode ?? home, toName: destination?.place ?? homeName,
+        flag: destination?.flag ?? homeFlag,
         leg: "LEG \(index + 1) OF \(legs.count)",
         fields: [
           Field("DATE", CivilDate.display(leg.date, format: "d MMM").uppercased()),
@@ -150,30 +158,37 @@ extension TripSnapshot {
   }
 }
 
-extension Stop {
-  private static let placeCodes = [
+/// Three-letter codes for the pass, using city codes rather than airports (London is LON).
+enum PassCode {
+  private static let places = [
     "Lisbon": "LIS", "Porto": "OPO", "Seville": "SVQ", "Zermatt": "ZMT", "Tokyo": "TYO",
     "Kyoto": "KYO", "Osaka": "OSA", "Rome": "ROM", "Florence": "FLR", "Bangkok": "BKK",
-    "Koh Lanta": "LNT", "London": "LHR", "Paris": "PAR", "New York": "NYC", "Barcelona": "BCN",
+    "Koh Lanta": "LNT", "London": "LON", "Paris": "PAR", "New York": "NYC", "Barcelona": "BCN",
   ]
-  private static let countryCodes = [
+  private static let countries = [
     "PT": "LIS", "ES": "BCN", "FR": "PAR", "IT": "ROM", "GR": "ATH", "HR": "SPU", "CH": "ZRH",
     "IS": "REK", "JP": "TYO", "TH": "BKK", "VN": "HAN", "ID": "DPS", "US": "NYC", "MX": "MEX",
-    "MA": "RAK", "AU": "SYD",
+    "MA": "RAK", "AU": "SYD", "GB": "LON", "IE": "DUB",
   ]
 
-  /// A three-letter code for the pass: a known city, the country's hub when the stop is the
-  /// whole country, otherwise the place's first three letters.
-  package var passCode: String {
-    if let code = Self.placeCodes[place] { return code }
-    if place == CountryMetadata.country(countryCode)?.name,
-      let code = Self.countryCodes[countryCode]
-    {
+  /// A known city, the country's hub when the place is the whole country, otherwise the
+  /// place's first three letters.
+  static func code(place: String, countryCode: String) -> String {
+    if let code = places[place] { return code }
+    if place == CountryMetadata.country(countryCode)?.name, let code = countries[countryCode] {
       return code
     }
     let letters = place.filter(\.isLetter)
     return String((letters.isEmpty ? countryCode : letters).prefix(3)).uppercased()
   }
+}
+
+extension Stop {
+  package var passCode: String { PassCode.code(place: place, countryCode: countryCode) }
+}
+
+extension TripOrigin {
+  package var passCode: String { PassCode.code(place: place, countryCode: countryCode) }
 }
 
 /// A flag-tinted boarding pass with a tear-off stub.
