@@ -1,6 +1,8 @@
 import SwiftUI
 import TripSplitApplication
+import TripSplitCompanionHost
 import TripSplitDesignSystem
+import TripSplitDomain
 import TripSplitNetworking
 import TripSplitPersistence
 import TripSplitSync
@@ -9,6 +11,7 @@ import TripSplitSync
   @State private var model: AppModel?
   @State private var error: String?
   @State private var connectivity: Connectivity?
+  @State private var watch: WatchCompanionHost?
   init() {
     do {
       let store = try LocalStore()
@@ -22,12 +25,16 @@ import TripSplitSync
         try DemoData.install(into: store)
       }
       _model = State(initialValue: model)
+      _watch = State(initialValue: WatchCompanionHost(model: model))
     } catch { _error = State(initialValue: error.localizedDescription) }
   }
   var body: some Scene {
     WindowGroup {
       if let model {
         RootView().environment(model).tint(Theme.accent).foregroundStyle(Theme.ink)
+          .onContinueUserActivity(CompanionActivity.newTrip) { _ in
+            model.showOnboarding = true
+          }
       } else {
         ContentUnavailableView(
           "Your trips couldn’t be opened", systemImage: "externaldrive.badge.exclamationmark",

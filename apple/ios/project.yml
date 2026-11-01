@@ -3,6 +3,7 @@ options:
   bundleIdPrefix: it.tripspl
   deploymentTarget:
     iOS: '26.0'
+    watchOS: '26.0'
 settings:
   base:
     SWIFT_VERSION: '6.0'
@@ -20,6 +21,8 @@ packages:
     path: ../Packages/TripSplitApplication
   TripSplitFeatures:
     path: ../Packages/TripSplitFeatures
+  TripSplitWatchFeatures:
+    path: ../Packages/TripSplitWatchFeatures
 targets:
   TripSplit:
     type: application
@@ -50,6 +53,8 @@ targets:
         product: TripSplitAccountUI
       - package: TripSplitFeatures
         product: TripSplitGlobeUI
+      - package: TripSplitApplication
+        product: TripSplitCompanionHost
     info:
       path: Config/Info.plist
       properties:
@@ -67,6 +72,7 @@ targets:
         ITSAppUsesNonExemptEncryption: false
         NSAppTransportSecurity:
           NSAllowsLocalNetworking: true
+        NSUserActivityTypes: [it.tripspl.TripSplit.new-trip]
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: it.tripspl.TripSplit
@@ -99,9 +105,43 @@ targets:
         product: TripSplitDomain
       - package: TripSplitApplication
         product: TripSplitConversion
+      - package: TripSplitInfrastructure
+        product: TripSplitCompanion
+      - package: TripSplitApplication
+        product: TripSplitCompanionHost
+      - package: TripSplitApplication
+        product: TripSplitWatchModel
     settings:
       base:
         GENERATE_INFOPLIST_FILE: YES
+  TripSplitWatch:
+    type: application
+    platform: watchOS
+    sources: [../watch/TripSplitWatch]
+    dependencies:
+      - package: TripSplitApplication
+        product: TripSplitWatchModel
+      - package: TripSplitWatchFeatures
+        product: TripSplitWatchUI
+    info:
+      path: ../watch/Config/Info.plist
+      properties:
+        CFBundleDisplayName: TripSplit
+        CFBundleShortVersionString: $(MARKETING_VERSION)
+        CFBundleVersion: $(CURRENT_PROJECT_VERSION)
+        WKApplication: true
+        WKCompanionAppBundleIdentifier: it.tripspl.TripSplit
+        TripSplitAPIBaseURL: $(TRIPSPLIT_API_BASE_URL)
+        ITSAppUsesNonExemptEncryption: false
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: it.tripspl.TripSplit.watchkitapp
+        TARGETED_DEVICE_FAMILY: '4'
+        MARKETING_VERSION: '1.0'
+        CURRENT_PROJECT_VERSION: 6
+        TRIPSPLIT_API_BASE_URL: https://api.tripspl.it
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+        CODE_SIGN_ENTITLEMENTS: ../watch/Config/TripSplitWatch.entitlements
 schemes:
   TripSplit:
     build:
@@ -110,3 +150,10 @@ schemes:
         TripSplitTests: [test]
     test:
       targets: [TripSplitTests]
+  TripSplitWatch:
+    build:
+      targets:
+        TripSplitWatch: all
+    run:
+      commandLineArguments:
+        --demo: false

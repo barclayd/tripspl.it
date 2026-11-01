@@ -12,7 +12,9 @@ The 1 November 2026 re-architecture follows KeepFresh's local Swift packages, fe
 | `TripSplitInfrastructure` | Separate networking, persistence and sync products; explicit transport, storage and credential boundaries |
 | `TripSplitApplication` | Observable application coordination and independently usable conversion state |
 | `TripSplitFeatures` | Design system, shared presentation and separate vertical UI products for trips, expenses, conversion, onboarding, account and globe |
+| `TripSplitWatchFeatures` | Watch design tokens and screens, consuming the watch model from `TripSplitApplication` |
 | `apple/ios/TripSplit` | App lifecycle, platform configuration, assets and root navigation composition |
+| `apple/watch/TripSplitWatch` | Watch app lifecycle, configuration and assets |
 
 Dependencies point from features and application coordination toward the core. Domain does not import a design system; networking does not discover configuration from `Bundle.main` or reach into a global signed-in account. The app supplies configuration and services. Each feature declares the products it actually uses. Apple sign-in presentation, map presentation and haptics stay at the platform edge.
 
@@ -46,7 +48,7 @@ New features should add a focused target/product, declare its dependencies and e
 
 ### Repository boundaries and API contracts
 
-All Apple applications and Swift packages live under `apple/`. The current iPhone/iPad shell is `apple/ios/`; reusable packages are `apple/Packages/`. Future watchOS and macOS shells can sit alongside `ios/` and consume those same local products. `api/` owns server code, and a future `web/` application will be a sibling. Shared repository documentation and data-generation tools remain at the root. The folder name is a project convention, not an Apple requirement; [Apple's guidance](https://developer.apple.com/documentation/xcode/organizing-your-code-with-local-packages) supports local packages in the same repository as their consuming app.
+All Apple applications and Swift packages live under `apple/`. The current iPhone/iPad shell is `apple/ios/` and the watch shell is `apple/watch/`; reusable packages are `apple/Packages/`. A future macOS shell can sit alongside them and consume the same local products. `api/` owns server code, and a future `web/` application will be a sibling. Shared repository documentation and data-generation tools remain at the root. The folder name is a project convention, not an Apple requirement; [Apple's guidance](https://developer.apple.com/documentation/xcode/organizing-your-code-with-local-packages) supports local packages in the same repository as their consuming app.
 
 `api/src/schemas/` is the authoritative runtime and wire-shape definition. `api/src/types/contract.ts` infers TypeScript types from those schemas rather than maintaining duplicate interfaces. `api/contracts/openapi.json` is generated from the Hono route definitions and checked for drift in CI. The API does not need a separately maintained root `contracts/` package.
 
@@ -98,6 +100,10 @@ Invite links are created by the owner for an existing traveller, have a cryptogr
 One app state owns the navigation path `Trips -> Trip -> Day`, sheet drafts and onboarding; the globe feature owns its map camera. Layout changes only presentation. Closed uses the current screen; wide pairs its parent with it; tent reflows the current task. Keep stable view identity, native toolbars, tab bars, sheets and accessibility. iOS 26 baseline; gate Duo APIs to their actual SDK availability (27.1 where required). Build with Xcode 27.1 or later and verify the supported simulator/device poses.
 
 Implement all designed screens: trips/current/upcoming/past, trip overview and balances, day and travel legs, expense editing, quick convert, seven-step onboarding, globe and the boarding-pass component. Pop is the selected direction; Night informs dark mode. Use Reduce Motion equivalents and Dynamic Type. Seed content is opt-in demo/preview data only, not a new user's trips.
+
+### Apple Watch
+
+The watch is a companion, not a second source of truth. The iPhone publishes its trips to the watch over WatchConnectivity whenever they change; the watch mirrors them in the shared App Group for offline launch and complications. Watch edits travel back as commands that the phone applies through its own store, pending-operation queue and sync, so the server sees one device. Commands are idempotent and the phone reports any it rejects. Reference rates for quick conversion come straight from the public FX endpoint and are cached per currency pair. See [the watch README](../apple/watch/README.md).
 
 ## Verification and delivery
 
