@@ -32,7 +32,7 @@ export const originSchema = z.strictObject({ place: shortText, countryCode, lati
 export const daySchema = z.strictObject({ id, date: civil, stopId: id }).openapi('TripDay');
 export const legSchema = z.strictObject({ id, kind: z.enum(['outbound', 'transfer', 'return']), date: civil, fromStopId: nullableId, toStopId: nullableId, dayId: nullableId }).openapi('TravelLeg');
 export const categorySchema = z.enum(['food', 'coffee', 'stay', 'activity', 'transport', 'shopping', 'flight', 'train', 'taxi', 'other']).openapi('Category');
-export const expenseSchema = z.strictObject({ id, revision, attachment: z.strictObject({ kind: z.enum(['day', 'leg']), id }), title: shortText, category: categorySchema, amountMinor: positiveAmount, currency, status: z.enum(['planned', 'paid']), paidOn: nullableCivil, paidBy: id, splitWith: z.array(id).min(1).max(40), conversion }).openapi('Expense');
+export const expenseSchema = z.strictObject({ id, revision, attachment: z.strictObject({ kind: z.enum(['day', 'leg']), id }), title: shortText, category: categorySchema, amountMinor: positiveAmount, currency, status: z.enum(['planned', 'paid']), paidOn: nullableCivil, paidBy: id, splitWith: z.array(id).min(1).max(40), conversion, returnPairId: id.optional().openapi({ description: 'Shared by both halves of a return ticket, one on the outbound leg and one on the return leg, so they edit and delete together. Optional and never null; an upsert that omits it unlinks that half, and a half without its partner is a plain expense.' }) }).openapi('Expense');
 export const repaymentSchema = z.strictObject({ id, revision, fromTravellerId: id, toTravellerId: id, amountMinor: positiveAmount, currency, paidOn: civil, conversion, note: z.string().max(500) }).openapi('Repayment');
 const settingsFields = z.strictObject({ name: shortText, startsOn: civil, timeZone: z.string().max(100).refine(value => { try { new Intl.DateTimeFormat('en', { timeZone: value }); return true; } catch { return false; } }), homeCurrency: currency, budgetMinor: amount, origin: originSchema.optional(), stops: z.array(stopSchema).min(1).max(30), days: z.array(daySchema).min(1).max(400), legs: z.array(legSchema).max(100) });
 export const settingsSchema = settingsFields.openapi('TripSettings');
@@ -84,8 +84,15 @@ export function validateTrip(trip: z.infer<typeof snapshotSchema>): void {
     assert(day.date === expected.toISOString().slice(0, 10) && stops.has(day.stopId) && day.stopId === expectedStop.id, 'DAYS', 'Days must follow the trip dates and ordered stop nights, including the return day.');
   }
   for (const leg of trip.legs) assert((leg.fromStopId === null || stops.has(leg.fromStopId)) && (leg.toStopId === null || stops.has(leg.toStopId)) && (leg.dayId === null || days.has(leg.dayId)), 'LEG', 'Travel leg references are invalid.');
+  // Halves of a return ticket are written one operation at a time, so a lone half is valid.
+  const legKinds = new Map(trip.legs.map(leg => [leg.id, leg.kind])), pairs = new Map<string, string>();
   for (const e of trip.expenses) {
     assert((e.attachment.kind === 'day' ? days : legs).has(e.attachment.id), 'ATTACHMENT', 'An expense must refer to an existing day or leg.');
+    if (e.returnPairId !== undefined) {
+      const kind = e.attachment.kind === 'leg' ? legKinds.get(e.attachment.id) : undefined;
+      assert((kind === 'outbound' || kind === 'return') && pairs.get(e.returnPairId) !== kind, 'RETURN_PAIR', 'A return ticket has one half on the outbound leg and one on the return leg.');
+      pairs.set(e.returnPairId, pairs.has(e.returnPairId) ? 'both' : kind);
+    }
     assert(travellers.has(e.paidBy) && e.splitWith.every(id => travellers.has(id)) && new Set(e.splitWith).size === e.splitWith.length, 'TRAVELLER', 'Expense travellers must exist and beneficiaries must be unique.');
     assert(e.status === 'paid' ? e.paidOn !== null : e.paidOn === null, 'PAID_DATE', 'Paid expenses need a paid date; planned expenses have no paid date.');
   }
