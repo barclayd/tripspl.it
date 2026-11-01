@@ -20,6 +20,7 @@ JSON over HTTPS under `/v1`. Bearer access token required except challenge, Appl
 | DELETE | `/trips/:tripId/invites/:inviteId` | — | `{ok:true}` |
 | DELETE | `/trips/:tripId/members/:travellerId` | — | `{ok:true}` |
 | GET | `/fx` | `from`, `to`, `date` query parameters | `FXQuote` |
+| GET | `/fx/rates` | `base`, `date` query parameters | `FXTable` |
 | GET | `/trips/:tripId/live` | WebSocket upgrade (authenticated) | `{type:'changed', revision, syncEpoch}` messages |
 
 Apple challenge `nonce` is a random raw nonce. The app sends its SHA-256 hex digest to Apple's native request. The server checks that digest against Apple's token and consumes the matching challenge exactly once. Verify cryptographic signatures through a maintained library and Apple's keys; require configured bundle audience. Account deletion persists a cleanup job, invalidates app sessions and revokes the stored Apple grant, retrying temporary provider failures. It does not require a fresh Apple sign-in. Shared-trip records remain with account links removed and the linked traveller anonymised; ownership passes to the earliest remaining active member. Trips with no other linked member are removed. These consequences must be disclosed in the native confirmation.
@@ -40,7 +41,7 @@ Invitation URLs must use a configured origin/application link; otherwise return 
 
 Every amount/budget, including a converted home amount, is a nonnegative integer no greater than `999999999999` minor units. Expense and repayment amounts must be positive. A trip has at most 10,000 expenses and repayments combined. Rates have at most 18 significant digits and at most 18 fractional digits. These bounds allow exact Swift Decimal conversion and safe Int64 aggregate arithmetic. SQL/TypeScript may use larger integer representations internally, but must enforce the transport bounds. Settlement suggestions sort creditors/debtors by descending initial amount with ascending ID tie-break, then consume each list in order without re-sorting after a transfer.
 
-The v1 trip directory returns one complete snapshot per page to bound Worker memory; clients follow `nextCursor` until null. Rate lookup is public with an IP-based rate limit so local-only users can convert amounts before signing in. It contains no user expense data.
+The v1 trip directory returns one complete snapshot per page to bound Worker memory; clients follow `nextCursor` until null. Rate lookup is public with an IP-based rate limit so local-only users can convert amounts before signing in. It contains no user expense data. `FXTable` lists every supported reference rate from one base so clients can convert between any pair offline, such as the watch's quick convert. It is indicative and edge-cached, not stored: expenses still cite an immutable `FXQuote`.
 
 
 ## Contract ownership and expressiveness

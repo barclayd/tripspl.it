@@ -8,6 +8,12 @@ import TripSplitDomain
 @MainActor @Observable public final class WatchModel {
   public private(set) var state: CompanionState
   public private(set) var rates: [String: FXQuote]
+  /// The latest reference table per base currency, for conversions between any pair offline.
+  public private(set) var tables: [String: FXTable]
+  /// What quick convert reopens with: the last amount, a custom pair and recent currencies.
+  public var convertMemory: ConvertMemory {
+    didSet { try? mirror?.write(convertMemory, key: "convert") }
+  }
   /// A short message for the user, such as a change the phone could not apply.
   public var message: String?
   /// The instant the UI treats as now. Refreshed when the app becomes active.
@@ -17,6 +23,7 @@ import TripSplitDomain
   @ObservationIgnored private let transport: (@MainActor (CompanionCommand) throws -> Void)?
   @ObservationIgnored private let loadQuote:
     (@Sendable (String, String, String) async throws -> FXQuote)?
+  @ObservationIgnored private let loadTable: (@Sendable (String, String) async throws -> FXTable)?
   @ObservationIgnored private var retained: AnyObject?
   /// Called after trips change, for widget timeline reloads.
   @ObservationIgnored public var onChange: (@MainActor () -> Void)?
@@ -24,13 +31,17 @@ import TripSplitDomain
   public init(
     state: CompanionState = .init(), mirror: CompanionMirror? = nil,
     send: (@MainActor (CompanionCommand) throws -> Void)? = nil,
-    loadQuote: (@Sendable (String, String, String) async throws -> FXQuote)? = nil
+    loadQuote: (@Sendable (String, String, String) async throws -> FXQuote)? = nil,
+    loadTable: (@Sendable (String, String) async throws -> FXTable)? = nil
   ) {
     self.state = state
     self.mirror = mirror
     transport = send
     self.loadQuote = loadQuote
+    self.loadTable = loadTable
     rates = mirror?.read([String: FXQuote].self, key: "rates") ?? [:]
+    tables = mirror?.read([String: FXTable].self, key: "tables") ?? [:]
+    convertMemory = mirror?.read(ConvertMemory.self, key: "convert") ?? .init()
   }
 
   public var trips: [TripSnapshot] { state.trips }
@@ -63,10 +74,15 @@ import TripSplitDomain
 
   // MARK: Rates
 
-  /// The best known rate: a cached reference quote, else the latest rate recorded on an expense.
+  /// The best known rate: the freshest cached reference quote or table rate, else the latest
+  /// rate recorded on an expense.
   public func rate(from: String, to: String) -> String? {
     if from == to { return "1" }
-    if let quote = rates[Self.key(from, to)] { return quote.rate }
+    let quote = rates[Self.key(from, to)]
+    let table = tables.values.sorted { $0.requestedDate > $1.requestedDate }
+      .first { $0.rate(from: from, to: to) != nil }
+    if let quote, quote.requestedDate >= table?.requestedDate ?? "" { return quote.rate }
+    if let rate = table?.rate(from: from, to: to) { return rate }
     let expenses = trips.filter { $0.homeCurrency == to }.flatMap(\.expenses)
       .filter { $0.currency == from && $0.conversion != nil }
     return expenses.last?.conversion?.rate
@@ -93,10 +109,30 @@ import TripSplitDomain
     return try? Money.convert(minor, from: from, to: to, rate: rate)
   }
 
-  /// Refreshes the rate for today's local currency on the trip the watch leads with.
-  public func refreshLocalRate() async {
-    guard let trip = currentTrip, let local = trip.localCurrency(at: now) else { return }
-    await refreshRate(from: local, to: trip.homeCurrency)
+  /// Stores a reference table, replacing the older one for its base.
+  public func cache(_ table: FXTable) {
+    tables[table.base] = table
+    try? mirror?.write(tables, key: "tables")
+  }
+
+  /// Refreshes today's table for the home currency of the trip the watch leads with, so quick
+  /// convert works between any pair offline. Falls back to a single quote for the local currency.
+  public func refreshRates() async {
+    guard let trip = currentTrip else { return }
+    let today = CivilDate.today(timeZone: TimeZone.current.identifier)
+    if tables[trip.homeCurrency]?.requestedDate == today { return }
+    if let loadTable, let table = try? await loadTable(trip.homeCurrency, today) {
+      cache(table)
+    } else if let local = trip.localCurrency(at: now) {
+      await refreshRate(from: local, to: trip.homeCurrency)
+    }
+  }
+
+  /// Currencies quick convert can offer: those in a cached table, else every supported one.
+  public var convertibleCurrencies: [String] {
+    let listed = tables.values.reduce(into: Set<String>()) { $0.formUnion($1.currencies) }
+    let supported = CurrencyMetadata.codes
+    return listed.isEmpty ? supported : supported.filter(listed.contains)
   }
 
   /// A ready-made conversion for today's stop, e.g. €10 = £8.62. Nil at home or without a rate.

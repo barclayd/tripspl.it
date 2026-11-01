@@ -575,6 +575,37 @@
         ],
         "type": "object"
       },
+      "FXTable": {
+        "properties": {
+          "base": {
+            "type": "string"
+          },
+          "rateDate": {
+            "type": "string"
+          },
+          "rates": {
+            "additionalProperties": {
+              "type": "string"
+            },
+            "description": "Exact decimal rate from the base to each supported currency, including the base itself.",
+            "type": "object"
+          },
+          "requestedDate": {
+            "type": "string"
+          },
+          "source": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "base",
+          "requestedDate",
+          "rateDate",
+          "source",
+          "rates"
+        ],
+        "type": "object"
+      },
       "ID": {
         "maxLength": 128,
         "minLength": 1,
@@ -1872,6 +1903,78 @@
               }
             },
             "description": "Immutable reference quote with exact decimal rate."
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/APIError"
+                }
+              }
+            },
+            "description": "TripSplit error with a stable code and retryability."
+          }
+        }
+      }
+    },
+    "/v1/fx/rates": {
+      "get": {
+        "parameters": [
+          {
+            "description": "Supported base currency code. The first value is used when repeated.",
+            "in": "query",
+            "name": "base",
+            "required": true,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "items": {
+                    "type": "string"
+                  },
+                  "minItems": 1,
+                  "type": "array"
+                }
+              ],
+              "default": "",
+              "description": "Supported base currency code. The first value is used when repeated."
+            }
+          },
+          {
+            "description": "Requested Gregorian civil date (YYYY-MM-DD). The first value is used when repeated.",
+            "in": "query",
+            "name": "date",
+            "required": true,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "items": {
+                    "type": "string"
+                  },
+                  "minItems": 1,
+                  "type": "array"
+                }
+              ],
+              "default": "",
+              "description": "Requested Gregorian civil date (YYYY-MM-DD). The first value is used when repeated."
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FXTable"
+                }
+              }
+            },
+            "description": "Indicative reference rates from one base, for display-only conversions between any pair."
           },
           "default": {
             "content": {

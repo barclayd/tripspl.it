@@ -1,4 +1,4 @@
-import type { Conversion, Expense, FXQuote, Repayment } from '../types/contract';
+import type { Conversion, Expense, FXQuote, FXTable, Repayment } from '../types/contract';
 import { AppError, assert } from '../utils/errors';
 import { convert, currencyDigits, rateFraction } from '../utils/money';
 import { civil, parse } from '../schemas/trip';
@@ -44,6 +44,46 @@ export async function getFX(env: Env, from: string, to: string, date: string): P
   const stored = await env.DB.prepare('SELECT * FROM fx_quotes WHERE from_currency=? AND to_currency=? AND requested_date=?').bind(from, to, date).first<QuoteRow>();
   assert(stored, 'FX_STORAGE', 'Could not store the reference quote.', 503);
   return fromRow(stored);
+}
+const rateLexeme = /"rate"\s*:\s*(\d+(?:\.\d+)?(?:[eE][+-]?\d+)?)(?=\s*[,}])/;
+
+// Every reference rate from one base, so clients can convert between any pair offline (e.g.
+// the watch's quick convert). Tables are indicative: expenses still record an immutable quote.
+export async function getFXTable(base: string, date: string): Promise<FXTable> {
+  currencyDigits(base); parse(civil, date);
+  const today = new Date().toISOString().slice(0, 10);
+  assert(date <= today, 'FX_DATE', 'Future rates are not available.');
+  // Past tables never change; today's may gain later publications, so it expires within the hour.
+  const key = new Request(`https://fx-tables.tripspl.it/${base}/${date}`);
+  const cached = await caches.default.match(key);
+  if (cached) return cached.json<FXTable>();
+  const url = new URL('https://api.frankfurter.dev/v2/rates'); url.searchParams.set('base', base); url.searchParams.set('date', date);
+  let response: Response;
+  try { response = await fetch(url, { signal: AbortSignal.timeout(8000), headers: { Accept: 'application/json' } }); }
+  catch { throw new AppError(503, 'FX_UNAVAILABLE', 'Reference rates are temporarily unavailable.', true); }
+  if (!response.ok) throw new AppError(503, 'FX_UNAVAILABLE', 'No reference rates are available for this currency and date.', true);
+  const text = await limitedText(response, 65536);
+  let entries: unknown = null;
+  try { entries = JSON.parse(text); } catch { /* reported below */ }
+  if (!Array.isArray(entries)) throw new AppError(502, 'FX_RESPONSE', 'Invalid rate provider response.', true);
+  const rates: Record<string, string> = { [base]: '1' };
+  let rateDate = '';
+  // Each entry is a flat object; read its rate lexeme rather than the parsed float.
+  for (const [entry] of text.matchAll(/\{[^{}]*\}/g)) {
+    const fields = JSON.parse(entry) as { date?: unknown; base?: unknown; quote?: unknown };
+    const lexeme = rateLexeme.exec(entry)?.[1];
+    if (fields.base !== base || typeof fields.quote !== 'string' || typeof fields.date !== 'string' || !lexeme) continue;
+    // The provider also lists metals and crypto; keep supported ISO currencies with exact rates.
+    try { currencyDigits(fields.quote); rates[fields.quote] = decimalLexeme(lexeme); } catch { continue; }
+    const entryDate = parse(civil, fields.date);
+    assert(entryDate <= date, 'FX_RESPONSE', 'Rate provider returned a future rate.', 502);
+    if (entryDate > rateDate) rateDate = entryDate;
+  }
+  assert(rateDate, 'FX_RESPONSE', 'Rate provider returned no supported rates.', 502);
+  const table: FXTable = { base, requestedDate: date, rateDate, source: 'Frankfurter reference', rates };
+  const maxAge = date < today ? 31_536_000 : 3600;
+  await caches.default.put(key, new Response(JSON.stringify(table), { headers: { 'Content-Type': 'application/json', 'Cache-Control': `max-age=${maxAge}` } }));
+  return table;
 }
 export async function limitedText(response: Response, maximum: number): Promise<string> {
   const reader = response.body?.getReader();
