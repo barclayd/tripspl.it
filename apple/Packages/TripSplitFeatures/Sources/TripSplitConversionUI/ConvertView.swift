@@ -7,6 +7,8 @@ import TripSplitNetworking
 import TripSplitSharedUI
 import TripSplitSync
 
+/// Quick convert: type a price you can see, read it back in the other currency and against a
+/// day's budget, then hand it off as a new expense for that day.
 public struct ConvertView: View {
   public init(tripID: String, attachment: Attachment) {
     self.tripID = tripID
@@ -15,7 +17,6 @@ public struct ConvertView: View {
   @Environment(AppModel.self) private var app
   @Environment(\.dismiss) private var dismiss
   @Environment(\.accessibilityReduceMotion) private var reduceMotion
-  @Environment(\.dynamicTypeSize) private var dynamicTypeSize
   var tripID: String
   var attachment: Attachment
   @State private var conversion: ConversionModel?
@@ -24,9 +25,7 @@ public struct ConvertView: View {
   @State private var verticalRail = false
   @State private var swapTurns = 0.0
   @State private var handingOff = false
-  private enum InputField: Hashable { case amount, rate }
-  @FocusState private var inputFocus: InputField?
-  @ScaledMetric(relativeTo: .largeTitle) private var amountSize = 48.0
+  @FocusState private var rateFocused: Bool
 
   public var body: some View {
     if let trip = app.store.trip(tripID) {
@@ -35,279 +34,403 @@ public struct ConvertView: View {
           if let conversion {
             content(conversion, trip: trip)
           } else {
-            ProgressView("Opening converter…").frame(maxWidth: .infinity, maxHeight: .infinity)
+            ProgressView().frame(maxWidth: .infinity, maxHeight: .infinity)
           }
-        }.background(Theme.background).navigationTitle("Quick convert")
-          .navigationBarTitleDisplayMode(.inline)
-          .toolbar {
+        }
+        .background(Theme.surface)
+        .navigationTitle("Quick convert")
+        .navigationBarTitleDisplayMode(.inline)
+        .toolbarVisibility(verticalRail ? .automatic : .hidden, for: .navigationBar)
+        .toolbar {
+          if verticalRail {
             ToolbarItem(placement: .cancellationAction) {
-              Button("Close", systemImage: "xmark") {
-                conversion?.cancel()
-                dismiss()
-              }
+              Button("Close", systemImage: "xmark") { close() }
             }
-            if verticalRail, let conversion {
+            if let conversion {
               ToolbarItem(placement: .confirmationAction) {
                 Button("Log as expense", systemImage: "plus") { logExpense(conversion, trip: trip) }
-                  .disabled(
-                    !conversion.canLogExpense(homeCurrency: trip.homeCurrency) || handingOff
-                  )
+                  .disabled(!conversion.canLogExpense(homeCurrency: trip.homeCurrency) || handingOff)
                   .accessibilityIdentifier("converter.log")
               }
             }
           }
-          .sheet(item: $picking) { side in
-            if let conversion {
-              ConversionCurrencyPicker(
-                title: side.title, selection: side == .from ? conversion.from : conversion.to
-              ) { choice in
-                conversion.select(choice, for: side)
-              }
+        }
+        .sheet(item: $picking) { side in
+          if let conversion {
+            ConversionCurrencyPicker(
+              title: side.title, selection: side == .from ? conversion.from : conversion.to
+            ) { choice in
+              conversion.select(choice, for: side)
             }
           }
-          .onGeometryChange(for: Bool.self) {
-            $0.size.width >= 600 && $0.size.width > $0.size.height
-          } action: {
-            wide = $0
-          }
-          .readVerticalRail($verticalRail)
-      }.task {
+        }
+      }
+      .task {
         // A nested picker may cause this task to run again; the open session owns its choices.
         guard conversion == nil else { return }
-        let defaults = trip.conversionDefaults
+        let defaults = trip.conversionDefaults(on: trip.date(for: attachment))
         let api = app.sync.api
         let state = ConversionModel(
           from: defaults.from, to: defaults.to, date: trip.date(for: attachment)
         ) { from, to, date in
           try await api.quote(from: from, to: to, date: date, token: nil)
         }
+        state.amount = ""
         conversion = state
         state.start()
-      }.taskRail()
+        #if DEBUG
+          // `--convert-amount 24.5` and `--convert-swap` reach a typed or swapped sheet.
+          let arguments = ProcessInfo.processInfo.arguments
+          if let index = arguments.firstIndex(of: "--convert-amount"), arguments.indices.contains(index + 1) {
+            state.amount = arguments[index + 1]
+          }
+          if arguments.contains("--convert-swap") { state.swap() }
+        #endif
+      }
+      .readVerticalRail($verticalRail)
+      .taskRail()
+      .presentationDragIndicator(.visible)
+      .presentationBackground(Theme.surface)
+      .presentationCornerRadius(Theme.Radius.sheet)
     }
   }
+
+  // MARK: - Layout
 
   private func content(_ conversion: ConversionModel, trip: TripSnapshot) -> some View {
     @Bindable var conversion = conversion
-    return ScrollView {
-      VStack(spacing: 22) {
-        currencyControls(conversion, trip: trip)
-        let layout =
-          wide && !dynamicTypeSize.isAccessibilitySize
-          ? AnyLayout(HStackLayout(alignment: .top, spacing: 24))
-          : AnyLayout(VStackLayout(spacing: 22))
-        layout {
-          VStack(spacing: 18) {
-            TextField("Amount", text: $conversion.amount).keyboardType(.decimalPad)
-              .multilineTextAlignment(.center).focused($inputFocus, equals: .amount)
-              .font(.system(size: wide ? min(amountSize, 38) : amountSize, weight: .bold))
-              .monospacedDigit().accessibilityLabel("Amount in \(conversion.from.code)")
-              .accessibilityIdentifier("converter.amount")
-            if let issue = conversion.amountIssue {
-              Text(issue).font(.footnote).foregroundStyle(Theme.bad)
-            }
-            resultBoard(conversion)
-            rateDetails(conversion)
-            budgetInsight(conversion, trip: trip)
-          }.frame(maxWidth: .infinity)
-          VStack(spacing: 18) {
-            LazyVGrid(
-              columns: Array(repeating: GridItem(.flexible(), spacing: 8), count: 3), spacing: 8
-            ) {
-              ForEach([1, 5, 10, 20, 50, 100], id: \.self) { value in
-                let preset = value * (Money.precision(conversion.from.code) == 0 ? 100 : 1)
-                Button("\(preset)") { conversion.amount = String(preset) }
-                  .font(.subheadline.weight(.bold)).frame(maxWidth: .infinity, minHeight: 44)
-                  .background(Theme.inset, in: Capsule()).buttonStyle(.plain)
-                  .accessibilityLabel("Set amount to \(preset) \(conversion.from.code)")
-              }
-            }
-            NumberPad(value: $conversion.amount, currency: conversion.from.code)
-            if !verticalRail {
-              Button {
-                logExpense(conversion, trip: trip)
-              } label: {
-                Label("Log it as an expense", systemImage: "plus")
-                  .font(.headline).padding(.horizontal, 16).padding(.vertical, 14)
-                  .frame(maxWidth: .infinity, minHeight: 50)
-                  .background(Theme.accent, in: RoundedRectangle(cornerRadius: 16))
-                  .foregroundStyle(.white).contentShape(RoundedRectangle(cornerRadius: 16))
-              }.buttonStyle(.plain).fixedSize(horizontal: false, vertical: true)
-                .disabled(!conversion.canLogExpense(homeCurrency: trip.homeCurrency) || handingOff)
-                .opacity(conversion.canLogExpense(homeCurrency: trip.homeCurrency) ? 1 : 0.45)
-                .accessibilityIdentifier("converter.log")
-            }
-            if conversion.to.code != trip.homeCurrency {
-              Text("Choose \(trip.homeCurrency) as the destination currency to log a trip expense.")
-                .font(.footnote).foregroundStyle(Theme.secondary).multilineTextAlignment(.center)
-            } else if !conversion.isIdentity, conversion.result == nil,
-              conversion.conversionIssue == nil
-            {
-              Text("You can still log the original amount with conversion pending.")
-                .font(.footnote).foregroundStyle(Theme.secondary).multilineTextAlignment(.center)
-            }
-          }.frame(maxWidth: .infinity)
-        }
-      }.pagePadding()
-    }.scrollDismissesKeyboard(.interactively)
-  }
-
-  private func currencyControls(_ conversion: ConversionModel, trip: TripSnapshot) -> some View {
-    VStack(spacing: 8) {
-      let layout =
-        dynamicTypeSize.isAccessibilitySize
-        ? AnyLayout(VStackLayout(spacing: 10)) : AnyLayout(HStackLayout(spacing: 10))
-      layout {
-        currencyButton(conversion.from, side: .from)
-        Button {
-          inputFocus = nil
-          conversion.swap()
-          withAnimation(reduceMotion ? nil : .spring(response: 0.3, dampingFraction: 1)) {
-            swapTurns += 180
+    let keypad = NumberPad(
+      value: $conversion.amount, currency: conversion.from.code, keyHeight: 48, spacing: 4)
+    return VStack(spacing: 0) {
+      if !verticalRail { header.padding(.horizontal, 18) }
+      if wide {
+        HStack(alignment: .bottom, spacing: 24) {
+          ScrollView { readout(conversion, trip: trip) }.scrollBounceBehavior(.basedOnSize)
+          VStack(spacing: 8) {
+            keypad
+            if !verticalRail { logButton(conversion, trip: trip) }
           }
-        } label: {
-          Image(systemName: "arrow.left.arrow.right").font(.title3.weight(.semibold))
-            .rotationEffect(.degrees(reduceMotion ? 0 : swapTurns))
-            .frame(width: 44, height: 44).contentShape(Circle())
-        }.buttonStyle(.plain).foregroundStyle(Theme.accent)
-          .accessibilityLabel("Swap currencies").accessibilityIdentifier("converter.swap")
-        currencyButton(conversion.to, side: .to)
-      }
-      Button {
-        inputFocus = nil
-        let defaults = trip.conversionDefaults
-        conversion.reset(from: defaults.from, to: defaults.to)
-      } label: {
-        Label("Reset to trip currencies", systemImage: "arrow.counterclockwise")
-          .font(.footnote.weight(.semibold)).frame(minHeight: 44)
-          .contentShape(Rectangle())
-      }.accessibilityIdentifier("converter.reset")
-    }
-  }
-  private func currencyButton(_ currency: ConversionCurrency, side: ConversionSide) -> some View {
-    Button {
-      inputFocus = nil
-      picking = side
-    } label: {
-      VStack(alignment: .leading, spacing: 6) {
-        Text(side == .from ? "FROM" : "TO").font(.caption2.weight(.heavy)).tracking(1)
-          .foregroundStyle(Theme.secondary)
-        HStack(spacing: 7) {
-          Text(currency.flag).font(.title2).accessibilityHidden(true)
-          Text(currency.code).font(.title3.weight(.heavy)).lineLimit(1).minimumScaleFactor(0.8)
-          Spacer(minLength: 0)
-          Image(systemName: "chevron.down").font(.caption.weight(.bold)).foregroundStyle(
-            Theme.accent)
-        }
-        Text(currency.title).font(.caption).foregroundStyle(Theme.secondary).lineLimit(2)
-          .frame(maxWidth: .infinity, alignment: .leading)
-      }.padding(14).frame(maxWidth: .infinity, minHeight: 90, alignment: .leading)
-        .background(Theme.surface, in: RoundedRectangle(cornerRadius: 18))
-        .contentShape(RoundedRectangle(cornerRadius: 18))
-    }.buttonStyle(.plain).foregroundStyle(Theme.ink)
-      .accessibilityLabel(
-        "\(side.title), \(currency.title), \(currency.code), \(currency.currencyName)"
-      )
-      .accessibilityHint("Choose a country, city, currency or flag")
-      .accessibilityIdentifier("converter.\(side.rawValue)")
-  }
-  private func resultBoard(_ conversion: ConversionModel) -> some View {
-    VStack(alignment: .leading, spacing: 12) {
-      Text(conversion.isIdentity ? "SAME CURRENCY" : "THAT’S ABOUT")
-        .font(.system(.caption2, design: .monospaced, weight: .heavy)).tracking(2)
-        .foregroundStyle(Theme.amber)
-      if let result = conversion.result {
-        let formatted = Money.format(result, conversion.to.code)
-        if wide || dynamicTypeSize.isAccessibilitySize || formatted.count > 12 {
-          Text(formatted).font(.system(size: wide ? 52 : 38, weight: .bold)).monospacedDigit()
-            .minimumScaleFactor(0.5).lineLimit(1).foregroundStyle(.white)
-        } else {
-          FlapText(value: formatted, count: max(10, formatted.count), size: 23)
+          .frame(width: 240).padding(.trailing, 18)
         }
       } else {
-        Text(
-          conversion.amountIssue != nil
-            ? "Check amount" : conversion.isLoading ? "Fetching rate…" : "Rate needed"
-        )
-        .font(.title2.weight(.heavy)).foregroundStyle(.white)
+        ScrollView { readout(conversion, trip: trip) }.scrollBounceBehavior(.basedOnSize)
+        VStack(spacing: 8) {
+          keypad
+          if !verticalRail { logButton(conversion, trip: trip) }
+        }
+        .padding(.horizontal, 18).padding(.top, 8)
       }
-    }.frame(maxWidth: .infinity, minHeight: 85, alignment: .leading).padding(22)
-      .background(Theme.board, in: RoundedRectangle(cornerRadius: 22))
-      .accessibilityElement(children: .ignore)
-      .accessibilityLabel(
-        conversion.result.map { Money.format($0, conversion.to.code) }
-          ?? (conversion.amountIssue ?? (conversion.isLoading ? "Fetching rate" : "Rate needed"))
-      )
-      .accessibilityIdentifier("converter.result")
+    }
+    .padding(.bottom, 4)
+    .frame(maxWidth: .infinity, maxHeight: .infinity)
+    .scrollDismissesKeyboard(.interactively)
+    .onGeometryChange(for: Bool.self) { $0.size.width >= 590 } action: { wide = $0 }
   }
-  @ViewBuilder private func rateDetails(_ conversion: ConversionModel) -> some View {
-    if conversion.isIdentity {
-      Text("1 \(conversion.from.code) = 1 \(conversion.to.code) · No exchange rate needed.")
-        .font(.caption).foregroundStyle(Theme.secondary)
-    } else {
-      VStack(alignment: .leading, spacing: 10) {
+
+  private var header: some View {
+    ZStack {
+      Text("Quick convert")
+        .typeface(16, .heavy, relativeTo: .headline, maximum: 1.3)
+        .foregroundStyle(Theme.ink)
+        .accessibilityAddTraits(.isHeader)
+      HStack {
+        Button("Close") { close() }
+          .typeface(16, .bold, relativeTo: .body, maximum: 1.3)
+          .foregroundStyle(Theme.secondary)
+          .frame(minWidth: 44, minHeight: 44, alignment: .leading)
+          .contentShape(Rectangle())
+          .buttonStyle(.plain)
+        Spacer()
+      }
+    }
+    .frame(height: 44)
+  }
+
+  private func readout(_ conversion: ConversionModel, trip: TripSnapshot) -> some View {
+    VStack(spacing: 0) {
+      currencies(conversion).padding(.top, 4)
+      amount(conversion).padding(.top, 14)
+      board(conversion).padding(.top, 10)
+      rateControls(conversion)
+      insight(conversion, trip: trip).padding(.top, 12)
+      presets(conversion, trip: trip).padding(.top, 12)
+    }
+    .padding(.horizontal, 18).padding(.bottom, 8)
+  }
+
+  // MARK: - Currencies
+
+  private func currencies(_ conversion: ConversionModel) -> some View {
+    HStack(spacing: 12) {
+      pill(conversion.from, side: .from)
+      Button {
+        rateFocused = false
+        conversion.swap()
+        Haptics.selection()
+        withAnimation(reduceMotion ? nil : .timingCurve(0.34, 1.56, 0.64, 1, duration: 0.6)) {
+          swapTurns += 180
+        }
+      } label: {
+        Image(systemName: "arrow.right.arrow.left")
+          .font(.system(size: 16, weight: .bold))
+          .foregroundStyle(Theme.background)
+          .rotationEffect(.degrees(swapTurns))
+          .frame(width: 42, height: 42)
+          .background(Theme.ink, in: Circle())
+          .contentShape(Circle())
+      }
+      .buttonStyle(PressStyle(scale: 0.92))
+      .accessibilityLabel("Swap currencies")
+      .accessibilityIdentifier("converter.swap")
+      pill(conversion.to, side: .to)
+    }
+  }
+
+  private func pill(_ currency: ConversionCurrency, side: ConversionSide) -> some View {
+    Button {
+      rateFocused = false
+      picking = side
+    } label: {
+      Text("\(currency.flag) \(currency.code)")
+        .typeface(15, .heavy, relativeTo: .body, maximum: 1.4)
+        .foregroundStyle(Theme.ink)
+        .padding(.vertical, 9).padding(.horizontal, 14)
+        .frame(minWidth: 74)
+        .background(Theme.inset, in: Capsule())
+        .contentShape(Capsule())
+    }
+    .buttonStyle(PressStyle(scale: 0.94))
+    .accessibilityLabel("\(side.title), \(currency.title), \(currency.currencyName)")
+    .accessibilityHint("Choose a country, city, currency or flag")
+    .accessibilityIdentifier("converter.\(side.rawValue)")
+  }
+
+  // MARK: - Amounts
+
+  private func amount(_ conversion: ConversionModel) -> some View {
+    let shown = Money.typed(conversion.amount, currency: conversion.from.code)
+    let typed = (conversion.parsedAmount ?? 0) > 0
+    return Text(shown)
+      .typeface(46, .bold, tracking: -0.045, relativeTo: .largeTitle, maximum: 1.2)
+      .monospacedDigit()
+      .foregroundStyle(typed ? Theme.ink : Theme.tertiary)
+      .lineLimit(1).minimumScaleFactor(0.5)
+      .bump(on: shown)
+      .accessibilityLabel("Amount in \(conversion.from.currencyName), \(shown)")
+      .accessibilityIdentifier("converter.amount")
+  }
+
+  private func board(_ conversion: ConversionModel) -> some View {
+    let result = resultText(conversion)
+    return VStack(spacing: 2) {
+      Text(boardLabel(conversion))
+        .typeface(13, .bold, relativeTo: .footnote, maximum: 1.4)
+        .foregroundStyle(Theme.secondary)
+      Text(result)
+        .typeface(44, .bold, tracking: -0.045, relativeTo: .largeTitle, maximum: 1.2)
+        .monospacedDigit()
+        .foregroundStyle(Theme.accentText)
+        .lineLimit(1).minimumScaleFactor(0.5)
+        .contentTransition(.numericText())
+        .animation(reduceMotion ? nil : Motion.bump, value: result)
+    }
+    .frame(maxWidth: .infinity)
+    .padding(.top, 12).padding(.horizontal, 10).padding(.bottom, 14)
+    .background(Theme.inset, in: RoundedRectangle(cornerRadius: 20, style: .continuous))
+    .accessibilityElement(children: .combine)
+    .accessibilityIdentifier("converter.result")
+  }
+
+  /// "That's about" once there's an amount, otherwise the unit rate, e.g. "€1 = £0.86".
+  private func boardLabel(_ conversion: ConversionModel) -> String {
+    if conversion.isIdentity { return "Same currency" }
+    if conversion.amountIssue != nil { return "Check the amount" }
+    if (conversion.parsedAmount ?? 0) > 0, conversion.result != nil { return "That’s about" }
+    if let rate = unitRate(conversion) { return rate }
+    if conversion.isLoading { return "Fetching today’s rate…" }
+    return conversion.usesManualRate ? "Enter a rate below" : "No live rate right now"
+  }
+
+  private func resultText(_ conversion: ConversionModel) -> String {
+    if let result = conversion.result { return Money.format(result, conversion.to.code) }
+    let empty = conversion.amount.isEmpty || conversion.parsedAmount == 0
+    return empty && conversion.amountIssue == nil ? Money.format(0, conversion.to.code) : "—"
+  }
+
+  /// One unit (or a thousand of a zero-decimal currency) at the current rate.
+  private func unitRate(_ conversion: ConversionModel) -> String? {
+    let rate = conversion.usesManualRate ? conversion.rateInput : conversion.quote?.rate
+    guard let rate, !rate.isEmpty else { return nil }
+    let from = conversion.from.code
+    let to = conversion.to.code
+    let unit = Money.factor(from) * (Money.precision(from) == 0 ? 1000 : 1)
+    guard let value = try? Money.convert(unit, from: from, to: to, rate: rate) else { return nil }
+    return "\(Money.format(unit, from, compact: true)) = \(Money.format(value, to))"
+  }
+
+  /// Offline, or with a refused quote: retry, or type the rate off a board or a receipt.
+  @ViewBuilder private func rateControls(_ conversion: ConversionModel) -> some View {
+    if !conversion.isIdentity, conversion.usesManualRate || conversion.message != nil {
+      VStack(spacing: 8) {
         if conversion.usesManualRate {
-          HStack {
+          HStack(spacing: 8) {
             Text("1 \(conversion.from.code) =")
             TextField(
               "Rate",
               text: Binding(get: { conversion.rateInput }, set: { conversion.enterManualRate($0) })
             )
-            .keyboardType(.decimalPad).textFieldStyle(.roundedBorder).focused(
-              $inputFocus, equals: .rate
-            )
-            .accessibilityLabel("Manual exchange rate").accessibilityIdentifier("converter.rate")
+            .keyboardType(.decimalPad)
+            .focused($rateFocused)
+            .multilineTextAlignment(.center)
+            .frame(width: 96)
+            .padding(.vertical, 8)
+            .background(Theme.inset, in: RoundedRectangle(cornerRadius: 12, style: .continuous))
+            .accessibilityLabel("Exchange rate, \(conversion.to.code) per \(conversion.from.code)")
+            .accessibilityIdentifier("converter.rate")
             Text(conversion.to.code)
-          }.font(.subheadline)
-          Text("Your entered rate · \(conversion.quoteDate)").font(.caption).foregroundStyle(
-            Theme.secondary)
-        } else if let quote = conversion.quote {
-          Text(
-            "1 \(conversion.from.code) = \(quote.rate) \(conversion.to.code) · \(quote.source) · \(quote.rateDate)\nReference estimate; your card’s charge may differ."
-          )
-          .font(.caption).foregroundStyle(Theme.secondary)
-        } else {
-          Text(conversion.message ?? "Fetching a reference rate for \(conversion.quoteDate)…")
-            .font(.footnote).foregroundStyle(Theme.secondary)
+          }
+          .typeface(15, .bold, relativeTo: .body, maximum: 1.4)
+          .foregroundStyle(Theme.ink)
+        } else if let message = conversion.message {
+          Text(message)
+            .typeface(12.5, .semibold, relativeTo: .caption, maximum: 1.6)
+            .foregroundStyle(Theme.secondary)
+            .multilineTextAlignment(.center)
         }
         if let issue = conversion.conversionIssue {
-          Text(issue).font(.footnote).foregroundStyle(Theme.bad)
+          Text(issue)
+            .typeface(12.5, .semibold, relativeTo: .caption, maximum: 1.6)
+            .foregroundStyle(Theme.bad)
+            .multilineTextAlignment(.center)
         }
-        HStack(spacing: 20) {
+        HStack(spacing: 18) {
           if !conversion.usesManualRate {
             Button("Enter a rate") {
               conversion.enterManualRate()
-              inputFocus = .rate
-            }.frame(minHeight: 44)
+              rateFocused = true
+            }
           }
-          if !conversion.isLoading {
-            Button("Use live rate", systemImage: "arrow.clockwise") {
-              inputFocus = nil
-              conversion.refresh()
-            }.frame(minHeight: 44)
+          Button(conversion.usesManualRate ? "Use live rate" : "Try again") {
+            rateFocused = false
+            conversion.refresh()
           }
-        }.font(.footnote.weight(.semibold))
+        }
+        .typeface(13, .heavy, relativeTo: .footnote, maximum: 1.4)
+        .foregroundStyle(Theme.accentText)
+        .buttonStyle(.plain)
+        .frame(minHeight: 32)
       }
+      .padding(.top, 10)
     }
   }
-  @ViewBuilder private func budgetInsight(_ conversion: ConversionModel, trip: TripSnapshot)
-    -> some View
-  {
-    if let result = conversion.result, conversion.to.code == trip.homeCurrency,
-      let budget = Money.minor(trip.budgetMinor), budget > 0
-    {
-      let daily = max(1, budget / Int64(max(1, trip.days.count)))
+
+  // MARK: - Budget
+
+  /// "12% of a day's budget" against the trip budget spread over its days, with a bar that turns
+  /// from good to accent past half and bad once it's over.
+  @ViewBuilder private func insight(_ conversion: ConversionModel, trip: TripSnapshot) -> some View {
+    if trip.dailyBudget > 0 {
+      let daily = trip.dailyBudget
+      let typed = (conversion.parsedAmount ?? 0) > 0
+      let home = homeValue(conversion, trip: trip)
+      let percent = home.map { Double($0) / Double(daily) * 100 } ?? 0
+      let colour = percent <= 50 ? Theme.good : percent <= 100 ? Theme.accent : Theme.bad
       VStack(spacing: 6) {
         HStack {
-          Text("\(result * 100 / daily)% of a day’s budget")
-          Spacer()
-          Text("\(Money.format(daily, conversion.to.code)) a day")
-        }.font(.caption)
-        ProgressView(value: min(Double(result) / Double(daily), 1))
-          .tint(result > daily ? Theme.bad : Theme.accent)
+          Text(
+            !typed
+              ? "Type a price you can see"
+              : home == nil ? "Waiting for a rate" : "\(Int(percent.rounded()))% of a day’s budget"
+          )
+          Spacer(minLength: 8)
+          Text("\(Money.format(Money.wholeUnits(daily, trip.homeCurrency), trip.homeCurrency, compact: true)) a day")
+        }
+        .typeface(13, .bold, relativeTo: .footnote, maximum: 1.4)
+        .foregroundStyle(Theme.secondary)
+        Capsule().fill(Theme.inset).frame(height: 8)
+          .overlay(alignment: .leading) {
+            GeometryReader { proxy in
+              Capsule().fill(colour)
+                .frame(width: proxy.size.width * min(1, percent / 100))
+            }
+          }
+          .clipShape(Capsule())
+          .animation(reduceMotion ? nil : .timingCurve(0.34, 1.3, 0.64, 1, duration: 0.5), value: percent)
+          .accessibilityHidden(true)
       }
+      .accessibilityElement(children: .combine)
     }
   }
+
+  /// The typed amount in home currency: as typed, as converted, or at the trip's known rate.
+  private func homeValue(_ conversion: ConversionModel, trip: TripSnapshot) -> Int64? {
+    guard let typed = conversion.parsedAmount, typed > 0 else { return nil }
+    if conversion.from.code == trip.homeCurrency { return typed }
+    if conversion.to.code == trip.homeCurrency { return conversion.result }
+    return trip.estimate(typed, from: conversion.from.code)
+  }
+
+  // MARK: - Presets
+
+  private func presets(_ conversion: ConversionModel, trip: TripSnapshot) -> some View {
+    let scale = presetScale(conversion, trip: trip)
+    let values = [1, 5, 10, 20, 50, 100].map { Int64($0) * scale }
+    let chips = values.map { value in
+      Button {
+        rateFocused = false
+        conversion.amount = String(value)
+        Haptics.selection()
+      } label: {
+        Text(Money.format(value * Money.factor(conversion.from.code), conversion.from.code, compact: true))
+          .typeface(13, .heavy, relativeTo: .footnote, maximum: 1.4)
+          .foregroundStyle(Theme.secondary)
+          .padding(.vertical, 7).padding(.horizontal, 12)
+          .background(Theme.inset, in: Capsule())
+          .fixedSize()
+      }
+      .buttonStyle(PressStyle(scale: 0.9))
+    }
+    return ViewThatFits(in: .horizontal) {
+      HStack(spacing: 6) { ForEach(values.indices, id: \.self) { chips[$0] } }
+      VStack(spacing: 6) {
+        HStack(spacing: 6) { ForEach(0..<3, id: \.self) { chips[$0] } }
+        HStack(spacing: 6) { ForEach(3..<6, id: \.self) { chips[$0] } }
+      }
+    }
+    .frame(maxWidth: .infinity)
+  }
+
+  /// Presets in round numbers worth about £1 to £100 back home: €1…€100, ¥100…¥10,000.
+  private func presetScale(_ conversion: ConversionModel, trip: TripSnapshot) -> Int64 {
+    let from = conversion.from.code
+    guard from != trip.homeCurrency else { return 1 }
+    let rate =
+      (conversion.to.code == trip.homeCurrency ? conversion.quote?.rate : nil)
+      ?? trip.knownRate(from: from)
+    guard let rate, let value = Double(rate), value > 0 else {
+      return Money.precision(from) == 0 ? 100 : 1
+    }
+    // Capped so the largest preset stays within the keypad's seven digits.
+    let power = min(4, max(0, log10(1 / value).rounded()))
+    return Int64(pow(10, power))
+  }
+
+  // MARK: - Actions
+
+  private func logButton(_ conversion: ConversionModel, trip: TripSnapshot) -> some View {
+    Button("Log it as an expense") { logExpense(conversion, trip: trip) }
+      .buttonStyle(LipButtonStyle(height: 56))
+      .disabled(!conversion.canLogExpense(homeCurrency: trip.homeCurrency) || handingOff)
+      .animation(.easeOut(duration: 0.25), value: conversion.canLogExpense(homeCurrency: trip.homeCurrency))
+      .accessibilityIdentifier("converter.log")
+  }
+
+  private func close() {
+    conversion?.cancel()
+    dismiss()
+  }
+
+  /// Closes, then opens Add expense for the same day with the amount and currency typed here.
   private func logExpense(_ conversion: ConversionModel, trip: TripSnapshot) {
     guard !handingOff else { return }
     do {
@@ -316,10 +439,13 @@ public struct ConvertView: View {
       conversion.cancel()
       dismiss()
       Task {
-        try? await Task.sleep(for: .milliseconds(300))
+        try? await Task.sleep(for: .milliseconds(350))
         app.expenseDraft = draft
         app.persistDraft()
       }
-    } catch { app.error = error.localizedDescription }
+    } catch {
+      Haptics.error()
+      app.error = error.localizedDescription
+    }
   }
 }

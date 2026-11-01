@@ -256,7 +256,7 @@ public struct ExpenseEditor: View {
 
   private func amountBlock(_ trip: TripSnapshot, draft: ExpenseDraft) -> some View {
     let minor = amount(draft)
-    let shown = display(draft.amount, currency: draft.currency)
+    let shown = Money.typed(draft.amount, currency: draft.currency)
     return VStack(spacing: 12) {
       Text(shown)
         .typeface(58, .bold, tracking: -0.05, relativeTo: .largeTitle, maximum: 1.2)
@@ -313,15 +313,6 @@ public struct ExpenseEditor: View {
       .defaultScrollAnchor(.center, for: .alignment)
     }
     .frame(maxWidth: .infinity)
-  }
-
-  /// "£1,234.5" as typed, grouping the whole part and keeping the decimals the keypad has so far.
-  private func display(_ amount: String, currency: String) -> String {
-    let parts = amount.split(separator: ".", omittingEmptySubsequences: false)
-    let whole = Int64(parts.first.map(String.init) ?? "") ?? 0
-    var text = Money.format(whole * Money.factor(currency), currency, compact: true)
-    if parts.count > 1, text.last?.isNumber == true { text += "." + parts[1] }
-    return text
   }
 
   private func estimate(_ trip: TripSnapshot, draft: ExpenseDraft, minor: Int64) -> Int64? {

@@ -2,6 +2,15 @@ import Foundation
 import TripSplitDomain
 
 extension Money {
+  /// "£1,234.5" as typed on a keypad: the whole part grouped, plus the decimals typed so far.
+  package static func typed(_ amount: String, currency: String) -> String {
+    let parts = amount.split(separator: ".", omittingEmptySubsequences: false)
+    let whole = Int64(parts.first.map(String.init) ?? "") ?? 0
+    var text = format(whole * factor(currency), currency, compact: true)
+    if parts.count > 1, text.last?.isNumber == true { text += "." + parts[1] }
+    return text
+  }
+
   /// Rounds to whole units, half away from zero, for card totals that drop the pennies.
   package static func wholeUnits(_ minor: Int64, _ currency: String) -> Int64 {
     let factor = factor(currency)
