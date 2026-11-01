@@ -30,6 +30,19 @@ export function onTitleVisibility(cb: (open: boolean) => void) {
   cb(titleOpen);
 }
 
+// Sections that render themselves from scroll (the departure board) subscribe to how far in the reader is.
+const depthListeners = new Map<string, Set<(s: number) => void>>();
+const depths = new Map<string, number>();
+
+/** Calls back with how far the named [data-sc] section has scrolled, in viewport heights (0 when it pins, negative before). */
+export function onSectionDepth(name: string, cb: (s: number) => void) {
+  const listeners = depthListeners.get(name) ?? new Set();
+  listeners.add(cb);
+  depthListeners.set(name, listeners);
+  const s = depths.get(name);
+  if (s !== undefined) cb(s);
+}
+
 /** Text values bound to [data-bind] and [data-bind-style] elements. */
 function values(p: Progress, heroB: number, soloRows: SoloRow[]): Record<string, string> {
   // A row's cost comes off once it has mostly landed (60% of its 0.16 drop, matching Hero.astro).
@@ -139,7 +152,10 @@ export function initScroll() {
       const r = el.getBoundingClientRect();
       const v = clamp(-r.top / Math.max(1, r.height - vh));
       const name = el.dataset.sc ?? '';
+      const depth = -r.top / vh;
       p[name] = v;
+      depths.set(name, depth);
+      for (const cb of depthListeners.get(name) ?? []) cb(depth);
       set(el, '--p', v.toFixed(4));
       set(el, '--fit', fit);
       set(el, '--fitB', fitB);
@@ -148,7 +164,7 @@ export function initScroll() {
         const narrow = vw < 700;
         const ps = narrow ? Math.min(0.56, (vw - 36) / 680) : clamp((vw - 380) / 680, 0.55, 1);
         const phS = narrow ? Math.min(0.62, (vh - 330) / 620) : 1;
-        const s = Math.max(0, -r.top) / vh;
+        const s = Math.max(0, depth);
         const t = beat(s, HERO.tear);
         const h = beat(s, HERO.handover);
         const travel = HERO.handover[1] * vh;

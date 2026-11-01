@@ -407,24 +407,6 @@ p {
   }
 }
 
-@keyframes lpFlapTop {
-  from {
-    transform: rotateX(0deg);
-  }
-  to {
-    transform: rotateX(-90deg);
-  }
-}
-
-@keyframes lpFlapBot {
-  from {
-    transform: rotateX(90deg);
-  }
-  to {
-    transform: rotateX(0deg);
-  }
-}
-
 @keyframes lpCue {
   0%,
   100% {
