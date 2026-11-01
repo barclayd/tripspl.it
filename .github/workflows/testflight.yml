@@ -1,0 +1,23 @@
+name: internal TestFlight
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  release:
+    uses: barclayd/barclayd/.github/workflows/testflight.yml@9df65c1b7d9bf683e100cbee34d6b664950853ee
+    with:
+      tooling-ref: 9df65c1b7d9bf683e100cbee34d6b664950853ee
+      app-id: '6829340844'
+      bundle-id: it.tripspl.TripSplit
+      team-id: R2GGK3VN2C
+      group-id: 69183108-1726-4905-82c5-e3e6ecae0251
+      project: auto
+      scheme: TripSplit
+      runner: xcode-27
+      xcode-path: /Applications/Xcode_27.1.app
+      test-destination: platform=iOS Simulator,name=iPhone Duo,OS=27.1
+    secrets: inherit
