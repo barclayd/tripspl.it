@@ -32,6 +32,12 @@ extension WatchModel {
     }
   #endif
 
+  /// What the watch app last saved to the App Group, read-only, for complications.
+  public static func mirrored() -> WatchModel {
+    let mirror = CompanionMirror.shared()
+    return WatchModel(state: mirror.load(), mirror: mirror)
+  }
+
   /// Sample trips for screenshots and simulator runs, matching the phone's `--demo` data.
   public static func demo(at instant: Date = Date()) throws -> WatchModel {
     let store = try LocalStore(inMemory: true)

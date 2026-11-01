@@ -5,14 +5,15 @@ import TripSplitWatchModel
 
 /// Everywhere a trip can be opened from, by id, so a page always shows the latest sync.
 enum TripRoute: Hashable {
-  case trip(String)
+  /// A trip, opening on a page when a complication or notification asks for one.
+  case trip(String, page: TripPages.Page? = nil)
   case day(trip: String, day: String)
   case people(String)
   case person(trip: String, traveller: String)
 
   var tripID: String {
     switch self {
-    case .trip(let id), .people(let id): id
+    case .trip(let id, _), .people(let id): id
     case .day(let id, _), .person(let id, _): id
     }
   }
@@ -27,7 +28,7 @@ struct TripDestination: View {
     if let trip = model.trip(route.tripID) {
       let pages = model.pages(for: trip)
       switch route {
-      case .trip: TripView(pages: pages)
+      case .trip(_, let page): TripView(pages: pages, page: page)
       case .day(_, let day): DayView(pages: pages, dayID: day)
       case .people: PeopleView(pages: pages)
       case .person(_, let traveller): PersonView(pages: pages, travellerID: traveller)
@@ -47,9 +48,10 @@ struct TripView: View {
   @State private var page: TripPages.Page
   @State private var logging = false
 
-  init(pages: TripPages) {
+  init(pages: TripPages, page: TripPages.Page? = nil) {
     self.pages = pages
-    _page = State(initialValue: pages.firstPage)
+    let page = page.flatMap { pages.pages.contains($0) ? $0 : nil }
+    _page = State(initialValue: page ?? pages.firstPage)
   }
 
   var body: some View {

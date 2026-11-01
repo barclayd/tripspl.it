@@ -4,19 +4,25 @@ import TripSplitWatchDesign
 import TripSplitWatchModel
 
 /// The watch's launch screen: the trip you're on, upcoming departures and a passport page
-/// of past trips. Shows the empty state until the phone has shared a trip.
+/// of past trips. Shows the empty state until the phone has shared a trip. Complications,
+/// Smart Stack buttons and notifications open it at a `WatchLink`.
 public struct TripsRootView: View {
   @Environment(WatchModel.self) private var model
+  @State private var path: [TripRoute] = []
+  @State private var sheet: TripsSheet?
+  private let links: WatchLinkInbox
 
-  public init() {}
+  public init(links: WatchLinkInbox = .shared) {
+    self.links = links
+  }
 
   public var body: some View {
-    NavigationStack {
+    NavigationStack(path: $path) {
       Group {
         if model.timeline.isEmpty {
           NoTripsView()
         } else {
-          TripsList()
+          TripsList(sheet: $sheet)
         }
       }
       .navigationDestination(for: TripRoute.self) { TripDestination(route: $0) }
@@ -32,17 +38,46 @@ public struct TripsRootView: View {
       }
     }
     .tint(WatchTheme.accentText)
+    .sheet(item: $sheet) { sheet in
+      switch sheet {
+      case .convert: QuickConvertView(model: model)
+      case .log(let trip): LogExpenseView(model: model, trip: trip.flatMap(model.trip))
+      }
+    }
+    .onOpenURL { url in
+      if let link = WatchLink(url: url) { open(link) }
+    }
+    .onChange(of: links.pending, initial: true) {
+      if let link = links.take() { open(link) }
+    }
+  }
+
+  private func open(_ link: WatchLink) {
+    switch link {
+    case .trips:
+      sheet = nil
+      path = []
+    case .trip(let id, let page):
+      sheet = nil
+      path = model.trip(id) == nil ? [] : [.trip(id, page: page)]
+    case .convert:
+      sheet = .convert
+    case .log(let trip):
+      sheet = .log(trip: trip)
+    }
   }
 }
 
-struct TripsList: View {
-  enum Sheet: Identifiable {
-    case convert, log
-    var id: Self { self }
-  }
+/// The sheets the trips list opens, also opened by links.
+enum TripsSheet: Hashable, Identifiable {
+  case convert
+  case log(trip: String?)
+  var id: Self { self }
+}
 
+struct TripsList: View {
   @Environment(WatchModel.self) private var model
-  @State private var sheet: Sheet?
+  @Binding var sheet: TripsSheet?
 
   var body: some View {
     let timeline = model.timeline
@@ -77,6 +112,7 @@ struct TripsList: View {
           SectionLabel("Been there", colour: WatchTheme.ink2)
           PassportPage(trips: timeline.past, total: timeline.pastTotal)
         }
+        WatchSettings()
       }
       .padding(.horizontal, 7)
     }
@@ -84,14 +120,8 @@ struct TripsList: View {
       if !timeline.now.isEmpty || !timeline.upcoming.isEmpty {
         ToolbarItemGroup(placement: .bottomBar) {
           Spacer()
-          LogButton { sheet = .log }
+          LogButton { sheet = .log(trip: nil) }
         }
-      }
-    }
-    .sheet(item: $sheet) { sheet in
-      switch sheet {
-      case .convert: QuickConvertView(model: model)
-      case .log: LogExpenseView(model: model)
       }
     }
   }
@@ -111,5 +141,26 @@ struct LogButton: View {
     .buttonBorderShape(.circle)
     .tint(WatchTheme.accent)
     .accessibilityLabel("Log expense")
+  }
+}
+
+/// Watch-only settings, at the foot of the trips list.
+struct WatchSettings: View {
+  @Environment(WatchModel.self) private var model
+
+  var body: some View {
+    @Bindable var model = model
+    SectionLabel("Settings", symbol: "gearshape", colour: WatchTheme.ink2)
+    Toggle(isOn: $model.preferences.hidesAmountsWhenWristDown) {
+      VStack(alignment: .leading, spacing: 2) {
+        Text("Hide amounts")
+          .watchFont(14, .semibold)
+        Text("On the watch face when your wrist is down")
+          .watchFont(11, .semibold)
+          .foregroundStyle(WatchTheme.ink2)
+      }
+    }
+    .tint(WatchTheme.accent)
+    .padding(.vertical, 4)
   }
 }

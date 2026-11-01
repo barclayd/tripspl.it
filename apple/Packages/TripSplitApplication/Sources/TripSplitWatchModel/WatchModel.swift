@@ -14,6 +14,14 @@ import TripSplitDomain
   public var convertMemory: ConvertMemory {
     didSet { try? mirror?.write(convertMemory, key: "convert") }
   }
+  /// Settings kept on the watch, such as hiding amounts on the watch face.
+  public var preferences: WatchPreferences {
+    didSet {
+      guard preferences != oldValue else { return }
+      try? mirror?.write(preferences, key: "preferences")
+      onChange?()
+    }
+  }
   /// A short message for the user, such as a change the phone could not apply.
   public var message: String?
   /// The instant the UI treats as now. Refreshed when the app becomes active.
@@ -44,6 +52,7 @@ import TripSplitDomain
     rates = mirror?.read([String: FXQuote].self, key: "rates") ?? [:]
     tables = mirror?.read([String: FXTable].self, key: "tables") ?? [:]
     convertMemory = mirror?.read(ConvertMemory.self, key: "convert") ?? .init()
+    preferences = mirror?.read(WatchPreferences.self, key: "preferences") ?? .init()
   }
 
   public var trips: [TripSnapshot] { state.trips }
@@ -129,6 +138,7 @@ import TripSplitDomain
   public func cache(_ quote: FXQuote) {
     rates[Self.key(quote.from, quote.to)] = quote
     try? mirror?.write(rates, key: "rates")
+    onChange?()
   }
 
   /// Converts whole or fractional amounts for display, e.g. €10 to £8.62.
@@ -141,6 +151,7 @@ import TripSplitDomain
   public func cache(_ table: FXTable) {
     tables[table.base] = table
     try? mirror?.write(tables, key: "tables")
+    onChange?()
   }
 
   /// Refreshes today's table for the home currency of the trip the watch leads with, so quick
@@ -186,6 +197,15 @@ import TripSplitDomain
   private static func key(_ from: String, _ to: String) -> String { from + ">" + to }
 
   func retain(_ object: AnyObject) { retained = object }
+}
+
+/// Settings kept on the watch.
+public struct WatchPreferences: Codable, Hashable, Sendable {
+  public init(hidesAmountsWhenWristDown: Bool = false) {
+    self.hidesAmountsWhenWristDown = hidesAmountsWhenWristDown
+  }
+  /// Shows amounts on the watch face as "£•••" while the wrist is down.
+  public var hidesAmountsWhenWristDown: Bool
 }
 
 /// A sample conversion in today's local currency, shown on the convert capsule.
