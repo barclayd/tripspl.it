@@ -15,7 +15,11 @@ struct Destination: Identifiable, Hashable, Sendable {
   var flag: String { countryCode.flag }
   var currencies: [String] { CountryMetadata.country(countryCode)?.currencies ?? [] }
   var requiresCurrencySelection: Bool { currency.isEmpty }
-  var secondaryLabel: String { isCountry ? "Country" : (detail ?? country) }
+  var secondaryLabel: String {
+    if isCountry { return "Country" }
+    let context = detail?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
+    return context.isEmpty ? country : context
+  }
 
   func stop(nights: Int = 3) -> Stop {
     .init(

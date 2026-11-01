@@ -8,6 +8,14 @@ import Testing
 #endif
 
 struct DestinationTests {
+  @Test func missingMapsContextStillShowsTheCountry() throws {
+    var destination = try #require(Destination.search("Taipei").first)
+    destination.detail = " \n"
+    #expect(destination.secondaryLabel == destination.country)
+    destination.detail = "Taipei, Taiwan"
+    #expect(destination.secondaryLabel == "Taipei, Taiwan")
+  }
+
   @Test func countriesFollowTheirDisplayedNames() throws {
     let countries = CountryMetadata.all
     #expect(countries.count >= 249)
