@@ -36,6 +36,10 @@
 		<key>NSAllowsLocalNetworking</key>
 		<true/>
 	</dict>
+	<key>NSUserActivityTypes</key>
+	<array>
+		<string>it.tripspl.TripSplit.new-trip</string>
+	</array>
 	<key>TripSplitAPIBaseURL</key>
 	<string>$(TRIPSPLIT_API_BASE_URL)</string>
 	<key>UIApplicationSceneManifest</key>
