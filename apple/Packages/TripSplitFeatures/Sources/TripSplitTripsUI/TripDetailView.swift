@@ -20,35 +20,42 @@ public struct TripDetailView: View {
 
   public var body: some View {
     if let trip = model.store.trip(tripID) {
-      ScrollView {
-        VStack(alignment: .leading, spacing: 22) {
-          if compact {
-            compactHeader(trip)
-          } else {
-            header(trip)
-            BoardingPassStack(trip: trip) { model.openDay(.init(kind: .leg, id: $0.id)) }
-            TripCostCard(trip: trip)
-          }
-          SyncNotice(tripID: trip.id)
-          // On your own there's no one to owe, so the days stand alone without a picker.
-          let shared = TripBalances.applies(to: trip)
-          if shared {
-            SegmentedControl(
-              "Trip section", selection: $section,
-              options: [(.days, "Days"), (.balances, "Who owes who")])
-          }
-          let shown = shared ? section : .days
-          Group {
-            switch shown {
-            case .days: TripDaysList(trip: trip, compact: compact)
-            case .balances: TripBalances(trip: trip) { repayment = $0 }
+      ScrollViewReader { proxy in
+        ScrollView {
+          VStack(alignment: .leading, spacing: 22) {
+            if compact {
+              compactHeader(trip)
+            } else {
+              header(trip)
+              BoardingPassStack(trip: trip) { model.openDay(.init(kind: .leg, id: $0.id)) }
+              TripCostCard(trip: trip)
             }
+            SyncNotice(tripID: trip.id)
+            // On your own there's no one to owe, so the days stand alone without a picker.
+            let shared = TripBalances.applies(to: trip)
+            if shared {
+              SegmentedControl(
+                "Trip section", selection: $section,
+                options: [(.days, "Days"), (.balances, "Who owes who")])
+            }
+            let shown = shared ? section : .days
+            Group {
+              switch shown {
+              case .days: TripDaysList(trip: trip, compact: compact)
+              case .balances: TripBalances(trip: trip) { repayment = $0 }
+              }
+            }
+            .transition(.opacity)
+            .id(shown)
           }
-          .transition(.opacity)
-          .id(shown)
+          .pagePadding()
+          .padding(.bottom, 48)
         }
-        .pagePadding()
-        .padding(.bottom, 48)
+        // The trip column opens on the day beside it, however far down, and keeps it in view.
+        .onAppear { if compact, let open = model.selectedAttachment { proxy.scrollTo(open, anchor: .center) } }
+        .onChange(of: model.selectedAttachment) { _, open in
+          if compact, let open { withAnimation(.smooth) { proxy.scrollTo(open) } }
+        }
       }
       .background(Theme.background)
       .navigationTitle("")

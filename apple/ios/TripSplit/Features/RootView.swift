@@ -59,13 +59,25 @@ struct RootView: View {
             })
         ) {
           let tripBeside = twoPane && model.selectedAttachment != nil
+          // Opening a day moves the whole path along a step: the trip slides over from the pane
+          // beside as the day pushes in there, and the trips list steps aside, as a push would.
           ZStack {
-            TripsView(compact: twoPane).opacity(tripBeside ? 0 : 1)
+            TripsView(compact: twoPane)
+              .visualEffect { [tripBeside] content, proxy in
+                content.offset(x: tripBeside ? -proxy.size.width * 0.3 : 0)
+              }
+              .opacity(tripBeside ? 0 : 1)
               .allowsHitTesting(!tripBeside).accessibilityHidden(tripBeside)
             if tripBeside, let trip = model.selectedTrip {
               TripDetailView(tripID: trip.id, compact: true)
+                .transition(reduceMotion ? .opacity : .move(edge: .trailing))
+                // Stays over the trips list while it slides back out, not under it.
+                .zIndex(1)
             }
           }
+          .animation(reduceMotion ? .smooth(duration: 0.25) : .smooth(duration: 0.45), value: tripBeside)
+          // Slides stay within the column, while backgrounds still run under the bars.
+          .clipShape(ColumnClip(sides: twoPane))
           // Half open, the leading pane runs right up to the fold.
           .navigationSplitViewColumnWidth(
             min: bookFold?.minX ?? 300, ideal: bookFold?.minX ?? 340, max: bookFold?.minX ?? 360)
@@ -85,21 +97,25 @@ struct RootView: View {
           .safeAreaPadding(.top, twoPane && railed ? max(0, detailTop - sidebarTop) : 0)
           .onGeometryChange(for: CGFloat.self) { $0.safeAreaInsets.top } action: { sidebarTop = $0 }
         } detail: {
-          NavigationStack {
+          NavigationStack(
+            path: Binding(
+              get: { model.selectedAttachment == nil ? [] : [DayRoute.day] },
+              set: { path in
+                if path.isEmpty {
+                  model.selectedAttachment = nil
+                  model.fullScreenDay = false
+                }
+              })
+          ) {
             ZStack {
               Theme.background.ignoresSafeArea()
               if let trip = model.selectedTrip {
-                TripDetailView(tripID: trip.id).opacity(model.selectedAttachment == nil ? 1 : 0)
-                  .allowsHitTesting(model.selectedAttachment == nil).accessibilityHidden(
-                    model.selectedAttachment != nil)
+                TripDetailView(tripID: trip.id)
                   .id(trip.id)
                   .transition(
                     reduceMotion
                       ? .opacity
                       : .asymmetric(insertion: .offset(y: 28).combined(with: .opacity), removal: .opacity))
-                if let attachment = model.selectedAttachment {
-                  DayView(tripID: trip.id, attachment: attachment, showsPaneControls: twoPane)
-                }
               } else {
                 ContentUnavailableView(
                   "Select a trip", systemImage: "airplane")
@@ -111,62 +127,61 @@ struct RootView: View {
             .animation(twoPane ? .smooth(duration: 0.5) : nil, value: model.selectedTripID)
             .pinsBar(twoPane)
             .onGeometryChange(for: CGFloat.self) { $0.safeAreaInsets.top } action: { detailTop = $0 }
-            .navigationBarBackButtonHidden(true)
             .toolbar {
-              ToolbarItem(placement: .cancellationAction) {
-                // In two panes the Day floats its own close, so Back only stays at the top of the rail.
-                if twoPane ? railed && model.selectedAttachment != nil : model.selectedTripID != nil {
-                  Button("Back", systemImage: "chevron.backward") {
-                    if model.selectedAttachment != nil {
-                      model.selectedAttachment = nil
-                      model.fullScreenDay = false
-                    } else {
-                      model.selectedTripID = nil
-                    }
-                  }
-                }
-              }
               if let trip = model.selectedTrip {
                 // On the rail, the "+" tab adds the expense instead.
-                if !railed && model.selectedAttachment == nil {
+                if !railed {
                   ToolbarItem(placement: .primaryAction) {
                     Button("Add expense", systemImage: "plus") {
                       model.editExpense(trip: trip, attachment: trip.currentAttachment)
                     }
                   }
                 }
-                if let attachment = model.selectedAttachment {
-                  if railed && trip.isAbroad(attachment) {
-                    convertItem { model.showConverter = true }
-                  }
-                } else if !railed || trip.showsHomeConverter {
+                if !railed || trip.showsHomeConverter {
                   convertItem { model.showConverter = true }
                 }
-                if model.selectedAttachment == nil {
-                  ToolbarItem {
-                    Button("Share trip", systemImage: "square.and.arrow.up") {
-                      model.showTripSettings = true
-                    }
+                ToolbarItem {
+                  Button("Share trip", systemImage: "square.and.arrow.up") {
+                    model.showTripSettings = true
                   }
                 }
-                if #available(iOS 27.0, *) {
-                  ToolbarOverflowMenu { more(trip) }
-                } else {
-                  ToolbarItem {
-                    Menu("More", systemImage: "ellipsis") { more(trip) }
+                moreItem(trip, day: nil)
+              }
+            }
+            .navigationDestination(for: DayRoute.self) { _ in
+              if let trip = model.selectedTrip {
+                OpenDay { attachment in
+                  ZStack {
+                    Theme.background.ignoresSafeArea()
+                    DayView(tripID: trip.id, attachment: attachment, showsPaneControls: twoPane)
+                      .id(attachment)
+                      .transition(.opacity)
+                  }
+                  // Picking another day beside swaps this one in place rather than pushing again.
+                  .animation(.smooth(duration: 0.25), value: attachment)
+                  .safeAreaPadding(.leading, sidebarShown ? bookFold?.width ?? 0 : 0)
+                  .pinsBar(twoPane)
+                  // Half of an iPad's two panes, the day floats its own Close instead.
+                  .navigationBarBackButtonHidden(twoPane && !railed)
+                  .toolbar {
+                    if railed && trip.isAbroad(attachment) {
+                      convertItem { model.showConverter = true }
+                    }
+                    moreItem(trip, day: attachment)
                   }
                 }
               }
             }
-            .confirmsDeleting($deleting)
-            .confirmationDialog(
-              clearTitle,
-              isPresented: Binding(get: { clearing != nil }, set: { if !$0 { clearing = nil } }),
-              titleVisibility: .visible, presenting: clearing
-            ) { attachment in
-              Button("Delete expenses", role: .destructive) {
-                if let trip = model.selectedTrip { model.clearDay(attachment, trip: trip) }
-              }
+          }
+          // Asked from either page, so they're kept on the stack itself.
+          .confirmsDeleting($deleting)
+          .confirmationDialog(
+            clearTitle,
+            isPresented: Binding(get: { clearing != nil }, set: { if !$0 { clearing = nil } }),
+            titleVisibility: .visible, presenting: clearing
+          ) { attachment in
+            Button("Delete expenses", role: .destructive) {
+              if let trip = model.selectedTrip { model.clearDay(attachment, trip: trip) }
             }
           }
         }
@@ -297,6 +312,15 @@ struct RootView: View {
             try? await Task.sleep(for: .seconds(1))
             if arguments[index + 1] == "delete" { deleting = trip } else { clearing = model.selectedAttachment }
           }
+          // `--walk-days` opens a late day, moves to an earlier one, then closes it, to film the transitions.
+          if arguments.contains("--walk-days") {
+            for day in [trip.days.dropLast().last, trip.days.dropLast(4).last].compactMap(\.self) {
+              try? await Task.sleep(for: .seconds(2.5))
+              model.openDay(.init(kind: .day, id: day.id))
+            }
+            try? await Task.sleep(for: .seconds(2.5))
+            model.selectedAttachment = nil
+          }
         }
       #endif
       await model.sync.syncAll()
@@ -367,13 +391,24 @@ extension RootView {
     }
   }
 
+  /// The system "…" overflow on iOS 27, holding whatever the rail has no room for.
+  @ToolbarContentBuilder private func moreItem(_ trip: TripSnapshot, day: Attachment?) -> some ToolbarContent {
+    if #available(iOS 27.0, *) {
+      ToolbarOverflowMenu { more(trip, day: day) }
+    } else {
+      ToolbarItem {
+        Menu("More", systemImage: "ellipsis") { more(trip, day: day) }
+      }
+    }
+  }
+
   /// The "…" menu: trip actions, then the open day's, then account. Destructive ones confirm first.
-  @ViewBuilder private func more(_ trip: TripSnapshot) -> some View {
+  @ViewBuilder private func more(_ trip: TripSnapshot, day: Attachment?) -> some View {
     Button("Edit trip", systemImage: "pencil") { model.showTripSettings = true }
     if trip.role == "owner" {
       Button("Delete trip", systemImage: "trash", role: .destructive) { deleting = trip }
     }
-    if let attachment = model.selectedAttachment {
+    if let attachment = day {
       let items = trip.expenses(for: attachment)
       Section {
         if attachment.kind == .day {
@@ -403,6 +438,38 @@ extension RootView {
     return "Delete \(count == 1 ? "the expense" : "all \(count) expenses") on this day?"
   }
 }
+/// The one page pushed over a trip: its open day or travel leg.
+private enum DayRoute: Hashable { case day }
+
+/// The open day, kept on screen as it slides away after the selection clears.
+private struct OpenDay<Content: View>: View {
+  @Environment(AppModel.self) private var model
+  @State private var last: Attachment?
+  @ViewBuilder var content: (Attachment) -> Content
+
+  var body: some View {
+    Group {
+      if let attachment = model.selectedAttachment ?? last { content(attachment) }
+    }
+    .onChange(of: model.selectedAttachment, initial: true) { _, open in
+      if let open { last = open }
+    }
+  }
+}
+
+/// Clips a column's sides only, so what slides across stays in it while backgrounds still run
+/// up under the status bar and down under the tab bar. A lone column isn't clipped at all.
+private struct ColumnClip: Shape {
+  var sides: Bool
+  func path(in rect: CGRect) -> Path {
+    let reach: CGFloat = 4000
+    return Path(
+      sides
+        ? CGRect(x: rect.minX, y: rect.minY - reach, width: rect.width, height: rect.height + reach * 2)
+        : rect.insetBy(dx: -reach, dy: -reach))
+  }
+}
+
 struct InviteLink: Identifiable {
   var url: URL
   var id: String { url.absoluteString }
