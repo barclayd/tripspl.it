@@ -64,6 +64,11 @@ public struct ExpenseDraft: Codable, Identifiable, Sendable {
   public var splitWith: [String]
   public var actualHomeAmount = ""
   public var conversion: Conversion?
+  /// Whether travel booked before you go is a return ticket, saved half getting there and half
+  /// getting home. Nil in a new draft, or one saved before returns were asked, which is a return.
+  public var coversReturn: Bool?
+  public var isReturn: Bool { coversReturn ?? true }
+  /// Opens a return ticket whole, from either half, on getting there.
   public init(trip: TripSnapshot, attachment: Attachment, expense: Expense? = nil) {
     tripID = trip.id
     self.attachment = attachment
@@ -75,7 +80,8 @@ public struct ExpenseDraft: Codable, Identifiable, Sendable {
       category = .flight
       currency = trip.homeCurrency
     }
-    if let e = expense {
+    if let e = expense.map(trip.wholeTicket) {
+      self.attachment = e.attachment
       expenseID = e.id
       amount = Money.input(Money.minor(e.amountMinor) ?? 0, currency: e.currency)
       currency = e.currency
@@ -85,6 +91,7 @@ public struct ExpenseDraft: Codable, Identifiable, Sendable {
       paidBy = e.paidBy
       splitWith = e.splitWith
       conversion = e.conversion
+      coversReturn = trip.returnHalves(of: e) != nil || e.title == e.category.returnTitle
     }
   }
 }

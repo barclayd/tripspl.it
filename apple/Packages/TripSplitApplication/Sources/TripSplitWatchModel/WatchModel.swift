@@ -92,9 +92,12 @@ import TripSplitDomain
   /// Whether changes reach the phone straight away, or wait on the watch until it's back.
   public var isPhoneReachable: Bool { reachability?() ?? true }
 
-  /// Removes a spend through the phone. A save the phone hasn't seen yet is dropped instead.
+  /// Removes a spend through the phone, both halves of a return ticket. A save the phone hasn't
+  /// seen yet is dropped instead.
   public func deleteExpense(_ expense: Expense, in trip: TripSnapshot) {
-    send(.deleteExpense(tripID: trip.id, expenseID: expense.id))
+    for half in trip.ticket(of: expense) {
+      send(.deleteExpense(tripID: trip.id, expenseID: half.id))
+    }
   }
 
   public func send(_ command: CompanionCommand) {
