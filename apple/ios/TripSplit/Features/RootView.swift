@@ -195,11 +195,15 @@ struct RootView: View {
         .environment(\.horizontalSizeClass, twoPane ? .regular : .compact)
       }
       Tab("Globe", systemImage: "globe", value: 1) { NavigationStack { GlobeView() } }
-      Tab(addsToTrip ? addTitle : "New trip", systemImage: "plus", value: RootView.newTripTab, role: .search) {
-        Color.clear
-      }
+      // The rail shows no titles, so only VoiceOver hears what it adds. Retitling the tab as the
+      // rail turned back into the bar kept the old label widths, cutting "Trips" to "T…".
+      Tab("New trip", systemImage: "plus", value: RootView.newTripTab, role: .search) { Color.clear }
+        .accessibilityLabel(addTitle, isEnabled: addsToTrip)
     }
     .readVerticalRail($railed)
+    // Upright on the inner screen the bars run across it but don't fade what scrolls beneath, as
+    // they do on iPhone, so content showed sharp behind them.
+    .scrollEdgeEffectStyle(unfolded && !landscape ? .soft : nil, for: .vertical)
     .onGeometryChange(for: Bool.self) { $0.size.width > $0.size.height } action: { landscape = $0 }
     // The globe sits in dark space, so the tab bar and its sheets go dark with it.
     .preferredColorScheme(model.selectedTab == 1 ? .dark : nil)
