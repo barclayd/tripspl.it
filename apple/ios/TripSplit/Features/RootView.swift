@@ -126,6 +126,9 @@ struct RootView: View {
             // Picking a trip in the sidebar slides it up into the pane beside.
             .animation(twoPane ? .smooth(duration: 0.5) : nil, value: model.selectedTripID)
             .pinsBar(twoPane)
+            // With no trip picked the pane has no items, so its bar would drop away and take the
+            // sidebar's matching inset with it. Keeping it up holds the trips title on one line.
+            .toolbar(twoPane && railed ? .visible : .automatic, for: .navigationBar)
             .onGeometryChange(for: CGFloat.self) { $0.safeAreaInsets.top } action: { detailTop = $0 }
             .toolbar {
               if let trip = model.selectedTrip {
