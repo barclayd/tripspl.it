@@ -143,9 +143,11 @@ struct RootView: View {
                 if !railed || trip.showsHomeConverter {
                   convertItem { model.showConverter = true }
                 }
-                ToolbarItem {
-                  Button("Share trip", systemImage: "square.and.arrow.up") {
-                    model.showTripSettings = true
+                if trip.hasCompanions {
+                  ToolbarItem {
+                    Button("Share trip", systemImage: "square.and.arrow.up") {
+                      model.showTripSettings = true
+                    }
                   }
                 }
                 moreItem(trip, day: nil)

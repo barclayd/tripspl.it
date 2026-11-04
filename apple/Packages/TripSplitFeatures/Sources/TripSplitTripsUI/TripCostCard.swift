@@ -16,9 +16,11 @@ struct TripCostCard: View {
           .foregroundStyle(Theme.secondary)
         HStack(alignment: .firstTextBaseline, spacing: 10) {
           MoneyText(amount: Money.wholeUnits(ledger.total, currency), currency: currency, size: 50)
-          Text("\(Money.whole(ledger.total / Int64(people), currency)) each")
-            .typeface(15, .bold, relativeTo: .subheadline, maximum: 1.3)
-            .foregroundStyle(Theme.secondary).lineLimit(1).layoutPriority(-1)
+          if trip.hasCompanions {
+            Text("\(Money.whole(ledger.total / Int64(people), currency)) each")
+              .typeface(15, .bold, relativeTo: .subheadline, maximum: 1.3)
+              .foregroundStyle(Theme.secondary).lineLimit(1).layoutPriority(-1)
+          }
         }
         if ledger.unresolved > 0 {
           Label(

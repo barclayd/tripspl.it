@@ -98,7 +98,7 @@ import TripSplitWatchModel
     let now = try #require(timeline.now.first)
     #expect(model.pages(for: now).pages == [.today, .budget, .balances, .days])
     #expect(try model.pages(for: #require(timeline.upcoming.first)).pages == [.budget, .balances, .days])
-    #expect(try model.pages(for: #require(timeline.past.first)).pages == [.budget, .balances])
+    #expect(try model.pages(for: #require(timeline.past.first)).pages == [.budget])
   }
 
   @Test func daysRunNewestFirstThenWhatsToCome() throws {

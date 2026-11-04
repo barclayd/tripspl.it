@@ -30,8 +30,10 @@ struct TripDestination: View {
       switch route {
       case .trip(_, let page): TripView(pages: pages, page: page)
       case .day(_, let day): DayView(pages: pages, dayID: day)
-      case .people: PeopleView(pages: pages)
-      case .person(_, let traveller): PersonView(pages: pages, travellerID: traveller)
+      case .people:
+        if trip.hasCompanions { PeopleView(pages: pages) } else { TripView(pages: pages) }
+      case .person(_, let traveller):
+        if trip.hasCompanions { PersonView(pages: pages, travellerID: traveller) } else { TripView(pages: pages) }
       }
     } else {
       ContentUnavailableView(
@@ -62,6 +64,9 @@ struct TripView: View {
       }
     }
     .tabViewStyle(.verticalPage)
+    .onChange(of: pages.pages) { _, available in
+      if !available.contains(page) { page = pages.firstPage }
+    }
     // H3 · Always On: the back button and log button step aside, leaving the time.
     .toolbarVisibility(dimmed ? .hidden : .automatic, for: .navigationBar)
     .toolbar {
@@ -180,7 +185,7 @@ struct BudgetPage: View {
 
   var body: some View {
     let over = pages.spent - pages.budget
-    let each = WatchCurrency.whole(pages.each, pages.currency)
+    let each = pages.trip.hasCompanions ? " · \(WatchCurrency.whole(pages.each, pages.currency)) each" : ""
     VStack(spacing: 0) {
       ZStack {
         BudgetRing(fraction: pages.budgetFraction)
@@ -205,12 +210,14 @@ struct BudgetPage: View {
         .padding(.top, 10)
       Group {
         if pages.budget == 0 {
-          Text("\(each) each").foregroundStyle(WatchTheme.ink2)
+          if pages.trip.hasCompanions {
+            Text("\(WatchCurrency.whole(pages.each, pages.currency)) each").foregroundStyle(WatchTheme.ink2)
+          }
         } else if over > 0 {
-          Text("\(WatchCurrency.whole(over, pages.currency)) over · \(each) each")
+          Text("\(WatchCurrency.whole(over, pages.currency)) over\(each)")
             .foregroundStyle(WatchTheme.bad)
         } else {
-          Text("\(WatchCurrency.whole(-over, pages.currency)) left · \(each) each")
+          Text("\(WatchCurrency.whole(-over, pages.currency)) left\(each)")
             .foregroundStyle(WatchTheme.good)
         }
       }

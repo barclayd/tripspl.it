@@ -71,7 +71,7 @@ struct CurrentTripCard: View {
         Text(trip.name).typeface(24, .heavy, tracking: -0.025, relativeTo: .title2)
           .lineLimit(2).multilineTextAlignment(.leading)
         Text(
-          "\(CivilDate.display(trip.startsOn)) – \(CivilDate.display(trip.endsOn)) · \(people) \(people == 1 ? "person" : "people")"
+          "\(CivilDate.display(trip.startsOn)) – \(CivilDate.display(trip.endsOn)) · \(trip.hasCompanions ? "\(people) people" : "Solo trip")"
         )
         .typeface(14, relativeTo: .subheadline).opacity(0.86)
       }
@@ -79,8 +79,10 @@ struct CurrentTripCard: View {
         Text(ledger.unresolved > 0 ? "Known cost · conversion pending" : "This trip costs")
           .typeface(13, .bold, relativeTo: .footnote).opacity(0.86)
         MoneyText(amount: Money.wholeUnits(ledger.total, currency), currency: currency, size: 50)
-        Text("\(Money.whole(ledger.total / Int64(max(1, people)), currency)) each")
-          .typeface(14, .semibold, relativeTo: .subheadline).opacity(0.9).padding(.top, 3)
+        if trip.hasCompanions {
+          Text("\(Money.whole(ledger.total / Int64(max(1, people)), currency)) each")
+            .typeface(14, .semibold, relativeTo: .subheadline).opacity(0.9).padding(.top, 3)
+        }
       }
       VStack(spacing: 8) {
         BudgetBar(

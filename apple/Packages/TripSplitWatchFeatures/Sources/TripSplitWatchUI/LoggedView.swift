@@ -111,14 +111,16 @@ struct ReceiptView: View {
           .frame(maxWidth: .infinity, alignment: .trailing)
           .padding(.top, -4)
       }
-      rule
-      VStack(alignment: .leading, spacing: 1) {
-        Text(receipt.people.count > 1 ? "SPLIT \(receipt.people.count) WAYS" : "JUST YOU")
-        if receipt.people.count > 1 {
-          Text(receipt.people.joined(separator: " · ").uppercased())
+      if !receipt.people.isEmpty {
+        rule
+        VStack(alignment: .leading, spacing: 1) {
+          Text(receipt.people.count > 1 ? "SPLIT \(receipt.people.count) WAYS" : "JUST YOU")
+          if receipt.people.count > 1 {
+            Text(receipt.people.joined(separator: " · ").uppercased())
+          }
         }
+        .font(.system(size: 9, weight: .semibold, design: .monospaced))
       }
-      .font(.system(size: 9, weight: .semibold, design: .monospaced))
       if let each = receipt.each {
         rule
         HStack(alignment: .firstTextBaseline) {

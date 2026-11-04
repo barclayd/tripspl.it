@@ -17,7 +17,7 @@ struct DepartureRow: View {
         SplitFlapText(trip.destination.uppercased())
       }
       HStack(spacing: 4) {
-        Text("\(date) · \(people) PPL").foregroundStyle(WatchTheme.ink2)
+        Text("\(date)\(trip.hasCompanions ? " · \(people) PPL" : " · SOLO")").foregroundStyle(WatchTheme.ink2)
         Spacer(minLength: 4)
         Text("IN \(days)D").foregroundStyle(days <= 7 ? WatchTheme.good : WatchTheme.amber)
       }
@@ -36,7 +36,7 @@ struct DepartureRow: View {
     .accessibilityElement(children: .ignore)
     .accessibilityLabel(
       "\(trip.name), \(CivilDate.display(trip.startsOn, format: "d MMMM")), "
-        + "\(people == 1 ? "1 person" : "\(people) people"), "
+        + "\(trip.hasCompanions ? "\(people) people" : "Solo trip"), "
         + "\(days == 1 ? "tomorrow" : "in \(days) days")")
   }
 }

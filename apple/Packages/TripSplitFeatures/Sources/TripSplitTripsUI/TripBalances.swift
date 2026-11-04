@@ -33,11 +33,9 @@ struct TripBalances: View {
     }
   }
 
-  /// Whether there's anyone to owe: more than one person with a share in the trip, or repayments
-  /// already made.
+  /// Group-only navigation follows the current travellers; saved history is kept intact.
   static func applies(to trip: TripSnapshot) -> Bool {
-    trip.activeTravellers.count > 1 || !trip.repayments.isEmpty
-      || travellers(in: trip, Ledger(trip)).count > 1
+    trip.hasCompanions
   }
 
   private func people(_ ledger: Ledger) -> some View {

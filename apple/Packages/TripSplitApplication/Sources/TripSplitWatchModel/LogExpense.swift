@@ -74,7 +74,7 @@ import TripSplitDomain
   }
 
   /// Who shares it is only asked when someone else is on the trip. On your own it's just yours.
-  public var asksSplit: Bool { (trip?.activeTravellers.count ?? 0) > 1 }
+  public var asksSplit: Bool { trip?.hasCompanions == true }
 
   /// Travel booked before you go that might be a return ticket: a flight, train or coach, not a
   /// taxi, deposit or gear.
@@ -358,8 +358,8 @@ import TripSplitDomain
       amount: WatchCurrency.format(minor, expense.currency),
       home: expense.currency == trip.homeCurrency
         ? nil : home.map { WatchCurrency.format($0, trip.homeCurrency) },
-      people: sharers.map(name),
-      each: shares > 1 ? WatchCurrency.format(each.0, each.1) : nil,
+      people: trip.hasCompanions ? sharers.map(name) : [],
+      each: trip.hasCompanions && shares > 1 ? WatchCurrency.format(each.0, each.1) : nil,
       rateDate: rateDate)
   }
 

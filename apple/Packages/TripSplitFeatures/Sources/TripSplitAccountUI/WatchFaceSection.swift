@@ -27,7 +27,7 @@ struct WatchFaceSection: View {
         Button("Add the TripSplit face", systemImage: "applewatch") { add(face) }
           .disabled(adding)
         Text(
-          "Convert, budget left, who owes you and today’s spend in the corners. Each opens its own screen."
+          "Your trip at a glance, with quick conversion, budget and today’s spend. Tap a corner to open its screen."
         ).font(.footnote).foregroundStyle(.secondary)
         if let message { Text(message).font(.footnote).foregroundStyle(.secondary) }
       }

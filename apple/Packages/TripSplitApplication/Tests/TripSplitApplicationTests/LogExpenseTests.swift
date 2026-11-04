@@ -7,6 +7,67 @@ import TripSplitWatchModel
 @testable import TripSplitApplication
 
 @MainActor struct LogExpenseTests {
+  @Test(arguments: [-10, 0, 10])
+  func soloTripsHaveNoBalancePagesOrGlances(startOffset: Int) throws {
+    var draft = OnboardingDraft()
+    draft.startsOn = CivilDate.adding(startOffset, to: CivilDate.today(timeZone: TimeZone.current.identifier))
+    draft.stops = [try #require(Destination.search("Taipei").first).stop(nights: 2)]
+    let trip = try draft.makeTrip()
+    let model = WatchModel(state: .init(context: .init(trips: [trip], sentAt: Date())))
+    let pages = model.pages(for: trip)
+    #expect(!pages.pages.contains(.balances))
+    #expect(pages.pages.contains(.budget))
+    let glance = WatchGlance(model: model)
+    #expect(glance.owed == nil)
+    #expect(glance.balances == nil)
+    #expect(TripWrapUp(pages: pages).detail == "Saved in your passport.")
+    #expect(TripWrapUp(pages: pages).debtor == nil)
+  }
+
+  @Test func addingAndArchivingCompanionsUpdatesGroupFeatures() throws {
+    var draft = OnboardingDraft()
+    draft.stops = [try #require(Destination.search("Taipei").first).stop(nights: 2)]
+    var trip = try draft.makeTrip()
+    #expect(!trip.hasCompanions)
+    trip.travellers.append(Traveller(name: "Maya", hue: 250))
+    #expect(trip.hasCompanions)
+    #expect(TripPages(trip: trip, now: Date()).pages.contains(.balances))
+    trip.expenses = [
+      .init(
+        attachment: .init(kind: .day, id: trip.days[0].id), title: "Dinner", category: .food,
+        amountMinor: "4200", currency: trip.homeCurrency, status: .paid, paidOn: trip.startsOn,
+        paidBy: trip.currentTravellerId, splitWith: trip.travellers.map(\.id))
+    ]
+    trip.travellers[1].archived = true
+    #expect(!trip.hasCompanions)
+    let pages = TripPages(trip: trip, now: Date())
+    #expect(!pages.pages.contains(.balances))
+    #expect(!pages.settlements.isEmpty) // The history remains, without solo settlement UI.
+    #expect(TripWrapUp(pages: pages).detail == "Saved in your passport.")
+    #expect(TripWrapUp(pages: pages).debtor == nil)
+    let model = WatchModel(state: .init(context: .init(trips: [trip], sentAt: Date())))
+    #expect(WatchGlance(model: model).owed == nil)
+    #expect(WatchGlance(model: model).balances == nil)
+  }
+
+  @Test func soloReceiptOmitsSharingWithoutChangingTheSavedExpense() throws {
+    var draft = OnboardingDraft()
+    draft.stops = [try #require(Destination.search("Taipei").first).stop(nights: 2)]
+    let trip = try draft.makeTrip()
+    var sent: [CompanionCommand] = []
+    let model = WatchModel(
+      state: .init(context: .init(trips: [trip], sentAt: Date())), send: { sent.append($0) })
+    let log = LogExpense(model: model, trip: trip)
+    log.amount = 42
+    let receipt = try #require(log.save())
+    #expect(receipt.people.isEmpty)
+    #expect(receipt.each == nil)
+    #expect(!log.asksSplit)
+    let expense = try saved(sent)
+    #expect(expense.paidBy == trip.currentTravellerId)
+    #expect(expense.splitWith == [trip.currentTravellerId])
+  }
+
   /// The demo trips, with whatever the watch sends captured.
   func model() throws -> (WatchModel, () -> [CompanionCommand]) {
     let demo = try WatchModel.demo()
@@ -170,7 +231,7 @@ import TripSplitWatchModel
     let expense = try saved(sent)
     #expect(expense.paidBy == trip.currentTravellerId)
     #expect(expense.splitWith == [trip.currentTravellerId])
-    #expect(receipt.people == ["You"])
+    #expect(receipt.people.isEmpty)
     #expect(receipt.each == nil)
   }
 
