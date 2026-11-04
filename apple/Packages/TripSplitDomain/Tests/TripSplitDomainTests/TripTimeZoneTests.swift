@@ -13,29 +13,25 @@ struct TripTimeZoneTests {
     try #require(ISO8601DateFormatter().date(from: value))
   }
 
-  @Test func eachAttachmentUsesItsDestinationLocalDate() throws {
+  @Test(arguments: ["Europe/London", "Asia/Taipei", "America/Los_Angeles"])
+  func itineraryUsesTheUsersLocalDate(localTimeZone: String) throws {
     var draft = OnboardingDraft()
     draft.startsOn = "2026-10-31"
-    draft.timeZone = "Europe/London"
-    draft.stops = [
-      try stop("San Francisco", zone: "America/Los_Angeles"),
-      try stop("Tokyo", zone: "Asia/Tokyo"),
-    ]
+    draft.stops = [try stop("Taipei", zone: "Asia/Taipei")]
     let trip = try draft.makeTrip()
-    let now = try instant("2026-11-01T01:30:00Z")
-    let sanFrancisco = Attachment(kind: .day, id: trip.days[0].id)
-    let tokyo = Attachment(kind: .day, id: trip.days[1].id)
-    #expect(trip.today(for: sanFrancisco, at: now) == "2026-10-31")
-    #expect(trip.today(for: tokyo, at: now) == "2026-11-01")
-    #expect(trip.isToday(trip.days[0], at: now))
-    #expect(trip.isToday(trip.days[1], at: now))
-    #expect(trip.currentAttachment(at: now) == tokyo)
-    #expect(trip.phase(at: now, localTimeZone: "Asia/Tokyo") == .now)
-    #expect(trip.timeZone == "America/Los_Angeles")
-    #expect(trip.timeZone(for: .init(kind: .leg, id: trip.legs.last!.id)) == "Asia/Tokyo")
+    let now = try instant("2026-10-31T17:30:00Z")
+    let date = localTimeZone == "Asia/Taipei" ? "2026-11-01" : "2026-10-31"
+    let day = try #require(trip.days.first { $0.date == date })
+    let attachment = Attachment(kind: .day, id: day.id)
+    #expect(trip.currentDay(at: now, localTimeZone: localTimeZone) == day)
+    #expect(trip.currentAttachment(at: now, localTimeZone: localTimeZone) == attachment)
+    #expect(trip.today(for: attachment, at: now, localTimeZone: localTimeZone) == date)
+    #expect(trip.isToday(day, at: now, localTimeZone: localTimeZone))
+    #expect(trip.days.filter { trip.isToday($0, at: now, localTimeZone: localTimeZone) }.count == 1)
+    #expect(trip.timeZone(for: attachment) == "Asia/Taipei")
   }
 
-  @Test func tripRunsOnDestinationDatesOnceYouAreThere() throws {
+  @Test func tripRunsOnLocalDatesAtTheDestination() throws {
     var draft = OnboardingDraft()
     draft.startsOn = "2026-11-01"
     draft.stops = [try stop("Tokyo", zone: "Asia/Tokyo")]
@@ -65,16 +61,34 @@ struct TripTimeZoneTests {
     #expect(trip.phase(at: try instant("2026-11-03T00:00:00Z"), localTimeZone: phone) == .past)
   }
 
-  @Test func regionalDaylightSavingRulesApplyToLoggedDates() throws {
+  @Test func localDaylightSavingRulesApplyToLoggedDates() throws {
     var draft = OnboardingDraft()
     draft.startsOn = "2026-10-31"
-    draft.stops = [try stop("New York", zone: "America/New_York")]
+    draft.stops = [try stop("Taipei", zone: "Asia/Taipei")]
+    draft.stops[0].nights = 3
     let trip = try draft.makeTrip()
     let attachment = Attachment(kind: .day, id: trip.days[0].id)
-    #expect(trip.today(for: attachment, at: try instant("2026-11-01T03:59:00Z")) == "2026-10-31")
-    #expect(trip.today(for: attachment, at: try instant("2026-11-01T04:00:00Z")) == "2026-11-01")
-    #expect(trip.today(for: attachment, at: try instant("2026-11-02T04:59:00Z")) == "2026-11-01")
-    #expect(trip.today(for: attachment, at: try instant("2026-11-02T05:00:00Z")) == "2026-11-02")
+    let zone = "America/New_York"
+    for (instant, date) in [
+      ("2026-11-01T03:59:00Z", "2026-10-31"),
+      ("2026-11-01T04:00:00Z", "2026-11-01"),
+      ("2026-11-02T04:59:00Z", "2026-11-01"),
+      ("2026-11-02T05:00:00Z", "2026-11-02"),
+    ] {
+      let now = try self.instant(instant)
+      #expect(trip.today(for: attachment, at: now, localTimeZone: zone) == date)
+      #expect(trip.currentDay(at: now, localTimeZone: zone)?.date == date)
+    }
+  }
+
+  @Test func tripEndsOnLocalDateEvenWhenDestinationIsBehind() throws {
+    var draft = OnboardingDraft()
+    draft.startsOn = "2026-11-01"
+    draft.stops = [try stop("San Francisco", zone: "America/Los_Angeles")]
+    let trip = try draft.makeTrip()
+    let now = try instant("2026-11-02T16:00:00Z")
+    #expect(trip.phase(at: now, localTimeZone: "Asia/Taipei") == .past)
+    #expect(trip.currentDay(at: now, localTimeZone: "Asia/Taipei") == nil)
   }
 
   @Test func destinationZoneIsPersistedAndOldStopsResolveFromCatalogue() throws {
