@@ -360,6 +360,8 @@ public struct TripSnapshot: Codable, Identifiable, Hashable, Sendable {
   }
   public var flags: String { stops.map(\.flag).joined(separator: " ") }
   public var activeTravellers: [Traveller] { travellers.filter { !$0.archived } }
+  /// Group-only controls disappear when there is nobody else travelling.
+  public var hasCompanions: Bool { activeTravellers.count > 1 }
   public var currentAttachment: Attachment {
     currentAttachment(at: Date())
   }

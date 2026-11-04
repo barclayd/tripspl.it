@@ -89,12 +89,14 @@ struct ReceiptView: View {
         if expense.currency != trip.homeCurrency {
           line("IN \(trip.homeCurrency)", home.map { Money.format($0, trip.homeCurrency) } ?? "PENDING")
         }
-        line(expense.status == .paid ? "PAID BY" : "PAYING", trip.displayName(expense.paidBy).uppercased())
-        line(
-          "SPLIT",
-          count == 1 ? "JUST \(trip.displayName(expense.splitWith[0]).uppercased())" : "\(count) WAYS")
-        if count > 1, let home, let each = Money.split(home, among: expense.splitWith).values.max() {
-          line("EACH", Money.format(each, trip.homeCurrency))
+        if trip.hasCompanions {
+          line(expense.status == .paid ? "PAID BY" : "PAYING", trip.displayName(expense.paidBy).uppercased())
+          line(
+            "SPLIT",
+            count == 1 ? "JUST \(trip.displayName(expense.splitWith[0]).uppercased())" : "\(count) WAYS")
+          if count > 1, let home, let each = Money.split(home, among: expense.splitWith).values.max() {
+            line("EACH", Money.format(each, trip.homeCurrency))
+          }
         }
       }
       rule

@@ -82,16 +82,20 @@ public struct TripDetailView: View {
         .foregroundStyle(Theme.ink).lineLimit(2)
         .accessibilityAddTraits(.isHeader)
       HStack(spacing: 8) {
-        HStack(spacing: -6) {
-          ForEach(people) { person in
-            Avatar(traveller: person, size: 22)
-              .background(Circle().fill(Theme.background).padding(-2))
+        if trip.hasCompanions {
+          HStack(spacing: -6) {
+            ForEach(people) { person in
+              Avatar(traveller: person, size: 22)
+                .background(Circle().fill(Theme.background).padding(-2))
+            }
           }
+          .accessibilityElement(children: .ignore)
+          .accessibilityLabel(people.map(\.name).formatted(.list(type: .and)))
         }
-        .accessibilityElement(children: .ignore)
-        .accessibilityLabel(people.map(\.name).formatted(.list(type: .and)))
         Text(
-          "\(Money.whole(total, trip.homeCurrency)) · \(Money.whole(total / Int64(max(1, people.count)), trip.homeCurrency)) each"
+          trip.hasCompanions
+            ? "\(Money.whole(total, trip.homeCurrency)) · \(Money.whole(total / Int64(max(1, people.count)), trip.homeCurrency)) each"
+            : Money.whole(total, trip.homeCurrency)
         )
         .typeface(13, .semibold, relativeTo: .footnote).monospacedDigit()
         .foregroundStyle(Theme.secondary).lineLimit(1)
@@ -116,14 +120,16 @@ public struct TripDetailView: View {
         .padding(.top, 14)
         .accessibilityAddTraits(.isHeader)
       HStack(spacing: 10) {
-        HStack(spacing: -7) {
-          ForEach(people) { person in
-            Avatar(traveller: person, size: 28)
-              .background(Circle().fill(Theme.background).padding(-2))
+        if trip.hasCompanions {
+          HStack(spacing: -7) {
+            ForEach(people) { person in
+              Avatar(traveller: person, size: 28)
+                .background(Circle().fill(Theme.background).padding(-2))
+            }
           }
+          .accessibilityElement(children: .ignore)
+          .accessibilityLabel(people.map(\.name).formatted(.list(type: .and)))
         }
-        .accessibilityElement(children: .ignore)
-        .accessibilityLabel(people.map(\.name).formatted(.list(type: .and)))
         Text(
           "\(CivilDate.display(trip.startsOn)) – \(CivilDate.display(trip.endsOn)) · \(trip.days.count) day\(trip.days.count == 1 ? "" : "s")"
         )

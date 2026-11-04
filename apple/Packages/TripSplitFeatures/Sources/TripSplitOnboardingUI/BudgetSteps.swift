@@ -119,7 +119,9 @@ struct BudgetStep: View {
 
   var body: some View {
     VStack(alignment: .leading, spacing: 16) {
-      StepTitle("What’s the budget?", "For the whole trip, everyone included.")
+      StepTitle(
+        "What’s the budget?",
+        draft.travellers.count > 1 ? "For the whole trip, everyone included." : "For your whole trip.")
       if wide {
         card
         if let homePerGBP { presets(homePerGBP) }
@@ -143,7 +145,7 @@ struct BudgetStep: View {
   @ViewBuilder private var compact: some View {
     amount(size: 66, alignment: .center)
     Text(
-      OnboardingCopy.dailySpendPerPerson(draft).map { "\($0) per person, per day" }
+      OnboardingCopy.dailySpendPerPerson(draft).map { "\($0) \(draft.travellers.count > 1 ? "per person, per day" : "per day")" }
         ?? "Type a total, or pick a vibe"
     )
     .typeface(15, .bold, relativeTo: .subheadline, maximum: 1.4).foregroundStyle(Theme.secondary)
@@ -168,7 +170,7 @@ struct BudgetStep: View {
           Text(OnboardingCopy.dailySpendPerPerson(draft) ?? "—")
             .typeface(17, .heavy, relativeTo: .headline, maximum: 1.3).foregroundStyle(Theme.ink)
             .contentTransition(.numericText())
-          Text("per person, per day").typeface(13, .bold, relativeTo: .footnote, maximum: 1.3)
+          Text(draft.travellers.count > 1 ? "per person, per day" : "per day").typeface(13, .bold, relativeTo: .footnote, maximum: 1.3)
             .foregroundStyle(Theme.secondary)
         }
         .padding(.bottom, 10)
@@ -307,7 +309,8 @@ struct BudgetStep: View {
         Button {
           pick(index, homePerGBP)
         } label: {
-          Text(vibe.name).typeface(12, .heavy, relativeTo: .caption, maximum: 1.3)
+          Text(index == 2 && draft.travellers.count <= 1 ? "Treat yourself" : vibe.name)
+            .typeface(12, .heavy, relativeTo: .caption, maximum: 1.3)
             .multilineTextAlignment(.center).lineLimit(2).minimumScaleFactor(0.85)
             .foregroundStyle(isSelected ? Theme.accentInk : Theme.secondary)
             .padding(.vertical, 10).padding(.horizontal, 4)

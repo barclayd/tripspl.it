@@ -273,7 +273,7 @@ extension WatchGlance {
     if context != .noTrips {
       conversion = Self.conversion(model)
       let trip = timeline.now.first ?? Self.lastUnsettled(timeline) ?? lead
-      if let trip {
+      if let trip, trip.hasCompanions {
         let pages = TripPages(trip: trip, now: now)
         owed = Owed(
           tripID: trip.id, balance: pages.ledger.balances[pages.you, default: 0],

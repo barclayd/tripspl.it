@@ -192,7 +192,7 @@ private struct SidebarRow: View {
     let year = trip.phase == .past ? " \(CivilDate.display(trip.endsOn, format: "yyyy"))" : ""
     let people = trip.activeTravellers.count
     return
-      "\(CivilDate.display(trip.startsOn)) – \(CivilDate.display(trip.endsOn))\(year) · \(people) \(people == 1 ? "person" : "people")"
+      "\(CivilDate.display(trip.startsOn)) – \(CivilDate.display(trip.endsOn))\(year) · \(trip.hasCompanions ? "\(people) people" : "Solo trip")"
   }
 }
 

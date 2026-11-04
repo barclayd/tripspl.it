@@ -517,7 +517,8 @@ private struct ExpenseRow: View {
 
   /// "Tom paid · Split 3 ways" or "Planned · Just you".
   private var byline: String {
-    expense.status == .paid
+    guard trip.hasCompanions else { return expense.status == .paid ? "Paid" : "Planned" }
+    return expense.status == .paid
       ? "\(trip.displayName(expense.paidBy)) paid · \(who)" : "Planned · \(who)"
   }
 
@@ -540,7 +541,7 @@ private struct ExpenseRow: View {
       }
       return (Money.format(home, trip.homeCurrency), false)
     }
-    guard expense.splitWith.count > 1 else { return nil }
+    guard trip.hasCompanions, expense.splitWith.count > 1 else { return nil }
     let share = Money.split(amount, among: expense.splitWith).values.max() ?? 0
     return ("\(Money.format(share, expense.currency, compact: true)) each", false)
   }

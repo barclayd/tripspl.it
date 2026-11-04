@@ -21,9 +21,9 @@ public struct SettingsView: View {
     NavigationStack {
       Form {
         Section {
-          Label("Trip sharing", systemImage: "person.2.fill").font(.headline)
+          Label("Sync your trips", systemImage: "icloud").font(.headline)
           Text(
-            "Everything saves on this device first. Sign in to share trips and keep changes in sync."
+            "Everything saves on this device first. Sign in to keep your trips in sync."
           ).font(.subheadline).foregroundStyle(.secondary)
           if let session = model.sync.session {
             LabeledContent("Signed in", value: session.user.displayName)
@@ -54,7 +54,7 @@ public struct SettingsView: View {
           } else {
             Label("Cloud service not configured", systemImage: "icloud.slash")
             Text(
-              "This build is ready for local use. Cloud sharing and live rates need the project’s HTTPS service URL and Apple sign-in configuration."
+              "This build is ready for local use. Cloud sync and live rates need the project’s HTTPS service URL and Apple sign-in configuration."
             ).font(.footnote).foregroundStyle(.secondary)
           }
           if let error = model.sync.message {
@@ -95,9 +95,11 @@ public struct SettingsView: View {
             Button(
               "Delete my account", systemImage: "person.crop.circle.badge.minus", role: .destructive
             ) { deleting = true }
-            Text(
-              "Shared trips remain for other members with your identity anonymised. Trips without other linked members are removed."
-            ).font(.caption)
+            if model.store.trips.contains(where: \.hasCompanions) {
+              Text(
+                "Shared trips remain for other members with your identity anonymised. Trips without other linked members are removed."
+              ).font(.caption)
+            }
           }
         }
         if model.sync.deletionRequested {
@@ -116,8 +118,10 @@ public struct SettingsView: View {
                 .padding()
             }.navigationTitle("Place data").navigationBarTitleDisplayMode(.inline)
           }
-          Text("TripSplit does not move money. Repayments record transfers you make elsewhere.")
-            .font(.caption)
+          if model.store.trips.contains(where: \.hasCompanions) {
+            Text("TripSplit does not move money. Repayments record transfers you make elsewhere.")
+              .font(.caption)
+          }
         }
       }.navigationTitle("Account & sync").toolbar {
         ToolbarItem(placement: .cancellationAction) {
@@ -192,27 +196,29 @@ public struct TripSettingsView: View {
               }.buttonStyle(.plain).accessibilityIdentifier("settings.timezone.\(stop.id)")
             }
           }.disabled(trip.role != "owner")
-          Section("Travellers") {
-            ForEach(trip.activeTravellers) { person in
-              HStack {
-                Avatar(traveller: person)
-                Text(person.name)
-                Spacer()
-                if trip.role == "owner" && person.id != trip.ownerTravellerId {
-                  Menu("Traveller actions", systemImage: "ellipsis.circle") {
-                    Button("Invite to this traveller", systemImage: "square.and.arrow.up") {
-                      createInvite(person.id)
-                    }
-                    Button("Archive traveller", systemImage: "person.crop.circle.badge.minus") {
-                      model.perform {
-                        var value = person
-                        value.archived = true
-                        try model.store.enqueue(
-                          .init(
-                            syncEpoch: trip.syncEpoch, type: "traveller.upsert",
-                            entityId: person.id, expectedRevision: person.revision,
-                            payload: .traveller(value)), tripID: trip.id)
-                        model.changed()
+          Section(trip.hasCompanions ? "Travellers" : "Travel companions") {
+            if trip.hasCompanions {
+              ForEach(trip.activeTravellers) { person in
+                HStack {
+                  Avatar(traveller: person)
+                  Text(person.name)
+                  Spacer()
+                  if trip.role == "owner" && person.id != trip.ownerTravellerId {
+                    Menu("Traveller actions", systemImage: "ellipsis.circle") {
+                      Button("Invite to this traveller", systemImage: "square.and.arrow.up") {
+                        createInvite(person.id)
+                      }
+                      Button("Archive traveller", systemImage: "person.crop.circle.badge.minus") {
+                        model.perform {
+                          var value = person
+                          value.archived = true
+                          try model.store.enqueue(
+                            .init(
+                              syncEpoch: trip.syncEpoch, type: "traveller.upsert",
+                              entityId: person.id, expectedRevision: person.revision,
+                              payload: .traveller(value)), tripID: trip.id)
+                          model.changed()
+                        }
                       }
                     }
                   }
@@ -221,7 +227,7 @@ public struct TripSettingsView: View {
             }
             if trip.role == "owner" {
               HStack {
-                TextField("Add traveller", text: $newPerson)
+                TextField("Add travel companion", text: $newPerson)
                 Button("Add", systemImage: "plus") {
                   model.perform {
                     let traveller = Traveller(
@@ -240,7 +246,7 @@ public struct TripSettingsView: View {
               }
             }
           }
-          if let invite {
+          if trip.hasCompanions, let invite {
             Section("Invitation") {
               Text(
                 "This one-use invitation links an Apple account to the selected traveller. Expires \(invite.expiresAt)."

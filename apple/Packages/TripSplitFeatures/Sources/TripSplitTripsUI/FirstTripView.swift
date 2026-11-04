@@ -134,8 +134,8 @@ struct FirstTripView<Header: View>: View {
         emoji: "💷", hue: 65, title: "Stay on budget",
         detail: "See what’s left for today, not just the whole trip."),
       Reason(
-        emoji: "👯", hue: 300, title: "Split it with friends",
-        detail: "Know who owes who before the bill arrives."),
+        emoji: "🧾", hue: 300, title: "Keep costs organised",
+        detail: "Log flights, stays and everyday expenses."),
       Reason(
         emoji: "📅", hue: 235, title: "Track every day",
         detail: "A running balance for each day and each place."),

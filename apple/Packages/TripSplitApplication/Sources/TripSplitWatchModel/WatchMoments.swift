@@ -92,7 +92,7 @@ public struct TripWrapUp: Sendable {
       .joined(separator: "·").uppercased()
     dates = trip.dateRange(withYear: true).uppercased()
     headline = "Stamped. \(WatchCurrency.whole(pages.spent, pages.currency)) all in."
-    let owed = pages.settlements.filter { $0.to == pages.you }.max { $0.amount < $1.amount }
+    let owed = (trip.hasCompanions ? pages.settlements : []).filter { $0.to == pages.you }.max { $0.amount < $1.amount }
     debtor = owed.flatMap { pages.traveller($0.from) }
     detail = Self.detail(pages)
   }
@@ -100,6 +100,7 @@ public struct TripWrapUp: Sendable {
   /// Leads with what you owe, else whoever owes the most in total.
   private static func detail(_ pages: TripPages) -> String {
     guard pages.balancesComplete else { return "Some spends still need converting." }
+    guard pages.trip.hasCompanions else { return "Saved in your passport." }
     let balances = pages.ledger.balances
     if let yours = balances[pages.you], yours < 0 {
       return "You still owe \(WatchCurrency.whole(-yours, pages.currency)) in total."

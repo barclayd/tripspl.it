@@ -428,24 +428,26 @@ public struct ExpenseEditor: View {
         }
       }
       row("Status") { status(draft) }
-      row("Paid by") { people(trip, draft: draft, split: false) }
-      row("Split") { people(trip, draft: draft, split: true) }
-      // The shortcuts drop under the summary when the panel's too narrow for one line.
-      ViewThatFits(in: .horizontal) {
-        HStack(spacing: 12) {
-          splitTotal(draft)
-          Spacer(minLength: 4)
-          splitShortcuts(trip)
+      if trip.hasCompanions {
+        row("Paid by") { people(trip, draft: draft, split: false) }
+        row("Split") { people(trip, draft: draft, split: true) }
+        // The shortcuts drop under the summary when the panel's too narrow for one line.
+        ViewThatFits(in: .horizontal) {
+          HStack(spacing: 12) {
+            splitTotal(draft)
+            Spacer(minLength: 4)
+            splitShortcuts(trip)
+          }
+          VStack(alignment: .leading, spacing: 6) {
+            splitTotal(draft)
+            HStack(spacing: 14) { splitShortcuts(trip) }
+          }
         }
-        VStack(alignment: .leading, spacing: 6) {
-          splitTotal(draft)
-          HStack(spacing: 14) { splitShortcuts(trip) }
-        }
+        .buttonStyle(.plain)
+        .foregroundStyle(Theme.accentText)
+        .typeface(12.5, .bold, relativeTo: .caption, maximum: 1.4)
+        .padding(.leading, 68)
       }
-      .buttonStyle(.plain)
-      .foregroundStyle(Theme.accentText)
-      .typeface(12.5, .bold, relativeTo: .caption, maximum: 1.4)
-      .padding(.leading, 68)
       if draft.currency != trip.homeCurrency {
         row("Charged") {
           TextField(

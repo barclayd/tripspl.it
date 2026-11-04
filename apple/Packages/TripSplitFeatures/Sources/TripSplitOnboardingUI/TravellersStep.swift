@@ -33,7 +33,7 @@ struct TravellersStep: View {
 
   var body: some View {
     VStack(alignment: .leading, spacing: 14) {
-      StepTitle("Who’s coming?", "Everyone who’ll be splitting costs.")
+      StepTitle("Who’s coming?", "Travelling solo? You’re ready to go. Add anyone coming with you.")
       if !full {
         HStack(spacing: 8) {
           TextField("Add a name", text: $name)

@@ -25,11 +25,14 @@ public struct TripPages {
   public var you: String { trip.currentTravellerId }
   public var today: TripDay? { trip.currentDay(at: now) }
 
-  /// Today only exists while the trip is happening, so other trips open on the budget. A past
-  /// trip is just its budget and who owes who, as stamped in the passport.
+  /// Today only exists while the trip is happening, so other trips open on the budget.
+  /// Who owes who is only shown with companions; past trips leave out the day pages.
   public var pages: [Page] {
-    if today != nil { return [.today, .budget, .balances, .days] }
-    return trip.phase(at: now) == .past ? [.budget, .balances] : [.budget, .balances, .days]
+    var result: [Page] = today == nil ? [] : [.today]
+    result.append(.budget)
+    if trip.hasCompanions { result.append(.balances) }
+    if trip.phase(at: now) != .past { result.append(.days) }
+    return result
   }
   public var firstPage: Page { pages[0] }
   /// Spends can be logged on a trip until it's over; a past trip is read-only on the watch.

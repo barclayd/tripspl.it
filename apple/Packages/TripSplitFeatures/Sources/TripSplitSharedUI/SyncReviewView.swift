@@ -133,7 +133,7 @@ package struct SyncReviewView: View {
   private func title(_ op: TripSplitDomain.Operation) -> String {
     switch op.payload {
     case .expense(let e): e.title
-    case .repayment: "Repayment"
+    case .repayment: model.store.trip(tripID)?.hasCompanions == true ? "Repayment" : "Payment"
     case .traveller(let t): t.name
     case .settings: "Trip settings"
     case .reschedule: "New dates"

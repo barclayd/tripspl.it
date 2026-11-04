@@ -41,13 +41,14 @@ struct ExpenseRow: View {
     .background(WatchTheme.card, in: .rect(cornerRadius: 16))
     .accessibilityElement(children: .ignore)
     .accessibilityLabel(
-      "\(expense.title), \(original)\(planned ? ", planned" : ""), paid by \(pages.name(expense.paidBy))"
+      "\(expense.title), \(original)\(planned ? ", planned" : "")"
+        + (pages.trip.hasCompanions ? ", paid by \(pages.name(expense.paidBy))" : "")
         + (pages.unsynced.contains(expense.id) ? ", waiting for iPhone" : ""))
   }
 
   /// "€6.40 · Maya", "€6.40 · Planned" or just the payer when it's in the home currency.
   private func detail(original: String, planned: Bool) -> String {
-    let who = planned ? "Planned" : pages.name(expense.paidBy)
+    let who = planned ? "Planned" : pages.trip.hasCompanions ? pages.name(expense.paidBy) : "Paid"
     return expense.currency == pages.currency ? who : "\(original) · \(who)"
   }
 }
