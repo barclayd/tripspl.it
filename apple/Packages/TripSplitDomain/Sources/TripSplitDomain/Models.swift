@@ -351,11 +351,8 @@ public struct TripSnapshot: Codable, Identifiable, Hashable, Sendable {
   public var archived = false
   public var updatedAt = ISO8601DateFormatter().string(from: Date())
   public var endsOn: String { days.last?.date ?? startsOn }
-  /// The itinerary day you're on, or the phone's date when the trip isn't under way.
-  public var today: String {
-    let now = Date()
-    return currentDay(at: now)?.date ?? CivilDate.string(now, timeZone: TimeZone.current.identifier)
-  }
+  /// Today's date on the user's device, wherever the trip is planned.
+  public var today: String { CivilDate.today(timeZone: TimeZone.current.identifier) }
   public var phase: Phase { phase(at: Date()) }
   public enum Phase: String, CaseIterable { case now, upcoming, past }
   public func phase(on day: String) -> Phase {
@@ -366,48 +363,38 @@ public struct TripSnapshot: Codable, Identifiable, Hashable, Sendable {
   public var currentAttachment: Attachment {
     currentAttachment(at: Date())
   }
-  public func currentAttachment(at instant: Date) -> Attachment {
-    let day =
-      currentDay(at: instant)
-      ?? days.last(where: { $0.date <= today(for: .init(kind: .day, id: $0.id), at: instant) })
-      ?? days.first
+  public func currentAttachment(
+    at instant: Date, localTimeZone: String = TimeZone.current.identifier
+  ) -> Attachment {
+    let local = CivilDate.string(instant, timeZone: localTimeZone)
+    let day = days.last(where: { $0.date <= local }) ?? days.first
     return .init(kind: .day, id: day?.id ?? "")
   }
-  /// The day under way at `instant`. Nothing starts until the phone's own date reaches the first
-  /// day, so a trip planned from London waits for London's midnight, not the destination's.
+  /// The itinerary day matching the user's local date, independent of destination time zones.
   public func currentDay(
     at instant: Date, localTimeZone: String = TimeZone.current.identifier
   ) -> TripDay? {
-    guard CivilDate.string(instant, timeZone: localTimeZone) >= startsOn else { return nil }
-    // Crossing zones can make two itinerary dates locally current. Prefer the later stop.
-    var datesByZone: [String: String] = [:]
-    var datesByStop: [String: String] = [:]
-    for stop in stops {
-      let zone = stop.resolvedTimeZone ?? timeZone
-      let date = datesByZone[zone] ?? CivilDate.string(instant, timeZone: zone)
-      datesByZone[zone] = date
-      datesByStop[stop.id] = date
-    }
-    return days.last { $0.date == datesByStop[$0.stopId] }
-  }
-  /// Upcoming until the phone's date reaches the start, and past once both the phone and the
-  /// last destination have moved beyond the day home.
-  public func phase(at instant: Date, localTimeZone: String = TimeZone.current.identifier) -> Phase {
     let local = CivilDate.string(instant, timeZone: localTimeZone)
-    if local < startsOn { return .upcoming }
-    if currentDay(at: instant, localTimeZone: localTimeZone) != nil { return .now }
-    let lastDate = CivilDate.string(instant, timeZone: stops.last?.resolvedTimeZone ?? timeZone)
-    if lastDate > endsOn, local > endsOn { return .past }
-    return .now
+    return days.first { $0.date == local }
+  }
+  public func phase(at instant: Date, localTimeZone: String = TimeZone.current.identifier) -> Phase {
+    phase(on: CivilDate.string(instant, timeZone: localTimeZone))
   }
   public func timeZone(for attachment: Attachment) -> String {
     stop(for: attachment)?.resolvedTimeZone ?? timeZone
   }
-  public func today(for attachment: Attachment, at instant: Date = Date()) -> String {
-    CivilDate.string(instant, timeZone: timeZone(for: attachment))
+  /// Payment dates follow the user's device, including expenses on another itinerary day.
+  public func today(
+    for attachment: Attachment, at instant: Date = Date(),
+    localTimeZone: String = TimeZone.current.identifier
+  ) -> String {
+    CivilDate.string(instant, timeZone: localTimeZone)
   }
-  public func isToday(_ day: TripDay, at instant: Date = Date()) -> Bool {
-    day.date == today(for: .init(kind: .day, id: day.id), at: instant)
+  public func isToday(
+    _ day: TripDay, at instant: Date = Date(),
+    localTimeZone: String = TimeZone.current.identifier
+  ) -> Bool {
+    day.date == CivilDate.string(instant, timeZone: localTimeZone)
   }
   public func date(for attachment: Attachment) -> String {
     attachment.kind == .day

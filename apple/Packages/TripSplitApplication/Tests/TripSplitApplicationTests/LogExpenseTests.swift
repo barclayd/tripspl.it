@@ -81,6 +81,32 @@ import TripSplitWatchModel
     #expect(log.currencies == ["JPY", "GBP"])
   }
 
+  @Test func logsAndReceiptsUseTheWatchLocalDay() throws {
+    let now = try #require(ISO8601DateFormatter().date(from: "2026-10-31T17:30:00Z"))
+    let local = CivilDate.string(now, timeZone: TimeZone.current.identifier)
+    var draft = OnboardingDraft()
+    draft.startsOn = CivilDate.adding(-1, to: local)
+    var stop = try #require(Destination.search("Taipei").first).stop(nights: 4)
+    // Keep the destination on a different date regardless of the test machine's time zone.
+    stop.timeZone = CivilDate.string(now, timeZone: "Asia/Taipei") != local
+      ? "Asia/Taipei" : "America/Los_Angeles"
+    draft.stops = [stop]
+    let trip = try draft.makeTrip()
+    var sent: [CompanionCommand] = []
+    let model = WatchModel(
+      state: .init(context: .init(trips: [trip], sentAt: now)),
+      send: { sent.append($0) })
+    model.now = now
+    let log = LogExpense(model: model, trip: trip)
+    log.amount = 42
+    let receipt = try #require(log.save())
+    let expense = try saved(sent)
+    #expect(trip.date(for: expense.attachment) == local)
+    #expect(expense.paidOn == local)
+    #expect(receipt.heading == "Taipei · " + CivilDate.display(local, format: "EEE d MMM"))
+    #expect(log.detail(for: trip) == "Now · Day 2")
+  }
+
   @Test func savesAnEstimateThePhoneQuotesAgain() throws {
     let (model, sent) = try model()
     let trip = try #require(model.timeline.now.first)
