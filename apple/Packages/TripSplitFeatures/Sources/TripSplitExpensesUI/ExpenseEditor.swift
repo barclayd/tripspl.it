@@ -155,13 +155,14 @@ public struct ExpenseEditor: View {
         }
         Button("Save") { save() }
           .typeface(15, .heavy, relativeTo: .body, maximum: 1.3)
+          .fixedSize()
           .foregroundStyle(ready ? Theme.accentInk : Theme.tertiary)
           .padding(.vertical, 8).padding(.horizontal, 15)
           .background(ready ? Theme.accent : Theme.inset, in: Capsule())
           .animation(.easeOut(duration: 0.25), value: ready)
           .disabled(!ready)
       }
-      .frame(width: 90, alignment: .trailing)
+      .frame(minWidth: 90, alignment: .trailing)
     }
     .buttonStyle(.plain)
     .frame(height: 44)
