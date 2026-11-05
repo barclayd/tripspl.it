@@ -53,7 +53,7 @@ public struct APIClient: Sendable {
     try await reference(
       "v1/fx", query: ["from": from, "to": to, "date": date], token: token,
       unavailable:
-        "No reference rate is available. Enter the actual charge, or save this expense with conversion pending."
+        "No reference rate is available. Try again when connected or enter the actual home-currency charge."
     )
   }
 

@@ -65,7 +65,7 @@ import TripSplitDomain
     #expect(published.last.map { command.isReflected(in: $0.trips[0]) } == true)
   }
 
-  @Test func hostDropsAWatchEstimateItCannotQuote() async throws {
+  @Test func hostKeepsAWatchEstimateItCannotQuote() async throws {
     let store = try LocalStore(inMemory: true, installationID: "test")
     let trip = try trip()
     try store.create(trip)
@@ -78,8 +78,10 @@ import TripSplitDomain
     await host.receive(.saveExpense(tripID: trip.id, expense: spend))
     let saved = try #require(store.trip(trip.id)?.expenses.first)
     #expect(saved.amountMinor == "4200")
-    // Without a quote the API would refuse it, so it waits for the phone to convert it instead.
-    #expect(saved.conversion == nil)
+    // The cached amount remains usable offline without claiming a server quote.
+    #expect(saved.conversion?.homeAmountMinor == "3620")
+    #expect(saved.conversion?.kind == "manual")
+    #expect(saved.conversion?.quoteId == nil)
   }
 
   @Test func deletingAnExpenseReplacesItsPendingSave() throws {

@@ -177,7 +177,7 @@ public struct DayView: View {
         }
         if ledger.unresolved > 0 {
           Label(
-            "\(ledger.unresolved) conversion\(ledger.unresolved == 1 ? "" : "s") pending",
+            "Connect to update rates",
             systemImage: "exclamationmark.circle"
           )
           .foregroundStyle(Theme.bad)
@@ -315,7 +315,7 @@ public struct DayView: View {
       }
       if ledger.unresolved > 0 {
         Label(
-          "\(ledger.unresolved) conversion\(ledger.unresolved == 1 ? "" : "s") pending · total incomplete",
+          "Home amounts needed · connect to update rates",
           systemImage: "exclamationmark.circle"
         )
         .typeface(13, .semibold, relativeTo: .footnote).foregroundStyle(Theme.bad)
@@ -506,7 +506,7 @@ private struct ExpenseRow: View {
     .animation(.easeOut(duration: fresh ? 0.2 : 0.8), value: fresh)
   }
 
-  /// The amount back home, or as spent while its conversion is pending.
+  /// The amount back home, or as spent when no rate is available.
   private func homeAmount(_ amount: Int64) -> String {
     if expense.currency == trip.homeCurrency { return Money.format(amount, expense.currency) }
     guard let home = expense.homeMinor(in: trip.homeCurrency) else {
@@ -537,7 +537,7 @@ private struct ExpenseRow: View {
   private func detail(_ amount: Int64) -> (text: String, pending: Bool)? {
     if expense.currency != trip.homeCurrency {
       guard let home = expense.homeMinor(in: trip.homeCurrency) else {
-        return ("Conversion pending", true)
+        return ("Add home amount", true)
       }
       return (Money.format(home, trip.homeCurrency), false)
     }

@@ -333,11 +333,15 @@ struct RootView: View {
         }
       #endif
       await model.sync.syncAll()
+      await model.refreshReferenceRates()
     }
     .onChange(of: scenePhase) { _, phase in
       if phase == .active {
         model.sync.startLive(tripID: model.selectedTripID)
-        Task { await model.sync.syncAll() }
+        Task {
+          await model.sync.syncAll()
+          await model.refreshReferenceRates()
+        }
       }
       if phase == .background {
         model.sync.stopLive()

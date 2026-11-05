@@ -187,10 +187,7 @@ public struct ExpenseEditor: View {
       categoryChips(draft)
       panel(trip, draft: draft).padding(.horizontal, inset)
       if draft.currency != trip.homeCurrency {
-        Text(
-          draft.conversion.map { "Saved rate: \($0.rate) · \($0.source) · \($0.rateDate)" }
-            ?? "We’ll try the reference rate when saving. Without a rate, this expense stays visible with conversion pending."
-        )
+        Text(conversionNote(trip, draft: draft))
         .typeface(12, .semibold, relativeTo: .caption)
         .foregroundStyle(Theme.tertiary)
         .padding(.horizontal, inset + 4)
@@ -340,10 +337,20 @@ public struct ExpenseEditor: View {
     if let actual = try? Money.parse(draft.actualHomeAmount, currency: trip.homeCurrency), actual > 0 {
       return actual
     }
-    if let rate = draft.conversion?.rate {
-      return try? Money.convert(minor, from: draft.currency, to: trip.homeCurrency, rate: rate)
+    if let conversion = draft.conversion, !conversion.isBankCharge {
+      return try? Money.convert(minor, from: draft.currency, to: trip.homeCurrency, rate: conversion.rate)
     }
-    return trip.estimate(minor, from: draft.currency)
+    return (try? model.cachedExpenseConversion(minor, from: draft.currency, to: trip.homeCurrency))
+      .flatMap { Money.minor($0.homeAmountMinor) }
+  }
+
+  private func conversionNote(_ trip: TripSnapshot, draft: ExpenseDraft) -> String {
+    let reminder = "You can update the bank charge in \(trip.homeCurrency) anytime."
+    if !draft.actualHomeAmount.isEmpty { return "Uses your bank charge. " + reminder }
+    if let conversion = draft.conversion, !conversion.isBankCharge {
+      return "Rate from \(conversion.rateDate). " + reminder
+    }
+    return "Automatically converted using the latest available rate. " + reminder
   }
 
   /// The day's own currency and home, plus whatever the expense already uses.
@@ -449,9 +456,9 @@ public struct ExpenseEditor: View {
         .padding(.leading, 68)
       }
       if draft.currency != trip.homeCurrency {
-        row("Charged") {
+        row("Bank") {
           TextField(
-            "Card charge in \(trip.homeCurrency), optional",
+            "Actual charge in \(trip.homeCurrency), optional",
             text: bind(\.actualHomeAmount, fallback: "")
           )
           .keyboardType(.decimalPad)
