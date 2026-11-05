@@ -160,10 +160,11 @@ private struct DayRow: View {
         VStack(alignment: .leading, spacing: 3) {
           HStack(spacing: 7) {
             Text("Day \(number)").typeface(15.5, .heavy, relativeTo: .subheadline, maximum: 1.4)
-              .foregroundStyle(Theme.ink)
+              .foregroundStyle(Theme.ink).lineLimit(1).minimumScaleFactor(0.8)
             if today {
               Text("TODAY").typeface(10.5, .black, tracking: 0.04, relativeTo: .caption2, maximum: 1.3)
                 .foregroundStyle(Theme.accentInk)
+                .lineLimit(1).fixedSize(horizontal: true, vertical: false)
                 .padding(.vertical, 3).padding(.horizontal, 7)
                 .background(Theme.accent, in: Capsule())
             }
@@ -196,9 +197,9 @@ private struct DayRow: View {
     .id(attachment)
   }
 
-  /// Planned count, pending conversions, or the total in the stop's own currency.
+  /// Planned count, missing home amounts, or the total in the stop's own currency.
   private func sub(_ items: [Expense], ledger: Ledger, planned: Int) -> String? {
-    if ledger.unresolved > 0 { return "+ pending FX" }
+    if ledger.unresolved > 0 { return "Add home amount" }
     if planned > 0 { return "\(planned) planned" }
     guard let stop = trip.stop(for: .init(kind: .day, id: day.id)),
       stop.currency != trip.homeCurrency

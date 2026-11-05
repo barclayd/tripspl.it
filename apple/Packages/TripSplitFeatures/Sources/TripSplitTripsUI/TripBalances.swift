@@ -86,7 +86,7 @@ struct TripBalances: View {
   @ViewBuilder private func moves(_ ledger: Ledger) -> some View {
     if !ledger.balancesComplete {
       Label(
-        "Conversions are still pending. Settle up once all paid costs are converted.",
+        "Connect to update rates, or add the missing home amounts before settling up.",
         systemImage: "exclamationmark.circle"
       )
       .typeface(14, .semibold, relativeTo: .subheadline)

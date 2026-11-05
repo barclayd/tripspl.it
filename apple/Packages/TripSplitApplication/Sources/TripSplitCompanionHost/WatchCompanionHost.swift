@@ -120,17 +120,20 @@ import TripSplitDomain
 
   /// A reference rate for foreign-currency spends logged on the watch.
   private func estimate(_ expense: Expense, in trip: TripSnapshot) async -> Conversion? {
-    guard expense.currency != trip.homeCurrency, model.sync.configured,
-      let amount = Money.minor(expense.amountMinor),
-      let quote = try? await model.sync.api.quote(
-        from: expense.currency, to: trip.homeCurrency, date: trip.date(for: expense.attachment),
-        token: nil),
-      let home = try? Money.convert(
-        amount, from: expense.currency, to: trip.homeCurrency, rate: quote.rate)
+    guard expense.currency != trip.homeCurrency,
+      let amount = Money.minor(expense.amountMinor)
     else { return nil }
-    return .init(
-      homeAmountMinor: String(home), rate: quote.rate, rateDate: quote.rateDate,
-      source: quote.source, kind: "reference", quoteId: quote.id)
+    if let conversion = try? await model.expenseConversion(
+      amount, from: expense.currency, to: trip.homeCurrency)
+    { return conversion }
+    // Keep the watch's cached estimate offline in the API's unquoted format.
+    guard var estimate = expense.conversion,
+      let home = try? Money.convert(amount, from: expense.currency, to: trip.homeCurrency, rate: estimate.rate)
+    else { return nil }
+    estimate.homeAmountMinor = String(home)
+    estimate.kind = "manual"
+    estimate.quoteId = nil
+    return estimate
   }
 
   /// Publishes shortly after the phone's trips change, coalescing bursts of sync updates.

@@ -140,6 +140,11 @@ public struct Conversion: Codable, Hashable, Sendable {
   public var source: String
   public var kind: String
   public var quoteId: String?
+
+  public static let bankChargeSource = "Actual card charge entered by traveller"
+  public var isBankCharge: Bool {
+    kind == "manual" && (source == Self.bankChargeSource || source == "Manual: " + Self.bankChargeSource)
+  }
 }
 public enum ExpenseCategory: String, CaseIterable, Codable, Sendable {
   case food, coffee, stay, activity, transport, shopping, flight, train, taxi, other

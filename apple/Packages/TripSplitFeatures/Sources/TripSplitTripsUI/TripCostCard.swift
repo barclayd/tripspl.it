@@ -24,7 +24,7 @@ struct TripCostCard: View {
         }
         if ledger.unresolved > 0 {
           Label(
-            "\(ledger.unresolved) conversion\(ledger.unresolved == 1 ? "" : "s") pending · total incomplete",
+            "Home amounts needed · connect to update rates",
             systemImage: "exclamationmark.circle"
           )
           .typeface(13, .semibold, relativeTo: .footnote).foregroundStyle(Theme.bad)

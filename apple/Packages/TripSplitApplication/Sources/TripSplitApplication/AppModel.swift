@@ -28,9 +28,10 @@ import TripSplitSync
   public var globeTripID: String?
   public var inviteURL: URL?
   public var pendingInvitation: URL?
-  /// The last reference rates from pounds, kept for indicative amounts such as a suggested
-  /// budget, so they still show offline. Expenses never convert with these.
+  /// The last reference rates from pounds, also used to save expense estimates offline.
   public private(set) var referenceRates: FXTable?
+  var expenseQuotes: [String: FXQuote] = [:]
+  var repairingConversions = false
   public var selectedTrip: TripSnapshot? { selectedTripID.flatMap { store.trip($0) } }
   public init(store: LocalStore, sync: SyncCoordinator? = nil) {
     self.store = store
@@ -39,6 +40,7 @@ import TripSplitSync
     onboarding.reconcileRoute()
     if onboarding.step == 6 { selectedTripID = onboarding.createdTripID }
     referenceRates = store.read(FXTable.self, key: "referenceRates")
+    expenseQuotes = store.read([String: FXQuote].self, key: "expenseQuotes") ?? [:]
   }
   /// An indicative rate between any two currencies the cached table lists.
   /// The currency most trips are kept in, for totals that span trips.
@@ -67,11 +69,13 @@ import TripSplitSync
   }
   /// Fetches today's reference rates once a day when the cloud service is configured.
   public func refreshReferenceRates() async {
-    let today = CivilDate.today(timeZone: TimeZone.current.identifier)
-    guard sync.configured, referenceRates?.requestedDate != today,
+    let today = CivilDate.today(timeZone: "UTC")
+    if sync.configured, referenceRates?.requestedDate != today,
       let table = try? await sync.api.rates(base: "GBP", date: today)
-    else { return }
-    cacheReferenceRates(table)
+    {
+      cacheReferenceRates(table)
+    }
+    await repairExpenseConversions()
   }
   public func cacheReferenceRates(_ table: FXTable) {
     referenceRates = table
@@ -209,6 +213,8 @@ import TripSplitSync
     if let previous, previous.amountMinor != String(amount) || previous.currency != draft.currency {
       conversion = nil
     }
+    // Clearing a saved bank charge opts back into automatic conversion.
+    if conversion?.isBankCharge == true, draft.actualHomeAmount.isEmpty { conversion = nil }
     if draft.currency != trip.homeCurrency {
       if !draft.actualHomeAmount.isEmpty {
         let home = try Money.parse(draft.actualHomeAmount, currency: trip.homeCurrency)
@@ -219,22 +225,19 @@ import TripSplitSync
         conversion = .init(
           homeAmountMinor: String(home), rate: Money.rateString(rate),
           rateDate: trip.date(for: draft.attachment),
-          source: "Actual card charge entered by traveller", kind: "manual", quoteId: nil)
+          source: Conversion.bankChargeSource, kind: "manual", quoteId: nil)
       } else if var estimate = conversion {
         estimate.homeAmountMinor = String(
           try Money.convert(
             amount, from: draft.currency, to: trip.homeCurrency, rate: estimate.rate))
         conversion = estimate
-      } else if conversion == nil, sync.configured,
-        let quote = try? await sync.api.quote(
-          from: draft.currency, to: trip.homeCurrency, date: trip.date(for: draft.attachment),
-          token: nil)
-      {
-        let home = try Money.convert(
-          amount, from: draft.currency, to: trip.homeCurrency, rate: quote.rate)
-        conversion = .init(
-          homeAmountMinor: String(home), rate: quote.rate, rateDate: quote.rateDate,
-          source: quote.source, kind: "reference", quoteId: quote.id)
+      } else {
+        conversion = try await expenseConversion(amount, from: draft.currency, to: trip.homeCurrency)
+      }
+      guard conversion != nil else {
+        throw ServiceError(
+          code: "fx_unavailable",
+          message: "Connect to get an exchange rate, or enter the amount charged in \(trip.homeCurrency). Your draft is saved.")
       }
     } else {
       conversion = nil

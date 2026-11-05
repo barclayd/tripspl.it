@@ -37,6 +37,7 @@
 		5C9800C574014B3F3A52B614 /* TripSplitWatchGlances in Frameworks */ = {isa = PBXBuildFile; productRef = 23D044067862D6569F795D27 /* TripSplitWatchGlances */; };
 		6236CADC049FF1FA78DA7523 /* TripSplitSync in Frameworks */ = {isa = PBXBuildFile; productRef = 0F686EA89F002304BDFA2346 /* TripSplitSync */; };
 		63BA6088FD66AEC0B5EC4725 /* TripSplitDesignSystem in Frameworks */ = {isa = PBXBuildFile; productRef = 1DBD9574C4A7DC7FAE335DD5 /* TripSplitDesignSystem */; };
+		6F4ED096BA73EC5066034ECA /* ExpenseConversionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F44B90CE367209B7D2507DBE /* ExpenseConversionTests.swift */; };
 		7046D46BB21595CED052E4A3 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = FAF3E9994895BD62556AECD4 /* Assets.xcassets */; };
 		714EAF26FB7BC6D38DF88D3C /* TripGeographyTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A0ADB248CB076923670BF984 /* TripGeographyTests.swift */; };
 		7C56B265F4C6C29538BA495E /* APIConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2CD809495C9551555CE105A0 /* APIConfiguration.swift */; };
@@ -177,6 +178,7 @@
 		EAEBB9C9CA3ADFD7D7B14F87 /* TripPagesTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TripPagesTests.swift; sourceTree = "<group>"; };
 		ECF15BF32A826DF42AE46AF7 /* TripSplitApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TripSplitApp.swift; sourceTree = "<group>"; };
 		EDDB6A47B58B35D851963D08 /* TripSplitApplication */ = {isa = PBXFileReference; lastKnownFileType = folder; name = TripSplitApplication; path = ../Packages/TripSplitApplication; sourceTree = SOURCE_ROOT; };
+		F44B90CE367209B7D2507DBE /* ExpenseConversionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpenseConversionTests.swift; sourceTree = "<group>"; };
 		FAF3E9994895BD62556AECD4 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		FC319D5BE19AA428E954A8BA /* WatchGlanceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchGlanceTests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -345,6 +347,7 @@
 			isa = PBXGroup;
 			children = (
 				B87B7DBE7E10A5F596E10E7A /* ConversionModelTests.swift */,
+				F44B90CE367209B7D2507DBE /* ExpenseConversionTests.swift */,
 				DE65D36BD930BE5B26103066 /* GlobeStateTests.swift */,
 				B4E2BC6A39D78F2E7BB66A6D /* LegacyStoreCompatibilityTests.swift */,
 				4C26DAA050366856ED8FEC75 /* LocalStoreTests.swift */,
@@ -616,6 +619,7 @@
 				D779FB7F25DA80C374D14EEA /* ConversionModelTests.swift in Sources */,
 				D253EEDC524EB4DC7D6577F8 /* DestinationTests.swift in Sources */,
 				08FF8D75BC5DD3D6FCB4B7B6 /* DestinationTimeZonesTests.swift in Sources */,
+				6F4ED096BA73EC5066034ECA /* ExpenseConversionTests.swift in Sources */,
 				17545E9DA8EEFC18D534A62F /* FXTableTests.swift in Sources */,
 				E3A75709BE47834F12D01E8A /* GlobeStateTests.swift in Sources */,
 				CD215FC3E1B1DA561717E55E /* LeavingFromTests.swift in Sources */,

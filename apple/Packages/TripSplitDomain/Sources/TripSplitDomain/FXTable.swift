@@ -1,7 +1,7 @@
 import Foundation
 
 /// Every reference rate from one base on a day, for indicative conversions between any pair
-/// offline. Expenses still cite an immutable `FXQuote`; a table is only for display.
+/// offline. Expenses can retain a dated table estimate when a direct quote is unavailable.
 public struct FXTable: Codable, Hashable, Sendable {
   public init(
     base: String, requestedDate: String, rateDate: String, source: String,

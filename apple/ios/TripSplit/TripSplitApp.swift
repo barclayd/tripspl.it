@@ -21,8 +21,11 @@ import UIKit
       let sync = SyncCoordinator(store: store, api: APIClient(baseURL: APIConfiguration.baseURL))
       let model = AppModel(store: store, sync: sync)
       _connectivity = State(
-        initialValue: Connectivity { [weak sync] in
-          Task { await sync?.syncAll() }
+        initialValue: Connectivity { [weak model] in
+          Task {
+            await model?.sync.syncAll()
+            await model?.refreshReferenceRates()
+          }
         })
       if ProcessInfo.processInfo.arguments.contains("--demo"), store.trips.isEmpty {
         try DemoData.install(into: store)

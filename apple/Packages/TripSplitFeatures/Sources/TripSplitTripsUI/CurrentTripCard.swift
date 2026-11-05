@@ -76,7 +76,7 @@ struct CurrentTripCard: View {
         .typeface(14, relativeTo: .subheadline).opacity(0.86)
       }
       VStack(alignment: .leading, spacing: 2) {
-        Text(ledger.unresolved > 0 ? "Known cost · conversion pending" : "This trip costs")
+        Text(ledger.unresolved > 0 ? "Known cost · home amounts needed" : "This trip costs")
           .typeface(13, .bold, relativeTo: .footnote).opacity(0.86)
         MoneyText(amount: Money.wholeUnits(ledger.total, currency), currency: currency, size: 50)
         if trip.hasCompanions {

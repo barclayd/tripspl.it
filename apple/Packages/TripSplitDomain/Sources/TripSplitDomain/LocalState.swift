@@ -91,6 +91,11 @@ public struct ExpenseDraft: Codable, Identifiable, Sendable {
       paidBy = e.paidBy
       splitWith = e.splitWith
       conversion = e.conversion
+      if let conversion = e.conversion, conversion.isBankCharge,
+        let home = Money.minor(conversion.homeAmountMinor)
+      {
+        actualHomeAmount = Money.input(home, currency: trip.homeCurrency)
+      }
       coversReturn = trip.returnHalves(of: e) != nil || e.title == e.category.returnTitle
     }
   }
