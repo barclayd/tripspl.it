@@ -517,6 +517,7 @@ private struct ExpenseRow: View {
 
   /// "Tom paid · Split 3 ways" or "Planned · Just you".
   private var byline: String {
+    if let days = expense.dayIds { return "Today's share · \(days.count) days" }
     guard trip.hasCompanions else { return expense.status == .paid ? "Paid" : "Planned" }
     return expense.status == .paid
       ? "\(trip.displayName(expense.paidBy)) paid · \(who)" : "Planned · \(who)"

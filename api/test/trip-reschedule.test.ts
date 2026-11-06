@@ -34,6 +34,17 @@ function shortened(trip: TripSnapshot, moves = [{ fromDayId: 'day2', toDayId: 'd
 }
 
 describe('trip reschedules', () => {
+  it('remaps all selected expense days and merges overlapping shares', async () => {
+    const owner = await session(), trip = await create(owner, tokyo());
+    const hotel = { ...on('day1'), dayIds: ['day1', 'day2', 'day3'], amountMinor: '10001' };
+    const added = (await sync(trip, owner, [addExpense(trip, hotel)])).snapshot!;
+    const result = await sync(added, owner, [reschedule(added, shortened(added))]);
+    expect(result.results[0]?.status).toBe('accepted');
+    expect(result.snapshot?.expenses).toHaveLength(1);
+    expect(result.snapshot?.expenses[0]).toMatchObject({ amountMinor: '10001', attachment: { kind: 'day', id: 'day1' }, revision: 2 });
+    expect(result.snapshot?.expenses[0]).not.toHaveProperty('dayIds');
+  });
+
   it('moves a trip to later, longer dates with its days, legs and their expenses', async () => {
     const owner = await session(), trip = await create(owner, tokyo());
     const dinner = on('day2'), flight: Expense = { ...expense(), attachment: { kind: 'leg', id: 'home' } };

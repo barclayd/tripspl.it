@@ -43,12 +43,14 @@ extension TripSnapshot {
   /// Every expense in the ticket `expense` belongs to: both halves of a return, else just it, e.g.
   /// to delete them together.
   public func ticket(of expense: Expense) -> [Expense] {
-    returnHalves(of: expense).map { [$0.out, $0.back] } ?? [expense]
+    returnHalves(of: expense).map { [$0.out, $0.back] }
+      ?? [expenses.first { $0.id == expense.id } ?? expense]
   }
 
   /// A return ticket as one spend before you go, both halves added back together, e.g. to edit.
   /// Any other expense comes back as it is.
   public func wholeTicket(_ expense: Expense) -> Expense {
+    let expense = expenses.first { $0.id == expense.id } ?? expense
     guard let (out, back) = returnHalves(of: expense) else { return expense }
     var whole = out
     whole.amountMinor = String((Money.minor(out.amountMinor) ?? 0) + (Money.minor(back.amountMinor) ?? 0))

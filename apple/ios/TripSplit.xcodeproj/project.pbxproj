@@ -22,6 +22,7 @@
 		17545E9DA8EEFC18D534A62F /* FXTableTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A68D8235218BA0E77F4C2BE /* FXTableTests.swift */; };
 		18F22929AB9B23BCE72F1CC1 /* PhoneWidgetsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8CC6F6BB40B094142644235 /* PhoneWidgetsTests.swift */; };
 		1B91214FBEDB5C62785773A6 /* TripSplitOnboardingUI in Frameworks */ = {isa = PBXBuildFile; productRef = 8B5DDC14536B213BD7E78D25 /* TripSplitOnboardingUI */; };
+		1E78D8283855C619F51191CB /* MultiDayExpenseTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E048420DA98C1220EE97EABF /* MultiDayExpenseTests.swift */; };
 		219DE065E198F381303E1EB3 /* TripSplitWatchWidgets.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 8B40C4DBD35C2A1C41F480AE /* TripSplitWatchWidgets.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		21E081FE42FBB6559C9C794A /* TripSplitDomain in Frameworks */ = {isa = PBXBuildFile; productRef = 08E3B23339B353646079A66F /* TripSplitDomain */; };
 		2A23A47E89D0EE8D0014CE2B /* TripSplitExpensesUI in Frameworks */ = {isa = PBXBuildFile; productRef = DB97807C18652B2D64CEBA44 /* TripSplitExpensesUI */; };
@@ -64,6 +65,7 @@
 		8A9CE0DB93930CC67599C9EB /* TripSplitConversion in Frameworks */ = {isa = PBXBuildFile; productRef = 97C64CBF6B82C3FFD68B1DEA /* TripSplitConversion */; };
 		8D274CCB613DC5F777528F53 /* TripSplitWidgets.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 7E1606A8AEF05114F0362356 /* TripSplitWidgets.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		9215AF9EB0A4292ADCF15BF4 /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AD7A205147B6F7756527CF4C /* SwiftUI.framework */; };
+		92A66DE63FDB2C65861CE2A6 /* MultiDaySaveTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F758F7584C17A4021349660 /* MultiDaySaveTests.swift */; };
 		9366C8BDBC3F8D5C35BA48CE /* TripSplitApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECF15BF32A826DF42AE46AF7 /* TripSplitApp.swift */; };
 		94D70A19B96F9C26DB047563 /* TripSplitWatchApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = C81FFEE5F3B1BB9130C0DAB4 /* TripSplitWatchApp.swift */; };
 		952A23306FF6EC0EF6655DF3 /* WidgetLinks.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82819112B381C966C81BD152 /* WidgetLinks.swift */; };
@@ -192,6 +194,7 @@
 		420EFEAC07DD93A4096B6C53 /* LeavingFromTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LeavingFromTests.swift; sourceTree = "<group>"; };
 		4C26DAA050366856ED8FEC75 /* LocalStoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalStoreTests.swift; sourceTree = "<group>"; };
 		4D08900A43848327D96035CD /* OpenWatchLinkIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OpenWatchLinkIntent.swift; sourceTree = "<group>"; };
+		4F758F7584C17A4021349660 /* MultiDaySaveTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MultiDaySaveTests.swift; sourceTree = "<group>"; };
 		56848BEF485EE07498DBD90A /* GlanceTimeline.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GlanceTimeline.swift; sourceTree = "<group>"; };
 		5ED7000F9BD96D4E28D9FBA3 /* TripSplitTests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = TripSplitTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		64828B2B3E41A78C4561C43B /* Widgets.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Widgets.swift; sourceTree = "<group>"; };
@@ -233,6 +236,7 @@
 		D9D39FDE6E288FCE20D8E6F8 /* RescheduleTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RescheduleTests.swift; sourceTree = "<group>"; };
 		DBC7D0CB5EA99035F367F932 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		DE65D36BD930BE5B26103066 /* GlobeStateTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GlobeStateTests.swift; sourceTree = "<group>"; };
+		E048420DA98C1220EE97EABF /* MultiDayExpenseTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MultiDayExpenseTests.swift; sourceTree = "<group>"; };
 		EAEBB9C9CA3ADFD7D7B14F87 /* TripPagesTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TripPagesTests.swift; sourceTree = "<group>"; };
 		ECF15BF32A826DF42AE46AF7 /* TripSplitApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TripSplitApp.swift; sourceTree = "<group>"; };
 		EDDB6A47B58B35D851963D08 /* TripSplitApplication */ = {isa = PBXFileReference; lastKnownFileType = folder; name = TripSplitApplication; path = ../Packages/TripSplitApplication; sourceTree = SOURCE_ROOT; };
@@ -405,6 +409,7 @@
 				8A68D8235218BA0E77F4C2BE /* FXTableTests.swift */,
 				420EFEAC07DD93A4096B6C53 /* LeavingFromTests.swift */,
 				15426B312FC4938244D1A34F /* MoneyTests.swift */,
+				E048420DA98C1220EE97EABF /* MultiDayExpenseTests.swift */,
 				C2C9BAF877BB7E81B4083939 /* OnboardingDateTests.swift */,
 				AA0471322910DE241551A204 /* PlaceSuggestionTests.swift */,
 				D9D39FDE6E288FCE20D8E6F8 /* RescheduleTests.swift */,
@@ -440,6 +445,7 @@
 				B4E2BC6A39D78F2E7BB66A6D /* LegacyStoreCompatibilityTests.swift */,
 				4C26DAA050366856ED8FEC75 /* LocalStoreTests.swift */,
 				3764059ECA5E0D090848E9E4 /* LogExpenseTests.swift */,
+				4F758F7584C17A4021349660 /* MultiDaySaveTests.swift */,
 				F8CC6F6BB40B094142644235 /* PhoneWidgetsTests.swift */,
 				71021F5E7CBBA9943ABED572 /* PublicAPITests.swift */,
 				1093EB240A1B46E0FAFD0939 /* ReturnTicketSaveTests.swift */,
@@ -780,6 +786,8 @@
 				3114A0930A98A6F1F75F30ED /* LocalStoreTests.swift in Sources */,
 				99E849E0A8DD38E98AE199A4 /* LogExpenseTests.swift in Sources */,
 				46459E50CD074648C3F7E63D /* MoneyTests.swift in Sources */,
+				1E78D8283855C619F51191CB /* MultiDayExpenseTests.swift in Sources */,
+				92A66DE63FDB2C65861CE2A6 /* MultiDaySaveTests.swift in Sources */,
 				E415AED908799D14D25C6C1B /* OnboardingDateTests.swift in Sources */,
 				18F22929AB9B23BCE72F1CC1 /* PhoneWidgetsTests.swift in Sources */,
 				3774222D36F998E4A9D91294 /* PlaceSuggestionTests.swift in Sources */,

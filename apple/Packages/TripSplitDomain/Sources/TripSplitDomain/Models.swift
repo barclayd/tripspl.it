@@ -205,7 +205,8 @@ public struct Expense: Codable, Identifiable, Hashable, Sendable {
     paidBy: String,
     splitWith: [String],
     conversion: Conversion? = nil,
-    returnPairId: String? = nil
+    returnPairId: String? = nil,
+    dayIds: [String]? = nil
   ) {
     self.id = id
     self.revision = revision
@@ -220,6 +221,7 @@ public struct Expense: Codable, Identifiable, Hashable, Sendable {
     self.splitWith = splitWith
     self.conversion = conversion
     self.returnPairId = returnPairId
+    self.dayIds = dayIds
   }
   public enum Status: String, Codable, CaseIterable, Sendable { case planned, paid }
   public var id: String = UUID().uuidString
@@ -237,6 +239,9 @@ public struct Expense: Codable, Identifiable, Hashable, Sendable {
   /// Shared by both halves of a return ticket, one on the way out and one on the way home, so
   /// they edit and delete together. See `TripSnapshot.returnHalves(of:)`.
   public var returnPairId: String?
+  /// All selected days, including attachment.id. Nil for a single day or travel leg.
+  /// The saved amount is the total; day views allocate it without creating extra records.
+  public var dayIds: [String]?
   public func homeMinor(in currency: String) -> Int64? {
     Money.minor(self.currency == currency ? amountMinor : conversion?.homeAmountMinor)
   }
@@ -421,7 +426,7 @@ public struct TripSnapshot: Codable, Identifiable, Hashable, Sendable {
       : CivilDate.display(date(for: attachment), format: "EEEE d MMMM")
   }
   public func expenses(for attachment: Attachment) -> [Expense] {
-    expenses.filter { $0.attachment == attachment }
+    expenses.compactMap { $0.portion(on: attachment, in: self) }
   }
 }
 public struct TripSettings: Codable, Hashable, Sendable {
@@ -556,6 +561,12 @@ public struct Operation: Codable, Identifiable, Hashable, Sendable {
       for index in trip.expenses.indices where trip.expenses[index].attachment.kind == .day {
         if let day = moves[trip.expenses[index].attachment.id] {
           trip.expenses[index].attachment.id = day
+        }
+        if let ids = trip.expenses[index].dayIds {
+          let selected = Set(ids.map { moves[$0] ?? $0 })
+          let ordered = trip.days.map(\.id).filter { selected.contains($0) }
+          trip.expenses[index].dayIds = ordered.count > 1 ? ordered : nil
+          if let first = ordered.first { trip.expenses[index].attachment.id = first }
         }
       }
     case .archive(let v): trip.archived = v

@@ -460,6 +460,15 @@
           "currency": {
             "$ref": "#/components/schemas/CurrencyCode"
           },
+          "dayIds": {
+            "description": "All selected day IDs, unique and including attachment.id. The amount and conversion are the total, shared evenly in itinerary order with remainder minor units assigned to earlier days. Optional and never null; omission on upsert returns the expense to its single attachment.",
+            "items": {
+              "$ref": "#/components/schemas/ID"
+            },
+            "maxItems": 400,
+            "minItems": 2,
+            "type": "array"
+          },
           "id": {
             "$ref": "#/components/schemas/ID"
           },

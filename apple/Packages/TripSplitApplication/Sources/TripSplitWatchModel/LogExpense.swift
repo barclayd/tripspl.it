@@ -274,7 +274,8 @@ import TripSplitDomain
       currency: currency, status: status,
       paidOn: status == .paid ? trip.date(for: attachment) : nil, paidBy: payer,
       splitWith: sharers.sorted(), conversion: estimate.conversion,
-      returnPairId: isReturnTicket ? editing?.returnPairId : nil)
+      returnPairId: isReturnTicket ? editing?.returnPairId : nil,
+      dayIds: attachment == editing?.attachment ? editing?.dayIds : nil)
     if isReturnTicket, let halves = trip.splitReturn(expense, back: partner) {
       for half in halves { model.send(.saveExpense(tripID: trip.id, expense: half)) }
     } else {

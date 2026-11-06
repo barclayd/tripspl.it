@@ -18,6 +18,9 @@ public struct ExpenseEditor: View {
   @State private var usesVerticalRail = false
   @State private var deleteConfirmation = false
   @State private var localError: String?
+  @State private var keyboardVisible = false
+  private enum Field: Hashable { case title, bank }
+  @FocusState private var focusedField: Field?
 
   public var body: some View {
     NavigationStack {
@@ -38,6 +41,10 @@ public struct ExpenseEditor: View {
         .navigationBarTitleDisplayMode(.inline)
         .toolbarVisibility(usesVerticalRail && saved == nil ? .automatic : .hidden, for: .navigationBar)
         .toolbar {
+          ToolbarItemGroup(placement: .keyboard) {
+            Spacer()
+            Button("Done") { focusedField = nil }
+          }
           if usesVerticalRail && saved == nil {
             ToolbarItem(placement: .cancellationAction) {
               Button("Cancel", systemImage: "xmark") { cancel() }
@@ -64,6 +71,12 @@ public struct ExpenseEditor: View {
       }
     }
     .disabled(saving)
+    .onReceive(NotificationCenter.default.publisher(for: UIResponder.keyboardWillShowNotification)) { _ in
+      keyboardVisible = true
+    }
+    .onReceive(NotificationCenter.default.publisher(for: UIResponder.keyboardWillHideNotification)) { _ in
+      keyboardVisible = false
+    }
     .overlay {
       if saving {
         ProgressView("Saving expense…")
@@ -116,11 +129,15 @@ public struct ExpenseEditor: View {
         .padding(.top, usesVerticalRail ? 20 : 2).padding(.bottom, 14)
         HStack(alignment: .bottom, spacing: 0) {
           ScrollView { fields(trip, draft: draft) }.scrollDismissesKeyboard(.interactively)
-          keypad.frame(width: 200).padding(.bottom, 18).padding(.trailing, 22)
+          if !keyboardVisible && focusedField == nil {
+            keypad.frame(width: 200).padding(.bottom, 18).padding(.trailing, 22)
+          }
         }
       } else {
         ScrollView { fields(trip, draft: draft) }.scrollDismissesKeyboard(.interactively)
-        keypad.padding(.horizontal, 18).padding(.top, 10).padding(.bottom, 4)
+        if !keyboardVisible && focusedField == nil {
+          keypad.padding(.horizontal, 18).padding(.top, 10).padding(.bottom, 4)
+        }
       }
     }
     .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -175,6 +192,14 @@ public struct ExpenseEditor: View {
     VStack(alignment: .leading, spacing: 12) {
       if !wideSheet { dayChips(trip, draft: draft, inset: inset).padding(.top, 2) }
       amountBlock(trip, draft: draft).padding(.top, 2).padding(.bottom, wideSheet ? 2 : -2)
+      if draft.attachment.kind == .day {
+        Text(draft.selectedDayIDs.count > 1
+          ? "Total shared across \(draft.selectedDayIDs.count) days"
+          : "Tap days above to share this expense")
+          .typeface(12.5, .semibold, relativeTo: .caption)
+          .foregroundStyle(Theme.secondary)
+          .padding(.horizontal, inset)
+      }
       TextField(
         draft.attachment.kind == .leg ? "e.g. Taxi to the airport" : "What was it?",
         text: bind(\.title, fallback: "")
@@ -182,6 +207,8 @@ public struct ExpenseEditor: View {
       .typeface(16, .bold, relativeTo: .body)
       .foregroundStyle(Theme.ink)
       .submitLabel(.done)
+      .focused($focusedField, equals: .title)
+      .onSubmit { focusedField = nil }
       .padding(.vertical, 13).padding(.horizontal, 16)
       .background(Theme.inset, in: RoundedRectangle(cornerRadius: 14, style: .continuous))
       .padding(.horizontal, inset)
@@ -203,13 +230,15 @@ public struct ExpenseEditor: View {
 
   // MARK: - When
 
-  /// Every day and leg in itinerary order, so an expense can move to another day.
+  /// Day pills toggle a shared expense's dates; travel legs remain a single selection.
   private func dayChips(_ trip: TripSnapshot, draft: ExpenseDraft, inset: CGFloat) -> some View {
     ScrollViewReader { proxy in
       ScrollView(.horizontal) {
         HStack(spacing: 6) {
           ForEach(options(trip), id: \.attachment.id) { option in
-            let selected = option.attachment == draft.attachment
+            let selected = option.attachment.kind == .day
+              ? draft.selectedDayIDs.contains(option.attachment.id)
+              : option.attachment == draft.attachment
             Button {
               setDay(option.attachment, trip: trip)
             } label: {
@@ -222,6 +251,8 @@ public struct ExpenseEditor: View {
             }
             .buttonStyle(.plain)
             .accessibilityAddTraits(selected ? .isSelected : [])
+            .accessibilityHint(option.attachment.kind == .day
+              ? "Toggles this day. The total is shared across selected days." : "Selects this travel leg")
             .id(option.attachment.id)
           }
         }
@@ -260,10 +291,13 @@ public struct ExpenseEditor: View {
   private func setDay(_ attachment: Attachment, trip: TripSnapshot) {
     Haptics.selection()
     mutate {
-      $0.attachment = attachment
-      let offered = currencies(trip, attachment: attachment)
-      if !offered.contains($0.currency) { setCurrency(offered[0], on: &$0) }
-      let travel = attachment.kind == .leg
+      let previous = $0.attachment
+      $0.select(attachment, in: trip)
+      let offered = currencies(trip, attachment: $0.attachment)
+      if previous.kind != $0.attachment.kind, !offered.contains($0.currency) {
+        setCurrency(offered[0], on: &$0)
+      }
+      let travel = $0.attachment.kind == .leg
       let categories = travel ? ExpenseCategory.travelCategories : ExpenseCategory.dayCategories
       if !categories.contains($0.category) { $0.category = travel ? .flight : .food }
     }
@@ -284,6 +318,11 @@ public struct ExpenseEditor: View {
         .bump(on: shown)
         .padding(.horizontal, inset)
         .accessibilityLabel("Amount, \(shown)")
+        .contentShape(Rectangle())
+        .onTapGesture { focusedField = nil }
+        .accessibilityAddTraits(.isButton)
+        .accessibilityHint("Dismisses the keyboard to edit the amount")
+        .accessibilityAction { focusedField = nil }
       ScrollView(.horizontal) {
         HStack(spacing: 6) {
           ForEach(currencies(trip, attachment: draft.attachment, current: draft.currency), id: \.self) {
@@ -463,6 +502,7 @@ public struct ExpenseEditor: View {
             text: bind(\.actualHomeAmount, fallback: "")
           )
           .keyboardType(.decimalPad)
+          .focused($focusedField, equals: .bank)
           .typeface(14, .bold, relativeTo: .subheadline)
           .foregroundStyle(Theme.ink)
           .padding(.vertical, 7).padding(.horizontal, 12)
@@ -639,6 +679,7 @@ public struct ExpenseEditor: View {
 
   private func save() {
     guard let draft = model.expenseDraft, valid(draft) else { return }
+    focusedField = nil
     saving = true
     localError = nil
     Task {
@@ -668,6 +709,8 @@ public struct ExpenseEditor: View {
     let amount =
       expense.homeMinor(in: trip.homeCurrency).map { Money.format($0, trip.homeCurrency) }
       ?? Money.format(Money.minor(expense.amountMinor) ?? 0, expense.currency)
-    model.notify("\(amount) added to \(trip.shortTitle(for: expense.attachment))")
+    let destination = expense.dayIds.map { "\($0.count) days" }
+      ?? trip.shortTitle(for: expense.attachment)
+    model.notify("\(amount) added to \(destination)")
   }
 }

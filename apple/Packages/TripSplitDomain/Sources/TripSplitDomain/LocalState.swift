@@ -54,6 +54,7 @@ public struct ExpenseDraft: Codable, Identifiable, Sendable {
   public var id: String = UUID().uuidString
   public var tripID: String
   public var attachment: Attachment
+  public var dayIds: [String]?
   public var expenseID: String?
   public var amount = ""
   public var currency: String
@@ -82,6 +83,7 @@ public struct ExpenseDraft: Codable, Identifiable, Sendable {
     }
     if let e = expense.map(trip.wholeTicket) {
       self.attachment = e.attachment
+      dayIds = e.dayIds
       expenseID = e.id
       amount = Money.input(Money.minor(e.amountMinor) ?? 0, currency: e.currency)
       currency = e.currency
@@ -98,5 +100,28 @@ public struct ExpenseDraft: Codable, Identifiable, Sendable {
       }
       coversReturn = trip.returnHalves(of: e) != nil || e.title == e.category.returnTitle
     }
+  }
+
+  public var selectedDayIDs: Set<String> {
+    attachment.kind == .day ? Set(dayIds ?? [attachment.id]) : []
+  }
+
+  /// Day pills toggle independently; one day always stays selected. Travel remains exclusive.
+  public mutating func select(_ option: Attachment, in trip: TripSnapshot) {
+    guard option.kind == .day, attachment.kind == .day else {
+      attachment = option
+      dayIds = nil
+      return
+    }
+    var selected = selectedDayIDs
+    if selected.contains(option.id) {
+      if selected.count > 1 { selected.remove(option.id) }
+    } else {
+      selected.insert(option.id)
+    }
+    let ordered = trip.days.map(\.id).filter { selected.contains($0) }
+    guard let first = ordered.first else { return }
+    attachment = .init(kind: .day, id: first)
+    dayIds = ordered.count > 1 ? ordered : nil
   }
 }
