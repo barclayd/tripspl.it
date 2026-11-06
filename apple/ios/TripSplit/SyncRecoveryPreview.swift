@@ -10,6 +10,7 @@
   @MainActor enum SyncRecoveryPreview {
     static func model() throws -> AppModel {
       let store = try LocalStore(inMemory: true, installationID: "sync-preview")
+      store.activeAccountID = "preview"
       var draft = OnboardingDraft()
       draft.name = "Lisbon weekend"
       draft.stops = [Destination.country("PT")!.stop(nights: 3)]
