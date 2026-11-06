@@ -10,31 +10,48 @@ import TripSplitPersistence
   public internal(set) var session: Session? {
     didSet {
       sessionVersion &+= 1
+      refreshTask?.cancel()
+      refreshTask = nil
+      refreshTaskID = nil
+      pendingSession = nil
+      requiresSignIn = false
       store.activeAccountID = session?.user.id
     }
   }
   public private(set) var isSyncing = false
+  /// Keep the account's local trips visible while its cloud credentials need replacing.
+  public private(set) var requiresSignIn = false
+  public var needsAppleSignIn: Bool { session == nil || requiresSignIn }
   public var message: String?
   public private(set) var challenge: AuthChallenge?
   public private(set) var deletionRequested = false
   public private(set) var lastSynced: Date?
   @ObservationIgnored private var sessionVersion = 0
   @ObservationIgnored private var refreshTask: Task<String, Error>?
+  @ObservationIgnored private var refreshTaskID: UUID?
+  /// A rotated credential must be saved before use, without sending its consumed predecessor again.
+  @ObservationIgnored private var pendingSession: Session?
   @ObservationIgnored private var endingSession = false
   @ObservationIgnored private let sessionWriter: @MainActor (Session) throws -> Void
+  @ObservationIgnored private let sessionDeleter: @MainActor () -> Void
   @ObservationIgnored private var liveTask: Task<Void, Never>?
   @ObservationIgnored private var liveSocket: URLSessionWebSocketTask?
   /// This phone's APNs registration, sent to the account so nudges reach it.
   @ObservationIgnored public private(set) var pushDevice: PushDevice?
   public init(
     store: LocalStore, api: APIClient = APIClient(),
-    sessionWriter: (@MainActor (Session) throws -> Void)? = nil
+    sessionWriter: (@MainActor (Session) throws -> Void)? = nil,
+    sessionReader: (@MainActor () -> Session?)? = nil,
+    sessionDeleter: (@MainActor () -> Void)? = nil
   ) {
     self.sessionWriter =
       sessionWriter ?? { try SessionVault.write(JSONEncoder().encode($0), key: "session") }
+    self.sessionDeleter = sessionDeleter ?? { SessionVault.delete("session") }
     self.store = store
     self.api = api
-    if let data = SessionVault.read("session") {
+    if let sessionReader {
+      session = sessionReader()
+    } else if let data = SessionVault.read("session") {
       session = try? JSONDecoder().decode(Session.self, from: data)
     }
     store.activeAccountID = session?.user.id
@@ -48,7 +65,7 @@ import TripSplitPersistence
   }
   public func startLive(tripID: String?) {
     stopLive()
-    guard let tripID, configured, session != nil, let envelope = store.envelopes[tripID],
+    guard let tripID, configured, !needsAppleSignIn, let envelope = store.envelopes[tripID],
       envelope.accountID == session?.user.id, envelope.confirmed.syncEpoch != "local"
     else { return }
     liveTask = Task { [weak self] in
@@ -141,6 +158,8 @@ import TripSplitPersistence
     guard !endingSession else {
       throw ServiceError(code: "ending_session", message: "Sign-out is in progress.")
     }
+    guard !requiresSignIn else { throw Self.signInAgain }
+    if let pendingSession { try saveSession(pendingSession) }
     guard let session else {
       throw ServiceError(code: "sign_in", message: "Sign in with Apple to sync or share this trip.")
     }
@@ -149,19 +168,46 @@ import TripSplitPersistence
     }
     if let refreshTask { return try await refreshTask.value }
     let version = sessionVersion
+    let taskID = UUID()
     let task = Task { @MainActor [weak self] () throws -> String in
       guard let self else { throw CancellationError() }
-      defer { self.refreshTask = nil }
+      defer {
+        if refreshTaskID == taskID {
+          refreshTask = nil
+          refreshTaskID = nil
+        }
+      }
       struct Body: Encodable, Sendable { var refreshToken: String }
-      let updated: Session = try await api.request(
-        "/auth/refresh", method: "POST", body: Body(refreshToken: session.refreshToken))
+      let updated: Session
+      do {
+        updated = try await api.request(
+          "/auth/refresh", method: "POST", body: Body(refreshToken: session.refreshToken))
+      } catch {
+        guard !Task.isCancelled, sessionVersion == version else { throw CancellationError() }
+        if let serviceError = error as? ServiceError, serviceError.status == 401 {
+          requiresSignIn = true
+          stopLive()
+          message = Self.signInAgain.message
+          throw Self.signInAgain
+        }
+        throw error
+      }
       guard !Task.isCancelled, sessionVersion == version, self.session?.user.id == updated.user.id
       else { throw CancellationError() }
+      pendingSession = updated
       try saveSession(updated)
       return updated.accessToken
     }
     refreshTask = task
+    refreshTaskID = taskID
     return try await task.value
+  }
+  private static var signInAgain: ServiceError {
+    ServiceError(
+      code: "sign_in_again",
+      message:
+        "Sign in again with the same Apple account to sync. Your trips and pending changes are saved on this device."
+    )
   }
   static func expiry(_ value: String) -> Date? {
     let formatter = ISO8601DateFormatter()
@@ -443,7 +489,7 @@ import TripSplitPersistence
     stopLive()
     refreshTask?.cancel()
     refreshTask = nil
-    SessionVault.delete("session")
+    sessionDeleter()
     session = nil
   }
   public func deleteAccount() async throws {
@@ -459,7 +505,7 @@ import TripSplitPersistence
       throw URLError(.badServerResponse)
     }
     stopLive()
-    SessionVault.delete("session")
+    sessionDeleter()
     session = nil
     deletionRequested = response.status == "pending"
     try store.clearAccount(accountID)

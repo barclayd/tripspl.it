@@ -35,6 +35,9 @@ final class SyncServer: @unchecked Sendable {
   var creates: [TripSnapshot] = []
   var createIDs: [String] = []
   var refreshCount = 0
+  var refreshReply: (Int, String)?
+  var loseRefreshResponse = false
+  var signInAccount = "account"
   var failCreateFirst = false
   var failFirst = false
   var conflict = false
@@ -54,10 +57,26 @@ final class SyncServer: @unchecked Sendable {
     if request.url!.path.hasSuffix("/auth/refresh") {
       refreshCount += 1
       Thread.sleep(forTimeInterval: 0.05)
+      if loseRefreshResponse { throw URLError(.networkConnectionLost) }
+      if let refreshReply { return (refreshReply.0, Data(refreshReply.1.utf8)) }
       let session = Session(
         user: Account(id: "account", displayName: "Test"), accessToken: "rotated-access",
         refreshToken: "rotated-refresh", expiresAt: "2099-01-01T00:00:00.000Z")
       return (200, try JSONEncoder().encode(session))
+    }
+    if request.url!.path.hasSuffix("/auth/apple/challenge") {
+      return (
+        200, Data(#"{"id":"challenge","nonce":"nonce","expiresAt":"2099-01-01T00:00:00Z"}"#.utf8)
+      )
+    }
+    if request.url!.path.hasSuffix("/auth/apple") {
+      return (
+        200,
+        try JSONEncoder().encode(
+          Session(
+            user: Account(id: signInAccount, displayName: "Test"), accessToken: "signed-in-access",
+            refreshToken: "signed-in-refresh", expiresAt: "2099-01-01T00:00:00.000Z"))
+      )
     }
     if request.url!.path.hasSuffix("/auth/logout") { return (200, Data("{\"ok\":true}".utf8)) }
     if request.url!.path.hasSuffix("/nudges") || request.url!.path.hasSuffix("/me/devices") {
@@ -129,7 +148,9 @@ final class SyncServer: @unchecked Sendable {
   }
 }
 @Suite(.serialized) @MainActor struct SyncTests {
-  func fixture(count: Int = 1) throws -> (LocalStore, SyncCoordinator, SyncServer, TripSnapshot) {
+  func fixture(
+    count: Int = 1, sessionWriter: @escaping @MainActor (Session) throws -> Void = { _ in }
+  ) throws -> (LocalStore, SyncCoordinator, SyncServer, TripSnapshot) {
     let store = try LocalStore(inMemory: true, installationID: "test")
     var draft = OnboardingDraft()
     draft.stops = [Destination.all[0].stop()]
@@ -153,7 +174,8 @@ final class SyncServer: @unchecked Sendable {
       store: store,
       api: .init(
         baseURL: URL(string: "https://example.invalid")!,
-        transport: URLSession(configuration: config)), sessionWriter: { _ in })
+        transport: URLSession(configuration: config)), sessionWriter: sessionWriter,
+      sessionReader: { nil }, sessionDeleter: {})
     sync.session = Session(
       user: Account(id: "account", displayName: "Test"), accessToken: "test-access",
       refreshToken: "test-refresh", expiresAt: "2099-01-01T00:00:00.000Z")
@@ -166,6 +188,140 @@ final class SyncServer: @unchecked Sendable {
     async let second = sync.accessToken()
     let tokens = try await [first, second]
     #expect(tokens == ["rotated-access", "rotated-access"])
+    #expect(server.refreshCount == 1)
+  }
+  @Test(arguments: ["UNAUTHENTICATED", "APPLE_REVOKED"])
+  func rejectedRefreshKeepsThreeEditsAndStopsRetrying(code: String) async throws {
+    let (store, sync, server, trip) = try fixture(count: 3)
+    let pending = store.envelopes[trip.id]?.pending
+    sync.session?.expiresAt = "2000-01-01T00:00:00.000Z"
+    server.refreshReply = (
+      401, "{\"error\":{\"code\":\"\(code)\",\"message\":\"Refresh rejected\"}}"
+    )
+    await sync.syncAll()
+    #expect(sync.requiresSignIn)
+    #expect(sync.needsAppleSignIn)
+    #expect(store.activeAccountID == "account")
+    #expect(store.trips.contains { $0.id == trip.id })
+    #expect(store.envelopes[trip.id]?.pending.map(\.operation) == pending?.map(\.operation))
+    await sync.syncAll()
+    await #expect { _ = try await sync.accessToken() } throws: {
+      ($0 as? ServiceError)?.code == "sign_in_again"
+    }
+    #expect(server.refreshCount == 1)
+    #expect(server.batches.isEmpty)
+
+    await sync.prepareApple()
+    await sync.completeApple(identityToken: "test", authorizationCode: "test", displayName: nil)
+    #expect(!sync.requiresSignIn)
+    #expect(sync.message == nil)
+    #expect(server.batches.flatMap { $0 }.map(\.id) == pending?.map { $0.operation.id })
+    #expect(store.envelopes[trip.id]?.pending.isEmpty == true)
+    #expect(store.trip(trip.id)?.expenses.count == 3)
+  }
+  @Test func signOutAndBackInPreservesThreePendingEdits() async throws {
+    let (store, sync, server, trip) = try fixture(count: 3)
+    let pending = store.envelopes[trip.id]?.pending
+    sync.session?.expiresAt = "2000-01-01T00:00:00.000Z"
+    server.refreshReply = (
+      401, #"{"error":{"code":"UNAUTHENTICATED","message":"Refresh rejected"}}"#
+    )
+    try await sync.signOut()
+    #expect(sync.session == nil)
+    #expect(store.trips.isEmpty)
+    #expect(store.envelopes[trip.id]?.pending.map(\.operation) == pending?.map(\.operation))
+    await sync.prepareApple()
+    await sync.completeApple(identityToken: "test", authorizationCode: "test", displayName: nil)
+    #expect(store.trip(trip.id)?.expenses.count == 3)
+    #expect(store.envelopes[trip.id]?.pending.isEmpty == true)
+  }
+  @Test func reauthenticationNeverUploadsAnotherAccountsEdits() async throws {
+    let (store, sync, server, trip) = try fixture(count: 3)
+    let pending = store.envelopes[trip.id]?.pending
+    sync.session?.expiresAt = "2000-01-01T00:00:00.000Z"
+    server.refreshReply = (
+      401, #"{"error":{"code":"UNAUTHENTICATED","message":"Refresh rejected"}}"#
+    )
+    await sync.syncAll()
+    server.signInAccount = "other-account"
+    await sync.prepareApple()
+    await sync.completeApple(identityToken: "test", authorizationCode: "test", displayName: nil)
+    #expect(server.batches.isEmpty)
+    #expect(store.envelopes[trip.id]?.pending.map(\.operation) == pending?.map(\.operation))
+    #expect(store.trips.isEmpty)
+  }
+  @Test func temporaryRefreshFailuresRemainRetryable() async throws {
+    let (_, sync, server, _) = try fixture(count: 0)
+    sync.session?.expiresAt = "2000-01-01T00:00:00.000Z"
+    server.refreshReply = (503, #"{"error":{"code":"APPLE_UNAVAILABLE","message":"Try later"}}"#)
+    await sync.syncAll()
+    #expect(!sync.requiresSignIn)
+    server.refreshReply = nil
+    #expect(try await sync.accessToken() == "rotated-access")
+    #expect(server.refreshCount == 2)
+  }
+  @Test func lostRefreshResponseEventuallyOffersSignInWithoutDroppingEdits() async throws {
+    let (store, sync, server, trip) = try fixture(count: 3)
+    let pending = store.envelopes[trip.id]?.pending
+    sync.session?.expiresAt = "2000-01-01T00:00:00.000Z"
+    server.loseRefreshResponse = true
+    await sync.syncAll()
+    #expect(!sync.requiresSignIn)
+    server.loseRefreshResponse = false
+    server.refreshReply = (401, #"{"error":{"code":"UNAUTHENTICATED","message":"Already used"}}"#)
+    await sync.syncAll()
+    #expect(sync.requiresSignIn)
+    #expect(store.envelopes[trip.id]?.pending.map(\.operation) == pending?.map(\.operation))
+  }
+  @Test func failedSecureSaveRetriesTheRotatedCredentialWithoutRefreshingAgain() async throws {
+    var writes = 0
+    var saved: Session?
+    let (store, sync, server, trip) = try fixture(count: 3) { value in
+      writes += 1
+      if writes == 1 { throw ServiceError(code: "keychain", message: "Secure storage unavailable") }
+      saved = value
+    }
+    sync.session?.expiresAt = "2000-01-01T00:00:00.000Z"
+    await sync.syncAll()
+    #expect(sync.session?.refreshToken == "test-refresh")
+    #expect(!sync.requiresSignIn)
+    #expect(store.envelopes[trip.id]?.pending.count == 3)
+    await sync.syncAll()
+    #expect(saved?.refreshToken == "rotated-refresh")
+    #expect(sync.session?.refreshToken == "rotated-refresh")
+    #expect(server.refreshCount == 1)
+    #expect(writes == 2)
+    #expect(store.envelopes[trip.id]?.pending.isEmpty == true)
+  }
+  @Test func staleRefreshRejectionCannotInvalidateANewSession() async throws {
+    let (_, sync, server, _) = try fixture(count: 0)
+    sync.session?.expiresAt = "2000-01-01T00:00:00.000Z"
+    server.refreshReply = (
+      401, #"{"error":{"code":"UNAUTHENTICATED","message":"Refresh rejected"}}"#
+    )
+    let token = Task { try await sync.accessToken() }
+    try await Task.sleep(for: .milliseconds(10))
+    try sync.saveSession(
+      Session(
+        user: Account(id: "account", displayName: "Test"), accessToken: "new-access",
+        refreshToken: "new-refresh", expiresAt: "2099-01-01T00:00:00.000Z"))
+    _ = try? await token.value
+    #expect(!sync.requiresSignIn)
+    #expect(try await sync.accessToken() == "new-access")
+  }
+  @Test func unsavedRotatedCredentialCannotReplaceAnotherAccount() async throws {
+    var writes = 0
+    let (_, sync, server, _) = try fixture(count: 0) { _ in
+      writes += 1
+      throw ServiceError(code: "keychain", message: "Secure storage unavailable")
+    }
+    sync.session?.expiresAt = "2000-01-01T00:00:00.000Z"
+    _ = try? await sync.accessToken()
+    sync.session = Session(
+      user: Account(id: "other", displayName: "Other"), accessToken: "other-access",
+      refreshToken: "other-refresh", expiresAt: "2099-01-01T00:00:00.000Z")
+    #expect(try await sync.accessToken() == "other-access")
+    #expect(writes == 1)
     #expect(server.refreshCount == 1)
   }
   @Test func pushTokenWaitsForSignInAndGoesWithSignOut() async throws {
@@ -185,7 +341,9 @@ final class SyncServer: @unchecked Sendable {
     let removed = try #require(server.calls.last)
     #expect(removed.method == "DELETE")
     #expect(removed.path == "/v1/me/devices")
-    #expect(try JSONDecoder().decode([String: String].self, from: removed.body) == ["token": device.token])
+    #expect(
+      try JSONDecoder().decode([String: String].self, from: removed.body) == ["token": device.token]
+    )
     #expect(server.requests.last?.url?.path == "/v1/auth/logout")
   }
   @Test func nudgesGoThroughTheAPI() async throws {
@@ -195,8 +353,11 @@ final class SyncServer: @unchecked Sendable {
     let call = try #require(server.calls.last)
     #expect(call.method == "POST")
     #expect(call.path == "/v1/trips/\(trip.id)/nudges")
-    #expect(try JSONDecoder().decode([String: String].self, from: call.body) == ["travellerId": "b"])
-    server.nudgeReply = (429, #"{"error":{"code":"NUDGE_LIMIT","message":"Already nudged today."}}"#)
+    #expect(
+      try JSONDecoder().decode([String: String].self, from: call.body) == ["travellerId": "b"])
+    server.nudgeReply = (
+      429, #"{"error":{"code":"NUDGE_LIMIT","message":"Already nudged today."}}"#
+    )
     await #expect {
       _ = try await sync.nudge(tripID: trip.id, travellerID: "b")
     } throws: { ($0 as? ServiceError)?.code == "NUDGE_LIMIT" }
@@ -206,7 +367,9 @@ final class SyncServer: @unchecked Sendable {
     let (store, sync, server, trip) = try fixture(count: 0)
     let traveller = trip.ownerTravellerId
     var published: [CompanionContext] = []
-    let host = WatchCompanionHost(model: AppModel(store: store, sync: sync)) { published.append($0) }
+    let host = WatchCompanionHost(model: AppModel(store: store, sync: sync)) {
+      published.append($0)
+    }
     func nudge(_ day: String) -> CompanionCommand {
       .nudge(tripID: trip.id, travellerID: traveller, on: day)
     }
@@ -219,13 +382,16 @@ final class SyncServer: @unchecked Sendable {
     #expect(server.calls.count == 1)
 
     // The server's daily limit counts as done: the watch already showed it as sent.
-    server.nudgeReply = (429, #"{"error":{"code":"NUDGE_LIMIT","message":"Already nudged today."}}"#)
+    server.nudgeReply = (
+      429, #"{"error":{"code":"NUDGE_LIMIT","message":"Already nudged today."}}"#
+    )
     await host.receive(nudge("2026-11-02"))
     #expect(published.last?.handled.contains(nudge("2026-11-02").id) == true)
 
     server.nudgeReply = (200, #"{"status":"notJoined","nudgedOn":"2026-11-03"}"#)
     await host.receive(nudge("2026-11-03"))
-    #expect(published.last?.rejected[nudge("2026-11-03").id]?.contains("hasn’t joined TripSplit") == true)
+    #expect(
+      published.last?.rejected[nudge("2026-11-03").id]?.contains("hasn’t joined TripSplit") == true)
 
     server.nudgeReply = (409, #"{"error":{"code":"NOTHING_OWED","message":"Nothing owed."}}"#)
     await host.receive(nudge("2026-11-04"))
@@ -241,7 +407,8 @@ final class SyncServer: @unchecked Sendable {
     sync.session = nil
     store.activeAccountID = "account"
     await host.receive(nudge("2026-11-05"))
-    #expect(published.last?.rejected[nudge("2026-11-05").id] == "Sign in on your iPhone to nudge people.")
+    #expect(
+      published.last?.rejected[nudge("2026-11-05").id] == "Sign in on your iPhone to nudge people.")
   }
   @Test func expiredIdleSessionRefreshesBeforeLogout() async throws {
     let (_, sync, server, _) = try fixture(count: 0)
