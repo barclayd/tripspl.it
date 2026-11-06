@@ -18,6 +18,12 @@ import UIKit
   @State private var push: PushNotifications?
   init() {
     do {
+      #if DEBUG
+        if ProcessInfo.processInfo.arguments.contains("--sync-recovery-demo") {
+          _model = State(initialValue: try SyncRecoveryPreview.model())
+          return
+        }
+      #endif
       let store = try LocalStore()
       let sync = SyncCoordinator(store: store, api: APIClient(baseURL: APIConfiguration.baseURL))
       let model = AppModel(store: store, sync: sync)

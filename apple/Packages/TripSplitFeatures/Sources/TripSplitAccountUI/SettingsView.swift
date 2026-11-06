@@ -26,10 +26,16 @@ public struct SettingsView: View {
             "Everything saves on this device first. Sign in to keep your trips in sync."
           ).font(.subheadline).foregroundStyle(.secondary)
           if let session = model.sync.session {
-            LabeledContent("Signed in", value: session.user.displayName)
-            Button("Sync now", systemImage: "arrow.triangle.2.circlepath") {
-              Task { await model.sync.syncAll() }
-            }.disabled(model.sync.isSyncing)
+            LabeledContent(
+              model.sync.requiresSignIn ? "Sign-in needed" : "Signed in",
+              value: session.user.displayName)
+            if model.sync.requiresSignIn {
+              appleSignIn
+            } else {
+              Button("Sync now", systemImage: "arrow.triangle.2.circlepath") {
+                Task { await model.sync.syncAll() }
+              }.disabled(model.sync.isSyncing)
+            }
             if let date = model.sync.lastSynced {
               Text("Last synced \(date.formatted(date: .omitted, time: .shortened))").font(.caption)
             }
@@ -40,17 +46,7 @@ public struct SettingsView: View {
               "Signing out keeps local trips and pending changes bound to this account. They won’t upload into another account."
             ).font(.caption).foregroundStyle(.secondary)
           } else if model.sync.configured {
-            if model.sync.challenge != nil {
-              SignInWithAppleButton(.signIn) {
-                AppleSignIn.configure($0, challenge: model.sync.challenge)
-              } onCompletion: { result in
-                Task { await AppleSignIn.complete(result, sync: model.sync) }
-              }.frame(height: 48).signInWithAppleButtonStyle(.black)
-            } else {
-              Button("Prepare Apple sign-in", systemImage: "person.crop.circle") {
-                Task { await model.sync.prepareApple() }
-              }
-            }
+            appleSignIn
           } else {
             Label("Cloud service not configured", systemImage: "icloud.slash")
             Text(
@@ -140,9 +136,24 @@ public struct SettingsView: View {
             "This permanently removes your account, revokes access, and clears account-bound data from this device once accepted. Unsynced changes in these trips will also be removed."
           )
         }
-        .task {
-          if model.sync.configured && model.sync.session == nil { await model.sync.prepareApple() }
+        .task(id: model.sync.needsAppleSignIn) {
+          if model.sync.configured && model.sync.needsAppleSignIn {
+            await model.sync.prepareApple()
+          }
         }
+    }
+  }
+  @ViewBuilder private var appleSignIn: some View {
+    if model.sync.challenge != nil {
+      SignInWithAppleButton(.signIn) {
+        AppleSignIn.configure($0, challenge: model.sync.challenge)
+      } onCompletion: { result in
+        Task { await AppleSignIn.complete(result, sync: model.sync) }
+      }.frame(height: 48).signInWithAppleButtonStyle(.black)
+    } else {
+      Button("Prepare Apple sign-in", systemImage: "person.crop.circle") {
+        Task { await model.sync.prepareApple() }
+      }
     }
   }
   private func run(_ action: @escaping @MainActor () async throws -> Void) {

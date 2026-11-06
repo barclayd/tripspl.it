@@ -52,6 +52,8 @@ The app opens empty. The explicit `--demo` launch argument seeds an empty store 
 xcrun simctl launch <simulator-udid> it.tripspl.TripSplit --demo
 ```
 
+Debug builds also accept `--sync-recovery-demo`: an isolated, in-memory account with three unsent expenses and a simulated rejected refresh. It opens Account & sync to verify the sign-in recovery screen and local drafts without using saved credentials or contacting the service. Apple sign-in itself is not simulated as a success.
+
 The default service is `https://api.tripspl.it`, configured by `TRIPSPLIT_API_BASE_URL` in `project.yml` (origin, without `/v1`). Its health endpoint and public reference FX have been verified against the deployed Worker. Currency conversion works without signing in. The server’s Apple credentials and audience are configured, and its challenge endpoint is live. The full signed-device sign-in flow remains to be verified. Private trip endpoints require authentication.
 
 To use another environment, override `TRIPSPLIT_API_BASE_URL` in the build settings. Clearing it leaves local trip creation, editing, manual conversion, splitting and repayment records available with an explicit cloud setup state.

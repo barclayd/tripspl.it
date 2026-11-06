@@ -201,6 +201,9 @@ struct RootView: View {
       }
     }
     .onChange(of: model.selectedTripID) { _, id in model.sync.startLive(tripID: id) }
+    .onChange(of: model.sync.requiresSignIn) { _, required in
+      if !required { model.sync.startLive(tripID: model.selectedTripID) }
+    }
     .onChange(of: model.sync.session?.user.id) { _, account in
       model.selectedTripID = nil
       model.selectedAttachment = nil
