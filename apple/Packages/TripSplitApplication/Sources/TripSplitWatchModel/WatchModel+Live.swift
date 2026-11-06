@@ -40,7 +40,8 @@ extension WatchModel {
 
   /// Sample trips for screenshots and simulator runs, matching the phone's `--demo` data.
   public static func demo(at instant: Date = Date()) throws -> WatchModel {
-    let store = try LocalStore(inMemory: true)
+    // A fixed identity keeps the throwaway store off the keychain, which can be locked.
+    let store = try LocalStore(inMemory: true, installationID: "demo")
     try DemoData.install(into: store)
     var trips = store.trips
     // Give the past trips some spend so the passport has a total, as in the design.

@@ -70,7 +70,8 @@ public struct TripsRootView: View {
 
   private func open(_ link: WatchLink) {
     switch link {
-    case .trips:
+    case .trips, .newTrip:
+      // New trips are planned on the phone, so the watch shows its trips.
       sheet = nil
       path = []
     case .trip(let id, let page):

@@ -16,6 +16,8 @@ public enum WatchLink: Hashable, Sendable {
   case log(trip: String? = nil)
   /// One day of a trip, from the Evening wrap (H2).
   case day(trip: String, day: String)
+  /// Planning a new trip, from the phone's widgets.
+  case newTrip
 
   public static let scheme = "tripsplit"
 
@@ -40,6 +42,8 @@ public enum WatchLink: Hashable, Sendable {
     case .day(let trip, let day):
       components.host = "day"
       components.path = "/\(trip)/\(day)"
+    case .newTrip:
+      components.host = "new-trip"
     }
     return components.url ?? URL(string: "\(Self.scheme)://trips")!
   }
@@ -53,6 +57,7 @@ public enum WatchLink: Hashable, Sendable {
     }
     switch components.host {
     case "trips": self = .trips
+    case "new-trip": self = .newTrip
     case "convert": self = query("trip").map { .localConvert(trip: $0) } ?? .convert
     case "log": self = .log(trip: query("trip"))
     case "trip":
