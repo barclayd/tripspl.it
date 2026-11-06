@@ -14,6 +14,7 @@ let package = Package(
     .library(name: "TripSplitOnboardingUI", targets: ["TripSplitOnboardingUI"]),
     .library(name: "TripSplitAccountUI", targets: ["TripSplitAccountUI"]),
     .library(name: "TripSplitGlobeUI", targets: ["TripSplitGlobeUI"]),
+    .library(name: "TripSplitWidgetUI", targets: ["TripSplitWidgetUI"]),
   ],
   dependencies: [
     .package(path: "../TripSplitDomain"), .package(path: "../TripSplitInfrastructure"),
@@ -91,6 +92,14 @@ let package = Package(
         .product(name: "TripSplitDomain", package: "TripSplitDomain"),
         .product(name: "TripSplitPersistence", package: "TripSplitInfrastructure"),
         .product(name: "TripSplitApplication", package: "TripSplitApplication"),
+        "TripSplitDesignSystem",
+      ]),
+    .target(
+      name: "TripSplitWidgetUI",
+      dependencies: [
+        .product(name: "TripSplitDomain", package: "TripSplitDomain"),
+        .product(name: "TripSplitWatchModel", package: "TripSplitApplication"),
+        .product(name: "TripSplitWidgetModel", package: "TripSplitApplication"),
         "TripSplitDesignSystem",
       ]),
     .testTarget(

@@ -179,7 +179,8 @@ public struct ConvertMemory: Codable, Hashable, Sendable {
     amount = Decimal(AmountLadder.value(at: detent)) * scale
   }
 
-  static func minor(_ amount: Decimal, _ currency: String) -> Int64 {
+  /// An amount in minor units, rounded and capped at the money limit.
+  public static func minor(_ amount: Decimal, _ currency: String) -> Int64 {
     var value = amount * Decimal(Money.factor(currency))
     var rounded = Decimal()
     NSDecimalRound(&rounded, &value, 0, .plain)
@@ -304,6 +305,15 @@ public struct WatchCurrency: Identifiable, Hashable, Sendable {
     let factor = Money.factor(code)
     let digits = compact && minor % factor == 0 ? 0 : Money.precision(code)
     let text = (Decimal(minor) / Decimal(factor)).formatted(
+      .currency(code: code).presentation(.narrow).precision(.fractionLength(digits)))
+    let traits = cached(code), narrow = traits.narrow, symbol = traits.symbol
+    guard narrow != symbol, let range = text.range(of: narrow) else { return text }
+    return text.replacingCharacters(in: range, with: symbol)
+  }
+
+  /// Formats an amount to a fixed number of decimals with the narrow symbol, e.g. "£0.862".
+  public static func format(_ amount: Decimal, _ code: String, digits: Int) -> String {
+    let text = amount.formatted(
       .currency(code: code).presentation(.narrow).precision(.fractionLength(digits)))
     let traits = cached(code), narrow = traits.narrow, symbol = traits.symbol
     guard narrow != symbol, let range = text.range(of: narrow) else { return text }

@@ -33,6 +33,7 @@ targets:
       - path: TripSplit/AppIcon.icon
         type: file
         buildPhase: resources
+      - ../watch/Shared
     dependencies:
       - package: TripSplitApplication
         product: TripSplitApplication
@@ -60,7 +61,16 @@ targets:
         product: TripSplitGlobeUI
       - package: TripSplitApplication
         product: TripSplitCompanionHost
+      - package: TripSplitApplication
+        product: TripSplitWatchModel
+      - package: TripSplitApplication
+        product: TripSplitWidgetModel
+      - package: TripSplitFeatures
+        product: TripSplitWidgetUI
+      - package: TripSplitInfrastructure
+        product: TripSplitCompanion
       - target: TripSplitWatch
+      - target: TripSplitWidgets
     info:
       path: Config/Info.plist
       properties:
@@ -121,6 +131,40 @@ targets:
     settings:
       base:
         GENERATE_INFOPLIST_FILE: YES
+  TripSplitWidgets:
+    type: app-extension
+    platform: iOS
+    sources: [TripSplitWidgets, ../watch/Shared]
+    dependencies:
+      - package: TripSplitApplication
+        product: TripSplitWatchModel
+      - package: TripSplitApplication
+        product: TripSplitWidgetModel
+      - package: TripSplitFeatures
+        product: TripSplitWidgetUI
+      - package: TripSplitFeatures
+        product: TripSplitDesignSystem
+      - package: TripSplitInfrastructure
+        product: TripSplitCompanion
+      - package: TripSplitDomain
+        product: TripSplitDomain
+      - sdk: WidgetKit.framework
+      - sdk: SwiftUI.framework
+    info:
+      path: Config/Widgets-Info.plist
+      properties:
+        CFBundleDisplayName: TripSplit
+        CFBundleShortVersionString: $(MARKETING_VERSION)
+        CFBundleVersion: $(CURRENT_PROJECT_VERSION)
+        NSExtension:
+          NSExtensionPointIdentifier: com.apple.widgetkit-extension
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: it.tripspl.TripSplit.widgets
+        MARKETING_VERSION: '1.0'
+        CURRENT_PROJECT_VERSION: 6
+        CODE_SIGN_ENTITLEMENTS: Config/TripSplitWidgets.entitlements
+        SKIP_INSTALL: YES
   TripSplitWatch:
     type: application
     platform: watchOS

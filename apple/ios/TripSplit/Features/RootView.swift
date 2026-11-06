@@ -10,6 +10,7 @@ import TripSplitOnboardingUI
 import TripSplitPersistence
 import TripSplitSync
 import TripSplitTripsUI
+import TripSplitWatchModel
 
 struct RootView: View {
   static let newTripTab = 2
@@ -212,7 +213,19 @@ struct RootView: View {
         }
       }
     }
-    .onOpenURL { model.inviteURL = $0 }
+    .onOpenURL { url in
+      // Widgets open tripsplit:// links; anything else is an invite.
+      if let link = WatchLink(url: url) {
+        Task { await model.open(link) }
+      } else {
+        model.inviteURL = url
+      }
+    }
+    // Control Centre's controls run in the app and leave their link here.
+    .onChange(of: WatchLinkInbox.shared.pending, initial: true) { _, pending in
+      guard pending != nil, let link = WatchLinkInbox.shared.take() else { return }
+      Task { await model.open(link) }
+    }
   }
 }
 extension RootView {

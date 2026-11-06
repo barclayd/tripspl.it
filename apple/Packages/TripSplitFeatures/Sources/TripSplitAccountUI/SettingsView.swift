@@ -61,6 +61,7 @@ public struct SettingsView: View {
             Text(error).font(.footnote).foregroundStyle(Theme.bad)
           }
         }
+        WidgetsSection()
         WatchFaceSection()
         Section("Local data & recovery") {
           Text(

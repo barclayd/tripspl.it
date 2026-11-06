@@ -46,23 +46,7 @@ enum OnboardingCopy {
 
   /// "Bon voyage!" in the language of the first stop.
   static func greeting(countryCode: String?) -> String {
-    switch countryCode {
-    case "PT": "Boa viagem!"
-    case "ES", "MX": "¡Buen viaje!"
-    case "IT": "Buon viaggio!"
-    case "GR": "Kaló taxídi!"
-    case "HR": "Sretan put!"
-    case "CH", "DE", "AT": "Gute Reise!"
-    case "IS": "Góða ferð!"
-    case "JP": "Itterasshai!"
-    case "TH": "Tiao hai sanuk!"
-    case "VN": "Thượng lộ bình an!"
-    case "ID": "Selamat jalan!"
-    case "US": "Have a great trip!"
-    case "MA": "Bslama!"
-    case "AU": "Have a ripper trip!"
-    default: "Bon voyage!"
-    }
+    Greeting.departure(countryCode: countryCode)
   }
 
   /// The budget per person per day in pounds, so spending bands mean the same in any currency.

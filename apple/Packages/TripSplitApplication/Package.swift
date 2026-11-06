@@ -9,6 +9,7 @@ let package = Package(
     .library(name: "TripSplitConversion", targets: ["TripSplitConversion"]),
     .library(name: "TripSplitCompanionHost", targets: ["TripSplitCompanionHost"]),
     .library(name: "TripSplitWatchModel", targets: ["TripSplitWatchModel"]),
+    .library(name: "TripSplitWidgetModel", targets: ["TripSplitWidgetModel"]),
   ],
   dependencies: [
     .package(path: "../TripSplitDomain"), .package(path: "../TripSplitInfrastructure"),
@@ -41,11 +42,19 @@ let package = Package(
         .product(name: "TripSplitNetworking", package: "TripSplitInfrastructure"),
         .product(name: "TripSplitPersistence", package: "TripSplitInfrastructure"),
       ]),
+    .target(
+      name: "TripSplitWidgetModel",
+      dependencies: [
+        "TripSplitApplication", "TripSplitWatchModel",
+        .product(name: "TripSplitDomain", package: "TripSplitDomain"),
+        .product(name: "TripSplitCompanion", package: "TripSplitInfrastructure"),
+      ]),
     .testTarget(
       name: "TripSplitApplicationTests",
       dependencies: [
         "TripSplitApplication", "TripSplitConversion", "TripSplitCompanionHost",
-        "TripSplitWatchModel", .product(name: "TripSplitDomain", package: "TripSplitDomain"),
+        "TripSplitWatchModel", "TripSplitWidgetModel",
+        .product(name: "TripSplitDomain", package: "TripSplitDomain"),
         .product(name: "TripSplitCompanion", package: "TripSplitInfrastructure"),
         .product(name: "TripSplitNetworking", package: "TripSplitInfrastructure"),
         .product(name: "TripSplitPersistence", package: "TripSplitInfrastructure"),
