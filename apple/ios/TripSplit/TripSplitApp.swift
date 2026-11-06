@@ -14,6 +14,7 @@ import UIKit
   @State private var error: String?
   @State private var connectivity: Connectivity?
   @State private var watch: WatchCompanionHost?
+  @State private var widgets: WidgetPublisher?
   @State private var push: PushNotifications?
   init() {
     do {
@@ -35,6 +36,7 @@ import UIKit
       }
       _model = State(initialValue: model)
       _watch = State(initialValue: WatchCompanionHost(model: model))
+      _widgets = State(initialValue: WidgetPublisher(model: model))
       let push = PushNotifications(model: model)
       push.start()
       _push = State(initialValue: push)
@@ -42,25 +44,37 @@ import UIKit
   }
   var body: some Scene {
     WindowGroup {
-      if let model {
-        RootView().environment(model).tint(Theme.accent).foregroundStyle(Theme.ink)
-          .onContinueUserActivity(CompanionActivity.newTrip) { _ in
-            model.showOnboarding = true
+      #if DEBUG
+        if ProcessInfo.processInfo.arguments.contains(where: { $0.hasPrefix("--widget-gallery") }) {
+          WidgetGallery()
+        } else {
+          app
+        }
+      #else
+        app
+      #endif
+    }
+  }
+
+  @ViewBuilder private var app: some View {
+    if let model {
+      RootView().environment(model).tint(Theme.accent).foregroundStyle(Theme.ink)
+        .onContinueUserActivity(CompanionActivity.newTrip) { _ in
+          model.showOnboarding = true
+        }
+        // Once signed in, others on a trip can nudge you, so ask then and keep the token fresh.
+        .task(id: model.sync.session?.user.id) {
+          delegate.push = push
+          guard model.sync.session != nil, let push, await push.requestAuthorization() else {
+            return
           }
-          // Once signed in, others on a trip can nudge you, so ask then and keep the token fresh.
-          .task(id: model.sync.session?.user.id) {
-            delegate.push = push
-            guard model.sync.session != nil, let push, await push.requestAuthorization() else {
-              return
-            }
-            UIApplication.shared.registerForRemoteNotifications()
-          }
-      } else {
-        ContentUnavailableView(
-          "Your trips couldn’t be opened", systemImage: "externaldrive.badge.exclamationmark",
-          description: Text(
-            error ?? "Restart the app to try again. Your stored data has not been replaced."))
-      }
+          UIApplication.shared.registerForRemoteNotifications()
+        }
+    } else {
+      ContentUnavailableView(
+        "Your trips couldn’t be opened", systemImage: "externaldrive.badge.exclamationmark",
+        description: Text(
+          error ?? "Restart the app to try again. Your stored data has not been replaced."))
     }
   }
 }

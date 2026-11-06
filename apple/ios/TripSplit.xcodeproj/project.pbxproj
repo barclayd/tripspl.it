@@ -8,60 +8,82 @@
 
 /* Begin PBXBuildFile section */
 		035909395B337590C5B8B07C /* Widgets.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64828B2B3E41A78C4561C43B /* Widgets.swift */; };
+		04FC7AA399449841A9B97D59 /* TripSplitDesignSystem in Frameworks */ = {isa = PBXBuildFile; productRef = AD4EE1DD8AF2CF1A2EFFA424 /* TripSplitDesignSystem */; };
 		05269DCF55CB8910493ED21B /* GlanceTimeline.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56848BEF485EE07498DBD90A /* GlanceTimeline.swift */; };
 		060DE9CF695BF2632B1C377E /* TripPagesTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAEBB9C9CA3ADFD7D7B14F87 /* TripPagesTests.swift */; };
 		06A74E82C661A0CECBF5EB20 /* WatchFiguresTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C11BFE466510DD62394035A8 /* WatchFiguresTests.swift */; };
+		06AA4D908F38C8F554272121 /* RescheduleTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D9D39FDE6E288FCE20D8E6F8 /* RescheduleTests.swift */; };
 		08FF8D75BC5DD3D6FCB4B7B6 /* DestinationTimeZonesTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C623E222AD4851674325EBAB /* DestinationTimeZonesTests.swift */; };
+		091FFCA94AB853CAF2C990A5 /* ReturnTicketSaveTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1093EB240A1B46E0FAFD0939 /* ReturnTicketSaveTests.swift */; };
 		11286A89A23BB12A0F6AD03F /* SyncTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 92D6060E4A912945AC35E53A /* SyncTests.swift */; };
 		131885469DFD7C419F146A40 /* WatchNoticesTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0638F4E4D64F9B9E528F4A4E /* WatchNoticesTests.swift */; };
 		1368CDA2DE5956BB7B71E5F0 /* TripSplitPersistence in Frameworks */ = {isa = PBXBuildFile; productRef = E5A20494D1D52AEBDB273CE7 /* TripSplitPersistence */; };
 		1664147C05B87B055FC96340 /* LegacyStoreCompatibilityTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4E2BC6A39D78F2E7BB66A6D /* LegacyStoreCompatibilityTests.swift */; };
 		17545E9DA8EEFC18D534A62F /* FXTableTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A68D8235218BA0E77F4C2BE /* FXTableTests.swift */; };
+		18F22929AB9B23BCE72F1CC1 /* PhoneWidgetsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8CC6F6BB40B094142644235 /* PhoneWidgetsTests.swift */; };
 		1B91214FBEDB5C62785773A6 /* TripSplitOnboardingUI in Frameworks */ = {isa = PBXBuildFile; productRef = 8B5DDC14536B213BD7E78D25 /* TripSplitOnboardingUI */; };
 		219DE065E198F381303E1EB3 /* TripSplitWatchWidgets.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 8B40C4DBD35C2A1C41F480AE /* TripSplitWatchWidgets.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		21E081FE42FBB6559C9C794A /* TripSplitDomain in Frameworks */ = {isa = PBXBuildFile; productRef = 08E3B23339B353646079A66F /* TripSplitDomain */; };
 		2A23A47E89D0EE8D0014CE2B /* TripSplitExpensesUI in Frameworks */ = {isa = PBXBuildFile; productRef = DB97807C18652B2D64CEBA44 /* TripSplitExpensesUI */; };
 		2C5202D0933AABB55443FD84 /* TripSplitWatchModel in Frameworks */ = {isa = PBXBuildFile; productRef = AB6044F66A4DB67B04FFAFA4 /* TripSplitWatchModel */; };
+		2D97553E62B129601B601559 /* ReturnTicketTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A21FAB33E3CEE5C063E67CDC /* ReturnTicketTests.swift */; };
 		3114A0930A98A6F1F75F30ED /* LocalStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C26DAA050366856ED8FEC75 /* LocalStoreTests.swift */; };
+		32A946FE6E67D38A42B4C1C4 /* WidgetPublisher.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA3CF8A3A0AAA0411963DD22 /* WidgetPublisher.swift */; };
+		33A35CBD74CFB7F76A1E7B12 /* OpenWatchLinkIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D08900A43848327D96035CD /* OpenWatchLinkIntent.swift */; };
 		35A7CC0A884D93C8197BE121 /* TripSplitNetworking in Frameworks */ = {isa = PBXBuildFile; productRef = C9E66CCE32EE48B9B92FB504 /* TripSplitNetworking */; };
 		3602DEE0615BFBBC1E7DC4BA /* ConversionCurrencyTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E9C1E02DA0B6A926327A9F2 /* ConversionCurrencyTests.swift */; };
+		3774222D36F998E4A9D91294 /* PlaceSuggestionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0471322910DE241551A204 /* PlaceSuggestionTests.swift */; };
 		3862352CB72D35DD2B8F642E /* RootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 013B9600951218EB6EF44089 /* RootView.swift */; };
 		389C381D2503481F30A4DAD3 /* WatchAppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = D49EFA5A96F2A442531862AF /* WatchAppDelegate.swift */; };
 		38D364134A54173126E61160 /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8A3FED310D1E932BE77B8B2F /* WidgetKit.framework */; };
 		3F3BE6C407DA71FEFB78B45B /* WatchCompanionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB156440C7AFF05AAA3B26D5 /* WatchCompanionTests.swift */; };
 		46459E50CD074648C3F7E63D /* MoneyTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 15426B312FC4938244D1A34F /* MoneyTests.swift */; };
+		492DA7E4F6CE0BE91ED59063 /* TripSplitCompanion in Frameworks */ = {isa = PBXBuildFile; productRef = 67E7E469CDBFB46431E79A0B /* TripSplitCompanion */; };
 		4931A9DCA4896D7DD0D17BE7 /* OpenWatchLinkIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D08900A43848327D96035CD /* OpenWatchLinkIntent.swift */; };
 		4DB97DD182FDDFB323026B07 /* TripSplitSync in Frameworks */ = {isa = PBXBuildFile; productRef = BB13520EDE51630424801491 /* TripSplitSync */; };
+		54A091F12AD24E61121D3487 /* WidgetGallery.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85FE88C63F084F01AD39627C /* WidgetGallery.swift */; };
 		54AFB28DC1FE3AAEEE518DBF /* TripSplitNetworking in Frameworks */ = {isa = PBXBuildFile; productRef = 761D954F3D95284126B844DD /* TripSplitNetworking */; };
 		5A59D0DE30B7AA64B239DE7D /* TripSplitApplication in Frameworks */ = {isa = PBXBuildFile; productRef = 2213242B7690C5BBC917A453 /* TripSplitApplication */; };
+		5ABE58057DC2C31BA0D1976C /* TripSplitWidgetModel in Frameworks */ = {isa = PBXBuildFile; productRef = A5CE2BA1694E06B3D7FF45CB /* TripSplitWidgetModel */; };
 		5C9800C574014B3F3A52B614 /* TripSplitWatchGlances in Frameworks */ = {isa = PBXBuildFile; productRef = 23D044067862D6569F795D27 /* TripSplitWatchGlances */; };
 		6236CADC049FF1FA78DA7523 /* TripSplitSync in Frameworks */ = {isa = PBXBuildFile; productRef = 0F686EA89F002304BDFA2346 /* TripSplitSync */; };
+		62CB9226CDE81E72803972EF /* Intents.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3224D6619DE321E9040CA934 /* Intents.swift */; };
+		6311146DD1FB593525BFCF83 /* Timeline.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0724CBA356C07067A776A6D3 /* Timeline.swift */; };
 		63BA6088FD66AEC0B5EC4725 /* TripSplitDesignSystem in Frameworks */ = {isa = PBXBuildFile; productRef = 1DBD9574C4A7DC7FAE335DD5 /* TripSplitDesignSystem */; };
+		69E2B71CCD056DDD0A0E9B63 /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8A3FED310D1E932BE77B8B2F /* WidgetKit.framework */; };
 		6F4ED096BA73EC5066034ECA /* ExpenseConversionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F44B90CE367209B7D2507DBE /* ExpenseConversionTests.swift */; };
 		7046D46BB21595CED052E4A3 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = FAF3E9994895BD62556AECD4 /* Assets.xcassets */; };
 		714EAF26FB7BC6D38DF88D3C /* TripGeographyTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A0ADB248CB076923670BF984 /* TripGeographyTests.swift */; };
 		7C56B265F4C6C29538BA495E /* APIConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2CD809495C9551555CE105A0 /* APIConfiguration.swift */; };
+		7DD745B76F459198E11DE2B2 /* TripSplitCompanion in Frameworks */ = {isa = PBXBuildFile; productRef = B0218D43EC08367BC26BAE05 /* TripSplitCompanion */; };
 		7F05D94D635930C2B948ADAA /* BudgetLeftIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1FFAD26675E4512D90E91313 /* BudgetLeftIntent.swift */; };
 		81341B126D5A74F4B448E6C9 /* TripSplitWatchUI in Frameworks */ = {isa = PBXBuildFile; productRef = 77F624E56982DC26720BE812 /* TripSplitWatchUI */; };
 		86C4306A3488D510FEB7BE84 /* TripSplitPersistence in Frameworks */ = {isa = PBXBuildFile; productRef = 560415238232C7FEE7B6A11F /* TripSplitPersistence */; };
 		871958AF473DE33F1AC8A2C3 /* TripSplitCompanion in Frameworks */ = {isa = PBXBuildFile; productRef = D1BBA5084E40ECF6EDD81698 /* TripSplitCompanion */; };
 		8A9CE0DB93930CC67599C9EB /* TripSplitConversion in Frameworks */ = {isa = PBXBuildFile; productRef = 97C64CBF6B82C3FFD68B1DEA /* TripSplitConversion */; };
+		8D274CCB613DC5F777528F53 /* TripSplitWidgets.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 7E1606A8AEF05114F0362356 /* TripSplitWidgets.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		9215AF9EB0A4292ADCF15BF4 /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AD7A205147B6F7756527CF4C /* SwiftUI.framework */; };
 		9366C8BDBC3F8D5C35BA48CE /* TripSplitApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECF15BF32A826DF42AE46AF7 /* TripSplitApp.swift */; };
 		94D70A19B96F9C26DB047563 /* TripSplitWatchApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = C81FFEE5F3B1BB9130C0DAB4 /* TripSplitWatchApp.swift */; };
+		952A23306FF6EC0EF6655DF3 /* WidgetLinks.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82819112B381C966C81BD152 /* WidgetLinks.swift */; };
 		95BA3ECA3214176F8DA05E9A /* TripTimeZoneTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7DE535E8D5DFC810EBDC693 /* TripTimeZoneTests.swift */; };
 		99E849E0A8DD38E98AE199A4 /* LogExpenseTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3764059ECA5E0D090848E9E4 /* LogExpenseTests.swift */; };
 		9FFBD1487156120971350850 /* WatchGlanceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC319D5BE19AA428E954A8BA /* WatchGlanceTests.swift */; };
+		A4497C68D1BF0931EB6B65A4 /* TripSplitDomain in Frameworks */ = {isa = PBXBuildFile; productRef = AA0F16D8E60DEB3BA77891C1 /* TripSplitDomain */; };
 		A44B32FB1CB9500FA09241BB /* TripSplitWatchModel in Frameworks */ = {isa = PBXBuildFile; productRef = 4EFE4D5CE1388EA625856CDE /* TripSplitWatchModel */; };
+		A6DD5BE33A8417C0D0ADC68C /* TripSplitWatchModel in Frameworks */ = {isa = PBXBuildFile; productRef = 0D728D738EB816A67B69637D /* TripSplitWatchModel */; };
 		AE5FBDE74D99671F584A8A9E /* TripSplitWatch.app in Embed Watch Content */ = {isa = PBXBuildFile; fileRef = 1C54D4353F52B8C544F3EF0B /* TripSplitWatch.app */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		B3049F4D43F57D76E1F418C1 /* TripSplitCompanionHost in Frameworks */ = {isa = PBXBuildFile; productRef = 2489E38ACC7DCF4B853B8839 /* TripSplitCompanionHost */; };
 		B661DC6E61E5B7692B42970B /* TripSplitConversionUI in Frameworks */ = {isa = PBXBuildFile; productRef = A903F2941364C0BCAED059AB /* TripSplitConversionUI */; };
+		B7EE759A341502552453237D /* OpenWatchLinkIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D08900A43848327D96035CD /* OpenWatchLinkIntent.swift */; };
 		BD1847E1E001CE97FEAE4573 /* TripSplitWatchModel in Frameworks */ = {isa = PBXBuildFile; productRef = D78D04F5FD96B239DA94249A /* TripSplitWatchModel */; };
 		BEC6794DA28348988F552249 /* TripSplitTripsUI in Frameworks */ = {isa = PBXBuildFile; productRef = F2DBED6BFFDA4111DF579987 /* TripSplitTripsUI */; };
 		C2F494563C371AAEC3D6A7AA /* TripSplitAccountUI in Frameworks */ = {isa = PBXBuildFile; productRef = 023C40B4049114D2F9D587B3 /* TripSplitAccountUI */; };
 		C87F7BF785AF373705A60D0C /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = DBC7D0CB5EA99035F367F932 /* Assets.xcassets */; };
 		CA6D11CB0E4ECF374679C6A9 /* Fixtures in Resources */ = {isa = PBXBuildFile; fileRef = 2A02F67757FB210EC3BDBBDC /* Fixtures */; };
+		CA7B5B7CBD224435B585C404 /* TripSplitWidgetUI in Frameworks */ = {isa = PBXBuildFile; productRef = A5C3DC79047B612C2FB77E65 /* TripSplitWidgetUI */; };
 		CB5043A843FC50CE51257ECD /* TripSplitGlobeUI in Frameworks */ = {isa = PBXBuildFile; productRef = 67BCF0DF2B81F9612313F58A /* TripSplitGlobeUI */; };
+		CD1D6568D9899737B9117AE9 /* Widgets.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AD5FDBA207315C56598F09D /* Widgets.swift */; };
 		CD215FC3E1B1DA561717E55E /* LeavingFromTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 420EFEAC07DD93A4096B6C53 /* LeavingFromTests.swift */; };
 		D253EEDC524EB4DC7D6577F8 /* DestinationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 152401065C9E69E45809D528 /* DestinationTests.swift */; };
 		D28C0C666CAB4F853CD1DD54 /* APIConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9423008FEB49BB4ECB1F2985 /* APIConfiguration.swift */; };
@@ -70,14 +92,19 @@
 		D779FB7F25DA80C374D14EEA /* ConversionModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B87B7DBE7E10A5F596E10E7A /* ConversionModelTests.swift */; };
 		D95A0E15C8A9CEE5F55E37DD /* PublicAPITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 71021F5E7CBBA9943ABED572 /* PublicAPITests.swift */; };
 		DAEB39FDA34E31DA6D4660CA /* OpenWatchLinkIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D08900A43848327D96035CD /* OpenWatchLinkIntent.swift */; };
+		DE7387D5ABB0736EA119A2C2 /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AD7A205147B6F7756527CF4C /* SwiftUI.framework */; };
 		E3A75709BE47834F12D01E8A /* GlobeStateTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE65D36BD930BE5B26103066 /* GlobeStateTests.swift */; };
 		E3EA194F87602D87630090C3 /* TripSplitApplication in Frameworks */ = {isa = PBXBuildFile; productRef = 5A52A9A0C9A308ADD795B24E /* TripSplitApplication */; };
 		E41029BD1A504F502F6B7EFB /* WatchMomentsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8CBE0BC4587DF56B24FC2D53 /* WatchMomentsTests.swift */; };
 		E415AED908799D14D25C6C1B /* OnboardingDateTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2C9BAF877BB7E81B4083939 /* OnboardingDateTests.swift */; };
 		E500CF02A3A7BABBA32DF21D /* TripSplitCompanionHost in Frameworks */ = {isa = PBXBuildFile; productRef = 9E824DA2C23A5DA40DB661C1 /* TripSplitCompanionHost */; };
 		E700986C43EE17E0F6ACD7B2 /* AppIcon.icon in Resources */ = {isa = PBXBuildFile; fileRef = 67C0604DA2932D2E43F015D4 /* AppIcon.icon */; };
+		E80448821EACE630059077C0 /* TripSplitWidgetUI in Frameworks */ = {isa = PBXBuildFile; productRef = B172194E9A040872ACB2B29F /* TripSplitWidgetUI */; };
+		EC7FD5EB0CC7A260D7FDBF83 /* Controls.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3100F674E335FF321E194CF3 /* Controls.swift */; };
 		F88B644B0EE781A06A18E9E4 /* TripConversionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E824087A1FC4230135F6421 /* TripConversionTests.swift */; };
+		F9E6EDCB6E421D437411902F /* TripSplitWatchModel in Frameworks */ = {isa = PBXBuildFile; productRef = E9D01EE3FA4D8BF85BAA2EA1 /* TripSplitWatchModel */; };
 		FEAA33415689C2B51C01F49F /* TripActionsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEF90CE80361EDBEDD351D16 /* TripActionsTests.swift */; };
+		FEEBB54EFBCBA53BE5E7A0A7 /* TripSplitWidgetModel in Frameworks */ = {isa = PBXBuildFile; productRef = 3D21F295FC3BB3D09837D9F2 /* TripSplitWidgetModel */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -94,6 +121,13 @@
 			proxyType = 1;
 			remoteGlobalIDString = 0AB049A87F18AACE7B1D065F;
 			remoteInfo = TripSplit;
+		};
+		1A45F49B8FA66FB2B0D63F4A /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = BB28324ACBF0999D5F095094 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 95C9A8E4FA35D55E016B45A8;
+			remoteInfo = TripSplitWidgets;
 		};
 		BEB11E50E35F1AED689979D3 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -116,6 +150,17 @@
 			name = "Embed Watch Content";
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		95ED4A48EA8633C5331DE93B /* Embed Foundation Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				8D274CCB613DC5F777528F53 /* TripSplitWidgets.appex in Embed Foundation Extensions */,
+			);
+			name = "Embed Foundation Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		B72B2877D60FFBA4904A5913 /* Embed Foundation Extensions */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
@@ -132,12 +177,16 @@
 /* Begin PBXFileReference section */
 		013B9600951218EB6EF44089 /* RootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootView.swift; sourceTree = "<group>"; };
 		0638F4E4D64F9B9E528F4A4E /* WatchNoticesTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchNoticesTests.swift; sourceTree = "<group>"; };
+		0724CBA356C07067A776A6D3 /* Timeline.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Timeline.swift; sourceTree = "<group>"; };
+		1093EB240A1B46E0FAFD0939 /* ReturnTicketSaveTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReturnTicketSaveTests.swift; sourceTree = "<group>"; };
 		152401065C9E69E45809D528 /* DestinationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DestinationTests.swift; sourceTree = "<group>"; };
 		15426B312FC4938244D1A34F /* MoneyTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MoneyTests.swift; sourceTree = "<group>"; };
 		1C54D4353F52B8C544F3EF0B /* TripSplitWatch.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TripSplitWatch.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1FFAD26675E4512D90E91313 /* BudgetLeftIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BudgetLeftIntent.swift; sourceTree = "<group>"; };
 		2A02F67757FB210EC3BDBBDC /* Fixtures */ = {isa = PBXFileReference; lastKnownFileType = folder; name = Fixtures; path = ../Packages/TripSplitApplication/Tests/TripSplitApplicationTests/Fixtures; sourceTree = SOURCE_ROOT; };
 		2CD809495C9551555CE105A0 /* APIConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIConfiguration.swift; sourceTree = "<group>"; };
+		3100F674E335FF321E194CF3 /* Controls.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Controls.swift; sourceTree = "<group>"; };
+		3224D6619DE321E9040CA934 /* Intents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Intents.swift; sourceTree = "<group>"; };
 		3764059ECA5E0D090848E9E4 /* LogExpenseTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogExpenseTests.swift; sourceTree = "<group>"; };
 		420EFEAC07DD93A4096B6C53 /* LeavingFromTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LeavingFromTests.swift; sourceTree = "<group>"; };
 		4C26DAA050366856ED8FEC75 /* LocalStoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalStoreTests.swift; sourceTree = "<group>"; };
@@ -147,9 +196,13 @@
 		64828B2B3E41A78C4561C43B /* Widgets.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Widgets.swift; sourceTree = "<group>"; };
 		67C0604DA2932D2E43F015D4 /* AppIcon.icon */ = {isa = PBXFileReference; lastKnownFileType = wrapper.icon; path = AppIcon.icon; sourceTree = "<group>"; };
 		690ED349D57C098AFE20508C /* TripSplitWatchFeatures */ = {isa = PBXFileReference; lastKnownFileType = folder; name = TripSplitWatchFeatures; path = ../Packages/TripSplitWatchFeatures; sourceTree = SOURCE_ROOT; };
+		6AD5FDBA207315C56598F09D /* Widgets.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Widgets.swift; sourceTree = "<group>"; };
 		71021F5E7CBBA9943ABED572 /* PublicAPITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PublicAPITests.swift; sourceTree = "<group>"; };
 		7688DC51FFC46FEDC2D0B2A0 /* TripOriginTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TripOriginTests.swift; sourceTree = "<group>"; };
 		772604AAA15B36EDD2547446 /* TripSplitInfrastructure */ = {isa = PBXFileReference; lastKnownFileType = folder; name = TripSplitInfrastructure; path = ../Packages/TripSplitInfrastructure; sourceTree = SOURCE_ROOT; };
+		7E1606A8AEF05114F0362356 /* TripSplitWidgets.appex */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = "wrapper.app-extension"; path = TripSplitWidgets.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		82819112B381C966C81BD152 /* WidgetLinks.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetLinks.swift; sourceTree = "<group>"; };
+		85FE88C63F084F01AD39627C /* WidgetGallery.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetGallery.swift; sourceTree = "<group>"; };
 		8A3FED310D1E932BE77B8B2F /* WidgetKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = System/Library/Frameworks/WidgetKit.framework; sourceTree = SDKROOT; };
 		8A68D8235218BA0E77F4C2BE /* FXTableTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FXTableTests.swift; sourceTree = "<group>"; };
 		8B40C4DBD35C2A1C41F480AE /* TripSplitWatchWidgets.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = TripSplitWatchWidgets.appex; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -160,7 +213,9 @@
 		9E824087A1FC4230135F6421 /* TripConversionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TripConversionTests.swift; sourceTree = "<group>"; };
 		9E9C1E02DA0B6A926327A9F2 /* ConversionCurrencyTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConversionCurrencyTests.swift; sourceTree = "<group>"; };
 		A0ADB248CB076923670BF984 /* TripGeographyTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TripGeographyTests.swift; sourceTree = "<group>"; };
+		A21FAB33E3CEE5C063E67CDC /* ReturnTicketTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReturnTicketTests.swift; sourceTree = "<group>"; };
 		A2F77A12B41D7B8D9FFF2DD1 /* TripSplitDomain */ = {isa = PBXFileReference; lastKnownFileType = folder; name = TripSplitDomain; path = ../Packages/TripSplitDomain; sourceTree = SOURCE_ROOT; };
+		AA0471322910DE241551A204 /* PlaceSuggestionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaceSuggestionTests.swift; sourceTree = "<group>"; };
 		AB156440C7AFF05AAA3B26D5 /* WatchCompanionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchCompanionTests.swift; sourceTree = "<group>"; };
 		AD7A205147B6F7756527CF4C /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = System/Library/Frameworks/SwiftUI.framework; sourceTree = SDKROOT; };
 		B4E2BC6A39D78F2E7BB66A6D /* LegacyStoreCompatibilityTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LegacyStoreCompatibilityTests.swift; sourceTree = "<group>"; };
@@ -173,12 +228,15 @@
 		CFB1D198926122BE48165D98 /* TripSplit.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = TripSplit.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		D49EFA5A96F2A442531862AF /* WatchAppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchAppDelegate.swift; sourceTree = "<group>"; };
 		D7DE535E8D5DFC810EBDC693 /* TripTimeZoneTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TripTimeZoneTests.swift; sourceTree = "<group>"; };
+		D9D39FDE6E288FCE20D8E6F8 /* RescheduleTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RescheduleTests.swift; sourceTree = "<group>"; };
 		DBC7D0CB5EA99035F367F932 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		DE65D36BD930BE5B26103066 /* GlobeStateTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GlobeStateTests.swift; sourceTree = "<group>"; };
 		EAEBB9C9CA3ADFD7D7B14F87 /* TripPagesTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TripPagesTests.swift; sourceTree = "<group>"; };
 		ECF15BF32A826DF42AE46AF7 /* TripSplitApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TripSplitApp.swift; sourceTree = "<group>"; };
 		EDDB6A47B58B35D851963D08 /* TripSplitApplication */ = {isa = PBXFileReference; lastKnownFileType = folder; name = TripSplitApplication; path = ../Packages/TripSplitApplication; sourceTree = SOURCE_ROOT; };
 		F44B90CE367209B7D2507DBE /* ExpenseConversionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpenseConversionTests.swift; sourceTree = "<group>"; };
+		F8CC6F6BB40B094142644235 /* PhoneWidgetsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhoneWidgetsTests.swift; sourceTree = "<group>"; };
+		FA3CF8A3A0AAA0411963DD22 /* WidgetPublisher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetPublisher.swift; sourceTree = "<group>"; };
 		FAF3E9994895BD62556AECD4 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		FC319D5BE19AA428E954A8BA /* WatchGlanceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchGlanceTests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -221,6 +279,10 @@
 				C2F494563C371AAEC3D6A7AA /* TripSplitAccountUI in Frameworks */,
 				CB5043A843FC50CE51257ECD /* TripSplitGlobeUI in Frameworks */,
 				E500CF02A3A7BABBA32DF21D /* TripSplitCompanionHost in Frameworks */,
+				F9E6EDCB6E421D437411902F /* TripSplitWatchModel in Frameworks */,
+				FEEBB54EFBCBA53BE5E7A0A7 /* TripSplitWidgetModel in Frameworks */,
+				CA7B5B7CBD224435B585C404 /* TripSplitWidgetUI in Frameworks */,
+				7DD745B76F459198E11DE2B2 /* TripSplitCompanion in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -240,6 +302,21 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		F01015E29B7ACD44EB4E1FDE /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A6DD5BE33A8417C0D0ADC68C /* TripSplitWatchModel in Frameworks */,
+				5ABE58057DC2C31BA0D1976C /* TripSplitWidgetModel in Frameworks */,
+				E80448821EACE630059077C0 /* TripSplitWidgetUI in Frameworks */,
+				04FC7AA399449841A9B97D59 /* TripSplitDesignSystem in Frameworks */,
+				492DA7E4F6CE0BE91ED59063 /* TripSplitCompanion in Frameworks */,
+				A4497C68D1BF0931EB6B65A4 /* TripSplitDomain in Frameworks */,
+				69E2B71CCD056DDD0A0E9B63 /* WidgetKit.framework in Frameworks */,
+				DE7387D5ABB0736EA119A2C2 /* SwiftUI.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -254,6 +331,7 @@
 				85DD18558E1F2D8A5CD14819 /* TripSplitDomainTests */,
 				699739762A5CEA341923C570 /* TripSplitWatch */,
 				D27A653083E7462E3A0C3869 /* TripSplitWatchWidgets */,
+				B83C670448BC054D87FFE919 /* TripSplitWidgets */,
 				3C11D0806EAC354C525D5FBE /* Frameworks */,
 				8C682E5F7493AD0736A75D51 /* Products */,
 			);
@@ -284,6 +362,8 @@
 			isa = PBXGroup;
 			children = (
 				013B9600951218EB6EF44089 /* RootView.swift */,
+				85FE88C63F084F01AD39627C /* WidgetGallery.swift */,
+				82819112B381C966C81BD152 /* WidgetLinks.swift */,
 			);
 			path = Features;
 			sourceTree = "<group>";
@@ -307,6 +387,7 @@
 				67C0604DA2932D2E43F015D4 /* AppIcon.icon */,
 				DBC7D0CB5EA99035F367F932 /* Assets.xcassets */,
 				ECF15BF32A826DF42AE46AF7 /* TripSplitApp.swift */,
+				FA3CF8A3A0AAA0411963DD22 /* WidgetPublisher.swift */,
 				573174458936BF4B2498FB65 /* Features */,
 			);
 			path = TripSplit;
@@ -322,6 +403,9 @@
 				420EFEAC07DD93A4096B6C53 /* LeavingFromTests.swift */,
 				15426B312FC4938244D1A34F /* MoneyTests.swift */,
 				C2C9BAF877BB7E81B4083939 /* OnboardingDateTests.swift */,
+				AA0471322910DE241551A204 /* PlaceSuggestionTests.swift */,
+				D9D39FDE6E288FCE20D8E6F8 /* RescheduleTests.swift */,
+				A21FAB33E3CEE5C063E67CDC /* ReturnTicketTests.swift */,
 				9E824087A1FC4230135F6421 /* TripConversionTests.swift */,
 				A0ADB248CB076923670BF984 /* TripGeographyTests.swift */,
 				7688DC51FFC46FEDC2D0B2A0 /* TripOriginTests.swift */,
@@ -339,6 +423,7 @@
 				5ED7000F9BD96D4E28D9FBA3 /* TripSplitTests.xctest */,
 				1C54D4353F52B8C544F3EF0B /* TripSplitWatch.app */,
 				8B40C4DBD35C2A1C41F480AE /* TripSplitWatchWidgets.appex */,
+				7E1606A8AEF05114F0362356 /* TripSplitWidgets.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -352,7 +437,9 @@
 				B4E2BC6A39D78F2E7BB66A6D /* LegacyStoreCompatibilityTests.swift */,
 				4C26DAA050366856ED8FEC75 /* LocalStoreTests.swift */,
 				3764059ECA5E0D090848E9E4 /* LogExpenseTests.swift */,
+				F8CC6F6BB40B094142644235 /* PhoneWidgetsTests.swift */,
 				71021F5E7CBBA9943ABED572 /* PublicAPITests.swift */,
+				1093EB240A1B46E0FAFD0939 /* ReturnTicketSaveTests.swift */,
 				92D6060E4A912945AC35E53A /* SyncTests.swift */,
 				CEF90CE80361EDBEDD351D16 /* TripActionsTests.swift */,
 				EAEBB9C9CA3ADFD7D7B14F87 /* TripPagesTests.swift */,
@@ -363,6 +450,17 @@
 			);
 			name = TripSplitApplicationTests;
 			path = ../Packages/TripSplitApplication/Tests/TripSplitApplicationTests;
+			sourceTree = "<group>";
+		};
+		B83C670448BC054D87FFE919 /* TripSplitWidgets */ = {
+			isa = PBXGroup;
+			children = (
+				3100F674E335FF321E194CF3 /* Controls.swift */,
+				3224D6619DE321E9040CA934 /* Intents.swift */,
+				0724CBA356C07067A776A6D3 /* Timeline.swift */,
+				6AD5FDBA207315C56598F09D /* Widgets.swift */,
+			);
+			path = TripSplitWidgets;
 			sourceTree = "<group>";
 		};
 		C8F29E749E485F30259F01E2 /* Shared */ = {
@@ -395,12 +493,14 @@
 				AED023A51429C501E00891F4 /* Sources */,
 				330215420527B004CC88A1BF /* Resources */,
 				69C4C48C1618AA2A85E7A247 /* Frameworks */,
+				95ED4A48EA8633C5331DE93B /* Embed Foundation Extensions */,
 				8FA83159C9520F73600EB691 /* Embed Watch Content */,
 			);
 			buildRules = (
 			);
 			dependencies = (
 				86FD13BFBBD1A4B864785E62 /* PBXTargetDependency */,
+				B6DBB338A1DC05FFC6FE2A1F /* PBXTargetDependency */,
 			);
 			name = TripSplit;
 			packageProductDependencies = (
@@ -417,10 +517,38 @@
 				023C40B4049114D2F9D587B3 /* TripSplitAccountUI */,
 				67BCF0DF2B81F9612313F58A /* TripSplitGlobeUI */,
 				9E824DA2C23A5DA40DB661C1 /* TripSplitCompanionHost */,
+				E9D01EE3FA4D8BF85BAA2EA1 /* TripSplitWatchModel */,
+				3D21F295FC3BB3D09837D9F2 /* TripSplitWidgetModel */,
+				A5C3DC79047B612C2FB77E65 /* TripSplitWidgetUI */,
+				B0218D43EC08367BC26BAE05 /* TripSplitCompanion */,
 			);
 			productName = TripSplit;
 			productReference = CFB1D198926122BE48165D98 /* TripSplit.app */;
 			productType = "com.apple.product-type.application";
+		};
+		95C9A8E4FA35D55E016B45A8 /* TripSplitWidgets */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = D6B3A84D0731EB209E1788B1 /* Build configuration list for PBXNativeTarget "TripSplitWidgets" */;
+			buildPhases = (
+				805ED3B6C25A795FE68A1E7D /* Sources */,
+				F01015E29B7ACD44EB4E1FDE /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = TripSplitWidgets;
+			packageProductDependencies = (
+				0D728D738EB816A67B69637D /* TripSplitWatchModel */,
+				A5CE2BA1694E06B3D7FF45CB /* TripSplitWidgetModel */,
+				B172194E9A040872ACB2B29F /* TripSplitWidgetUI */,
+				AD4EE1DD8AF2CF1A2EFFA424 /* TripSplitDesignSystem */,
+				67E7E469CDBFB46431E79A0B /* TripSplitCompanion */,
+				AA0F16D8E60DEB3BA77891C1 /* TripSplitDomain */,
+			);
+			productName = TripSplitWidgets;
+			productReference = 7E1606A8AEF05114F0362356 /* TripSplitWidgets.appex */;
+			productType = "com.apple.product-type.app-extension";
 		};
 		9B339199721F73AC2F4CC137 /* TripSplitWatchWidgets */ = {
 			isa = PBXNativeTarget;
@@ -507,6 +635,10 @@
 						DevelopmentTeam = R2GGK3VN2C;
 						ProvisioningStyle = Automatic;
 					};
+					95C9A8E4FA35D55E016B45A8 = {
+						DevelopmentTeam = R2GGK3VN2C;
+						ProvisioningStyle = Automatic;
+					};
 					9B339199721F73AC2F4CC137 = {
 						DevelopmentTeam = R2GGK3VN2C;
 						ProvisioningStyle = Automatic;
@@ -546,6 +678,7 @@
 				D6DF260C450F7BB25BC75B19 /* TripSplitTests */,
 				E4C805FBAA992E08A68920FA /* TripSplitWatch */,
 				9B339199721F73AC2F4CC137 /* TripSplitWatchWidgets */,
+				95C9A8E4FA35D55E016B45A8 /* TripSplitWidgets */,
 			);
 		};
 /* End PBXProject section */
@@ -590,13 +723,29 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		805ED3B6C25A795FE68A1E7D /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				EC7FD5EB0CC7A260D7FDBF83 /* Controls.swift in Sources */,
+				62CB9226CDE81E72803972EF /* Intents.swift in Sources */,
+				B7EE759A341502552453237D /* OpenWatchLinkIntent.swift in Sources */,
+				6311146DD1FB593525BFCF83 /* Timeline.swift in Sources */,
+				CD1D6568D9899737B9117AE9 /* Widgets.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		AED023A51429C501E00891F4 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 				7C56B265F4C6C29538BA495E /* APIConfiguration.swift in Sources */,
+				33A35CBD74CFB7F76A1E7B12 /* OpenWatchLinkIntent.swift in Sources */,
 				3862352CB72D35DD2B8F642E /* RootView.swift in Sources */,
 				9366C8BDBC3F8D5C35BA48CE /* TripSplitApp.swift in Sources */,
+				54A091F12AD24E61121D3487 /* WidgetGallery.swift in Sources */,
+				952A23306FF6EC0EF6655DF3 /* WidgetLinks.swift in Sources */,
+				32A946FE6E67D38A42B4C1C4 /* WidgetPublisher.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -628,7 +777,12 @@
 				99E849E0A8DD38E98AE199A4 /* LogExpenseTests.swift in Sources */,
 				46459E50CD074648C3F7E63D /* MoneyTests.swift in Sources */,
 				E415AED908799D14D25C6C1B /* OnboardingDateTests.swift in Sources */,
+				18F22929AB9B23BCE72F1CC1 /* PhoneWidgetsTests.swift in Sources */,
+				3774222D36F998E4A9D91294 /* PlaceSuggestionTests.swift in Sources */,
 				D95A0E15C8A9CEE5F55E37DD /* PublicAPITests.swift in Sources */,
+				06AA4D908F38C8F554272121 /* RescheduleTests.swift in Sources */,
+				091FFCA94AB853CAF2C990A5 /* ReturnTicketSaveTests.swift in Sources */,
+				2D97553E62B129601B601559 /* ReturnTicketTests.swift in Sources */,
 				11286A89A23BB12A0F6AD03F /* SyncTests.swift in Sources */,
 				FEAA33415689C2B51C01F49F /* TripActionsTests.swift in Sources */,
 				F88B644B0EE781A06A18E9E4 /* TripConversionTests.swift in Sources */,
@@ -662,9 +816,52 @@
 			target = E4C805FBAA992E08A68920FA /* TripSplitWatch */;
 			targetProxy = BEB11E50E35F1AED689979D3 /* PBXContainerItemProxy */;
 		};
+		B6DBB338A1DC05FFC6FE2A1F /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 95C9A8E4FA35D55E016B45A8 /* TripSplitWidgets */;
+			targetProxy = 1A45F49B8FA66FB2B0D63F4A /* PBXContainerItemProxy */;
+		};
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
+		0A9ED2D8A8C421A63ED82A94 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = Config/TripSplitWidgets.entitlements;
+				CURRENT_PROJECT_VERSION = 6;
+				INFOPLIST_FILE = "Config/Widgets-Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = it.tripspl.TripSplit.widgets;
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		1D8EF3CC6AECFDD7C403909E /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = Config/TripSplitWidgets.entitlements;
+				CURRENT_PROJECT_VERSION = 6;
+				INFOPLIST_FILE = "Config/Widgets-Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = it.tripspl.TripSplit.widgets;
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
 		3670C036E5CC0A569C617608 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -977,6 +1174,15 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Debug;
 		};
+		D6B3A84D0731EB209E1788B1 /* Build configuration list for PBXNativeTarget "TripSplitWidgets" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1D8EF3CC6AECFDD7C403909E /* Debug */,
+				0A9ED2D8A8C421A63ED82A94 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
 		F228D067B3CAF321E7723396 /* Build configuration list for PBXProject "TripSplit" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
@@ -1020,6 +1226,10 @@
 			isa = XCSwiftPackageProductDependency;
 			productName = TripSplitDomain;
 		};
+		0D728D738EB816A67B69637D /* TripSplitWatchModel */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = TripSplitWatchModel;
+		};
 		0F686EA89F002304BDFA2346 /* TripSplitSync */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = TripSplitSync;
@@ -1040,6 +1250,10 @@
 			isa = XCSwiftPackageProductDependency;
 			productName = TripSplitCompanionHost;
 		};
+		3D21F295FC3BB3D09837D9F2 /* TripSplitWidgetModel */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = TripSplitWidgetModel;
+		};
 		4EFE4D5CE1388EA625856CDE /* TripSplitWatchModel */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = TripSplitWatchModel;
@@ -1055,6 +1269,10 @@
 		67BCF0DF2B81F9612313F58A /* TripSplitGlobeUI */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = TripSplitGlobeUI;
+		};
+		67E7E469CDBFB46431E79A0B /* TripSplitCompanion */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = TripSplitCompanion;
 		};
 		761D954F3D95284126B844DD /* TripSplitNetworking */ = {
 			isa = XCSwiftPackageProductDependency;
@@ -1080,13 +1298,37 @@
 			isa = XCSwiftPackageProductDependency;
 			productName = TripSplitCompanionHost;
 		};
+		A5C3DC79047B612C2FB77E65 /* TripSplitWidgetUI */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = TripSplitWidgetUI;
+		};
+		A5CE2BA1694E06B3D7FF45CB /* TripSplitWidgetModel */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = TripSplitWidgetModel;
+		};
 		A903F2941364C0BCAED059AB /* TripSplitConversionUI */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = TripSplitConversionUI;
 		};
+		AA0F16D8E60DEB3BA77891C1 /* TripSplitDomain */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = TripSplitDomain;
+		};
 		AB6044F66A4DB67B04FFAFA4 /* TripSplitWatchModel */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = TripSplitWatchModel;
+		};
+		AD4EE1DD8AF2CF1A2EFFA424 /* TripSplitDesignSystem */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = TripSplitDesignSystem;
+		};
+		B0218D43EC08367BC26BAE05 /* TripSplitCompanion */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = TripSplitCompanion;
+		};
+		B172194E9A040872ACB2B29F /* TripSplitWidgetUI */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = TripSplitWidgetUI;
 		};
 		BB13520EDE51630424801491 /* TripSplitSync */ = {
 			isa = XCSwiftPackageProductDependency;
@@ -1111,6 +1353,10 @@
 		E5A20494D1D52AEBDB273CE7 /* TripSplitPersistence */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = TripSplitPersistence;
+		};
+		E9D01EE3FA4D8BF85BAA2EA1 /* TripSplitWatchModel */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = TripSplitWatchModel;
 		};
 		F2DBED6BFFDA4111DF579987 /* TripSplitTripsUI */ = {
 			isa = XCSwiftPackageProductDependency;
