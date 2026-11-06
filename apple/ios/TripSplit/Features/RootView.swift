@@ -44,157 +44,7 @@ struct RootView: View {
         })
     ) {
       Tab("Trips", systemImage: "suitcase", value: 0) {
-        NavigationSplitView(
-          columnVisibility: Binding(
-            get: { twoPane && model.fullScreenDay && model.selectedAttachment != nil ? .detailOnly : .all },
-            set: { if twoPane && model.selectedAttachment != nil { model.fullScreenDay = $0 == .detailOnly } }),
-          // Derived from the selection, so folding or unfolding the Duo lands on the same screen.
-          preferredCompactColumn: Binding(
-            get: { model.selectedTripID == nil ? .sidebar : .detail },
-            set: {
-              if $0 == .sidebar {
-                model.selectedTripID = nil
-                model.selectedAttachment = nil
-              }
-            })
-        ) {
-          let tripBeside = twoPane && model.selectedAttachment != nil
-          // Opening a day moves the whole path along a step: the trip slides over from the pane
-          // beside as the day pushes in there, and the trips list steps aside, as a push would.
-          ZStack {
-            TripsView(compact: twoPane)
-              .visualEffect { [tripBeside] content, proxy in
-                content.offset(x: tripBeside ? -proxy.size.width * 0.3 : 0)
-              }
-              .opacity(tripBeside ? 0 : 1)
-              .allowsHitTesting(!tripBeside).accessibilityHidden(tripBeside)
-            if tripBeside, let trip = model.selectedTrip {
-              TripDetailView(tripID: trip.id, compact: true)
-                .transition(reduceMotion ? .opacity : .move(edge: .trailing))
-                // Stays over the trips list while it slides back out, not under it.
-                .zIndex(1)
-            }
-          }
-          .animation(reduceMotion ? .smooth(duration: 0.25) : .smooth(duration: 0.45), value: tripBeside)
-          // Slides stay within the column, while backgrounds still run under the bars.
-          .clipShape(ColumnClip(sides: twoPane))
-          // Half open, the leading pane runs right up to the fold.
-          .navigationSplitViewColumnWidth(
-            min: bookFold?.minX ?? 300, ideal: bookFold?.minX ?? 340, max: bookFold?.minX ?? 360)
-          .navigationTitle("")
-          // Each pane draws its own header, so the bar only shows to hold the rail.
-          .toolbar(railed ? .automatic : .hidden, for: .navigationBar)
-          .toolbar {
-            // Abroad on a trip under way, converting stays one tap from the trips list too.
-            if railed && model.selectedTripID == nil && model.store.trips.contains(where: \.showsHomeConverter) {
-              convertItem { model.showConverter = true }
-            }
-          }
-          // Only takes effect on the sidebar column's content, not on the split view itself.
-          .toolbar(removing: .sidebarToggle)
-          // On the rail the sidebar gets no top inset while the pane beside keeps the rail's, so
-          // both panes start on the same line, level with the time.
-          .safeAreaPadding(.top, twoPane && railed ? max(0, detailTop - sidebarTop) : 0)
-          .onGeometryChange(for: CGFloat.self) { $0.safeAreaInsets.top } action: { sidebarTop = $0 }
-        } detail: {
-          NavigationStack(
-            path: Binding(
-              get: { model.selectedAttachment == nil ? [] : [DayRoute.day] },
-              set: { path in
-                if path.isEmpty {
-                  model.selectedAttachment = nil
-                  model.fullScreenDay = false
-                }
-              })
-          ) {
-            ZStack {
-              Theme.background.ignoresSafeArea()
-              if let trip = model.selectedTrip {
-                TripDetailView(tripID: trip.id)
-                  .id(trip.id)
-                  .transition(
-                    reduceMotion
-                      ? .opacity
-                      : .asymmetric(insertion: .offset(y: 28).combined(with: .opacity), removal: .opacity))
-              } else {
-                ContentUnavailableView(
-                  "Select a trip", systemImage: "airplane")
-              }
-            }
-            // The pane beside starts past the fold, so nothing to tap sits in the curve.
-            .safeAreaPadding(.leading, sidebarShown ? bookFold?.width ?? 0 : 0)
-            // Picking a trip in the sidebar slides it up into the pane beside.
-            .animation(twoPane ? .smooth(duration: 0.5) : nil, value: model.selectedTripID)
-            .pinsBar(twoPane)
-            // With no trip picked the pane has no items, so its bar would drop away and take the
-            // sidebar's matching inset with it. Keeping it up holds the trips title on one line.
-            .toolbar(twoPane && railed ? .visible : .automatic, for: .navigationBar)
-            .onGeometryChange(for: CGFloat.self) { $0.safeAreaInsets.top } action: { detailTop = $0 }
-            .toolbar {
-              if let trip = model.selectedTrip {
-                // On the rail, the "+" tab adds the expense instead.
-                if !railed {
-                  ToolbarItem(placement: .primaryAction) {
-                    Button("Add expense", systemImage: "plus") {
-                      model.editExpense(trip: trip, attachment: trip.currentAttachment)
-                    }
-                  }
-                }
-                if !railed || trip.showsHomeConverter {
-                  convertItem { model.showConverter = true }
-                }
-                if trip.hasCompanions {
-                  ToolbarItem {
-                    Button("Share trip", systemImage: "square.and.arrow.up") {
-                      model.showTripSettings = true
-                    }
-                  }
-                }
-                moreItem(trip, day: nil)
-              }
-            }
-            .navigationDestination(for: DayRoute.self) { _ in
-              if let trip = model.selectedTrip {
-                OpenDay { attachment in
-                  ZStack {
-                    Theme.background.ignoresSafeArea()
-                    DayView(tripID: trip.id, attachment: attachment, showsPaneControls: twoPane)
-                      .id(attachment)
-                      .transition(.opacity)
-                  }
-                  // Picking another day beside swaps this one in place rather than pushing again.
-                  .animation(.smooth(duration: 0.25), value: attachment)
-                  .safeAreaPadding(.leading, sidebarShown ? bookFold?.width ?? 0 : 0)
-                  .pinsBar(twoPane)
-                  // Half of an iPad's two panes, the day floats its own Close instead.
-                  .navigationBarBackButtonHidden(twoPane && !railed)
-                  .toolbar {
-                    if railed && trip.isAbroad(attachment) {
-                      convertItem { model.showConverter = true }
-                    }
-                    moreItem(trip, day: attachment)
-                  }
-                }
-              }
-            }
-          }
-          // Asked from either page, so they're kept on the stack itself.
-          .confirmsDeleting($deleting)
-          .confirmationDialog(
-            clearTitle,
-            isPresented: Binding(get: { clearing != nil }, set: { if !$0 { clearing = nil } }),
-            titleVisibility: .visible, presenting: clearing
-          ) { attachment in
-            Button("Delete expenses", role: .destructive) {
-              if let trip = model.selectedTrip { model.clearDay(attachment, trip: trip) }
-            }
-          }
-        }
-        .navigationSplitViewStyle(.balanced)
-        .readFold($fold)
-        .animation(.smooth, value: bookFold)
-        // Two panes only when unfolded on its side; otherwise one, capped in width.
-        .environment(\.horizontalSizeClass, twoPane ? .regular : .compact)
+        tripNavigation
       }
       Tab("Globe", systemImage: "globe", value: 1) { NavigationStack { GlobeView() } }
       // The rail shows no titles, so only VoiceOver hears what it adds. Retitling the tab as the
@@ -366,6 +216,190 @@ struct RootView: View {
   }
 }
 extension RootView {
+  @ViewBuilder private var tripNavigation: some View {
+    Group {
+      if twoPane {
+        NavigationSplitView(
+          columnVisibility: Binding(
+            get: { model.fullScreenDay && model.selectedAttachment != nil ? .detailOnly : .all },
+            set: { if model.selectedAttachment != nil { model.fullScreenDay = $0 == .detailOnly } })
+        ) {
+          let tripBeside = twoPane && model.selectedAttachment != nil
+          // Opening a day moves the whole path along a step: the trip slides over from the pane
+          // beside as the day pushes in there, and the trips list steps aside, as a push would.
+          ZStack {
+            TripsView(compact: twoPane)
+              .visualEffect { [tripBeside] content, proxy in
+                content.offset(x: tripBeside ? -proxy.size.width * 0.3 : 0)
+              }
+              .opacity(tripBeside ? 0 : 1)
+              .allowsHitTesting(!tripBeside).accessibilityHidden(tripBeside)
+            if tripBeside, let trip = model.selectedTrip {
+              TripDetailView(tripID: trip.id, compact: true)
+                .transition(reduceMotion ? .opacity : .move(edge: .trailing))
+                // Stays over the trips list while it slides back out, not under it.
+                .zIndex(1)
+            }
+          }
+          .animation(reduceMotion ? .smooth(duration: 0.25) : .smooth(duration: 0.45), value: tripBeside)
+          // Slides stay within the column, while backgrounds still run under the bars.
+          .clipShape(ColumnClip(sides: twoPane))
+          // Half open, the leading pane runs right up to the fold.
+          .navigationSplitViewColumnWidth(
+            min: bookFold?.minX ?? 300, ideal: bookFold?.minX ?? 340, max: bookFold?.minX ?? 360)
+          .navigationTitle("")
+          // Each pane draws its own header, so the bar only shows to hold the rail.
+          .toolbar(railed ? .automatic : .hidden, for: .navigationBar)
+          .toolbar {
+            // Abroad on a trip under way, converting stays one tap from the trips list too.
+            if railed && model.selectedTripID == nil && model.store.trips.contains(where: \.showsHomeConverter) {
+              convertItem { model.showConverter = true }
+            }
+          }
+          // Only takes effect on the sidebar column's content, not on the split view itself.
+          .toolbar(removing: .sidebarToggle)
+          // On the rail the sidebar gets no top inset while the pane beside keeps the rail's, so
+          // both panes start on the same line, level with the time.
+          .safeAreaPadding(.top, twoPane && railed ? max(0, detailTop - sidebarTop) : 0)
+          .onGeometryChange(for: CGFloat.self) { $0.safeAreaInsets.top } action: { sidebarTop = $0 }
+        } detail: {
+          NavigationStack(
+            path: Binding(
+              get: { model.selectedAttachment == nil ? [] : [TripRoute.day] },
+              set: { if $0.isEmpty { closeDay() } })
+          ) {
+            tripContent(tripID: model.selectedTripID)
+              .navigationDestination(for: TripRoute.self) { _ in dayContent }
+          }
+        }
+        .navigationSplitViewStyle(.balanced)
+        .animation(.smooth, value: bookFold)
+        .environment(\.horizontalSizeClass, .regular)
+      } else {
+        // A single path owns Back in narrow windows. A collapsed split view also writes its
+        // preferred column when the day pops, which used to clear the trip underneath it.
+        NavigationStack(
+          path: Binding<[TripRoute]>(
+            get: {
+              guard let tripID = model.selectedTripID else { return [] }
+              return [TripRoute.trip(tripID)] + (model.selectedAttachment == nil ? [] : [.day])
+            },
+            set: { path in
+              if path.isEmpty { model.selectedTripID = nil }
+              if !path.contains(.day) { closeDay() }
+            })
+        ) {
+          TripsView()
+            .navigationTitle("")
+            .toolbar(railed ? .automatic : .hidden, for: .navigationBar)
+            .toolbar {
+              if railed && model.store.trips.contains(where: \.showsHomeConverter) {
+                convertItem { model.showConverter = true }
+              }
+            }
+            .navigationDestination(for: TripRoute.self) { route in
+              switch route {
+              case .trip(let id): tripContent(tripID: id)
+              case .day: dayContent
+              }
+            }
+        }
+        .environment(\.horizontalSizeClass, .compact)
+      }
+    }
+    .readFold($fold)
+    // Asked from either page, so they're kept above the adaptive navigation.
+    .confirmsDeleting($deleting)
+    .confirmationDialog(
+      clearTitle,
+      isPresented: Binding(get: { clearing != nil }, set: { if !$0 { clearing = nil } }),
+      titleVisibility: .visible, presenting: clearing
+    ) { attachment in
+      Button("Delete expenses", role: .destructive) {
+        if let trip = model.selectedTrip { model.clearDay(attachment, trip: trip) }
+      }
+    }
+  }
+
+  private func closeDay() {
+    model.selectedAttachment = nil
+    model.fullScreenDay = false
+  }
+
+  private func tripContent(tripID: String?) -> some View {
+    ZStack {
+      Theme.background.ignoresSafeArea()
+      if let trip = tripID.flatMap({ model.store.trip($0) }) {
+        TripDetailView(tripID: trip.id)
+          .id(trip.id)
+          .transition(
+            reduceMotion
+              ? .opacity
+              : .asymmetric(insertion: .offset(y: 28).combined(with: .opacity), removal: .opacity))
+      } else {
+        ContentUnavailableView(
+          "Select a trip", systemImage: "airplane")
+      }
+    }
+    // The pane beside starts past the fold, so nothing to tap sits in the curve.
+    .safeAreaPadding(.leading, sidebarShown ? bookFold?.width ?? 0 : 0)
+    // Picking a trip in the sidebar slides it up into the pane beside.
+    .animation(twoPane ? .smooth(duration: 0.5) : nil, value: model.selectedTripID)
+    .pinsBar(twoPane)
+    // With no trip picked the pane has no items, so its bar would drop away and take the
+    // sidebar's matching inset with it. Keeping it up holds the trips title on one line.
+    .toolbar(twoPane && railed ? .visible : .automatic, for: .navigationBar)
+    .onGeometryChange(for: CGFloat.self) { $0.safeAreaInsets.top } action: { detailTop = $0 }
+    .toolbar {
+      if let trip = tripID.flatMap({ model.store.trip($0) }) {
+        // On the rail, the "+" tab adds the expense instead.
+        if !railed {
+          ToolbarItem(placement: .primaryAction) {
+            Button("Add expense", systemImage: "plus") {
+              model.editExpense(trip: trip, attachment: trip.currentAttachment)
+            }
+          }
+        }
+        if !railed || trip.showsHomeConverter {
+          convertItem { model.showConverter = true }
+        }
+        if trip.hasCompanions {
+          ToolbarItem {
+            Button("Share trip", systemImage: "square.and.arrow.up") {
+              model.showTripSettings = true
+            }
+          }
+        }
+        moreItem(trip, day: nil)
+      }
+    }
+  }
+
+  @ViewBuilder private var dayContent: some View {
+    if let trip = model.selectedTrip {
+      OpenDay { attachment in
+        ZStack {
+          Theme.background.ignoresSafeArea()
+          DayView(tripID: trip.id, attachment: attachment, showsPaneControls: twoPane)
+            .id(attachment)
+            .transition(.opacity)
+        }
+        // Picking another day beside swaps this one in place rather than pushing again.
+        .animation(.smooth(duration: 0.25), value: attachment)
+        .safeAreaPadding(.leading, sidebarShown ? bookFold?.width ?? 0 : 0)
+        .pinsBar(twoPane)
+        // Half of an iPad's two panes, the day floats its own Close instead.
+        .navigationBarBackButtonHidden(twoPane && !railed)
+        .toolbar {
+          if railed && trip.isAbroad(attachment) {
+            convertItem { model.showConverter = true }
+          }
+          moreItem(trip, day: attachment)
+        }
+      }
+    }
+  }
+
   /// The Duo's inner display, or an iPad.
   private var unfolded: Bool { sizeClass == .regular }
 
@@ -451,8 +485,11 @@ extension RootView {
     return "Delete \(count == 1 ? "the expense" : "all \(count) expenses") on this day?"
   }
 }
-/// The one page pushed over a trip: its open day or travel leg.
-private enum DayRoute: Hashable { case day }
+/// The narrow layout includes the trip itself; the wide detail column only pushes its day.
+private enum TripRoute: Hashable {
+  case trip(String)
+  case day
+}
 
 /// The open day, kept on screen as it slides away after the selection clears.
 private struct OpenDay<Content: View>: View {
