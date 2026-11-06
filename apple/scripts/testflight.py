@@ -151,7 +151,7 @@ def main():
         archive = output / "TripSplit.xcarchive"
         run([*common, "-configuration", "Release", "-destination", "generic/platform=iOS", "-archivePath", str(archive),
              f'DEVELOPMENT_TEAM={config["team_id"]}', "CODE_SIGN_STYLE=Manual", f"CODE_SIGN_IDENTITY={certificate}",
-             # Each target signs with its own profile: the app, the watch app and its complications.
+             # Each target signs with its own profile: the app, its widgets, the watch app and its complications.
              "PROVISIONING_PROFILE_SPECIFIER=$(TRIPSPLIT_PROFILE_$(TARGET_NAME))",
              *[f"TRIPSPLIT_PROFILE_{target}={uuid}" for target, uuid in profiles.items()],
              f"CURRENT_PROJECT_VERSION={build_number}", "archive"],
