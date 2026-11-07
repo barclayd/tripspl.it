@@ -668,6 +668,9 @@ public struct ExpenseEditor: View {
       .padding(2)
     }
     .scrollIndicators(.hidden)
+    .onScrollPhaseChange { _, phase in
+      if phase == .interacting { amountFocused = false }
+    }
   }
 
   /// "€3.20 each · 2 people", a range when the split doesn't divide evenly.
