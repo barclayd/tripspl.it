@@ -23,8 +23,8 @@ public struct DayBrowser: View {
   @State private var carouselID: String?
   @State private var browsingDates = false
   @State private var carouselWidth: CGFloat = 0
-  @ScaledMetric(relativeTo: .caption) private var dayWidth = 84.0
-  @Namespace private var selection
+  @ScaledMetric(relativeTo: .title3) private var dayWidth = 140.0
+  @ScaledMetric(relativeTo: .title3) private var carouselHeight = 52.0
 
   public var body: some View {
     if let trip = model.store.trip(tripID) {
@@ -56,15 +56,24 @@ public struct DayBrowser: View {
 
   private func identity(_ trip: TripSnapshot, day: TripDay) -> some View {
     let location = trip.location(for: day)
+    let dayNumber = (trip.days.firstIndex(where: { $0.id == day.id }) ?? 0) + 1
     return VStack(alignment: .leading, spacing: 6) {
-      HStack(spacing: 10) {
+      HStack(alignment: .firstTextBaseline, spacing: 10) {
         Text(location?.countryCode.flag ?? trip.uniqueFlags.first ?? "🌍")
           .font(.system(size: 28)).accessibilityHidden(true)
           .contentTransition(.opacity)
         Text(trip.name)
           .typeface(25, .heavy, tracking: -0.035, relativeTo: .title2, maximum: 1.4)
           .foregroundStyle(Theme.ink).lineLimit(2)
+          .frame(maxWidth: .infinity, alignment: .leading)
           .accessibilityAddTraits(.isHeader)
+        Text("Day \(dayNumber)")
+          .typeface(15, .bold, relativeTo: .subheadline, maximum: 1.4)
+          .monospacedDigit().foregroundStyle(Theme.accentText)
+          .fixedSize(horizontal: true, vertical: false)
+          .contentTransition(reduceMotion ? .opacity : .numericText(value: Double(dayNumber)))
+          .animation(reduceMotion ? nil : .snappy(duration: 0.24), value: dayNumber)
+          .accessibilityIdentifier("day.counter")
       }
       Button { editingDay = day } label: {
         HStack(spacing: 6) {
@@ -97,31 +106,16 @@ public struct DayBrowser: View {
 
   private func carousel(_ trip: TripSnapshot) -> some View {
     ScrollView(.horizontal) {
-      LazyHStack(spacing: 6) {
+      LazyHStack(spacing: 0) {
         ForEach(Array(trip.days.enumerated()), id: \.element.id) { index, day in
           let selected = day.id == attachment.id
           Button { select(day.id, in: trip) } label: {
-            VStack(spacing: 4) {
-              Text(relativeLabel(day, trip: trip))
-                .typeface(11.5, .bold, relativeTo: .caption, maximum: 1.4).lineLimit(1)
-              Text(CivilDate.display(day.date, format: "d MMM"))
-                .typeface(20, .heavy, tracking: -0.025, relativeTo: .title3, maximum: 1.4)
-                .monospacedDigit().lineLimit(1).minimumScaleFactor(0.85)
-              Text("Day \(index + 1)")
-                .typeface(10.5, .semibold, relativeTo: .caption2, maximum: 1.4)
-                .foregroundStyle(selected ? Theme.accentText : Theme.tertiary)
-              ZStack {
-                Color.clear
-                if selected {
-                  Capsule().fill(Theme.accent)
-                    .matchedGeometryEffect(id: "day", in: selection)
-                }
-              }.frame(width: 24, height: 3).padding(.top, 3)
-            }
-            .foregroundStyle(selected ? Theme.ink : Theme.secondary)
-            .frame(width: dayWidth).padding(.top, 9).padding(.bottom, 5)
-            .background(selected ? Theme.accentSoft : .clear, in: RoundedRectangle(cornerRadius: 14))
-            .contentShape(Rectangle())
+            Text(relativeLabel(day, trip: trip))
+              .typeface(20, .bold, tracking: -0.02, relativeTo: .title3, maximum: 1.4)
+              .monospacedDigit().lineLimit(1)
+              .foregroundStyle(selected ? Theme.ink : Theme.secondary)
+              .frame(width: dayWidth, height: carouselHeight)
+              .contentShape(Rectangle())
           }
           .buttonStyle(PressStyle(scale: 0.97))
           .accessibilityLabel("\(CivilDate.display(day.date, format: "EEEE d MMMM")), day \(index + 1) of \(trip.days.count)\(trip.isToday(day) ? ", today" : "")")
@@ -132,7 +126,7 @@ public struct DayBrowser: View {
       }.scrollTargetLayout()
     }
     .scrollIndicators(.hidden)
-    .frame(height: dayWidth + 4)
+    .frame(height: carouselHeight)
     .contentMargins(.horizontal, max(0, (carouselWidth - dayWidth) / 2), for: .scrollContent)
     .scrollTargetBehavior(.viewAligned)
     .scrollPosition(id: $carouselID, anchor: .center)
@@ -167,7 +161,7 @@ public struct DayBrowser: View {
     case -1: "Yesterday"
     case 0: "Today"
     case 1: "Tomorrow"
-    default: CivilDate.display(day.date, format: "EEEE")
+    default: CivilDate.display(day.date, format: "EEE dd MMM")
     }
   }
 
