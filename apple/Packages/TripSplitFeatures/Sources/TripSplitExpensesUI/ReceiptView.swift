@@ -156,6 +156,7 @@ struct ReceiptView: View {
 
   /// "LISBON · DAY 3", "GETTING THERE" or the leg's own title.
   private var whereLine: String {
+    if let days = expense.dayIds, days.count > 1 { return "SHARED ACROSS \(days.count) DAYS" }
     switch expense.attachment.kind {
     case .day:
       let place = trip.stop(for: expense.attachment)?.place.uppercased() ?? trip.name.uppercased()
@@ -171,6 +172,10 @@ struct ReceiptView: View {
 
   /// "SAT 1 NOV 2026 · 14:32", the attached day's date with the time it was added.
   private var dateLine: String {
+    if let ids = expense.dayIds, ids.count > 1 {
+      return trip.days.filter { ids.contains($0.id) }
+        .map { CivilDate.display($0.date, format: "d MMM") }.joined(separator: " · ").uppercased()
+    }
     let date =
       expense.attachment.kind == .day
       ? trip.days.first { $0.id == expense.attachment.id }?.date

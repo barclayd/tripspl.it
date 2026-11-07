@@ -145,8 +145,16 @@ export class TripRoom extends DurableObject<Env> {
     const moved: Expense[] = [];
     trip.expenses = trip.expenses.map(expense => {
       const target = expense.attachment.kind === 'day' ? moves.get(expense.attachment.id) : undefined;
-      if (target === undefined) return expense;
-      const value = { ...expense, attachment: { kind: 'day' as const, id: target }, revision: expense.revision + 1 };
+      const changedDays = expense.dayIds?.some(id => moves.has(id)) ?? false;
+      if (target === undefined && !changedDays) return expense;
+      const value = { ...expense, attachment: { kind: 'day' as const, id: target ?? expense.attachment.id }, revision: expense.revision + 1 };
+      if (expense.dayIds) {
+        const selected = new Set(expense.dayIds.map(id => moves.get(id) ?? id));
+        const ordered = trip.days.map(day => day.id).filter(id => selected.has(id));
+        value.attachment.id = ordered[0]!;
+        if (ordered.length > 1) value.dayIds = ordered;
+        else delete value.dayIds;
+      }
       moved.push(value); return value;
     });
     validateTrip(trip); this.writeItinerary(trip);
@@ -266,6 +274,11 @@ export class TripRoom extends DurableObject<Env> {
           assert(operation.payload.homeCurrency === trip.homeCurrency || trip.expenses.length + trip.repayments.length === 0, 'HOME_CURRENCY_LOCKED', 'Reporting currency cannot change after financial records are added.');
           // Stable IDs protect existing financial attachments. Date shifts require explicit record edits.
           for (const expense of trip.expenses) {
+            for (const dayId of expense.dayIds ?? []) {
+              const oldDay = trip.days.find(day => day.id === dayId);
+              const newDay = operation.payload.days.find(day => day.id === dayId);
+              assert(oldDay && newDay && oldDay.date === newDay.date, 'REFERENCED_ITINERARY', 'Move attached expenses explicitly before changing or deleting their day or leg.');
+            }
             const oldEntity = (expense.attachment.kind === 'day' ? trip.days : trip.legs).find(item => item.id === expense.attachment.id);
             const newEntity = (expense.attachment.kind === 'day' ? operation.payload.days : operation.payload.legs).find(item => item.id === expense.attachment.id);
             assert(oldEntity && newEntity && oldEntity.date === newEntity.date, 'REFERENCED_ITINERARY', 'Move attached expenses explicitly before changing or deleting their day or leg.');

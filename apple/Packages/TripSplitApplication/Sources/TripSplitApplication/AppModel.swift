@@ -149,7 +149,8 @@ import TripSplitSync
   /// Moves expenses to another day or leg. Paid ones count as paid on its date. A half of a return
   /// ticket moves on its own, so both halves become plain expenses.
   public func moveExpenses(_ items: [Expense], to attachment: Attachment, trip: TripSnapshot) {
-    let moving = items.filter { $0.attachment != attachment }
+    let moving = items.map { item in trip.expenses.first { $0.id == item.id } ?? item }
+      .filter { $0.attachment != attachment || $0.dayIds != nil }
     guard !moving.isEmpty else { return }
     perform {
       let ids = Set(moving.map(\.id))
@@ -162,6 +163,7 @@ import TripSplitSync
         var moved = item
         moved.attachment = attachment
         moved.returnPairId = nil
+        moved.dayIds = nil
         if moved.status == .paid { moved.paidOn = trip.date(for: attachment) }
         try store.saveExpense(moved, tripID: trip.id)
       }
@@ -205,6 +207,12 @@ import TripSplitSync
     }
     let amount = try Money.parse(draft.amount, currency: draft.currency)
     guard amount > 0, !draft.splitWith.isEmpty else { throw MoneyError.invalid }
+    let selectedDays = trip.days.map(\.id).filter { draft.selectedDayIDs.contains($0) }
+    if draft.attachment.kind == .day {
+      guard !selectedDays.isEmpty, Set(selectedDays) == draft.selectedDayIDs else {
+        throw ServiceError(code: "invalid_days", message: "Choose days that are still in this trip.")
+      }
+    }
     var conversion = draft.conversion
     let saved = trip.expenses.first(where: { $0.id == draft.expenseID })
     let previous = saved.map(trip.wholeTicket)
@@ -257,7 +265,8 @@ import TripSplitSync
       currency: draft.currency, status: draft.status,
       paidOn: draft.status == .paid ? trip.date(for: draft.attachment) : nil, paidBy: draft.paidBy,
       splitWith: draft.splitWith.sorted(), conversion: conversion,
-      returnPairId: isReturn ? previous?.returnPairId : nil)
+      returnPairId: isReturn ? previous?.returnPairId : nil,
+      dayIds: selectedDays.count > 1 ? selectedDays : nil)
     if isReturn, let halves = trip.splitReturn(expense, back: partner) {
       for half in halves { try store.saveExpense(half, tripID: trip.id) }
     } else {

@@ -88,6 +88,23 @@ import TripSplitWatchModel
     return expense
   }
 
+  @Test func editingADayShareOnWatchPreservesTheFullAmountAndDates() throws {
+    let (model, sent) = try model()
+    var trip = try #require(model.timeline.now.first)
+    let dayIds = Array(trip.days.prefix(3).map(\.id))
+    let hotel = Expense(attachment: .init(kind: .day, id: dayIds[0]), title: "Hotel",
+      category: .stay, amountMinor: "10001", currency: trip.homeCurrency, status: .paid,
+      paidOn: trip.startsOn, paidBy: trip.currentTravellerId, splitWith: [trip.currentTravellerId],
+      dayIds: dayIds)
+    trip.expenses = [hotel]
+    let portion = try #require(trip.expenses(for: .init(kind: .day, id: dayIds[1])).first)
+    let log = LogExpense(model: model, trip: trip, editing: portion)
+    #expect(log.amountMinor == 10001)
+    _ = log.save()
+    let saved = try saved(sent())
+    #expect(saved.amountMinor == "10001" && saved.dayIds == dayIds)
+  }
+
   @Test func tripHappeningNowLogsAgainstToday() throws {
     let (model, _) = try model()
     let log = LogExpense(model: model)

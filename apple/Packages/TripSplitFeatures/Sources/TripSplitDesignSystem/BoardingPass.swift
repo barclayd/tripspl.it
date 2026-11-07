@@ -147,12 +147,9 @@ extension TripSnapshot {
 
   /// Expenses on a leg, plus travel expenses on a transfer's day.
   package func travelExpenses(on leg: TravelLeg) -> [Expense] {
-    expenses.filter { expense in
-      if expense.attachment == Attachment(kind: .leg, id: leg.id) { return true }
-      guard let dayId = leg.dayId else { return false }
-      return expense.attachment == Attachment(kind: .day, id: dayId)
-        && expense.category.group == .travel
-    }
+    let travel = expenses(for: .init(kind: .leg, id: leg.id))
+    guard let dayId = leg.dayId else { return travel }
+    return travel + expenses(for: .init(kind: .day, id: dayId)).filter { $0.category.group == .travel }
   }
 
   /// Home-currency spend on a leg, plus travel spend on a transfer's day.

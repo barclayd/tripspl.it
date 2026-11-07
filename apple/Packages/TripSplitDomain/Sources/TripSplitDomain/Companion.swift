@@ -136,6 +136,7 @@ extension Expense {
       && category == other.category && amountMinor == other.amountMinor
       && currency == other.currency && status == other.status && paidBy == other.paidBy
       && splitWith.sorted() == other.splitWith.sorted() && returnPairId == other.returnPairId
+      && dayIds == other.dayIds
   }
 }
 

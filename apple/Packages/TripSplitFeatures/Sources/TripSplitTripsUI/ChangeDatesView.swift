@@ -145,7 +145,9 @@ struct ChangeDatesView: View {
   /// What happens to expenses on days the trip no longer has.
   @ViewBuilder private func moved(_ trip: TripSnapshot, _ reschedule: TripReschedule) -> some View {
     let leaving = Set(reschedule.moves.map(\.fromDayId))
-    let count = trip.expenses.filter { $0.attachment.kind == .day && leaving.contains($0.attachment.id) }
+    let count = trip.expenses.filter {
+      $0.attachment.kind == .day && !Set($0.dayIds ?? [$0.attachment.id]).isDisjoint(with: leaving)
+    }
       .count
     if count > 0 {
       Label {

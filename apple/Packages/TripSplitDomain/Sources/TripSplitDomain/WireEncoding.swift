@@ -29,7 +29,7 @@ extension Conversion {
 extension Expense {
   enum CodingKeys: String, CodingKey {
     case id, revision, attachment, title, category, amountMinor, currency, status, paidOn, paidBy,
-      splitWith, conversion, returnPairId
+      splitWith, conversion, returnPairId, dayIds
   }
   public func encode(to encoder: Encoder) throws {
     var c = encoder.container(keyedBy: CodingKeys.self)
@@ -47,6 +47,7 @@ extension Expense {
     try c.encode(conversion, forKey: .conversion)
     // The API takes the pair id as optional, never null, so a plain expense keeps its old shape.
     try c.encodeIfPresent(returnPairId, forKey: .returnPairId)
+    try c.encodeIfPresent(dayIds, forKey: .dayIds)
   }
 }
 extension Repayment {
