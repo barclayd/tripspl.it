@@ -19,6 +19,7 @@ public struct ExpenseEditor: View {
   @State private var deleteConfirmation = false
   @State private var localError: String?
   @State private var keyboardVisible = false
+  @State private var amountFocused = true
   private enum Field: Hashable { case title, bank }
   @FocusState private var focusedField: Field?
 
@@ -71,6 +72,9 @@ public struct ExpenseEditor: View {
       }
     }
     .disabled(saving)
+    .onChange(of: focusedField) { _, field in
+      if field != nil { amountFocused = false }
+    }
     .onReceive(NotificationCenter.default.publisher(for: UIResponder.keyboardWillShowNotification)) { _ in
       keyboardVisible = true
     }
@@ -128,20 +132,31 @@ public struct ExpenseEditor: View {
         }
         .padding(.top, usesVerticalRail ? 20 : 2).padding(.bottom, 14)
         HStack(alignment: .bottom, spacing: 0) {
-          ScrollView { fields(trip, draft: draft) }.scrollDismissesKeyboard(.interactively)
-          if !keyboardVisible && focusedField == nil {
+          formScroll(trip, draft: draft)
+          if amountFocused && !keyboardVisible && focusedField == nil {
             keypad.frame(width: 200).padding(.bottom, 18).padding(.trailing, 22)
           }
         }
       } else {
-        ScrollView { fields(trip, draft: draft) }.scrollDismissesKeyboard(.interactively)
-        if !keyboardVisible && focusedField == nil {
+        formScroll(trip, draft: draft)
+        if amountFocused && !keyboardVisible && focusedField == nil {
           keypad.padding(.horizontal, 18).padding(.top, 10).padding(.bottom, 4)
         }
       }
     }
     .frame(maxWidth: .infinity, maxHeight: .infinity)
+    .background {
+      Theme.surface.onTapGesture { amountFocused = false }
+    }
     .onGeometryChange(for: Bool.self) { $0.size.width >= 480 } action: { wideSheet = $0 }
+  }
+
+  private func formScroll(_ trip: TripSnapshot, draft: ExpenseDraft) -> some View {
+    ScrollView { fields(trip, draft: draft) }
+      .scrollDismissesKeyboard(.interactively)
+      .onScrollPhaseChange { _, phase in
+        if phase == .interacting { amountFocused = false }
+      }
   }
 
   /// Cancel, the heading, then delete and a Save pill that lights up once there's an amount.
@@ -183,6 +198,8 @@ public struct ExpenseEditor: View {
     }
     .buttonStyle(.plain)
     .frame(height: 44)
+    .contentShape(Rectangle())
+    .simultaneousGesture(TapGesture().onEnded { amountFocused = false })
   }
 
   /// Leading and trailing space for the form; beside the keypad it's also the gap to the keys.
@@ -192,6 +209,13 @@ public struct ExpenseEditor: View {
     VStack(alignment: .leading, spacing: 12) {
       if !wideSheet { dayChips(trip, draft: draft, inset: inset).padding(.top, 2) }
       amountBlock(trip, draft: draft).padding(.top, 2).padding(.bottom, wideSheet ? 2 : -2)
+      details(trip, draft: draft)
+    }
+    .padding(.bottom, 8)
+  }
+
+  private func details(_ trip: TripSnapshot, draft: ExpenseDraft) -> some View {
+    VStack(alignment: .leading, spacing: 12) {
       if draft.attachment.kind == .day {
         Text(draft.selectedDayIDs.count > 1
           ? "Total shared across \(draft.selectedDayIDs.count) days"
@@ -225,7 +249,8 @@ public struct ExpenseEditor: View {
           .foregroundStyle(Theme.bad).padding(.horizontal, inset + 4)
       }
     }
-    .padding(.bottom, 8)
+    .contentShape(Rectangle())
+    .simultaneousGesture(TapGesture().onEnded { amountFocused = false })
   }
 
   // MARK: - When
@@ -259,6 +284,10 @@ public struct ExpenseEditor: View {
       }
       .scrollIndicators(.hidden)
       .contentMargins(.horizontal, inset, for: .scrollContent)
+      .simultaneousGesture(TapGesture().onEnded { amountFocused = false })
+      .onScrollPhaseChange { _, phase in
+        if phase == .interacting { amountFocused = false }
+      }
       .onAppear { proxy.scrollTo(draft.attachment.id, anchor: .center) }
     }
   }
@@ -319,10 +348,10 @@ public struct ExpenseEditor: View {
         .padding(.horizontal, inset)
         .accessibilityLabel("Amount, \(shown)")
         .contentShape(Rectangle())
-        .onTapGesture { focusedField = nil }
+        .onTapGesture { focusAmount() }
         .accessibilityAddTraits(.isButton)
-        .accessibilityHint("Dismisses the keyboard to edit the amount")
-        .accessibilityAction { focusedField = nil }
+        .accessibilityHint("Shows the number pad to edit the amount")
+        .accessibilityAction { focusAmount() }
       ScrollView(.horizontal) {
         HStack(spacing: 6) {
           ForEach(currencies(trip, attachment: draft.attachment, current: draft.currency), id: \.self) {
@@ -368,6 +397,10 @@ public struct ExpenseEditor: View {
       .scrollBounceBehavior(.basedOnSize, axes: .horizontal)
       .contentMargins(.horizontal, inset, for: .scrollContent)
       .defaultScrollAnchor(wideSheet ? .leading : .center, for: .alignment)
+      .simultaneousGesture(TapGesture().onEnded { amountFocused = false })
+      .onScrollPhaseChange { _, phase in
+        if phase == .interacting { amountFocused = false }
+      }
     }
     .frame(maxWidth: .infinity, alignment: wideSheet ? .leading : .center)
   }
@@ -437,6 +470,9 @@ public struct ExpenseEditor: View {
       }
       .scrollIndicators(.hidden)
       .contentMargins(.horizontal, inset, for: .scrollContent)
+      .onScrollPhaseChange { _, phase in
+        if phase == .interacting { amountFocused = false }
+      }
     }
   }
 
@@ -632,6 +668,9 @@ public struct ExpenseEditor: View {
       .padding(2)
     }
     .scrollIndicators(.hidden)
+    .onScrollPhaseChange { _, phase in
+      if phase == .interacting { amountFocused = false }
+    }
   }
 
   /// "€3.20 each · 2 people", a range when the split doesn't divide evenly.
@@ -647,6 +686,11 @@ public struct ExpenseEditor: View {
   }
 
   // MARK: - State
+
+  private func focusAmount() {
+    focusedField = nil
+    amountFocused = true
+  }
 
   private func bind<T>(_ keyPath: WritableKeyPath<ExpenseDraft, T>, fallback: T) -> Binding<T> {
     Binding(
