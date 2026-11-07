@@ -349,6 +349,86 @@
         "pattern": "^[A-Z]{3}$",
         "type": "string"
       },
+      "DayLocation": {
+        "additionalProperties": false,
+        "properties": {
+          "countryCode": {
+            "pattern": "^[A-Z]{2}$",
+            "type": "string"
+          },
+          "latitude": {
+            "maximum": 90,
+            "minimum": -90,
+            "type": "number"
+          },
+          "longitude": {
+            "maximum": 180,
+            "minimum": -180,
+            "type": "number"
+          },
+          "place": {
+            "maxLength": 120,
+            "minLength": 1,
+            "type": "string"
+          }
+        },
+        "required": [
+          "place",
+          "countryCode",
+          "latitude",
+          "longitude"
+        ],
+        "type": "object"
+      },
+      "DayLocationOperation": {
+        "additionalProperties": false,
+        "description": "Owner-only location override for entityId (a day ID). Null restores the itinerary location. Uses that day’s locationRevision, initially zero, independently of other days and trip settings.",
+        "properties": {
+          "entityId": {
+            "$ref": "#/components/schemas/ID"
+          },
+          "expectedRevision": {
+            "maximum": 9007199254740991,
+            "minimum": 0,
+            "type": "integer"
+          },
+          "id": {
+            "$ref": "#/components/schemas/ID"
+          },
+          "payload": {
+            "additionalProperties": false,
+            "properties": {
+              "location": {
+                "$ref": "#/components/schemas/NullableDayLocation"
+              }
+            },
+            "required": [
+              "location"
+            ],
+            "type": "object"
+          },
+          "syncEpoch": {
+            "maxLength": 128,
+            "minLength": 1,
+            "type": "string"
+          },
+          "type": {
+            "enum": [
+              "day.location"
+            ],
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "syncEpoch",
+          "entityId",
+          "type",
+          "expectedRevision",
+          "payload"
+        ],
+        "type": "object"
+      },
       "DayMove": {
         "additionalProperties": false,
         "properties": {
@@ -818,6 +898,40 @@
           "null"
         ]
       },
+      "NullableDayLocation": {
+        "additionalProperties": false,
+        "properties": {
+          "countryCode": {
+            "pattern": "^[A-Z]{2}$",
+            "type": "string"
+          },
+          "latitude": {
+            "maximum": 90,
+            "minimum": -90,
+            "type": "number"
+          },
+          "longitude": {
+            "maximum": 180,
+            "minimum": -180,
+            "type": "number"
+          },
+          "place": {
+            "maxLength": 120,
+            "minLength": 1,
+            "type": "string"
+          }
+        },
+        "required": [
+          "place",
+          "countryCode",
+          "latitude",
+          "longitude"
+        ],
+        "type": [
+          "object",
+          "null"
+        ]
+      },
       "NullableID": {
         "maxLength": 128,
         "minLength": 1,
@@ -959,6 +1073,7 @@
       "Operation": {
         "discriminator": {
           "mapping": {
+            "day.location": "#/components/schemas/DayLocationOperation",
             "expense.delete": "#/components/schemas/ExpenseDeleteOperation",
             "expense.upsert": "#/components/schemas/ExpenseUpsertOperation",
             "repayment.delete": "#/components/schemas/RepaymentDeleteOperation",
@@ -971,6 +1086,9 @@
           "propertyName": "type"
         },
         "oneOf": [
+          {
+            "$ref": "#/components/schemas/DayLocationOperation"
+          },
           {
             "$ref": "#/components/schemas/ExpenseUpsertOperation"
           },
@@ -1518,6 +1636,14 @@
           },
           "id": {
             "$ref": "#/components/schemas/ID"
+          },
+          "location": {
+            "$ref": "#/components/schemas/DayLocation"
+          },
+          "locationRevision": {
+            "maximum": 9007199254740991,
+            "minimum": 0,
+            "type": "integer"
           },
           "stopId": {
             "$ref": "#/components/schemas/ID"

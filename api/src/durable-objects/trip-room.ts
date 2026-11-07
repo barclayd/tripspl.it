@@ -141,7 +141,7 @@ export class TripRoom extends DurableObject<Env> {
     const moves = new Map(payload.moves.map(move => [move.fromDayId, move.toDayId]));
     assert(moves.size === payload.moves.length && moves.size === dropped.length && dropped.every(day => kept.has(moves.get(day.id) ?? '')), 'DAY_MOVES', 'Every day that leaves the trip must name a kept day for its expenses.');
     const nights = new Map(payload.stops.map(stop => [stop.id, stop.nights]));
-    Object.assign(trip, { startsOn: payload.startsOn, stops: trip.stops.map(stop => ({ ...stop, nights: nights.get(stop.id)! })), days: payload.days, legs: payload.legs });
+    Object.assign(trip, { startsOn: payload.startsOn, stops: trip.stops.map(stop => ({ ...stop, nights: nights.get(stop.id)! })), days: this.preserveDayLocations(trip, payload.days), legs: payload.legs });
     const moved: Expense[] = [];
     trip.expenses = trip.expenses.map(expense => {
       const target = expense.attachment.kind === 'day' ? moves.get(expense.attachment.id) : undefined;
@@ -164,6 +164,16 @@ export class TripRoom extends DurableObject<Env> {
   private meta(trip: TripSnapshot): Meta {
     const { travellers: _travellers, expenses: _expenses, repayments: _repayments, stops: _stops, days: _days, legs: _legs, currentTravellerId: _current, role: _role, ...meta } = trip;
     return meta;
+  }
+  private preserveDayLocations(trip: TripSnapshot, proposed: TripSnapshot['days']): TripSnapshot['days'] {
+    const existing = new Map(trip.days.map(day => [day.id, day]));
+    return proposed.map(day => {
+      const previous = existing.get(day.id);
+      // Location edits have their own revisions. Settings from old or stale clients cannot replace them.
+      const { location: _location, locationRevision: _revision, ...itinerary } = day;
+      return { ...itinerary, ...(previous?.location ? { location: previous.location } : {}),
+        ...(previous?.locationRevision !== undefined ? { locationRevision: previous.locationRevision } : {}) };
+    });
   }
   private queueProjection(tripId: string, revision: number, updatedAt: string, active?: number): void {
     for (const member of this.ctx.storage.sql.exec<Member>('SELECT * FROM members').toArray()) {
@@ -247,13 +257,13 @@ export class TripRoom extends DurableObject<Env> {
     const priorReceipt = this.ctx.storage.sql.exec<Receipt>('SELECT * FROM operation_receipts WHERE id=?', operation.id).toArray()[0];
     if (priorReceipt) {
       assert(priorReceipt.hash === hash && priorReceipt.user_id === userId, 'OPERATION_REUSED', 'This operation ID has already been used with different content.', 409);
-      this.member(userId, operation.type.startsWith('trip.') || operation.type.startsWith('traveller.'));
+      this.member(userId, operation.type.startsWith('trip.') || operation.type.startsWith('traveller.') || operation.type === 'day.location');
       return { id: operation.id, status: 'duplicate', revision: priorReceipt.revision, code: null, message: null };
     }
     let normalized: Expense | Repayment | null = null;
     if (operation.type === 'expense.upsert' || operation.type === 'repayment.upsert') normalized = await normalizeConversion(this.env, operation.payload, before.homeCurrency);
     return this.ctx.storage.transactionSync(() => {
-      this.member(userId, operation.type.startsWith('trip.') || operation.type.startsWith('traveller.'));
+      this.member(userId, operation.type.startsWith('trip.') || operation.type.startsWith('traveller.') || operation.type === 'day.location');
       const trip = this.snapshot(userId);
       assert(operation.syncEpoch === trip.syncEpoch, 'SYNC_EPOCH', 'Server recovery requires a fresh snapshot and review of pending edits.', 409);
       const receipt = this.ctx.storage.sql.exec<Receipt>('SELECT * FROM operation_receipts WHERE id=?', operation.id).toArray()[0];
@@ -292,10 +302,21 @@ export class TripRoom extends DurableObject<Env> {
             return stop.timeZone === undefined && previousTimeZone !== undefined
               ? { ...stop, timeZone: previousTimeZone } : stop;
           });
-          Object.assign(trip, operation.payload, { stops });
+          const days = this.preserveDayLocations(trip, operation.payload.days);
+          Object.assign(trip, operation.payload, { stops, days });
           validateTrip(trip); this.writeItinerary(trip);
         } else trip.archived = operation.payload.archived;
         if (operation.type !== 'trip.reschedule') after = this.meta(trip);
+      } else if (operation.type === 'day.location') {
+        const day = trip.days.find(day => day.id === operation.entityId);
+        assert(day, 'DAY_MISSING', 'This day is no longer in the trip.', 409);
+        assert(operation.expectedRevision === (day.locationRevision ?? 0), 'REVISION_CONFLICT', 'This day’s location changed on another device.', 409);
+        previous = { location: day.location ?? null };
+        if (operation.payload.location === null) delete day.location;
+        else day.location = operation.payload.location;
+        day.locationRevision = (day.locationRevision ?? 0) + 1;
+        after = { location: day.location ?? null };
+        this.writeItinerary(trip);
       } else {
         const [kind, action] = operation.type.split('.') as ['expense' | 'repayment' | 'traveller', 'upsert' | 'delete'];
         const row = this.ctx.storage.sql.exec<Entity>('SELECT * FROM entities WHERE kind=? AND id=?', kind, operation.entityId).toArray()[0];

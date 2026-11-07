@@ -57,7 +57,7 @@ let package = Package(
         .product(name: "TripSplitPersistence", package: "TripSplitInfrastructure"),
         .product(name: "TripSplitSync", package: "TripSplitInfrastructure"),
         .product(name: "TripSplitApplication", package: "TripSplitApplication"),
-        "TripSplitDesignSystem", "TripSplitSharedUI",
+        "TripSplitDesignSystem", "TripSplitSharedUI", "TripSplitAppleAdapters",
       ]),
     .target(
       name: "TripSplitConversionUI",

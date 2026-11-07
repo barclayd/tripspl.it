@@ -448,6 +448,11 @@ import TripSplitPersistence
     case .traveller:
       operation.expectedRevision =
         e.confirmed.travellers.first(where: { $0.id == operation.entityId })?.revision
+    case .dayLocation:
+      guard let day = e.confirmed.days.first(where: { $0.id == operation.entityId }) else {
+        throw ServiceError(code: "day_missing", message: "This day is no longer in the trip.")
+      }
+      operation.expectedRevision = day.locationRevision ?? 0
     default: operation.expectedRevision = e.confirmed.revision
     }
     e.pending.removeAll { $0.id == operationID }

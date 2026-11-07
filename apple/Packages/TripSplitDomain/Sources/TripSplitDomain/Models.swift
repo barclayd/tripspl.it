@@ -65,15 +65,21 @@ public struct TripDay: Codable, Identifiable, Hashable, Sendable {
   public init(
     id: String = UUID().uuidString,
     date: String,
-    stopId: String
+    stopId: String,
+    location: TripOrigin? = nil,
+    locationRevision: Int? = nil
   ) {
     self.id = id
     self.date = date
     self.stopId = stopId
+    self.location = location
+    self.locationRevision = locationRevision
   }
   public var id: String = UUID().uuidString
   public var date: String
   public var stopId: String
+  public var location: TripOrigin?
+  public var locationRevision: Int?
 }
 public struct TravelLeg: Codable, Identifiable, Hashable, Sendable {
   public init(
@@ -480,6 +486,7 @@ public struct Operation: Codable, Identifiable, Hashable, Sendable {
     case traveller(Traveller)
     case settings(TripSettings)
     case reschedule(TripReschedule)
+    case dayLocation(DayLocationUpdate)
     case archive(Bool)
     case none
     public init(from decoder: Decoder) throws {
@@ -496,6 +503,8 @@ public struct Operation: Codable, Identifiable, Hashable, Sendable {
         self = .traveller(v)
       } else if let v = try? c.decode(TripReschedule.self) {
         self = .reschedule(v)
+      } else if let v = try? c.decode(DayLocationUpdate.self) {
+        self = .dayLocation(v)
       } else {
         self = .archive(try c.decode([String: Bool].self)["archived"] ?? false)
       }
@@ -508,6 +517,7 @@ public struct Operation: Codable, Identifiable, Hashable, Sendable {
       case .traveller(let v): try c.encode(v)
       case .settings(let v): try c.encode(v)
       case .reschedule(let v): try c.encode(v)
+      case .dayLocation(let v): try c.encode(v)
       case .archive(let v): try c.encode(["archived": v])
       case .none: try c.encodeNil()
       }
@@ -545,7 +555,7 @@ public struct Operation: Codable, Identifiable, Hashable, Sendable {
       trip.budgetMinor = v.budgetMinor
       if let origin = v.origin { trip.origin = origin }
       trip.stops = v.stops
-      trip.days = v.days
+      trip.days = trip.preservingDayLocations(in: v.days)
       trip.legs = v.legs
     case .reschedule(let v):
       trip.startsOn = v.startsOn
@@ -553,7 +563,7 @@ public struct Operation: Codable, Identifiable, Hashable, Sendable {
       for index in trip.stops.indices {
         if let value = nights[trip.stops[index].id] { trip.stops[index].nights = value }
       }
-      trip.days = v.days
+      trip.days = trip.preservingDayLocations(in: v.days)
       trip.legs = v.legs
       // Expenses on a day that leaves go where the reschedule says, as the server moves them.
       let moves = Dictionary(
@@ -568,6 +578,10 @@ public struct Operation: Codable, Identifiable, Hashable, Sendable {
           trip.expenses[index].dayIds = ordered.count > 1 ? ordered : nil
           if let first = ordered.first { trip.expenses[index].attachment.id = first }
         }
+      }
+    case .dayLocation(let v):
+      if let index = trip.days.firstIndex(where: { $0.id == entityId }) {
+        trip.days[index].location = v.location
       }
     case .archive(let v): trip.archived = v
     case .none:

@@ -7,10 +7,12 @@ import TripSplitSharedUI
 
 /// One itinerary day or travel leg: where you are, what it cost, and every expense on it.
 public struct DayView: View {
-  public init(tripID: String, attachment: Attachment, showsPaneControls: Bool = false) {
+  public init(tripID: String, attachment: Attachment, showsPaneControls: Bool = false,
+              showsHeader: Bool = true) {
     self.tripID = tripID
     self.attachment = attachment
     self.showsPaneControls = showsPaneControls
+    self.showsHeader = showsHeader
   }
   @Environment(AppModel.self) private var model
   @Environment(\.horizontalSizeClass) private var sizeClass
@@ -18,10 +20,12 @@ public struct DayView: View {
   var attachment: Attachment
   /// Two panes show, so the day floats its own Close and Full screen buttons.
   var showsPaneControls = false
+  var showsHeader = true
+  @State private var editingLocation = false
   @State private var usesVerticalRail = false
   @State private var landscape = false
   /// Tent: compact width but wider than tall, so the summary and list sit side by side.
-  private var tent: Bool { sizeClass == .compact && landscape }
+  private var tent: Bool { showsHeader && sizeClass == .compact && landscape }
   /// Expenses already on screen, so one that arrives from the sheet can flash.
   @State private var seen: Set<String>?
   @State private var fresh: Set<String> = []
@@ -75,6 +79,11 @@ public struct DayView: View {
         if closed { noticeNew(items.map(\.id)) }
       }
       .readVerticalRail($usesVerticalRail)
+      .sheet(isPresented: $editingLocation) {
+        if let day = trip.days.first(where: { $0.id == attachment.id }) {
+          DayLocationSheet(trip: trip, day: day)
+        }
+      }
       // Navigation-led on the phone, so the tabs stay when the rail's squeezed; task-led standing in a tent.
       .taskRail(tent)
     }
@@ -137,7 +146,7 @@ public struct DayView: View {
             Image(systemName: symbol(leg)).font(.system(size: 22, weight: .semibold))
               .foregroundStyle(Theme.accentText)
           } else {
-            Text(trip.stop(for: attachment)?.flag ?? "🌍").font(.system(size: 28))
+            Text(dayLocation(trip)?.countryCode.flag ?? "🌍").font(.system(size: 28))
           }
         }
         .accessibilityHidden(true)
@@ -189,18 +198,23 @@ public struct DayView: View {
 
   /// "Porto, Portugal" for a day, or the leg's title.
   private func place(_ trip: TripSnapshot) -> String {
-    guard attachment.kind == .day, let stop = trip.stop(for: attachment) else {
+    guard let location = dayLocation(trip) else {
       return trip.title(for: attachment)
     }
-    let name = CountryMetadata.country(stop.countryCode)?.name ?? stop.place
-    return name == stop.place ? name : "\(stop.place), \(name)"
+    let name = CountryMetadata.country(location.countryCode)?.name ?? location.place
+    return name == location.place ? name : "\(location.place), \(name)"
+  }
+
+  private func dayLocation(_ trip: TripSnapshot) -> TripOrigin? {
+    guard attachment.kind == .day, let day = trip.days.first(where: { $0.id == attachment.id }) else { return nil }
+    return trip.location(for: day)
   }
 
   // MARK: - Summary
 
   private func summary(_ trip: TripSnapshot, items: [Expense]) -> some View {
     VStack(alignment: .leading, spacing: 22) {
-      header(trip)
+      if showsHeader { header(trip) }
       total(trip, items: items)
     }
   }
@@ -219,10 +233,18 @@ public struct DayView: View {
         .padding(.top, 14)
         .accessibilityAddTraits(.isHeader)
       if let subtitle = subtitle(trip) {
-        Text(subtitle)
-          .typeface(14.5, .semibold, relativeTo: .subheadline)
-          .foregroundStyle(Theme.secondary)
-          .padding(.top, 6)
+        Button { editingLocation = true } label: {
+          HStack(spacing: 6) {
+            Text(subtitle)
+            if attachment.kind == .day && trip.role == "owner" {
+              Image(systemName: "pencil").font(.system(size: 11, weight: .semibold))
+            }
+          }
+          .typeface(14.5, .semibold, relativeTo: .subheadline).foregroundStyle(Theme.secondary)
+        }
+        .buttonStyle(.plain).padding(.top, 6)
+        .disabled(attachment.kind != .day || trip.role != "owner")
+        .accessibilityHint("Change the location for this day")
       }
     }
   }
@@ -233,7 +255,7 @@ public struct DayView: View {
         Image(systemName: symbol(leg)).font(.system(size: 24, weight: .semibold))
           .foregroundStyle(Theme.accentText)
       } else {
-        Text(trip.stop(for: attachment)?.flag ?? "🌍").font(.system(size: 34))
+        Text(dayLocation(trip)?.countryCode.flag ?? "🌍").font(.system(size: 34))
       }
     }
     .frame(width: 58, height: 58)
@@ -284,8 +306,7 @@ public struct DayView: View {
       }
     }
     guard let stop = trip.stop(for: attachment) else { return nil }
-    let name = country(stop)
-    let place = name == stop.place ? name : "\(stop.place), \(name)"
+    let place = place(trip)
     return trip.rateLabel(for: stop.currency).map { "\(place) · \($0)" } ?? place
   }
 

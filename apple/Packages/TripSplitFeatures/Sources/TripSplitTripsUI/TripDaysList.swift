@@ -169,7 +169,8 @@ private struct DayRow: View {
                 .background(Theme.accent, in: Capsule())
             }
           }
-          Text(items.isEmpty ? "Nothing yet" : items.map(\.title).joined(separator: " · "))
+          Text(day.location.map { "\($0.countryCode.flag) \($0.place)" }
+            ?? (items.isEmpty ? "Nothing yet" : items.map(\.title).joined(separator: " · ")))
             .typeface(13, relativeTo: .footnote, maximum: 1.4)
             .foregroundStyle(items.isEmpty ? Theme.tertiary : Theme.secondary).lineLimit(1)
         }
