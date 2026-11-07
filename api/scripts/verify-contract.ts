@@ -40,6 +40,9 @@ export function verifyContract(document: Contract): void {
   accepts('Stop', stop);
   accepts('Stop', { ...stop, timeZone: 'Asia/Tokyo' });
   accepts('Stop', { ...stop, timeZone: null }, false);
+  const location = { place: 'Kamakura', countryCode: 'JP', latitude: 35.319, longitude: 139.55 };
+  accepts('TripDay', { ...trip.days[0], location, locationRevision: 1 });
+  accepts('TripDay', { ...trip.days[0], location: null }, false);
   // This assignment also checks exactOptionalPropertyTypes on the inferred
   // output. A timeZone?: string | undefined output would fail TypeScript.
   const omitted: { timeZone?: string } = stopSchema.parse({ ...stop, timeZone: undefined });
@@ -77,6 +80,8 @@ export function verifyContract(document: Contract): void {
     { ...common, type: 'trip.update', expectedRevision: 1, payload: settings },
     { ...common, type: 'trip.reschedule', expectedRevision: 1, payload: { startsOn: settings.startsOn, stops: settings.stops.map(({ id, nights }) => ({ id, nights })), days: settings.days, legs: settings.legs, moves: [] } },
     { ...common, type: 'trip.archive', expectedRevision: 1, payload: { archived: true } },
+    { ...common, type: 'day.location', expectedRevision: 0, payload: { location } },
+    { ...common, type: 'day.location', expectedRevision: 1, payload: { location: null } },
   ];
   for (const operation of operations) {
     operationSchema.parse(operation);
@@ -84,6 +89,7 @@ export function verifyContract(document: Contract): void {
   }
   accepts('Operation', { ...operations[0], type: 'expense.delete' }, false);
   accepts('Operation', { ...operations[1], expectedRevision: null }, false);
+  accepts('Operation', { ...common, type: 'day.location', expectedRevision: 0, payload: {} }, false);
   accepts('SyncRequest', { cursor: null, syncEpoch: null, operations });
   accepts('SyncRequest', { cursor: null, syncEpoch: null, operations: Array.from({ length: 51 }, () => operations[0]) }, false);
   accepts('SyncRequest', { cursor: null, operations }, false);

@@ -179,7 +179,7 @@ extension TripSnapshot {
       moves.map { ($0.fromDayId, $0.toDayId) }, uniquingKeysWith: { first, _ in first })
     return TripReschedule(
       startsOn: leaving, stops: moved.map { .init(id: $0.id, nights: $0.nights) },
-      days: layout.days,
+      days: preservingDayLocations(in: layout.days),
       legs: legs.map { layout.place($0) { destinations[$0] ?? $0 } },
       moves: moves)
   }

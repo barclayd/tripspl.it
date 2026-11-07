@@ -396,12 +396,10 @@ extension RootView {
       OpenDay { attachment in
         ZStack {
           Theme.background.ignoresSafeArea()
-          DayView(tripID: trip.id, attachment: attachment, showsPaneControls: twoPane)
-            .id(attachment)
-            .transition(.opacity)
+          DayBrowser(tripID: trip.id, attachment: attachment, portrait: !landscape,
+                     showsPaneControls: twoPane)
         }
         // Picking another day beside swaps this one in place rather than pushing again.
-        .animation(.smooth(duration: 0.25), value: attachment)
         .safeAreaPadding(.leading, sidebarShown ? bookFold?.width ?? 0 : 0)
         .pinsBar(twoPane)
         // Half of an iPad's two panes, the day floats its own Close instead.
