@@ -277,10 +277,14 @@ import TripSplitDomain
       returnPairId: isReturnTicket ? editing?.returnPairId : nil,
       dayIds: attachment == editing?.attachment ? editing?.dayIds : nil)
     if isReturnTicket, let halves = trip.splitReturn(expense, back: partner) {
-      for half in halves { model.send(.saveExpense(tripID: trip.id, expense: half)) }
+      for half in halves {
+        guard model.send(.saveExpense(tripID: trip.id, expense: half)) else { return nil }
+      }
     } else {
-      model.send(.saveExpense(tripID: trip.id, expense: expense))
-      if let partner { model.send(.deleteExpense(tripID: trip.id, expenseID: partner.id)) }
+      guard model.send(.saveExpense(tripID: trip.id, expense: expense)) else { return nil }
+      if let partner {
+        guard model.send(.deleteExpense(tripID: trip.id, expenseID: partner.id)) else { return nil }
+      }
     }
     return receipt(expense, in: trip, rateDate: estimate.date)
   }

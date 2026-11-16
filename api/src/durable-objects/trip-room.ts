@@ -42,6 +42,7 @@ export class TripRoom extends DurableObject<Env> {
         CREATE TABLE IF NOT EXISTS deleted_accounts(user_id TEXT PRIMARY KEY);
         CREATE TABLE IF NOT EXISTS invites(id TEXT PRIMARY KEY, traveller_id TEXT NOT NULL, token_hash TEXT NOT NULL, expires_at INTEGER NOT NULL, revoked INTEGER NOT NULL DEFAULT 0, accepted_by TEXT);
         CREATE TABLE IF NOT EXISTS operation_receipts(id TEXT PRIMARY KEY, hash TEXT NOT NULL, user_id TEXT NOT NULL, revision INTEGER NOT NULL);
+        CREATE TABLE IF NOT EXISTS write_versions(record_key TEXT PRIMARY KEY, edited_at INTEGER NOT NULL, operation_id TEXT NOT NULL);
         CREATE TABLE IF NOT EXISTS changes(revision INTEGER PRIMARY KEY, operation_id TEXT, actor TEXT NOT NULL, type TEXT NOT NULL, entity_id TEXT NOT NULL, before_json TEXT, after_json TEXT, created_at TEXT NOT NULL);
         CREATE TABLE IF NOT EXISTS nudges(sender TEXT NOT NULL, recipient TEXT NOT NULL, day TEXT NOT NULL, created_at INTEGER NOT NULL, PRIMARY KEY(sender,recipient,day));
         CREATE TABLE IF NOT EXISTS directory_outbox(user_id TEXT PRIMARY KEY, trip_id TEXT NOT NULL, revision INTEGER NOT NULL, active INTEGER NOT NULL, updated_at TEXT NOT NULL);
@@ -217,6 +218,7 @@ export class TripRoom extends DurableObject<Env> {
       }
       assert(!this.ctx.storage.sql.exec('SELECT * FROM deleted_accounts WHERE user_id=?', userId).toArray().length, 'ACCOUNT_DELETING', 'This account is no longer active.', 403);
       validateTrip(draft);
+      draft.writeClock = 0;
       draft.revision = 1; draft.updatedAt = new Date().toISOString();
       const epoch = crypto.randomUUID(); draft.syncEpoch = `${epoch}.${this.env.RECOVERY_EPOCH}`;
       this.ctx.storage.sql.exec('INSERT INTO trip(singleton,data,revision,epoch,recovery_epoch) VALUES(1,?,?,?,?)', JSON.stringify(this.meta(draft)), 1, epoch, Number(this.env.RECOVERY_EPOCH));
@@ -271,10 +273,34 @@ export class TripRoom extends DurableObject<Env> {
         assert(receipt.hash === hash && receipt.user_id === userId, 'OPERATION_REUSED', 'This operation ID has already been used with different content.', 409);
         return { id: operation.id, status: 'duplicate', revision: receipt.revision, code: null, message: null };
       }
+      const kind = operation.type === 'trip.archive' ? operation.type
+        : operation.type.startsWith('trip.') ? 'trip.settings' : operation.type.split('.')[0]!;
+      const key = `${kind}:${operation.entityId}`;
+      const version = this.ctx.storage.sql.exec<{ edited_at: number; operation_id: string }>(
+        'SELECT edited_at,operation_id FROM write_versions WHERE record_key=?', key).toArray()[0];
+      const conversionOnly = operation.type === 'expense.upsert' && operation.conversionOnly === true;
+      const superseded = (): OperationResult => {
+        // A losing write is acknowledged durably too: a lost reply must not resurrect it.
+        this.ctx.storage.sql.exec('INSERT INTO operation_receipts(id,hash,user_id,revision) VALUES(?,?,?,?)', operation.id, hash, userId, trip.revision);
+        return { id: operation.id, status: 'superseded', revision: trip.revision, code: null, message: null };
+      };
+      if (conversionOnly) {
+        const current = trip.expenses.find(expense => expense.id === operation.entityId);
+        if (!current || current.revision !== operation.expectedRevision || current.conversion !== null) return superseded();
+        assert(normalized?.conversion, 'FX_CONVERSION', 'A conversion fill needs an exchange rate.');
+        assert(normalized.amountMinor === current.amountMinor && normalized.currency === current.currency,
+          'FX_CONVERSION', 'A conversion fill must match the saved amount and currency.');
+        // Only the rate may change; the submitted record cannot replace other fields.
+        normalized = { ...current, conversion: normalized.conversion };
+      } else if (operation.editedAt !== undefined && version &&
+        (operation.editedAt < version.edited_at || (operation.editedAt === version.edited_at && operation.id <= version.operation_id))) {
+        return superseded();
+      }
+      const lastWriteWins = operation.editedAt !== undefined;
       assert(trip.homeCurrency === before.homeCurrency, 'REVISION_CONFLICT', 'Trip currency changed. Refresh before editing.', 409);
       let previous: unknown = null, after: unknown = null;
       if (operation.type === 'trip.update' || operation.type === 'trip.archive' || operation.type === 'trip.reschedule') {
-        assert(operation.entityId === trip.id && operation.expectedRevision === trip.revision, 'REVISION_CONFLICT', 'Trip settings changed on another device.', 409);
+        assert(operation.entityId === trip.id && (lastWriteWins || operation.expectedRevision === trip.revision), 'REVISION_CONFLICT', 'Trip settings changed on another device.', 409);
         previous = this.meta(trip);
         if (operation.type === 'trip.reschedule') {
           previous = this.dates(trip);
@@ -310,7 +336,7 @@ export class TripRoom extends DurableObject<Env> {
       } else if (operation.type === 'day.location') {
         const day = trip.days.find(day => day.id === operation.entityId);
         assert(day, 'DAY_MISSING', 'This day is no longer in the trip.', 409);
-        assert(operation.expectedRevision === (day.locationRevision ?? 0), 'REVISION_CONFLICT', 'This day’s location changed on another device.', 409);
+        assert(lastWriteWins || operation.expectedRevision === (day.locationRevision ?? 0), 'REVISION_CONFLICT', 'This day’s location changed on another device.', 409);
         previous = { location: day.location ?? null };
         if (operation.payload.location === null) delete day.location;
         else day.location = operation.payload.location;
@@ -320,10 +346,10 @@ export class TripRoom extends DurableObject<Env> {
       } else {
         const [kind, action] = operation.type.split('.') as ['expense' | 'repayment' | 'traveller', 'upsert' | 'delete'];
         const row = this.ctx.storage.sql.exec<Entity>('SELECT * FROM entities WHERE kind=? AND id=?', kind, operation.entityId).toArray()[0];
-        assert(operation.expectedRevision === null ? !row : row && !row.deleted && row.revision === operation.expectedRevision, row?.deleted ? 'ENTITY_DELETED' : 'REVISION_CONFLICT', 'This record has changed. Review the latest snapshot.', 409);
+        assert(lastWriteWins || conversionOnly || (operation.expectedRevision === null ? !row : row && !row.deleted && row.revision === operation.expectedRevision), row?.deleted ? 'ENTITY_DELETED' : 'REVISION_CONFLICT', 'This record has changed. Review the latest snapshot.', 409);
         previous = row?.data ? JSON.parse(row.data) : null;
         if (action === 'delete') {
-          this.ctx.storage.sql.exec('UPDATE entities SET revision=revision+1,data=NULL,deleted=1 WHERE kind=? AND id=?', kind, operation.entityId);
+          this.ctx.storage.sql.exec('INSERT INTO entities(kind,id,revision,data,deleted) VALUES(?,?,1,NULL,1) ON CONFLICT(kind,id) DO UPDATE SET revision=entities.revision+1,data=NULL,deleted=1', kind, operation.entityId);
         } else {
           assert(operation.payload && 'id' in operation.payload && operation.payload.id === operation.entityId, 'ENTITY_ID', 'Payload and operation entity IDs must match.');
           const value = { ...(normalized ?? operation.payload), revision: (row?.revision ?? 0) + 1 } as Traveller | Expense | Repayment;
@@ -339,6 +365,11 @@ export class TripRoom extends DurableObject<Env> {
           assert(trip.expenses.length + trip.repayments.length <= 10_000, 'RECORD_LIMIT', 'A trip can have at most 10,000 financial records.');
           this.writeEntity(kind, value); after = value;
         }
+      }
+      if (!conversionOnly) {
+        const editedAt = operation.editedAt ?? Math.max(Date.now(), (trip.writeClock ?? 0) + 1);
+        trip.writeClock = Math.max(trip.writeClock ?? 0, editedAt);
+        this.ctx.storage.sql.exec('INSERT INTO write_versions(record_key,edited_at,operation_id) VALUES(?,?,?) ON CONFLICT(record_key) DO UPDATE SET edited_at=excluded.edited_at,operation_id=excluded.operation_id', key, editedAt, operation.id);
       }
       const revision = this.bump(trip);
       this.audit(revision, userId, operation.type, operation.entityId, previous, after, operation.id);

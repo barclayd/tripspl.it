@@ -205,7 +205,7 @@ public struct TripPages {
 extension WatchModel {
   public func pages(for trip: TripSnapshot) -> TripPages {
     let unsynced = state.pending.compactMap { command -> String? in
-      guard case .saveExpense(let id, let expense) = command, id == trip.id else { return nil }
+      guard case .saveExpense(let id, let expense, _) = command, id == trip.id else { return nil }
       return expense.id
     }
     return TripPages(trip: trip, now: now, unsynced: Set(unsynced))

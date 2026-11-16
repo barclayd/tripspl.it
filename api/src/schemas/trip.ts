@@ -45,11 +45,11 @@ export const rescheduleSchema = z.strictObject({
   legs: z.array(legSchema).max(100),
   moves: z.array(z.strictObject({ fromDayId: id, toDayId: id }).openapi('DayMove')).max(400),
 }).openapi('TripReschedule', { description: 'New dates for a trip: its first day, the nights at each of its stops in order, and the days and legs that follow from them. Legs keep their IDs and only change date and day. Every day that leaves the trip names a kept day in `moves`, which its expenses move to, including ones added elsewhere since.' });
-export const snapshotSchema = settingsFields.extend({ id, revision, syncEpoch: z.string().min(1).max(128), ownerTravellerId: id, currentTravellerId: id, role: z.enum(['owner', 'member']), travellers: z.array(travellerSchema).min(1).max(40), expenses: z.array(expenseSchema).max(10000), repayments: z.array(repaymentSchema).max(10000), archived: z.boolean(), updatedAt: z.iso.datetime() }).openapi('TripSnapshot');
-const common = { id, syncEpoch: z.string().min(1).max(128), entityId: id };
+export const snapshotSchema = settingsFields.extend({ id, revision, syncEpoch: z.string().min(1).max(128), ownerTravellerId: id, currentTravellerId: id, role: z.enum(['owner', 'member']), travellers: z.array(travellerSchema).min(1).max(40), expenses: z.array(expenseSchema).max(10000), repayments: z.array(repaymentSchema).max(10000), archived: z.boolean(), updatedAt: z.iso.datetime(), writeClock: revision.optional() }).openapi('TripSnapshot');
+const common = { id, syncEpoch: z.string().min(1).max(128), entityId: id, editedAt: revision.optional() };
 export const operationSchema = z.discriminatedUnion('type', [
   z.strictObject({ ...common, type: z.literal('day.location'), expectedRevision: revision, payload: z.strictObject({ location: nullableDayLocation }) }).openapi('DayLocationOperation', { description: 'Owner-only location override for entityId (a day ID). Null restores the itinerary location. Uses that day’s locationRevision, initially zero, independently of other days and trip settings.' }),
-  z.strictObject({ ...common, type: z.literal('expense.upsert'), expectedRevision: revision.nullable(), payload: expenseSchema }).openapi('ExpenseUpsertOperation'),
+  z.strictObject({ ...common, type: z.literal('expense.upsert'), expectedRevision: revision.nullable(), conversionOnly: z.boolean().optional(), payload: expenseSchema }).openapi('ExpenseUpsertOperation'),
   z.strictObject({ ...common, type: z.literal('expense.delete'), expectedRevision: revision, payload: z.null() }).openapi('ExpenseDeleteOperation'),
   z.strictObject({ ...common, type: z.literal('repayment.upsert'), expectedRevision: revision.nullable(), payload: repaymentSchema }).openapi('RepaymentUpsertOperation'),
   z.strictObject({ ...common, type: z.literal('repayment.delete'), expectedRevision: revision, payload: z.null() }).openapi('RepaymentDeleteOperation'),

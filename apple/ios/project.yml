@@ -75,6 +75,8 @@ targets:
       path: Config/Info.plist
       properties:
         CFBundleDisplayName: TripSplit
+        BGTaskSchedulerPermittedIdentifiers: [it.tripspl.TripSplit.sync]
+        UIBackgroundModes: [processing]
         CFBundleShortVersionString: $(MARKETING_VERSION)
         CFBundleVersion: $(CURRENT_PROJECT_VERSION)
         UILaunchScreen: {}

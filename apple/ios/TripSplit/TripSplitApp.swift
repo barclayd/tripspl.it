@@ -1,3 +1,4 @@
+import BackgroundTasks
 import SwiftUI
 import TripSplitApplication
 import TripSplitCompanionHost
@@ -31,6 +32,7 @@ import UIKit
       let store = try LocalStore()
       let sync = SyncCoordinator(store: store, api: APIClient(baseURL: APIConfiguration.baseURL))
       let model = AppModel(store: store, sync: sync)
+      PhoneSync.model = model
       _connectivity = State(
         initialValue: Connectivity { [weak model] in
           Task {
@@ -94,6 +96,17 @@ final class PhoneAppDelegate: NSObject, UIApplicationDelegate {
   var push: PushNotifications?
 
   func application(
+    _ application: UIApplication,
+    didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]? = nil
+  ) -> Bool {
+    BGTaskScheduler.shared.register(forTaskWithIdentifier: PhoneSync.identifier, using: .main) {
+      task in
+      MainActor.assumeIsolated { PhoneSync.run(task) }
+    }
+    return true
+  }
+
+  func application(
     _ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken token: Data
   ) {
     #if DEBUG
@@ -102,5 +115,37 @@ final class PhoneAppDelegate: NSObject, UIApplicationDelegate {
       let environment = PushDevice.Environment.production
     #endif
     Task { await push?.registered(token, environment: environment) }
+  }
+}
+
+/// iOS chooses the execution time; reconnect and foreground sync remain immediate.
+@MainActor enum PhoneSync {
+  static let identifier = "it.tripspl.TripSplit.sync"
+  static weak var model: AppModel?
+
+  static func schedule() {
+    guard model?.sync.session != nil else { return }
+    let request = BGProcessingTaskRequest(identifier: identifier)
+    request.requiresNetworkConnectivity = true
+    try? BGTaskScheduler.shared.submit(request)
+  }
+
+  static func run(_ backgroundTask: BGTask) {
+    schedule()
+    let work = Task { @MainActor in
+      guard let model else {
+        backgroundTask.setTaskCompleted(success: false)
+        return
+      }
+      while model.sync.isSyncing && !Task.isCancelled {
+        try? await Task.sleep(for: .milliseconds(100))
+      }
+      await model.sync.syncAll()
+      if !Task.isCancelled { await model.refreshReferenceRates() }
+      if !Task.isCancelled { await model.sync.syncAll() }
+      model.sync.stopRetries()
+      backgroundTask.setTaskCompleted(success: !Task.isCancelled && model.sync.message == nil)
+    }
+    backgroundTask.expirationHandler = { work.cancel() }
   }
 }

@@ -423,7 +423,13 @@ public struct ExpenseEditor: View {
     if let conversion = draft.conversion, !conversion.isBankCharge {
       return "Rate from \(conversion.rateDate). " + reminder
     }
-    return "Automatically converted using the latest available rate. " + reminder
+    if model.cachedConversionRate(
+      from: draft.currency, to: trip.homeCurrency,
+      date: CivilDate.today(timeZone: "UTC")) == nil
+    {
+      return "Saves now. Converts when online."
+    }
+    return "Uses the last available rate. " + reminder
   }
 
   /// The day's own currency and home, plus whatever the expense already uses.

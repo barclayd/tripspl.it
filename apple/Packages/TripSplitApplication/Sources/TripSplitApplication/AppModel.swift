@@ -118,7 +118,11 @@ import TripSplitSync
       if toast == text { toast = nil }
     }
   }
-  public func changed() { Task { await sync.syncAll() } }
+  public func changed() {
+    Task {
+      await sync.syncAll(); await repairExpenseConversions()
+    }
+  }
   public func perform(_ action: () throws -> Void) {
     do { try action() } catch { self.error = error.localizedDescription }
   }
@@ -246,13 +250,10 @@ import TripSplitSync
             amount, from: draft.currency, to: trip.homeCurrency, rate: estimate.rate))
         conversion = estimate
       } else {
-        conversion = try await expenseConversion(amount, from: draft.currency, to: trip.homeCurrency)
+        conversion = try cachedExpenseConversion(
+          amount, from: draft.currency, to: trip.homeCurrency)
       }
-      guard conversion != nil else {
-        throw ServiceError(
-          code: "fx_unavailable",
-          message: "Connect to get an exchange rate, or enter the amount charged in \(trip.homeCurrency). Your draft is saved.")
-      }
+
     } else {
       conversion = nil
     }

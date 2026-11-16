@@ -9,6 +9,8 @@ import TripSplitPersistence
   public let api: APIClient
   public internal(set) var session: Session? {
     didSet {
+      retryTask?.cancel()
+      retryTask = nil
       sessionVersion &+= 1
       refreshTask?.cancel()
       refreshTask = nil
@@ -26,6 +28,9 @@ import TripSplitPersistence
   public private(set) var challenge: AuthChallenge?
   public private(set) var deletionRequested = false
   public private(set) var lastSynced: Date?
+  @ObservationIgnored private var syncAgain = false
+  @ObservationIgnored private var retryTask: Task<Void, Never>?
+  @ObservationIgnored private var retryDelay = 2
   @ObservationIgnored private var sessionVersion = 0
   @ObservationIgnored private var refreshTask: Task<String, Error>?
   @ObservationIgnored private var refreshTaskID: UUID?
@@ -215,14 +220,40 @@ import TripSplitPersistence
     return formatter.date(from: value) ?? ISO8601DateFormatter().date(from: value)
   }
   public func syncAll() async {
-    guard configured, session != nil, !isSyncing else { return }
+    guard configured, session != nil, !Task.isCancelled else { return }
+    if isSyncing { syncAgain = true; return }
+    retryTask?.cancel()
+    retryTask = nil
     isSyncing = true
-    defer { isSyncing = false }
+    repeat {
+      syncAgain = false
+      await syncPass()
+    } while syncAgain && !Task.isCancelled && session != nil
+    isSyncing = false
+    if message == nil {
+      retryDelay = 2
+    } else if !needsAppleSignIn && !Task.isCancelled {
+      let delay = retryDelay
+      retryDelay = min(retryDelay * 2, 60)
+      retryTask = Task { [weak self] in
+        do { try await Task.sleep(for: .seconds(delay)) } catch { return }
+        guard let self else { return }
+        self.retryTask = nil
+        await self.syncAll()
+      }
+    }
+  }
+  public func stopRetries() {
+    retryTask?.cancel()
+    retryTask = nil
+  }
+  private func syncPass() async {
     do {
       let token = try await accessToken()
       guard let account = session?.user.id else { return }
       var failures: [String] = []
       for id in Array(store.envelopes.keys) {
+        try Task.checkCancellation()
         guard let e = store.envelopes[id], e.accountID == nil || e.accountID == account else {
           continue
         }
@@ -290,6 +321,10 @@ import TripSplitPersistence
       }
       return
     }
+    if envelope.deletionPending == true, envelope.confirmed.syncEpoch != "local" {
+      try await syncDeletion(id, token: token, account: account)
+      return
+    }
     if envelope.confirmed.syncEpoch == "local" {
       if envelope.createSnapshot == nil {
         if let index = envelope.confirmed.travellers.firstIndex(where: {
@@ -347,6 +382,11 @@ import TripSplitPersistence
       envelope = current
     }
     repeat {
+      try Task.checkCancellation()
+      if envelope.deletionPending == true {
+        try await syncDeletion(id, token: token, account: account)
+        return
+      }
       var operations: [TripSplitDomain.Operation] = []
       for index in envelope.pending.indices
       where envelope.pending[index].problem == nil && operations.count < 50 {
@@ -375,8 +415,17 @@ import TripSplitPersistence
       if response.syncEpoch != current.confirmed.syncEpoch { current.restoreReview = true }
       if let snapshot = response.snapshot { current.confirmed = snapshot }
       for result in response.results {
-        if result.status == "accepted" || result.status == "duplicate" {
-          current.pending.removeAll { $0.id == result.id }
+        if ["accepted", "duplicate", "superseded"].contains(result.status) {
+          let acknowledged = operations.first { $0.id == result.id }
+          current.pending.removeAll { item in
+            if item.id == result.id { return true }
+            // A newer acknowledged user edit also resolves an older rejected draft of that record.
+            guard let acknowledged, let clock = acknowledged.editedAt,
+              acknowledged.conversionOnly != true, item.problem != nil,
+              item.operation.recordKey == acknowledged.recordKey
+            else { return false }
+            return (item.operation.editedAt ?? 0) < clock
+          }
         } else if let index = current.pending.firstIndex(where: { $0.id == result.id }) {
           current.pending[index].problem =
             result.message
@@ -384,6 +433,10 @@ import TripSplitPersistence
         }
       }
       try store.persist(current)
+      if current.deletionPending == true {
+        try await syncDeletion(id, token: token, account: account)
+        return
+      }
       if current.restoreReview || operations.isEmpty { break }
       let responded = Set(response.results.map(\.id))
       guard operations.allSatisfy({ responded.contains($0.id) }) else {
@@ -397,22 +450,28 @@ import TripSplitPersistence
   static func revoked(_ error: ServiceError) -> Bool {
     error.code == "TRIP_NOT_FOUND" || error.code == "MEMBERSHIP"
   }
-  /// Deletes a trip for every traveller on it, then forgets it here. A trip the server has
-  /// never seen only leaves this device.
+  /// Hide immediately, retaining a durable tombstone until the server acknowledges deletion.
   public func deleteTrip(_ id: String) async throws {
-    guard let envelope = store.envelopes[id] else { return }
-    let local = envelope.confirmed.syncEpoch == "local"
-    if !local || envelope.createSnapshot != nil {
-      let token = try await accessToken()
-      struct Done: Decodable, Sendable { var ok: Bool }
-      do {
-        let _: Done = try await api.request("/trips/\(id)", method: "DELETE", token: token)
-      } catch let error as ServiceError
-        where error.code == "TRIP_NOT_FOUND" || local && error.code == "MEMBERSHIP"
-      {
-        // Already gone, or a create that never reached the server.
-      }
+    guard var envelope = store.envelopes[id] else { return }
+    guard envelope.confirmed.role == "owner" else {
+      throw ServiceError(code: "owner_required", message: "Only the trip owner can delete it.")
     }
+    if envelope.confirmed.syncEpoch == "local", envelope.createSnapshot == nil {
+      try store.removeTrip(id)
+    } else {
+      envelope.deletionPending = true
+      try store.persist(envelope)
+      Task { await syncAll() }
+    }
+  }
+  private func syncDeletion(_ id: String, token: String, account: String) async throws {
+    struct Done: Decodable, Sendable { var ok: Bool }
+    do {
+      let _: Done = try await api.request("/trips/\(id)", method: "DELETE", token: token)
+    } catch let error as ServiceError where Self.revoked(error) {
+      // Already deleted, or membership has ended. Neither may reappear locally.
+    }
+    guard session?.user.id == account, !endingSession else { return }
     try store.removeTrip(id)
   }
   public func approveRestore(_ id: String) throws {
@@ -437,6 +496,10 @@ import TripSplitPersistence
     else { return }
     var operation = old.operation
     operation.id = UUID().uuidString
+    operation.editedAt = e.nextWriteClock()
+    operation.conversionOnly = nil
+    if e.recordEdits == nil { e.recordEdits = [:] }
+    e.recordEdits?[operation.recordKey] = .init(clock: operation.editedAt!, id: operation.id)
     operation.syncEpoch = e.confirmed.syncEpoch
     switch operation.payload {
     case .expense:

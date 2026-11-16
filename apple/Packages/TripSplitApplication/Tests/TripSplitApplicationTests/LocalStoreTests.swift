@@ -151,7 +151,11 @@ import TripSplitNetworking
     draft.amount = "9.00"
     try store.write(draft, key: "expense:" + trip.id)
     expense.amountMinor = "900"
-    #expect(throws: ServiceError.self) { try store.saveExpense(expense, tripID: trip.id) }
+    try store.saveExpense(expense, tripID: trip.id)
+    #expect(store.envelopes[trip.id]?.pending.count == 2)
+    #expect(store.trip(trip.id)?.expenses.first?.amountMinor == "900")
+    let newer = try #require(store.envelopes[trip.id]?.pending.last?.operation.editedAt)
+    #expect(newer > (envelope.pending[0].operation.editedAt ?? 0))
     #expect(store.envelopes[trip.id]?.pending[0].operation == envelope.pending[0].operation)
     #expect(store.read(ExpenseDraft.self, key: "expense:" + trip.id)?.amount == "9.00")
   }
@@ -174,4 +178,54 @@ import TripSplitNetworking
     #expect(SyncCoordinator.expiry("2026-10-31T23:59:59.123Z") != nil)
     #expect(SyncCoordinator.expiry("2026-10-31T23:59:59Z") != nil)
   }
+  @Test func editClockSurvivesRestartAndKeepsSettingsSeparateFromArchive() throws {
+    let url = FileManager.default.temporaryDirectory.appending(path: UUID().uuidString + ".store")
+    let store = try LocalStore(installationID: "clock", storeURL: url)
+    var trip = try trip()
+    trip.writeClock = Int64(Date().timeIntervalSince1970 * 1_000) + 60_000
+    try store.create(trip)
+    try store.enqueue(
+      .init(
+        syncEpoch: trip.syncEpoch, type: "trip.archive", entityId: trip.id,
+        expectedRevision: 0, payload: .archive(true)), tripID: trip.id)
+    let archivedAt = try #require(store.envelopes[trip.id]?.pending.first?.operation.editedAt)
+    let reopened = try LocalStore(installationID: "clock", storeURL: url)
+    var settings = TripSettings(trip)
+    settings.name = "Edited offline"
+    try reopened.enqueue(
+      .init(
+        syncEpoch: trip.syncEpoch, type: "trip.update", entityId: trip.id,
+        expectedRevision: 0, payload: .settings(settings)), tripID: trip.id)
+    #expect(reopened.envelopes[trip.id]?.pending.count == 2)
+    #expect(reopened.trip(trip.id)?.archived == true)
+    #expect(reopened.trip(trip.id)?.name == "Edited offline")
+    #expect(
+      try #require(reopened.envelopes[trip.id]?.pending.last?.operation.editedAt) > archivedAt)
+  }
+
+  @Test func editingAndDeletingAfterAnUncertainInsertKeepsTheOriginalBytes() throws {
+    let store = try LocalStore(inMemory: true, installationID: "queue")
+    let trip = try trip()
+    try store.create(trip)
+    var spend = expense(trip)
+    try store.saveExpense(spend, tripID: trip.id)
+    var envelope = try #require(store.envelopes[trip.id])
+    envelope.pending[0].attempted = true
+    let original = try JSONEncoder().encode(envelope.pending[0].operation)
+    try store.persist(envelope)
+    spend.amountMinor = "900"
+    try store.saveExpense(spend, tripID: trip.id)
+    spend.amountMinor = "1000"
+    try store.saveExpense(spend, tripID: trip.id)
+    try store.deleteExpense(spend, tripID: trip.id)
+    let pending = try #require(store.envelopes[trip.id]?.pending)
+    #expect(pending.count == 2)
+    #expect(
+      try JSONDecoder().decode(TripSplitDomain.Operation.self, from: original)
+        == pending[0].operation)
+    #expect(pending[1].operation.type == "expense.delete")
+    #expect(pending[1].operation.expectedRevision == 0)
+    #expect(store.trip(trip.id)?.expenses.isEmpty == true)
+  }
+
 }
