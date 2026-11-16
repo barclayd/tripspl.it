@@ -46,6 +46,42 @@ public struct TripEnvelope: Codable, Sendable {
   public var recordEdits: [String: EditVersion]?
   public var lastWriteClock: Int64?
   public var deletionPending: Bool?
+  public var pendingRateChanges: [RateChange]?
+
+  /// Store notices with the snapshot/acknowledgements, including syncs while the app is asleep.
+  public mutating func recordRateChanges(from previous: TripSnapshot, ignoring: Set<String> = []) {
+    guard !restoreReview, previous.syncEpoch == confirmed.syncEpoch,
+      previous.homeCurrency == confirmed.homeCurrency
+    else {
+      pendingRateChanges = nil
+      return
+    }
+    let current = optimistic
+    pendingRateChanges?.removeAll { notice in
+      !current.expenses.contains {
+        $0.id == notice.expenseID && $0.conversion?.estimateDate == nil
+          && Money.minor($0.conversion?.homeAmountMinor) == notice.afterMinor
+      }
+    }
+    let before = Dictionary(
+      previous.expenses.map { ($0.id, $0) }, uniquingKeysWith: { first, _ in first })
+    for expense in current.expenses where !ignoring.contains(expense.id) {
+      guard let old = before[expense.id], old.amountMinor == expense.amountMinor,
+        old.currency == expense.currency, old.conversion?.estimateDate != nil,
+        let conversion = expense.conversion, conversion.estimateDate == nil,
+        conversion.kind == "reference", conversion.quoteId != nil,
+        let oldAmount = Money.minor(old.conversion?.homeAmountMinor),
+        let newAmount = Money.minor(conversion.homeAmountMinor), abs(newAmount - oldAmount) > 1
+      else { continue }
+      if pendingRateChanges == nil { pendingRateChanges = [] }
+      pendingRateChanges?.removeAll { $0.expenseID == expense.id }
+      pendingRateChanges?.append(
+        .init(
+          id: "\(current.id):\(expense.id):\(expense.revision)", expenseID: expense.id,
+          title: expense.title, currency: current.homeCurrency,
+          beforeMinor: oldAmount, afterMinor: newAmount))
+    }
+  }
   public mutating func nextWriteClock(now: Date = Date()) -> Int64 {
     let next = max(
       Int64(now.timeIntervalSince1970 * 1_000),
@@ -57,6 +93,18 @@ public struct TripEnvelope: Codable, Sendable {
     var trip = confirmed
     for item in pending { item.operation.apply(to: &trip) }
     return trip
+  }
+}
+
+public struct RateChange: Codable, Identifiable, Sendable, Equatable {
+  public var id: String
+  public var expenseID: String
+  public var title: String
+  public var currency: String
+  public var beforeMinor: Int64
+  public var afterMinor: Int64
+  public var message: String {
+    "Rate updated · \(title.prefix(24))\n\(Money.format(beforeMinor, currency)) → \(Money.format(afterMinor, currency))"
   }
 }
 public struct ExpenseDraft: Codable, Identifiable, Sendable {

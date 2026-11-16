@@ -318,7 +318,8 @@ import TripSplitDomain
     return (
       Conversion(
         homeAmountMinor: String(home), rate: reference.rate, rateDate: reference.date,
-        source: "Estimated on Apple Watch", kind: "reference"),
+        source: "Estimated on Apple Watch", kind: "reference",
+        estimateDate: CivilDate.string(model.now, timeZone: "UTC")),
       reference.date
     )
   }

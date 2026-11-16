@@ -230,7 +230,12 @@ import TripSplitPersistence
       await syncPass()
     } while syncAgain && !Task.isCancelled && session != nil
     isSyncing = false
-    if message == nil {
+    let waitingForRate = store.envelopes.values.contains { envelope in
+      envelope.accountID == session?.user.id && envelope.deletionPending != true
+        && !envelope.restoreReview
+        && envelope.confirmed.expenses.contains { $0.conversion?.estimateDate != nil }
+    }
+    if message == nil && !waitingForRate {
       retryDelay = 2
     } else if !needsAppleSignIn && !Task.isCancelled {
       let delay = retryDelay
@@ -295,7 +300,9 @@ import TripSplitPersistence
           if trip.revision > cached.confirmed.revision
             || trip.syncEpoch != cached.confirmed.syncEpoch
           {
+            let previous = cached.optimistic
             cached.confirmed = trip
+            cached.recordRateChanges(from: previous)
             try store.persist(cached)
           }
         }
@@ -412,6 +419,7 @@ import TripSplitPersistence
       guard session?.user.id == account, !endingSession, var current = store.envelopes[id] else {
         return
       }
+      let previous = current.optimistic
       if response.syncEpoch != current.confirmed.syncEpoch { current.restoreReview = true }
       if let snapshot = response.snapshot { current.confirmed = snapshot }
       for result in response.results {
@@ -432,6 +440,10 @@ import TripSplitPersistence
             ?? "This change conflicts with the latest trip. Review it before continuing."
         }
       }
+      let ignored = Set(
+        response.results.filter { !["accepted", "duplicate"].contains($0.status) }
+          .compactMap { result in operations.first { $0.id == result.id }?.entityId })
+      current.recordRateChanges(from: previous, ignoring: ignored)
       try store.persist(current)
       if current.deletionPending == true {
         try await syncDeletion(id, token: token, account: account)

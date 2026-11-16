@@ -57,6 +57,10 @@ Sync requests process operations in order with an atomic transaction per operati
 
 The home-currency equivalent of same-currency expenses is `amountMinor`, regardless of conversion. For foreign-currency reference conversions, validate/recompute against an immutable server FX quote; never trust a submitted converted total. Manual overrides are explicit and retain their provenance. If a quote cannot be obtained, retain the original expense with `conversion:null`, and mark total/balances incomplete rather than inventing a rate. Repayments may initially be entered in the reporting currency. A home-currency change with financial records requires explicit revaluation; v1 rejects it rather than silently changing balances.
 
+New automatic expense estimates carry optional `conversion.estimateDate`, the UTC day of the original local save. The original amount and cached rate remain usable while the server resolves the immutable reference for that day, even if upload happens later. A known quote is applied during normalisation; otherwise the expense commits with a durable, revision-bound reconciliation job. The alarm retries provider failures with backoff, and finalises the conversion only if the expense still has that revision. Manual rates, actual bank charges and legacy unmarked conversions are never opted in implicitly. Finalisation removes `estimateDate`, records `expense.fx`, updates the directory/live hints and leaves the user's last-write-wins clock unchanged. Later edits and deletes supersede the job.
+
+Clients compare the rounded home-currency amounts and quietly persist changes of at most one minor unit. Larger changes queue a local notice with the snapshot acknowledgement, shown once when foregrounded: `Rate updated · Coffee` / `£4.50 → £4.62`. Retries do not repeat notices. A final reference stays fixed until explicitly edited.
+
 Invitation URLs must use a configured origin/application link; otherwise return `url:null` and expose a local share/code flow. Do not invent a deployed URL. Never accept membership solely from a client-supplied traveller name or ID.
 
 ## Numeric and collection bounds

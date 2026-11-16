@@ -114,6 +114,17 @@ export async function normalizeConversion<T extends Expense | Repayment>(env: En
     assert(row && row.from_currency === record.currency && row.to_currency === homeCurrency, 'FX_QUOTE', 'Reference quote does not match the currency pair.');
     normalized = { kind: 'reference', quoteId: row.id, rate: row.rate, rateDate: row.rate_date, source: row.source, homeAmountMinor: convert(record.amountMinor, record.currency, homeCurrency, row.rate) };
   }
+  if (conversion.estimateDate !== undefined) {
+    assert(conversion.estimateDate <= new Date().toISOString().slice(0, 10), 'FX_DATE', 'Future rates are not available.');
+    // Reconcile immediately when this day's immutable reference is already known. External
+    // provider I/O belongs to the room's durable retry job, never in the user's save path.
+    const current = await env.DB.prepare('SELECT * FROM fx_quotes WHERE from_currency=? AND to_currency=? AND requested_date=?')
+      .bind(record.currency, homeCurrency, conversion.estimateDate).first<QuoteRow>();
+    if (current) return { ...record, conversion: { kind: 'reference', quoteId: current.id,
+      rate: current.rate, rateDate: current.rate_date, source: current.source,
+      homeAmountMinor: convert(record.amountMinor, record.currency, homeCurrency, current.rate) } };
+    normalized.estimateDate = conversion.estimateDate;
+  }
   return { ...record, conversion: normalized };
 }
 

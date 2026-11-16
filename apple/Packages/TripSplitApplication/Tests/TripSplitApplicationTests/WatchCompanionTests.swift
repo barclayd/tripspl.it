@@ -364,7 +364,11 @@ import TripSplitDomain
     let latest = CompanionCommand.saveExpense(tripID: trip.id, expense: spend, editedAt: clock)
     await host.receive(latest)
     #expect(store.envelopes[trip.id]?.pending.last?.operation.editedAt == clock)
-    #expect(store.envelopes[trip.id]?.pending.last?.operation.id == latest.id)
+    let operationID = try #require(store.envelopes[trip.id]?.pending.last?.operation.id)
+    #expect(operationID.count == 64)
+    #expect(operationID.range(of: "^[A-Za-z0-9_-]+$", options: .regularExpression) != nil)
+    await host.receive(latest)
+    #expect(store.envelopes[trip.id]?.pending.last?.operation.id == operationID)
     await host.receive(oldWatch)
     #expect(store.trip(trip.id)?.expenses.first?.title == "Changed later on watch")
   }

@@ -114,6 +114,16 @@
       "Conversion": {
         "additionalProperties": false,
         "properties": {
+          "estimateDate": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/CivilDate"
+              },
+              {
+                "description": "Automatic estimate awaiting server reconciliation for the UTC day it was saved. Omit for a settled reference rate, entered rate or actual bank charge."
+              }
+            ]
+          },
           "homeAmountMinor": {
             "$ref": "#/components/schemas/MinorUnits"
           },
@@ -878,6 +888,16 @@
       "NullableConversion": {
         "additionalProperties": false,
         "properties": {
+          "estimateDate": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/CivilDate"
+              },
+              {
+                "description": "Automatic estimate awaiting server reconciliation for the UTC day it was saved. Omit for a settled reference rate, entered rate or actual bank charge."
+              }
+            ]
+          },
           "homeAmountMinor": {
             "$ref": "#/components/schemas/MinorUnits"
           },

@@ -239,4 +239,103 @@ private final class ExpenseFXProtocol: URLProtocol, @unchecked Sendable {
     #expect(saved?.fetchedAt == fetchedAt)
     #expect(model.conversionRates.isEmpty)
   }
+  func rateChangeEnvelope(before: Int64 = 450, after: Int64 = 462, currency: String = "GBP") throws
+    -> TripEnvelope
+  {
+    let (_, original) = try setUp()
+    var trip = original
+    trip.homeCurrency = currency
+    let cached = Conversion(
+      homeAmountMinor: String(before), rate: "0.02", rateDate: "2026-10-01",
+      source: "Cached reference", kind: "manual", estimateDate: "2026-10-05")
+    trip.expenses = [
+      .init(
+        id: "coffee", revision: 1,
+        attachment: .init(kind: .day, id: trip.days[0].id), title: "Coffee", category: .coffee,
+        amountMinor: "4500", currency: "TWD", status: .planned,
+        paidBy: trip.ownerTravellerId, splitWith: [trip.ownerTravellerId], conversion: cached)
+    ]
+    var updated = trip
+    updated.expenses[0].revision = 2
+    updated.expenses[0].conversion = .init(
+      homeAmountMinor: String(after), rate: "0.021", rateDate: "2026-10-05",
+      source: "Reference", kind: "reference", quoteId: "current")
+    var envelope = TripEnvelope(confirmed: updated, installationID: "fx-test")
+    envelope.recordRateChanges(from: trip)
+    return envelope
+  }
+
+  @Test func significantRateChangesNotifyInBothDirectionsButOneMinorUnitDoesNot() throws {
+    for currency in ["GBP", "USD", "JPY", "BHD"] {
+      for difference in [Int64(-1), 0, 1] {
+        #expect(
+          try rateChangeEnvelope(after: 450 + difference, currency: currency).pendingRateChanges?
+            .isEmpty != false)
+      }
+      for difference in [Int64(-2), 2] {
+        let envelope = try rateChangeEnvelope(after: 450 + difference, currency: currency)
+        #expect(envelope.pendingRateChanges?.count == 1)
+        #expect(envelope.pendingRateChanges?.first?.beforeMinor == 450)
+        #expect(envelope.pendingRateChanges?.first?.afterMinor == 450 + difference)
+      }
+    }
+  }
+
+  @Test func rateChangeNoticeSurvivesRestartAndWaitsForTheSaveToast() throws {
+    let url = FileManager.default.temporaryDirectory.appending(path: UUID().uuidString + ".store")
+    let store = try LocalStore(installationID: "fx-test", storeURL: url)
+    var envelope = try rateChangeEnvelope()
+    // Polling the same final snapshot cannot append another notice.
+    envelope.recordRateChanges(from: envelope.confirmed)
+    #expect(envelope.pendingRateChanges?.count == 1)
+    try store.persist(envelope)
+    let restarted = try LocalStore(installationID: "fx-test", storeURL: url)
+    let model = AppModel(store: restarted)
+    model.toast = "Expense saved"
+    model.presentRateChanges()
+    #expect(model.toast == "Expense saved")
+    #expect(model.pendingRateChangeID != nil)
+    model.toast = nil
+    model.presentRateChanges()
+    #expect(model.toast == "Rate updated · Coffee\n£4.50 → £4.62")
+    #expect(model.pendingRateChangeID == nil)
+    let again = try LocalStore(installationID: "fx-test", storeURL: url)
+    #expect(again.envelopes[envelope.confirmed.id]?.pendingRateChanges == nil)
+  }
+
+  @Test func userEditsAndAccountChangesCannotShowStaleRateNotices() throws {
+    let store = try LocalStore(inMemory: true, installationID: "fx-test")
+    var envelope = try rateChangeEnvelope()
+    envelope.accountID = "owner"
+    try store.persist(envelope)
+    let model = AppModel(store: store)
+    model.presentRateChanges()
+    #expect(model.toast == nil)
+    store.activeAccountID = "owner"
+    var expense = envelope.confirmed.expenses[0]
+    expense.amountMinor = "5000"
+    try store.saveExpense(expense, tripID: envelope.confirmed.id)
+    model.presentRateChanges()
+    #expect(model.toast == nil)
+    #expect(model.pendingRateChangeID == nil)
+  }
+
+  @Test func manualAmountsAndUnrelatedEditsDoNotProduceRateNotices() throws {
+    var envelope = try rateChangeEnvelope()
+    var old = envelope.confirmed
+    old.expenses[0].conversion?.homeAmountMinor = "450"
+    // An already settled reference rate has no automatic-estimate marker.
+    envelope.pendingRateChanges = nil
+    envelope.recordRateChanges(from: old)
+    #expect(envelope.pendingRateChanges == nil)
+    old.expenses[0].conversion?.estimateDate = "2026-10-05"
+    envelope.confirmed.expenses[0].conversion?.kind = "manual"
+    envelope.recordRateChanges(from: old)
+    #expect(envelope.pendingRateChanges == nil)
+    envelope.confirmed.expenses[0].conversion?.kind = "reference"
+    envelope.confirmed.expenses[0].amountMinor = "6000"
+    envelope.recordRateChanges(from: old)
+    #expect(envelope.pendingRateChanges == nil)
+  }
+
 }

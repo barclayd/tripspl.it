@@ -2,11 +2,11 @@ import { DurableObject } from 'cloudflare:workers';
 import type { Expense, Invitation, LiveHint, NudgeResult, Operation, OperationResult, Repayment, Success, SyncRequest, SyncResponse, Traveller, TripReschedule, TripSnapshot } from '../types/contract';
 import { AppError, assert, errorResponse } from '../utils/errors';
 import { canonical, randomToken, sha256 } from '../utils/crypto';
-import { normalizeConversion, normalizeRecords } from '../services/fx';
+import { getFX, normalizeConversion, normalizeRecords } from '../services/fx';
 import { parse, snapshotSchema, syncSchema, validateTrip } from '../schemas/trip';
 import { authenticate, registerTarget, type Principal } from '../services/auth';
 import type { PushMessage } from '../services/push';
-import { display, ledger } from '../utils/money';
+import { convert, display, ledger } from '../utils/money';
 
 type Meta = Omit<TripSnapshot, 'travellers' | 'stops' | 'days' | 'legs' | 'expenses' | 'repayments' | 'currentTravellerId' | 'role'>;
 type TripRow = { data: string; revision: number; epoch: string; recovery_epoch: number; purged: number };
@@ -42,6 +42,7 @@ export class TripRoom extends DurableObject<Env> {
         CREATE TABLE IF NOT EXISTS deleted_accounts(user_id TEXT PRIMARY KEY);
         CREATE TABLE IF NOT EXISTS invites(id TEXT PRIMARY KEY, traveller_id TEXT NOT NULL, token_hash TEXT NOT NULL, expires_at INTEGER NOT NULL, revoked INTEGER NOT NULL DEFAULT 0, accepted_by TEXT);
         CREATE TABLE IF NOT EXISTS operation_receipts(id TEXT PRIMARY KEY, hash TEXT NOT NULL, user_id TEXT NOT NULL, revision INTEGER NOT NULL);
+        CREATE TABLE IF NOT EXISTS fx_reconciliations(entity_id TEXT PRIMARY KEY, revision INTEGER NOT NULL, attempts INTEGER NOT NULL DEFAULT 0, next_attempt INTEGER NOT NULL DEFAULT 0);
         CREATE TABLE IF NOT EXISTS write_versions(record_key TEXT PRIMARY KEY, edited_at INTEGER NOT NULL, operation_id TEXT NOT NULL);
         CREATE TABLE IF NOT EXISTS changes(revision INTEGER PRIMARY KEY, operation_id TEXT, actor TEXT NOT NULL, type TEXT NOT NULL, entity_id TEXT NOT NULL, before_json TEXT, after_json TEXT, created_at TEXT NOT NULL);
         CREATE TABLE IF NOT EXISTS nudges(sender TEXT NOT NULL, recipient TEXT NOT NULL, day TEXT NOT NULL, created_at INTEGER NOT NULL, PRIMARY KEY(sender,recipient,day));
@@ -118,6 +119,11 @@ export class TripRoom extends DurableObject<Env> {
   async read(userId: string): Promise<TripSnapshot> { this.member(userId); await this.armMaintenance(); this.ensureRecovery(); this.scheduleMaintenance(); return this.snapshot(userId); }
   private writeEntity(kind: string, value: Traveller | Expense | Repayment): void {
     this.ctx.storage.sql.exec('INSERT INTO entities(kind,id,revision,data,deleted) VALUES(?,?,?,?,0) ON CONFLICT(kind,id) DO UPDATE SET revision=excluded.revision,data=excluded.data,deleted=0', kind, value.id, value.revision, JSON.stringify(value));
+    if (kind === 'expense') {
+      if ((value as Expense).conversion?.estimateDate) {
+        this.ctx.storage.sql.exec('INSERT INTO fx_reconciliations(entity_id,revision) VALUES(?,?) ON CONFLICT(entity_id) DO UPDATE SET revision=excluded.revision,attempts=0,next_attempt=0', value.id, value.revision);
+      } else this.ctx.storage.sql.exec('DELETE FROM fx_reconciliations WHERE entity_id=?', value.id);
+    }
   }
   private writeItinerary(trip: Pick<TripSnapshot, 'stops' | 'days' | 'legs'>): void {
     for (const table of TABLES) {
@@ -349,6 +355,7 @@ export class TripRoom extends DurableObject<Env> {
         assert(lastWriteWins || conversionOnly || (operation.expectedRevision === null ? !row : row && !row.deleted && row.revision === operation.expectedRevision), row?.deleted ? 'ENTITY_DELETED' : 'REVISION_CONFLICT', 'This record has changed. Review the latest snapshot.', 409);
         previous = row?.data ? JSON.parse(row.data) : null;
         if (action === 'delete') {
+          if (kind === 'expense') this.ctx.storage.sql.exec('DELETE FROM fx_reconciliations WHERE entity_id=?', operation.entityId);
           this.ctx.storage.sql.exec('INSERT INTO entities(kind,id,revision,data,deleted) VALUES(?,?,1,NULL,1) ON CONFLICT(kind,id) DO UPDATE SET revision=entities.revision+1,data=NULL,deleted=1', kind, operation.entityId);
         } else {
           assert(operation.payload && 'id' in operation.payload && operation.payload.id === operation.entityId, 'ENTITY_ID', 'Payload and operation entity IDs must match.');
@@ -498,6 +505,7 @@ export class TripRoom extends DurableObject<Env> {
     meta.startsOn = '1970-01-01'; meta.timeZone = 'UTC'; meta.homeCurrency = 'GBP'; meta.ownerTravellerId = 'deleted';
     this.ctx.storage.sql.exec('UPDATE entities SET data=NULL,deleted=1,revision=revision+1');
     for (const table of TABLES) this.ctx.storage.sql.exec(`DELETE FROM ${table}`);
+    this.ctx.storage.sql.exec('DELETE FROM fx_reconciliations');
     this.ctx.storage.sql.exec('DELETE FROM changes'); this.ctx.storage.sql.exec('DELETE FROM invites'); this.ctx.storage.sql.exec('DELETE FROM nudges');
   }
   async removeAccount(userId: string): Promise<void> {
@@ -581,16 +589,63 @@ export class TripRoom extends DurableObject<Env> {
       this.ctx.storage.sql.exec('DELETE FROM directory_outbox WHERE user_id=? AND revision=?', row.user_id, row.revision);
     }
   }
+  /** Resolve automatic estimates independently of upload success and without making a user edit. */
+  private async reconcileFX(): Promise<boolean> {
+    const jobs = this.ctx.storage.sql.exec<{ entity_id: string; revision: number; attempts: number }>(
+      'SELECT entity_id,revision,attempts FROM fx_reconciliations WHERE next_attempt<=? ORDER BY next_attempt,entity_id LIMIT 5', Date.now()).toArray();
+    let changed = false;
+    for (const job of jobs) {
+      const row = this.ctx.storage.sql.exec<Entity>("SELECT * FROM entities WHERE kind='expense' AND id=?", job.entity_id).toArray()[0];
+      const expense = row?.data && !row.deleted ? JSON.parse(row.data) as Expense : null;
+      if (!expense?.conversion?.estimateDate || row?.revision !== job.revision) {
+        this.ctx.storage.sql.exec('DELETE FROM fx_reconciliations WHERE entity_id=? AND revision=?', job.entity_id, job.revision);
+        continue;
+      }
+      try {
+        const meta = JSON.parse(this.tripRow().data) as Meta;
+        const quote = await getFX(this.env, expense.currency, meta.homeCurrency, expense.conversion.estimateDate);
+        const conversion = { kind: 'reference' as const, quoteId: quote.id, rate: quote.rate,
+          rateDate: quote.rateDate, source: quote.source,
+          homeAmountMinor: convert(expense.amountMinor, expense.currency, meta.homeCurrency, quote.rate) };
+        this.ctx.storage.transactionSync(() => {
+          // An edit, manual charge, deletion or reschedule may have happened during the fetch.
+          const current = this.ctx.storage.sql.exec<Entity>("SELECT * FROM entities WHERE kind='expense' AND id=? AND deleted=0", expense.id).toArray()[0];
+          const member = this.ctx.storage.sql.exec<Member>('SELECT * FROM members WHERE active=1 LIMIT 1').toArray()[0];
+          if (!current || current.revision !== job.revision || !member) return;
+          const trip = this.snapshot(member.user_id);
+          if (trip.homeCurrency !== meta.homeCurrency) return;
+          const updated = { ...expense, conversion, revision: expense.revision + 1 };
+          this.writeEntity('expense', updated);
+          const revision = this.bump(trip);
+          this.audit(revision, 'server', 'expense.fx', expense.id, expense, updated);
+          // write_versions deliberately stays unchanged: this is derived data, not a later edit.
+          changed = true;
+        });
+      } catch {
+        const delay = Math.min(3_600_000, 60_000 * 2 ** Math.min(job.attempts, 6));
+        this.ctx.storage.sql.exec('UPDATE fx_reconciliations SET attempts=attempts+1,next_attempt=? WHERE entity_id=? AND revision=?', Date.now() + delay, job.entity_id, job.revision);
+      }
+    }
+    return changed;
+  }
   override async alarm(): Promise<void> {
     if (this.env.MAINTENANCE_MODE === '1') {
       for (const socket of this.ctx.getWebSockets()) socket.close(1012, 'Server maintenance');
       await this.ctx.storage.setAlarm(Date.now() + 60_000); return;
     }
-    try { await this.flushDirectory(); await this.notify(false); }
+    try {
+      const changed = await this.reconcileFX();
+      await this.flushDirectory();
+      await this.notify(changed);
+    }
     catch { console.error(JSON.stringify({ event: 'trip_maintenance_retry' })); }
     finally {
       const pending = this.ctx.storage.sql.exec('SELECT 1 FROM directory_outbox LIMIT 1').toArray().length > 0;
-      if (pending || this.ctx.getWebSockets().length) await this.ctx.storage.setAlarm(Date.now() + 60_000);
+      const fx = this.ctx.storage.sql.exec<{ due: number | null }>('SELECT min(next_attempt) AS due FROM fx_reconciliations').one().due;
+      const next = Math.min(pending || this.ctx.getWebSockets().length ? Date.now() + 60_000 : Infinity,
+        fx === null ? Infinity : Math.max(Date.now() + 1000, fx));
+      const scheduled = await this.ctx.storage.getAlarm();
+      if (Number.isFinite(next) && (scheduled === null || scheduled > next)) await this.ctx.storage.setAlarm(next);
     }
   }
   // WebSocket upgrades use fetch: WebSocket handles cannot cross an RPC serialization boundary.

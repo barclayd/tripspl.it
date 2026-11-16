@@ -570,6 +570,37 @@ final class SyncServer: @unchecked Sendable {
     #expect(store.trip(trip.id)?.expenses.isEmpty == true)
   }
 
+  @Test func syncQueuesReconciliationNoticeOnceAndKeepsItThroughLaterPolls() async throws {
+    let (store, sync, server, trip) = try fixture(count: 0)
+    store.activeAccountID = "account"
+    var expense = Expense(
+      id: "cached-coffee", revision: 1, attachment: .init(kind: .day, id: trip.days[0].id),
+      title: "Coffee", category: .coffee, amountMinor: "4500", currency: "TWD", status: .paid,
+      paidBy: trip.ownerTravellerId, splitWith: [trip.ownerTravellerId],
+      conversion: .init(
+        homeAmountMinor: "450", rate: "0.1", rateDate: "2026-10-01",
+        source: "Cached reference", kind: "manual", estimateDate: "2026-10-05"))
+    try store.saveExpense(expense, tripID: trip.id)
+    try await sync.syncTrip(trip.id, token: "test", account: "account")
+    #expect(store.envelopes[trip.id]?.pendingRateChanges?.isEmpty != false)
+    #expect(store.envelopes[trip.id]?.confirmed.expenses.first?.conversion?.estimateDate == "2026-10-05")
+    expense.revision = 2
+    expense.conversion = .init(
+      homeAmountMinor: "462", rate: "0.1026667", rateDate: "2026-10-05",
+      source: "Reference", kind: "reference", quoteId: "final")
+    server.snapshot.expenses = [expense]
+    server.snapshot.revision += 1
+    try await sync.syncTrip(trip.id, token: "test", account: "account")
+    #expect(store.envelopes[trip.id]?.pendingRateChanges?.count == 1)
+    try await sync.syncTrip(trip.id, token: "test", account: "account")
+    #expect(store.envelopes[trip.id]?.pendingRateChanges?.count == 1)
+    #expect(store.envelopes[trip.id]?.pending.isEmpty == true)
+    server.snapshot.expenses = []
+    server.snapshot.revision += 1
+    try await sync.syncTrip(trip.id, token: "test", account: "account")
+    #expect(store.envelopes[trip.id]?.pendingRateChanges?.isEmpty == true)
+  }
+
   @Test func deletionStaysHiddenAcrossOfflineFailureAndRestart() async throws {
     let (store, sync, server, trip) = try fixture()
     StubURLProtocol.handler = { _ in throw URLError(.notConnectedToInternet) }

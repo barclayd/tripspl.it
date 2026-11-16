@@ -15,7 +15,7 @@ extension TravelLeg {
   }
 }
 extension Conversion {
-  enum CodingKeys: String, CodingKey { case homeAmountMinor, rate, rateDate, source, kind, quoteId }
+  enum CodingKeys: String, CodingKey { case homeAmountMinor, rate, rateDate, source, kind, quoteId, estimateDate }
   public func encode(to encoder: Encoder) throws {
     var c = encoder.container(keyedBy: CodingKeys.self)
     try c.encode(homeAmountMinor, forKey: .homeAmountMinor)
@@ -24,6 +24,7 @@ extension Conversion {
     try c.encode(source, forKey: .source)
     try c.encode(kind, forKey: .kind)
     try c.encode(quoteId, forKey: .quoteId)
+    try c.encodeIfPresent(estimateDate, forKey: .estimateDate)
   }
 }
 extension Expense {

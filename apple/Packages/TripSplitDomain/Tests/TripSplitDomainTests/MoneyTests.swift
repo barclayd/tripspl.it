@@ -72,6 +72,20 @@ struct MoneyTests {
   func fixtures() throws -> Fixtures {
     try JSONDecoder().decode(Fixtures.self, from: apiData("contracts/fixtures/money-examples.json"))
   }
+  @Test func automaticEstimateDateSurvivesStorageAndTransport() throws {
+    var conversion = Conversion(homeAmountMinor: "450", rate: "0.1", rateDate: "2026-10-01",
+      source: "Cached reference", kind: "manual", estimateDate: "2026-10-05")
+    let data = try JSONEncoder().encode(conversion)
+    #expect(try JSONDecoder().decode(Conversion.self, from: data) == conversion)
+    let encoded = try #require(JSONSerialization.jsonObject(with: data) as? [String: Any])
+    #expect(encoded["estimateDate"] as? String == "2026-10-05")
+    conversion.estimateDate = nil
+    let legacy = try JSONEncoder().encode(conversion)
+    #expect(try JSONDecoder().decode(Conversion.self, from: legacy).estimateDate == nil)
+    let manual = try #require(JSONSerialization.jsonObject(with: legacy) as? [String: Any])
+    #expect(manual["estimateDate"] == nil)
+  }
+
   @Test func requiredNullableKeysAreExplicitJSONNull() throws {
     var draft = OnboardingDraft()
     draft.stops = [Destination.all[0].stop()]

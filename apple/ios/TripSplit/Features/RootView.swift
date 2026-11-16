@@ -185,9 +185,11 @@ struct RootView: View {
       #endif
       await model.sync.syncAll()
       await model.refreshReferenceRates()
+      if scenePhase == .active { model.presentRateChanges() }
     }
     .onChange(of: scenePhase) { _, phase in
       if phase == .active {
+        model.presentRateChanges()
         model.sync.startLive(tripID: model.selectedTripID)
         Task {
           await model.sync.syncAll()
@@ -201,6 +203,12 @@ struct RootView: View {
         model.persistDraft()
         model.saveOnboarding()
       }
+    }
+    .onChange(of: model.pendingRateChangeID) { _, _ in
+      if scenePhase == .active { model.presentRateChanges() }
+    }
+    .onChange(of: model.toast) { _, toast in
+      if scenePhase == .active && toast == nil { model.presentRateChanges() }
     }
     .onChange(of: model.selectedTripID) { _, id in model.sync.startLive(tripID: id) }
     .onChange(of: model.sync.requiresSignIn) { _, required in

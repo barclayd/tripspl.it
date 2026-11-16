@@ -6,12 +6,12 @@ The audit found and fixed these gaps:
 
 | Area | Behaviour |
 | --- | --- |
-| Foreign-currency expense save | Uses the last cached rate immediately. With no rate, saves the original amount and marks totals incomplete; fills the conversion when rates return. Bank charges and existing conversions stay fixed. |
+| Foreign-currency expense save | Uses the last cached rate immediately. With no rate, saves the original amount and marks totals incomplete; fills the conversion when rates return. Automatic cached estimates reconcile to the reference for the original UTC save day. Manual rates, bank charges and final reference conversions stay fixed. |
 | Home and first-trip conversion cards | Use the same persistent rate cache as the full converter, including quotes fetched before any expense existed. |
 | Editing after a failed upload | Preserves the attempted operation exactly and queues later edits separately. Only unsent edits of the same record coalesce. Archive and settings changes no longer replace each other. |
 | Trip deletion | Hides the trip immediately and retains a persisted deletion marker until acknowledgement. An uncertain trip creation replays its frozen request before deletion, preventing a late create from resurrecting it. |
 | Reconnect during sync | Requests another pass instead of dropping the trigger. Transient failures retry with backoff from 2 to 60 seconds, keeping original operation identities. |
-| Watch-to-phone changes | Persist before transport, retain watch save times on delivery, and use cached FX on the phone. Acknowledgements identify the particular edit so an earlier reply cannot clear a newer queued change. |
+| Watch-to-phone changes | Persist before transport, retain watch save times on delivery, and preserve the watch’s cached FX and save day through phone delivery. Acknowledgements identify the particular edit so an earlier reply cannot clear a newer queued change. |
 | Competing edits | The latest saved edit wins for each record, independent of upload order. Persistent clocks and operation IDs break ties; delayed deletes/inserts and lost acknowledgements converge. Derived FX fills never count as a newer user edit. |
 
 Foreground, connectivity changes and live-trip hints trigger sync. On backgrounding, the phone submits a network-required `BGProcessingTaskRequest`; it cancels work on expiration and leaves unacknowledged operations queued. **iOS chooses when background work runs** and may defer it, especially after force-quitting or disabling Background App Refresh. Reopening the app starts sync immediately. This is not a promise to wake a suspended app at the exact moment signal returns.
@@ -22,7 +22,7 @@ Sign-in, joining or issuing invitations, removing linked memberships, account de
 
 # Release and device checks
 
-Deploy the compatible API before distributing the new client: its strict schemas must accept `editedAt` and `conversionOnly`, and clients must understand terminal `superseded`. The SQLite version table is created additively; legacy requests and stored snapshots continue to work.
+Deploy the compatible API before distributing the new client: its strict schemas must accept `editedAt`, `conversionOnly` and conversion `estimateDate`, and clients must understand terminal `superseded`. The SQLite version and FX retry tables are created additively; legacy requests and stored snapshots continue to work.
 
 On a signed phone build, use a synthetic trip and check:
 
@@ -31,3 +31,5 @@ On a signed phone build, use a synthetic trip and check:
 3. Edit the same expense on two devices at different times, uploading the older edit last. Both devices end with the later edit. Edit different expenses and confirm both survive.
 4. Edit on the watch while the phone is unreachable, then make a newer phone edit. Reconnect: the watch edit keeps its original save time and does not replace the newer one.
 5. Reconnect with the app open to verify immediate sync and FX fill. Separately exercise OS-scheduled background processing on device; simulator builds and unit tests do not establish when iOS will grant runtime.
+
+6. Save a foreign expense using an old cached rate, reconnect, and confirm its original currency amount stays unchanged while the home amount reconciles. Differences above one minor unit show a short before/after toast; differences of one unit or less stay silent. Background updates wait until the app is open. Repeat with a manual bank charge and confirm it remains fixed.

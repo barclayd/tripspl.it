@@ -1,3 +1,4 @@
+import CryptoKit
 import Foundation
 import Observation
 import TripSplitApplication
@@ -56,22 +57,22 @@ import TripSplitDomain
     do {
       switch command {
       case .saveExpense(let tripID, var expense, _):
-        // The watch estimates offline from cached rates, which carry no quote, and the API only
-        // accepts reference conversions backed by one, so the phone quotes them again.
+        // Forward an unquoted watch estimate in the API's manual format, retaining its
+        // estimate marker so the server can reconcile it after upload.
         if expense.conversion == nil || expense.conversion?.isUnquotedReference == true {
           expense.conversion = estimate(expense, in: trip)
         }
         try model.store.saveExpense(
           expense, tripID: tripID, editedAt: command.editedAt,
-          operationID: command.editedAt == nil ? UUID().uuidString : command.id)
+          operationID: command.editedAt == nil ? UUID().uuidString : command.syncOperationID)
       case .deleteExpense(let tripID, let id, _):
         guard let expense = trip.expenses.first(where: { $0.id == id }) else { break }
         try model.store.deleteExpense(
           expense, tripID: tripID, editedAt: command.editedAt,
-          operationID: command.editedAt == nil ? UUID().uuidString : command.id)
+          operationID: command.editedAt == nil ? UUID().uuidString : command.syncOperationID)
       case .saveRepayment(let tripID, let repayment, _):
         var operation = TripSplitDomain.Operation(
-          id: command.editedAt == nil ? UUID().uuidString : command.id,
+          id: command.editedAt == nil ? UUID().uuidString : command.syncOperationID,
           syncEpoch: trip.syncEpoch, type: "repayment.upsert", entityId: repayment.id,
           expectedRevision: trip.repayments.first { $0.id == repayment.id }?.revision,
           payload: .repayment(repayment))
@@ -131,13 +132,13 @@ import TripSplitDomain
     guard expense.currency != trip.homeCurrency,
       let amount = Money.minor(expense.amountMinor)
     else { return nil }
-    if let conversion = try? model.cachedExpenseConversion(
-      amount, from: expense.currency, to: trip.homeCurrency)
-    { return conversion }
-    // Keep the watch's cached estimate offline in the API's unquoted format.
+    // Preserve the watch's original estimate and save day so reconciliation can explain its change.
     guard var estimate = expense.conversion,
       let home = try? Money.convert(amount, from: expense.currency, to: trip.homeCurrency, rate: estimate.rate)
-    else { return nil }
+    else {
+      return try? model.cachedExpenseConversion(
+        amount, from: expense.currency, to: trip.homeCurrency)
+    }
     estimate.homeAmountMinor = String(home)
     estimate.kind = "manual"
     estimate.quoteId = nil
@@ -182,4 +183,11 @@ import TripSplitDomain
 extension Conversion {
   /// A reference rate the watch worked out from its cached table, with no quote behind it.
   fileprivate var isUnquotedReference: Bool { kind == "reference" && quoteId == nil }
+}
+
+extension CompanionCommand {
+  /// Stable across watch retries, and valid under the API's identifier alphabet/length limits.
+  var syncOperationID: String {
+    SHA256.hash(data: Data(id.utf8)).map { String(format: "%02x", $0) }.joined()
+  }
 }
