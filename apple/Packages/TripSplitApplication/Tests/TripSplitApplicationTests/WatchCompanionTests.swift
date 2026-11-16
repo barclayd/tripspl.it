@@ -344,4 +344,48 @@ import TripSplitDomain
     #expect(WatchCurrency.format(2140, "CHF") == "CHF\u{a0}21.40")
     #expect(WatchCurrency.format(5000, "AUD", compact: true) == "A$50")
   }
+  @Test func delayedWatchEditsKeepTheirSaveTimeAndCannotReplaceANewerPhoneEdit() async throws {
+    let store = try LocalStore(inMemory: true, installationID: "watch-clock")
+    let trip = try trip()
+    try store.create(trip)
+    var spend = expense(trip)
+    let oldWatch = CompanionCommand.saveExpense(tripID: trip.id, expense: spend, editedAt: 100)
+    spend.title = "Changed on phone"
+    try store.saveExpense(spend, tripID: trip.id)
+    let newer = try #require(store.envelopes[trip.id]?.pending.first?.operation)
+    var published: [CompanionContext] = []
+    let host = WatchCompanionHost(model: AppModel(store: store)) { published.append($0) }
+    await host.receive(oldWatch)
+    #expect(store.envelopes[trip.id]?.pending.first?.operation == newer)
+    #expect(store.trip(trip.id)?.expenses.first?.title == "Changed on phone")
+    #expect(published.last?.handled.contains(oldWatch.id) == true)
+    let clock = try #require(newer.editedAt) + 1
+    spend.title = "Changed later on watch"
+    let latest = CompanionCommand.saveExpense(tripID: trip.id, expense: spend, editedAt: clock)
+    await host.receive(latest)
+    #expect(store.envelopes[trip.id]?.pending.last?.operation.editedAt == clock)
+    #expect(store.envelopes[trip.id]?.pending.last?.operation.id == latest.id)
+    await host.receive(oldWatch)
+    #expect(store.trip(trip.id)?.expenses.first?.title == "Changed later on watch")
+  }
+
+  @Test func watchQueuePersistsEditTimesAndIgnoresAcknowledgementsForEarlierEdits() throws {
+    let trip = try trip(), spend = expense(trip)
+    var state = CompanionState(context: .init(trips: [trip]))
+    let old = CompanionCommand.saveExpense(tripID: trip.id, expense: spend, editedAt: 100)
+    let latest = CompanionCommand.saveExpense(tripID: trip.id, expense: spend, editedAt: 200)
+    state.queue(old)
+    state.queue(latest)
+    state = try JSONDecoder().decode(CompanionState.self, from: JSONEncoder().encode(state))
+    state.receive(.init(trips: [trip], handled: [old.id]))
+    #expect(state.pending == [latest])
+    #expect(state.pending.first?.editedAt == 200)
+    state.receive(.init(trips: [trip], handled: [latest.id]))
+    #expect(state.pending.isEmpty)
+    let legacy = CompanionCommand.saveExpense(tripID: trip.id, expense: spend)
+    #expect(
+      try JSONDecoder().decode(CompanionCommand.self, from: JSONEncoder().encode(legacy)).editedAt
+        == nil)
+  }
+
 }

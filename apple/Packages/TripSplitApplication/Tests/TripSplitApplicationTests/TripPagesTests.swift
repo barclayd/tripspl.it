@@ -79,7 +79,7 @@ import TripSplitWatchModel
     let tom = id("Tom", in: trip)
     let settlement = try #require(model.pages(for: trip).person(tom).settlement)
     model.markPaid(settlement, in: trip)
-    guard case .saveRepayment(_, let repayment) = sent.first else {
+    guard case .saveRepayment(_, let repayment, _) = sent.first else {
       Issue.record("Expected a repayment, got \(sent)")
       return
     }

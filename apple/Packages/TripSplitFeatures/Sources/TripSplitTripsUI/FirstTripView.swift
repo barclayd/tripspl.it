@@ -27,7 +27,6 @@ struct FirstTripView<Header: View>: View {
   @Environment(\.accessibilityReduceMotion) private var reduceMotion
   @State private var played: Bool
   /// Today's rate for the convert reason, when the cached reference rates don't have it.
-  @State private var quoted: String?
 
   /// Whether everything is in its final place, which the entrance animates towards.
   private var settled: Bool { played || reduceMotion }
@@ -156,7 +155,9 @@ struct FirstTripView<Header: View>: View {
   private var conversion: String {
     let (foreign, home) = pair
     let ten = 10 * Money.factor(foreign)
-    guard let rate = quoted ?? model.referenceRates?.rate(from: foreign, to: home),
+    guard
+      let rate = model.cachedConversionRate(
+        from: foreign, to: home, date: CivilDate.today(timeZone: "UTC"))?.rate,
       let converted = try? Money.convert(ten, from: foreign, to: home, rate: rate)
     else { return "Any price in \(home), right when you need it." }
     let amounts = "\(Money.format(ten, foreign, compact: true)) → \(Money.format(converted, home))"
@@ -169,8 +170,8 @@ struct FirstTripView<Header: View>: View {
     let (foreign, home) = pair
     guard model.sync.configured, model.referenceRates?.rate(from: foreign, to: home) == nil
     else { return }
-    let today = CivilDate.today(timeZone: TimeZone.current.identifier)
-    quoted = try? await model.sync.api.quote(from: foreign, to: home, date: today, token: nil).rate
+    let today = CivilDate.today(timeZone: "UTC")
+    _ = try? await model.conversionQuote(from: foreign, to: home, date: today)
   }
 
   // MARK: Button

@@ -19,12 +19,16 @@ import TripSplitDomain
   public var storageError: String?
   public var activeAccountID: String?
   public var archivedTrips: [TripSnapshot] {
-    envelopes.values.filter { $0.accountID == nil || $0.accountID == activeAccountID }.map(
+    envelopes.values.filter {
+      $0.deletionPending != true && ($0.accountID == nil || $0.accountID == activeAccountID)
+    }.map(
       \.optimistic
     ).filter(\.archived).sorted { $0.startsOn < $1.startsOn }
   }
   public var trips: [TripSnapshot] {
-    envelopes.values.filter { $0.accountID == nil || $0.accountID == activeAccountID }.map(
+    envelopes.values.filter {
+      $0.deletionPending != true && ($0.accountID == nil || $0.accountID == activeAccountID)
+    }.map(
       \.optimistic
     ).filter { !$0.archived }.sorted { $0.startsOn < $1.startsOn }
   }
@@ -84,53 +88,95 @@ import TripSplitDomain
     try persist(.init(confirmed: trip, installationID: installationID))
   }
   public func trip(_ id: String) -> TripSnapshot? {
-    guard let e = envelopes[id], e.accountID == nil || e.accountID == activeAccountID else {
+    guard let e = envelopes[id], e.deletionPending != true,
+      e.accountID == nil || e.accountID == activeAccountID
+    else {
       return nil
     }
     return e.optimistic
   }
   public func enqueue(_ operation: TripSplitDomain.Operation, tripID: String) throws {
     guard var envelope = envelopes[tripID] else { return }
-    // A never-sent change can be amended. Attempted operations remain immutable across retries.
-    if envelope.pending.contains(where: {
-      $0.operation.entityId == operation.entityId && $0.attempted
-    }) {
-      throw ServiceError(
-        code: "pending",
-        message:
-          "This item is waiting for sync. Your new draft is saved. Sync or review the earlier change, then reopen this draft to save it."
-      )
-    }
-    if let index = envelope.pending.firstIndex(where: {
-      $0.operation.entityId == operation.entityId && !$0.attempted
-    }) {
+    guard envelope.deletionPending != true else { return }
+    var operation = operation
+    let clock = operation.editedAt ?? envelope.nextWriteClock()
+    operation.editedAt = clock
+    let version = EditVersion(clock: clock, id: operation.id)
+    if let previous = envelope.recordEdits?[operation.recordKey], version <= previous { return }
+    envelope.lastWriteClock = max(envelope.lastWriteClock ?? 0, clock)
+    if envelope.recordEdits == nil { envelope.recordEdits = [:] }
+    envelope.recordEdits?[operation.recordKey] = version
+    // Sent operations retain their exact bytes. Later offline edits form an unsent tail.
+    if let index = envelope.pending.lastIndex(where: {
+      $0.operation.recordKey == operation.recordKey
+    }), !envelope.pending[index].attempted, envelope.pending[index].problem == nil,
+      envelope.pending[index].operation.conversionOnly != true,
+      operation.type != "trip.reschedule",
+      envelope.pending[index].operation.type != "trip.reschedule"
+    {
       let previous = envelope.pending[index].operation
-      if operation.type.hasSuffix(".delete"), previous.expectedRevision == nil {
+      let hasEarlierWrite = envelope.pending[..<index].contains {
+        $0.operation.recordKey == operation.recordKey
+      }
+      if operation.type.hasSuffix(".delete"), previous.expectedRevision == nil, !hasEarlierWrite {
         envelope.pending.remove(at: index)
       } else {
-        var merged = operation
-        merged.expectedRevision = previous.expectedRevision
-        envelope.pending[index] = .init(operation: merged)
+        operation.expectedRevision =
+          operation.type.hasSuffix(".delete")
+          ? previous.expectedRevision ?? 0 : previous.expectedRevision
+        envelope.pending[index] = .init(operation: operation)
       }
     } else {
       envelope.pending.append(.init(operation: operation))
     }
     try persist(envelope)
   }
-  public func saveExpense(_ expense: Expense, tripID: String) throws {
+  public func saveExpense(
+    _ expense: Expense, tripID: String, editedAt: Int64? = nil,
+    operationID: String = UUID().uuidString
+  ) throws {
     guard let trip = trip(tripID) else { return }
-    try enqueue(
-      .init(
-        syncEpoch: trip.syncEpoch, type: "expense.upsert", entityId: expense.id,
-        expectedRevision: envelopes[tripID]?.confirmed.expenses.first(where: { $0.id == expense.id }
-        )?.revision, payload: .expense(expense)), tripID: tripID)
+    var operation = TripSplitDomain.Operation(
+      id: operationID,
+      syncEpoch: trip.syncEpoch, type: "expense.upsert", entityId: expense.id,
+      expectedRevision: envelopes[tripID]?.confirmed.expenses.first { $0.id == expense.id }?
+        .revision,
+      payload: .expense(expense))
+    operation.editedAt = editedAt
+    try enqueue(operation, tripID: tripID)
   }
-  public func deleteExpense(_ expense: Expense, tripID: String) throws {
+
+  /// Enrich an unsent save without changing its edit time, or conditionally fill a cloud record.
+  public func saveExpenseConversion(_ expense: Expense, tripID: String) throws {
+    guard var envelope = envelopes[tripID], envelope.deletionPending != true else { return }
+    if let index = envelope.pending.lastIndex(where: {
+      $0.operation.recordKey == "expense:" + expense.id
+    }) {
+      guard !envelope.pending[index].attempted, envelope.pending[index].problem == nil,
+        envelope.pending[index].operation.type == "expense.upsert"
+      else { return }
+      envelope.pending[index].operation.payload = .expense(expense)
+    } else {
+      var operation = TripSplitDomain.Operation(
+        syncEpoch: envelope.confirmed.syncEpoch,
+        type: "expense.upsert", entityId: expense.id, expectedRevision: expense.revision,
+        payload: .expense(expense))
+      operation.conversionOnly = true
+      envelope.pending.append(.init(operation: operation))
+    }
+    try persist(envelope)
+  }
+  public func deleteExpense(
+    _ expense: Expense, tripID: String, editedAt: Int64? = nil,
+    operationID: String = UUID().uuidString
+  ) throws {
     guard let trip = trip(tripID) else { return }
-    try enqueue(
-      .init(
-        syncEpoch: trip.syncEpoch, type: "expense.delete", entityId: expense.id,
-        expectedRevision: expense.revision, payload: .none), tripID: tripID)
+    var operation = TripSplitDomain.Operation(
+      id: operationID,
+      syncEpoch: trip.syncEpoch, type: "expense.delete", entityId: expense.id,
+      expectedRevision: expense.revision, payload: .none)
+    operation.editedAt = editedAt
+    try enqueue(operation, tripID: tripID)
   }
   public func discard(_ operationID: String, tripID: String) throws {
     guard var envelope = envelopes[tripID] else { return }

@@ -81,7 +81,7 @@ import TripSplitWatchModel
   }
 
   func saved(_ commands: [CompanionCommand]) throws -> Expense {
-    guard case .saveExpense(_, let expense) = commands.last else {
+    guard case .saveExpense(_, let expense, _) = commands.last else {
       Issue.record("Expected a saved expense, got \(commands)")
       throw CancellationError()
     }
@@ -320,7 +320,7 @@ import TripSplitWatchModel
     let flight = try saved(Array(sent().dropLast()))
     #expect(flight.id == halves[0].id && flight.title == "Flight" && flight.returnPairId == nil)
     #expect(flight.amountMinor == "40000")
-    guard case .deleteExpense(_, let dropped) = sent().last else {
+    guard case .deleteExpense(_, let dropped, _) = sent().last else {
       Issue.record("Expected the way home to go, got \(sent())")
       return
     }
@@ -338,7 +338,7 @@ import TripSplitWatchModel
     let halves = saves(sent())
     model.deleteExpense(halves[1], in: try #require(model.trip(trip.id)))
     let deleted = sent().compactMap { command -> String? in
-      guard case .deleteExpense(_, let id) = command else { return nil }
+      guard case .deleteExpense(_, let id, _) = command else { return nil }
       return id
     }
     #expect(Set(deleted) == Set(halves.map(\.id)))
@@ -347,7 +347,7 @@ import TripSplitWatchModel
 
   func saves(_ commands: [CompanionCommand]) -> [Expense] {
     commands.compactMap { command in
-      guard case .saveExpense(_, let expense) = command else { return nil }
+      guard case .saveExpense(_, let expense, _) = command else { return nil }
       return expense
     }
   }
@@ -456,7 +456,7 @@ import TripSplitWatchModel
     model.deleteExpense(expense, in: try #require(model.trip(trip.id)))
     #expect(model.pendingCount == 1)
     #expect(model.trip(trip.id)?.expenses.contains { $0.id == expense.id } == false)
-    guard case .deleteExpense(_, let id) = sent().last else {
+    guard case .deleteExpense(_, let id, _) = sent().last else {
       Issue.record("Expected a delete, got \(sent())")
       return
     }

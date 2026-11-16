@@ -384,6 +384,11 @@
         "additionalProperties": false,
         "description": "Owner-only location override for entityId (a day ID). Null restores the itinerary location. Uses that day’s locationRevision, initially zero, independently of other days and trip settings.",
         "properties": {
+          "editedAt": {
+            "maximum": 9007199254740991,
+            "minimum": 0,
+            "type": "integer"
+          },
           "entityId": {
             "$ref": "#/components/schemas/ID"
           },
@@ -613,6 +618,11 @@
       "ExpenseDeleteOperation": {
         "additionalProperties": false,
         "properties": {
+          "editedAt": {
+            "maximum": 9007199254740991,
+            "minimum": 0,
+            "type": "integer"
+          },
           "entityId": {
             "$ref": "#/components/schemas/ID"
           },
@@ -652,6 +662,14 @@
       "ExpenseUpsertOperation": {
         "additionalProperties": false,
         "properties": {
+          "conversionOnly": {
+            "type": "boolean"
+          },
+          "editedAt": {
+            "maximum": 9007199254740991,
+            "minimum": 0,
+            "type": "integer"
+          },
           "entityId": {
             "$ref": "#/components/schemas/ID"
           },
@@ -1042,6 +1060,11 @@
           "updatedAt": {
             "format": "date-time",
             "type": "string"
+          },
+          "writeClock": {
+            "maximum": 9007199254740991,
+            "minimum": 0,
+            "type": "integer"
           }
         },
         "required": [
@@ -1142,6 +1165,7 @@
             "enum": [
               "accepted",
               "duplicate",
+              "superseded",
               "conflict",
               "rejected"
             ],
@@ -1225,6 +1249,11 @@
       "RepaymentDeleteOperation": {
         "additionalProperties": false,
         "properties": {
+          "editedAt": {
+            "maximum": 9007199254740991,
+            "minimum": 0,
+            "type": "integer"
+          },
           "entityId": {
             "$ref": "#/components/schemas/ID"
           },
@@ -1264,6 +1293,11 @@
       "RepaymentUpsertOperation": {
         "additionalProperties": false,
         "properties": {
+          "editedAt": {
+            "maximum": 9007199254740991,
+            "minimum": 0,
+            "type": "integer"
+          },
           "entityId": {
             "$ref": "#/components/schemas/ID"
           },
@@ -1541,6 +1575,11 @@
       "TravellerUpsertOperation": {
         "additionalProperties": false,
         "properties": {
+          "editedAt": {
+            "maximum": 9007199254740991,
+            "minimum": 0,
+            "type": "integer"
+          },
           "entityId": {
             "$ref": "#/components/schemas/ID"
           },
@@ -1583,6 +1622,11 @@
       "TripArchiveOperation": {
         "additionalProperties": false,
         "properties": {
+          "editedAt": {
+            "maximum": 9007199254740991,
+            "minimum": 0,
+            "type": "integer"
+          },
           "entityId": {
             "$ref": "#/components/schemas/ID"
           },
@@ -1759,6 +1803,11 @@
       "TripRescheduleOperation": {
         "additionalProperties": false,
         "properties": {
+          "editedAt": {
+            "maximum": 9007199254740991,
+            "minimum": 0,
+            "type": "integer"
+          },
           "entityId": {
             "$ref": "#/components/schemas/ID"
           },
@@ -1956,6 +2005,11 @@
           "updatedAt": {
             "format": "date-time",
             "type": "string"
+          },
+          "writeClock": {
+            "maximum": 9007199254740991,
+            "minimum": 0,
+            "type": "integer"
           }
         },
         "required": [
@@ -1984,6 +2038,11 @@
       "TripUpdateOperation": {
         "additionalProperties": false,
         "properties": {
+          "editedAt": {
+            "maximum": 9007199254740991,
+            "minimum": 0,
+            "type": "integer"
+          },
           "entityId": {
             "$ref": "#/components/schemas/ID"
           },

@@ -9,7 +9,6 @@ import TripSplitSync
 struct QuickConvertCard: View {
   var trip: TripSnapshot
   @Environment(AppModel.self) private var model
-  @State private var quoted: String?
 
   private var pair: (from: ConversionCurrency, to: ConversionCurrency) { trip.conversionDefaults }
 
@@ -18,7 +17,7 @@ struct QuickConvertCard: View {
     let stop = trip.stop(for: trip.currentAttachment)
     // Zero-decimal currencies read better in thousands: ¥1,000 rather than ¥1.
     let unit = Money.factor(from.code) * (Money.precision(from.code) == 0 ? 1000 : 1)
-    let rate = quoted ?? knownRate(from: from.code, to: to.code)
+    let rate = knownRate(from: from.code, to: to.code)
     let place = stop.map { " · \($0.place) \($0.flag)" } ?? ""
     Button {
       model.open(trip)
@@ -71,9 +70,8 @@ struct QuickConvertCard: View {
     .accessibilityHint("Opens the converter")
     .task(id: "\(from.code)|\(to.code)") {
       guard model.sync.configured else { return }
-      let api = model.sync.api
-      let date = CivilDate.today(timeZone: trip.timeZone(for: trip.currentAttachment))
-      quoted = try? await api.quote(from: from.code, to: to.code, date: date, token: nil).rate
+      let date = CivilDate.today(timeZone: "UTC")
+      _ = try? await model.conversionQuote(from: from.code, to: to.code, date: date)
     }
   }
 
@@ -81,12 +79,8 @@ struct QuickConvertCard: View {
     (try? Money.convert(minor, from: from, to: to, rate: rate)).map { Money.format($0, to) }
   }
 
-  /// The latest rate an expense already locked in for this pair, so the card works offline.
+  /// The shared persistent cache also includes quotes fetched before any expense was saved.
   private func knownRate(from: String, to: String) -> String? {
-    model.store.trips.lazy.filter { $0.homeCurrency == to }
-      .flatMap(\.expenses)
-      .filter { $0.currency == from }
-      .compactMap(\.conversion)
-      .max { $0.rateDate < $1.rateDate }?.rate
+    model.cachedConversionRate(from: from, to: to, date: CivilDate.today(timeZone: "UTC"))?.rate
   }
 }

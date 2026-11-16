@@ -43,10 +43,11 @@ import TripSplitSync
     envelope.confirmed.days[0].locationRevision = 4
     try store.persist(envelope)
     let original = envelope.pending[0].operation
-    #expect(throws: ServiceError.self) { try app.setDayLocation(nil, dayID: trip.days[0].id, tripID: trip.id) }
+    try app.setDayLocation(nil, dayID: trip.days[0].id, tripID: trip.id)
+    #expect(store.envelopes[trip.id]?.pending.count == 2)
     #expect(store.envelopes[trip.id]?.pending[0].operation == original)
     try app.sync.resolveByReapplying(original.id, tripID: trip.id)
-    let replacement = try #require(store.envelopes[trip.id]?.pending[0].operation)
+    let replacement = try #require(store.envelopes[trip.id]?.pending.last?.operation)
     #expect(replacement.id != original.id)
     #expect(replacement.expectedRevision == 4)
     #expect(replacement.payload == original.payload)

@@ -41,6 +41,8 @@ final class SyncServer: @unchecked Sendable {
   var failCreateFirst = false
   var failFirst = false
   var conflict = false
+  var superseded = false
+  var listingGate: (@Sendable () -> Void)?
   var omitResults = false
   /// Set once the owner deletes the trip: every trip route then answers 404.
   var deleted = false
@@ -112,13 +114,15 @@ final class SyncServer: @unchecked Sendable {
       if failFirst && batches.count == 1 { throw URLError(.networkConnectionLost) }
       var results: [OperationResult] = []
       for operation in input.operations {
-        if !conflict {
+        if !conflict && !superseded {
           operation.apply(to: &snapshot)
           snapshot.revision += 1
         }
         results.append(
           .init(
-            id: operation.id, status: conflict ? "conflict" : failFirst ? "duplicate" : "accepted",
+            id: operation.id,
+            status: superseded
+              ? "superseded" : conflict ? "conflict" : failFirst ? "duplicate" : "accepted",
             revision: snapshot.revision, code: conflict ? "stale_revision" : nil,
             message: conflict ? "A friend changed this expense." : nil))
       }
@@ -128,6 +132,8 @@ final class SyncServer: @unchecked Sendable {
       return (200, try JSONEncoder().encode(response))
     }
     if request.url!.path.hasSuffix("/trips") {
+      listingGate?()
+      listingGate = nil
       return (200, Data("{\"trips\":[],\"nextCursor\":null}".utf8))
     }
     return (200, try JSONEncoder().encode(snapshot))
@@ -506,6 +512,8 @@ final class SyncServer: @unchecked Sendable {
   @Test func deletingACloudTripRemovesItEverywhereThenLocally() async throws {
     let (store, sync, server, trip) = try fixture()
     try await sync.deleteTrip(trip.id)
+    #expect(store.trip(trip.id) == nil)
+    await sync.syncAll()
     #expect(server.deletes == 1)
     #expect(store.envelopes[trip.id] == nil)
     #expect(store.trip(trip.id) == nil)
@@ -554,4 +562,78 @@ final class SyncServer: @unchecked Sendable {
       URLComponents(url: server.requests.last!.url!, resolvingAgainstBaseURL: false)?.queryItems?
         .first?.value == "a+b=c")
   }
+  @Test func serverWinnerClearsTheOfflineOverlay() async throws {
+    let (store, sync, server, trip) = try fixture()
+    server.superseded = true
+    try await sync.syncTrip(trip.id, token: "test", account: "account")
+    #expect(store.envelopes[trip.id]?.pending.isEmpty == true)
+    #expect(store.trip(trip.id)?.expenses.isEmpty == true)
+  }
+
+  @Test func deletionStaysHiddenAcrossOfflineFailureAndRestart() async throws {
+    let (store, sync, server, trip) = try fixture()
+    StubURLProtocol.handler = { _ in throw URLError(.notConnectedToInternet) }
+    try await sync.deleteTrip(trip.id)
+    #expect(store.trip(trip.id) == nil)
+    #expect(store.trips.isEmpty)
+    await sync.syncAll()
+    let pending = try #require(store.envelopes[trip.id])
+    #expect(pending.deletionPending == true)
+    let url = FileManager.default.temporaryDirectory.appending(path: UUID().uuidString + ".store")
+    let persisted = try LocalStore(installationID: "test", storeURL: url)
+    try persisted.persist(pending)
+    let reopened = try LocalStore(installationID: "test", storeURL: url)
+    reopened.activeAccountID = "account"
+    #expect(reopened.trip(trip.id) == nil)
+    #expect(reopened.envelopes[trip.id]?.deletionPending == true)
+    StubURLProtocol.handler = { try server.handle($0) }
+    await sync.syncAll()
+    #expect(server.deletes == 1)
+    #expect(store.envelopes[trip.id] == nil)
+    sync.stopRetries()
+  }
+
+  @Test func deletionReplaysAnUncertainCreationBeforeDeletingIt() async throws {
+    let (store, sync, server, trip) = try fixture(count: 0)
+    var local = trip
+    local.syncEpoch = "local"
+    local.revision = 0
+    try store.persist(.init(confirmed: local, installationID: "test"))
+    server.failCreateFirst = true
+    do { try await sync.syncTrip(trip.id, token: "test", account: "account") } catch {}
+    try await sync.deleteTrip(trip.id)
+    #expect(store.trip(trip.id) == nil)
+    await sync.syncAll()
+    #expect(server.creates.count == 2)
+    #expect(server.creates.first == server.creates.last)
+    #expect(server.deletes == 1)
+    #expect(store.envelopes[trip.id] == nil)
+  }
+
+  @Test func editDuringDirectoryFetchRequestsAnotherSyncPass() async throws {
+    let (store, sync, server, trip) = try fixture(count: 0)
+    let entered = DispatchSemaphore(value: 0), release = DispatchSemaphore(value: 0)
+    server.listingGate = {
+      entered.signal()
+      _ = release.wait(timeout: .now() + 5)
+    }
+    let running = Task { await sync.syncAll() }
+    let reached = await withCheckedContinuation { continuation in
+      DispatchQueue.global().async {
+        continuation.resume(returning: entered.wait(timeout: .now() + 5) == .success)
+      }
+    }
+    #expect(reached)
+    let spend = Expense(
+      attachment: .init(kind: .day, id: trip.days[0].id), title: "Saved during sync",
+      category: .food, amountMinor: "100", currency: "GBP", status: .paid,
+      paidBy: trip.ownerTravellerId, splitWith: [trip.ownerTravellerId])
+    try store.saveExpense(spend, tripID: trip.id)
+    await sync.syncAll()
+    release.signal()
+    await running.value
+    #expect(store.envelopes[trip.id]?.pending.isEmpty == true)
+    #expect(server.snapshot.expenses.first?.title == "Saved during sync")
+  }
+
 }

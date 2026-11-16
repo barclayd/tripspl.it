@@ -43,6 +43,16 @@ public struct TripEnvelope: Codable, Sendable {
   public var createSnapshot: TripSnapshot?
   public var restoreReview = false
   public var restoreFetchedRevision: Int?
+  public var recordEdits: [String: EditVersion]?
+  public var lastWriteClock: Int64?
+  public var deletionPending: Bool?
+  public mutating func nextWriteClock(now: Date = Date()) -> Int64 {
+    let next = max(
+      Int64(now.timeIntervalSince1970 * 1_000),
+      max(lastWriteClock ?? 0, confirmed.writeClock ?? 0) + 1)
+    lastWriteClock = next
+    return next
+  }
   public var optimistic: TripSnapshot {
     var trip = confirmed
     for item in pending { item.operation.apply(to: &trip) }
@@ -123,5 +133,15 @@ public struct ExpenseDraft: Codable, Identifiable, Sendable {
     guard let first = ordered.first else { return }
     attachment = .init(kind: .day, id: first)
     dayIds = ordered.count > 1 ? ordered : nil
+  }
+}
+
+/// A stable ordering for edits received from the watch as well as this phone.
+public struct EditVersion: Codable, Sendable, Comparable {
+  public var clock: Int64
+  public var id: String
+  public init(clock: Int64, id: String) { self.clock = clock; self.id = id }
+  public static func < (lhs: Self, rhs: Self) -> Bool {
+    lhs.clock == rhs.clock ? lhs.id < rhs.id : lhs.clock < rhs.clock
   }
 }

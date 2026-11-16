@@ -19,7 +19,7 @@ export const deviceSchema = z.strictObject({ token: deviceToken, environment: z.
 export const deviceTokenSchema = z.strictObject({ token: deviceToken }).openapi('DeviceToken');
 export const invitationSchema = z.object({ id: z.string(), token: z.string(), expiresAt: z.string(), url: z.string().nullable() }).openapi('Invitation');
 export const operationResultSchema = z.object({
-  id: z.string(), status: z.enum(['accepted', 'duplicate', 'conflict', 'rejected']),
+  id: z.string(), status: z.enum(['accepted', 'duplicate', 'superseded', 'conflict', 'rejected']),
   revision: z.number().nullable(), code: z.string().nullable(), message: z.string().nullable(),
 }).openapi('OperationResult');
 export const syncResponseSchema = z.object({

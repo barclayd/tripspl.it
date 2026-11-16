@@ -61,7 +61,7 @@ private final class ExpenseFXProtocol: URLProtocol, @unchecked Sendable {
         id: "twd-gbp", from: "TWD", to: "GBP", rate: "0.02263",
         requestedDate: today, rateDate: today, source: "Test reference"))
     }
-    model.cacheReferenceRates(rates())
+    _ = try await model.expenseConversion(4500, from: "TWD", to: "GBP")
     let expense = try await model.saveExpense()
     #expect(expense.conversion?.homeAmountMinor == "102")
     #expect(expense.conversion?.quoteId == "twd-gbp")
@@ -168,14 +168,20 @@ private final class ExpenseFXProtocol: URLProtocol, @unchecked Sendable {
     #expect(model.store.trip(trip.id)?.expenses.first?.conversion == nil)
   }
 
-  @Test func noRateKeepsDraftUntilConnectedOrBankChargeEntered() async throws {
+  @Test func noRateSavesLocallyAndFillsWhenRatesReturn() async throws {
     let (model, trip) = try setUp()
     model.persistDraft()
-    await #expect(throws: ServiceError.self) { try await model.saveExpense() }
-    #expect(model.store.trip(trip.id)?.expenses.isEmpty == true)
-    #expect(model.store.read(ExpenseDraft.self, key: "expense:" + trip.id)?.amount == "45")
-    model.expenseDraft?.actualHomeAmount = "1.07"
-    #expect(try await model.saveExpense().conversion?.homeAmountMinor == "107")
+    let saved = try await model.saveExpense()
+    #expect(saved.conversion == nil)
+    #expect(model.store.trip(trip.id)?.expenses.count == 1)
+    #expect(model.store.read(ExpenseDraft.self, key: "expense:" + trip.id) == nil)
+    #expect(Ledger(try #require(model.store.trip(trip.id))).unresolved == 1)
+    let clock = model.store.envelopes[trip.id]?.pending.first?.operation.editedAt
+    model.cacheReferenceRates(rates())
+    await model.repairExpenseConversions()
+    #expect(model.store.trip(trip.id)?.expenses.first?.conversion?.homeAmountMinor == "90")
+    #expect(model.store.envelopes[trip.id]?.pending.first?.operation.editedAt == clock)
+    #expect(Ledger(try #require(model.store.trip(trip.id))).unresolved == 0)
   }
 
   @Test func quickConvertPersistsFetchedRateAcrossRestartAndOfflineFailure() async throws {

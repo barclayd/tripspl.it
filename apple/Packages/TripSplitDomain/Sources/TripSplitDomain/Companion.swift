@@ -37,6 +37,7 @@ public struct CompanionState: Codable, Hashable, Sendable {
   }
   public var context: CompanionContext?
   public var pending: [CompanionCommand]
+  public var lastWriteClock: Int64?
 
   /// Trips as the watch should show them, with pending changes overlaid.
   public var trips: [TripSnapshot] {
@@ -64,32 +65,52 @@ public struct CompanionState: Codable, Hashable, Sendable {
   }
 
   public mutating func queue(_ command: CompanionCommand) {
-    pending.removeAll { $0.id == command.id }
+    pending.removeAll { $0.recordKey == command.recordKey }
     pending.append(command)
   }
 }
 
 /// A change made on the watch, applied by the phone through its normal sync path.
 public enum CompanionCommand: Codable, Hashable, Sendable, Identifiable {
-  case saveExpense(tripID: String, expense: Expense)
-  case saveRepayment(tripID: String, repayment: Repayment)
-  case deleteExpense(tripID: String, expenseID: String)
+  case saveExpense(tripID: String, expense: Expense, editedAt: Int64? = nil)
+  case saveRepayment(tripID: String, repayment: Repayment, editedAt: Int64? = nil)
+  case deleteExpense(tripID: String, expenseID: String, editedAt: Int64? = nil)
   /// Asks the phone to buzz a traveller who owes you, once per trip day (`on`, yyyy-MM-dd).
   case nudge(tripID: String, travellerID: String, on: String)
 
   /// Saving and deleting the same expense share an id, so a delete replaces a pending save.
-  public var id: String {
+  public var id: String { recordKey + (editedAt.map { ":\($0)" } ?? "") }
+  public var editedAt: Int64? {
     switch self {
-    case .saveExpense(_, let expense): "expense:" + expense.id
-    case .deleteExpense(_, let id): "expense:" + id
-    case .saveRepayment(_, let repayment): "repayment:" + repayment.id
+    case .saveExpense(_, _, let clock), .saveRepayment(_, _, let clock),
+      .deleteExpense(_, _, let clock):
+      clock
+    case .nudge: nil
+    }
+  }
+  public func stamped(_ clock: Int64) -> Self {
+    switch self {
+    case .saveExpense(let trip, let expense, _):
+      .saveExpense(tripID: trip, expense: expense, editedAt: clock)
+    case .saveRepayment(let trip, let repayment, _):
+      .saveRepayment(tripID: trip, repayment: repayment, editedAt: clock)
+    case .deleteExpense(let trip, let id, _):
+      .deleteExpense(tripID: trip, expenseID: id, editedAt: clock)
+    case .nudge: self
+    }
+  }
+  public var recordKey: String {
+    switch self {
+    case .saveExpense(_, let expense, _): "expense:" + expense.id
+    case .deleteExpense(_, let id, _): "expense:" + id
+    case .saveRepayment(_, let repayment, _): "repayment:" + repayment.id
     case .nudge(let trip, let traveller, let day): "nudge:\(trip):\(traveller):\(day)"
     }
   }
 
   public var tripID: String {
     switch self {
-    case .saveExpense(let id, _), .saveRepayment(let id, _), .deleteExpense(let id, _),
+    case .saveExpense(let id, _, _), .saveRepayment(let id, _, _), .deleteExpense(let id, _, _),
       .nudge(let id, _, _):
       id
     }
@@ -99,12 +120,12 @@ public enum CompanionCommand: Codable, Hashable, Sendable, Identifiable {
   public func apply(to trip: inout TripSnapshot) {
     guard trip.id == tripID else { return }
     switch self {
-    case .saveExpense(_, let expense):
+    case .saveExpense(_, let expense, _):
       trip.expenses.removeAll { $0.id == expense.id }
       trip.expenses.append(expense)
-    case .deleteExpense(_, let id):
+    case .deleteExpense(_, let id, _):
       trip.expenses.removeAll { $0.id == id }
-    case .saveRepayment(_, let repayment):
+    case .saveRepayment(_, let repayment, _):
       trip.repayments.removeAll { $0.id == repayment.id }
       trip.repayments.append(repayment)
     case .nudge: break
@@ -114,11 +135,11 @@ public enum CompanionCommand: Codable, Hashable, Sendable, Identifiable {
   /// True once a phone snapshot carries this change.
   public func isReflected(in trip: TripSnapshot) -> Bool {
     switch self {
-    case .saveExpense(_, let expense):
+    case .saveExpense(_, let expense, _):
       trip.expenses.contains { $0.matches(expense) }
-    case .deleteExpense(_, let id):
+    case .deleteExpense(_, let id, _):
       !trip.expenses.contains { $0.id == id }
-    case .saveRepayment(_, let repayment):
+    case .saveRepayment(_, let repayment, _):
       trip.repayments.contains {
         $0.id == repayment.id && $0.amountMinor == repayment.amountMinor
           && $0.currency == repayment.currency

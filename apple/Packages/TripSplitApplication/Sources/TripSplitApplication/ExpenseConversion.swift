@@ -13,7 +13,7 @@ extension AppModel {
         from: from, to: to, rate: rate, rateDate: table.rateDate, source: table.source,
         fetchedAt: referenceRatesFetchedAt))
     }
-    for trip in store.trips where trip.homeCurrency == to {
+    for trip in store.trips + store.archivedTrips where trip.homeCurrency == to {
       for expense in trip.expenses where expense.currency == from {
         guard let conversion = expense.conversion, conversion.kind == "reference",
           let quoteID = conversion.quoteId else { continue }
@@ -64,15 +64,17 @@ extension AppModel {
       from: from, to: to, date: CivilDate.today(timeZone: "UTC"))?.conversion(amount)
   }
 
-  /// Repairs expenses saved by older versions without a conversion, without changing bank
+  /// Fills expenses saved offline without a conversion, without changing bank
   /// charges or rewriting any sync operation that has already been sent.
   public func repairExpenseConversions() async {
     guard !repairingConversions else { return }
     repairingConversions = true
     defer { repairingConversions = false }
     var repaired = false
-    for trip in store.trips where store.envelopes[trip.id]?.restoreReview == false {
+    for trip in store.trips + store.archivedTrips
+    where store.envelopes[trip.id]?.restoreReview == false {
       for expense in trip.expenses where expense.currency != trip.homeCurrency && expense.conversion == nil {
+        guard !Task.isCancelled else { return }
         guard !conversionEditBlocked(expense.id, tripID: trip.id),
           let amount = Money.minor(expense.amountMinor),
           let conversion = try? await expenseConversion(amount, from: expense.currency, to: trip.homeCurrency),
@@ -83,7 +85,7 @@ extension AppModel {
         var converted = expense
         converted.conversion = conversion
         do {
-          try store.saveExpense(converted, tripID: trip.id)
+          try store.saveExpenseConversion(converted, tripID: trip.id)
           repaired = true
         } catch { continue }
       }

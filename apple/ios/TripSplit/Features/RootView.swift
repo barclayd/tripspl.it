@@ -196,6 +196,8 @@ struct RootView: View {
       }
       if phase == .background {
         model.sync.stopLive()
+        model.sync.stopRetries()
+        PhoneSync.schedule()
         model.persistDraft()
         model.saveOnboarding()
       }

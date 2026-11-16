@@ -366,6 +366,8 @@ public struct TripSnapshot: Codable, Identifiable, Hashable, Sendable {
   public var repayments: [Repayment] = []
   public var archived = false
   public var updatedAt = ISO8601DateFormatter().string(from: Date())
+  /// Highest edit clock observed by the server, in milliseconds. Optional for older snapshots.
+  public var writeClock: Int64?
   public var endsOn: String { days.last?.date ?? startsOn }
   /// Today's date on the user's device, wherever the trip is planned.
   public var today: String { CivilDate.today(timeZone: TimeZone.current.identifier) }
@@ -479,7 +481,20 @@ public struct Operation: Codable, Identifiable, Hashable, Sendable {
   public var type: String
   public var entityId: String
   public var expectedRevision: Int?
+  /// Assigned when saved locally, and immutable once attempted.
+  public var editedAt: Int64?
+  /// A conditional FX fill, never a new user edit.
+  public var conversionOnly: Bool?
   public var payload: Payload
+  public var recordKey: String {
+    let kind =
+      type == "trip.archive"
+      ? type
+      : type.hasPrefix("trip.")
+        ? "trip.settings"
+        : String(type.split(separator: ".")[0])
+    return kind + ":" + entityId
+  }
   public enum Payload: Codable, Hashable, Sendable {
     case expense(Expense)
     case repayment(Repayment)
@@ -525,7 +540,7 @@ public struct Operation: Codable, Identifiable, Hashable, Sendable {
   }
   // A null expectedRevision is part of the wire contract for insert operations.
   enum CodingKeys: String, CodingKey {
-    case id, syncEpoch, type, entityId, expectedRevision, payload
+    case id, syncEpoch, type, entityId, expectedRevision, editedAt, conversionOnly, payload
   }
   public func encode(to encoder: Encoder) throws {
     var c = encoder.container(keyedBy: CodingKeys.self)
@@ -534,11 +549,22 @@ public struct Operation: Codable, Identifiable, Hashable, Sendable {
     try c.encode(type, forKey: .type)
     try c.encode(entityId, forKey: .entityId)
     try c.encode(expectedRevision, forKey: .expectedRevision)
+    try c.encodeIfPresent(editedAt, forKey: .editedAt)
+    try c.encodeIfPresent(conversionOnly, forKey: .conversionOnly)
     try c.encode(payload, forKey: .payload)
   }
   public func apply(to trip: inout TripSnapshot) {
     switch payload {
     case .expense(let v):
+      if conversionOnly == true {
+        if let index = trip.expenses.firstIndex(where: { $0.id == entityId }),
+          trip.expenses[index].revision == expectedRevision,
+          trip.expenses[index].conversion == nil
+        {
+          trip.expenses[index].conversion = v.conversion
+        }
+        return
+      }
       trip.expenses.removeAll { $0.id == entityId }
       trip.expenses.append(v)
     case .repayment(let v):

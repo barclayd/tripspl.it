@@ -100,10 +100,22 @@ import TripSplitDomain
     }
   }
 
-  public func send(_ command: CompanionCommand) {
+  @discardableResult public func send(_ command: CompanionCommand) -> Bool {
+    let previous = state
+    let clock = max(
+      Int64(Date().timeIntervalSince1970 * 1_000),
+      max(state.lastWriteClock ?? 0, trip(command.tripID)?.writeClock ?? 0) + 1)
+    let command = command.stamped(clock)
+    state.lastWriteClock = clock
     state.queue(command)
-    persist()
+    do { try mirror?.save(state) } catch {
+      state = previous
+      message = error.localizedDescription
+      return false
+    }
+    onChange?()
     do { try transport?(command) } catch { message = error.localizedDescription }
+    return true
   }
 
   private func persist() {

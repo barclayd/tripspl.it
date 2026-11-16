@@ -61,9 +61,11 @@ private final class LegacyFixtureBundleMarker: NSObject {}
     #expect(store.trip(expected.primaryTripID) == envelope.optimistic)
     let pendingExpense = try #require(
       envelope.optimistic.expenses.first { $0.id == expected.attemptedExpenseID })
-    #expect(throws: ServiceError.self) {
-      try store.saveExpense(pendingExpense, tripID: expected.primaryTripID)
-    }
+    try store.saveExpense(pendingExpense, tripID: expected.primaryTripID)
+    #expect(
+      store.envelopes[expected.primaryTripID]?.pending[0].operation == envelope.pending[0].operation
+    )
+    let savedIDs = store.envelopes[expected.primaryTripID]?.pending.map(\.id)
     store.activeAccountID = "another-account"
     #expect(store.trip(expected.primaryTripID) == nil)
     let local = try #require(store.envelopes[expected.frozenCreateTripID])
@@ -82,6 +84,6 @@ private final class LegacyFixtureBundleMarker: NSObject {}
     let restored = try LocalStore(installationID: "replacement-device", storeURL: url)
     #expect(restored.envelopes.values.allSatisfy { $0.restoreReview })
     #expect(
-      restored.envelopes[expected.primaryTripID]?.pending.map(\.id) == expected.pendingOperationIDs)
+      restored.envelopes[expected.primaryTripID]?.pending.map(\.id) == savedIDs)
   }
 }

@@ -55,23 +55,31 @@ import TripSplitDomain
     }
     do {
       switch command {
-      case .saveExpense(let tripID, var expense):
+      case .saveExpense(let tripID, var expense, _):
         // The watch estimates offline from cached rates, which carry no quote, and the API only
         // accepts reference conversions backed by one, so the phone quotes them again.
         if expense.conversion == nil || expense.conversion?.isUnquotedReference == true {
-          expense.conversion = await estimate(expense, in: trip)
+          expense.conversion = estimate(expense, in: trip)
         }
-        try model.store.saveExpense(expense, tripID: tripID)
-      case .deleteExpense(let tripID, let id):
+        try model.store.saveExpense(
+          expense, tripID: tripID, editedAt: command.editedAt,
+          operationID: command.editedAt == nil ? UUID().uuidString : command.id)
+      case .deleteExpense(let tripID, let id, _):
         guard let expense = trip.expenses.first(where: { $0.id == id }) else { break }
-        try model.store.deleteExpense(expense, tripID: tripID)
-      case .saveRepayment(let tripID, let repayment):
-        try model.store.enqueue(
-          .init(
-            syncEpoch: trip.syncEpoch, type: "repayment.upsert", entityId: repayment.id,
-            expectedRevision: nil, payload: .repayment(repayment)), tripID: tripID)
+        try model.store.deleteExpense(
+          expense, tripID: tripID, editedAt: command.editedAt,
+          operationID: command.editedAt == nil ? UUID().uuidString : command.id)
+      case .saveRepayment(let tripID, let repayment, _):
+        var operation = TripSplitDomain.Operation(
+          id: command.editedAt == nil ? UUID().uuidString : command.id,
+          syncEpoch: trip.syncEpoch, type: "repayment.upsert", entityId: repayment.id,
+          expectedRevision: trip.repayments.first { $0.id == repayment.id }?.revision,
+          payload: .repayment(repayment))
+        operation.editedAt = command.editedAt
+        try model.store.enqueue(operation, tripID: tripID)
       case .nudge: break
       }
+      if command.editedAt != nil { handle(command) }
       model.changed()
     } catch {
       reject(command, error.localizedDescription)
@@ -119,11 +127,11 @@ import TripSplitDomain
   }
 
   /// A reference rate for foreign-currency spends logged on the watch.
-  private func estimate(_ expense: Expense, in trip: TripSnapshot) async -> Conversion? {
+  private func estimate(_ expense: Expense, in trip: TripSnapshot) -> Conversion? {
     guard expense.currency != trip.homeCurrency,
       let amount = Money.minor(expense.amountMinor)
     else { return nil }
-    if let conversion = try? await model.expenseConversion(
+    if let conversion = try? model.cachedExpenseConversion(
       amount, from: expense.currency, to: trip.homeCurrency)
     { return conversion }
     // Keep the watch's cached estimate offline in the API's unquoted format.
