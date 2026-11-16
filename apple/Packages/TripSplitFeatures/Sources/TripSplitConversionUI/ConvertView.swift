@@ -358,21 +358,21 @@ public struct ConvertView: View {
       TimelineView(.periodic(from: .now, by: 60)) { _ in
         VStack(spacing: 3) {
           if let fetchedAt = rate.fetchedAt {
-            Text("Last fetched \(fetchedAt.formatted(.relative(presentation: .named)))")
+            Text("Updated \(fetchedAt.formatted(.relative(presentation: .named, unitsStyle: .abbreviated)))")
           } else {
             Text("Rate from \(rate.rateDate)")
           }
           if conversion.waitingForConnection {
-            Text("We’ll update when you’re back online.")
+            Text("Updates when online")
           } else if conversion.isLoading {
-            Text("Updating rate…")
+            Text("Updating…")
           } else if conversion.message != nil {
-            Button("Couldn’t update the rate. Try again") { conversion.refresh() }
+            Button("Try again") { conversion.refresh() }
               .buttonStyle(.plain)
           }
           if let issue = conversion.conversionIssue { Text(issue).foregroundStyle(Theme.bad) }
         }
-        .typeface(12, .medium, relativeTo: .caption, maximum: 1.6)
+        .typeface(12, .semibold, relativeTo: .caption, maximum: 1.6)
         .foregroundStyle(Theme.secondary)
         .multilineTextAlignment(.center)
         .accessibilityElement(children: .combine)
