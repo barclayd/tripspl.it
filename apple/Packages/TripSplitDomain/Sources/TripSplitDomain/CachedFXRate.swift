@@ -47,6 +47,7 @@ public struct CachedFXRate: Codable, Sendable {
     Conversion(
       homeAmountMinor: String(try Money.convert(amount, from: from, to: to, rate: rate)),
       rate: rate, rateDate: rateDate, source: quoteID == nil ? "Cached " + source : source,
-      kind: quoteID == nil ? "manual" : "reference", quoteId: quoteID)
+      kind: quoteID == nil ? "manual" : "reference", quoteId: quoteID,
+      estimateDate: CivilDate.today(timeZone: "UTC"))
   }
 }

@@ -131,7 +131,8 @@ public struct Conversion: Codable, Hashable, Sendable {
     rateDate: String,
     source: String,
     kind: String,
-    quoteId: String? = nil
+    quoteId: String? = nil,
+    estimateDate: String? = nil
   ) {
     self.homeAmountMinor = homeAmountMinor
     self.rate = rate
@@ -139,6 +140,7 @@ public struct Conversion: Codable, Hashable, Sendable {
     self.source = source
     self.kind = kind
     self.quoteId = quoteId
+    self.estimateDate = estimateDate
   }
   public var homeAmountMinor: String
   public var rate: String
@@ -146,6 +148,9 @@ public struct Conversion: Codable, Hashable, Sendable {
   public var source: String
   public var kind: String
   public var quoteId: String?
+  /// Automatic estimate awaiting a reference rate for the UTC day it was saved.
+  /// Nil for settled references, entered rates and actual bank charges.
+  public var estimateDate: String?
 
   public static let bankChargeSource = "Actual card charge entered by traveller"
   public var isBankCharge: Bool {

@@ -118,6 +118,22 @@ import TripSplitSync
       if toast == text { toast = nil }
     }
   }
+  private var rateChangeEnvelope: TripEnvelope? {
+    store.envelopes.values.filter {
+      $0.deletionPending != true && ($0.accountID == nil || $0.accountID == store.activeAccountID)
+        && $0.pendingRateChanges?.isEmpty == false
+    }.sorted { $0.confirmed.id < $1.confirmed.id }.first
+  }
+  public var pendingRateChangeID: String? { rateChangeEnvelope?.pendingRateChanges?.first?.id }
+  /// Called only while foregrounded; keep the regular save confirmation visible first.
+  public func presentRateChanges() {
+    guard toast == nil, var envelope = rateChangeEnvelope,
+      let notices = envelope.pendingRateChanges, let first = notices.first
+    else { return }
+    envelope.pendingRateChanges = nil
+    do { try store.persist(envelope) } catch { self.error = error.localizedDescription; return }
+    notify(notices.count == 1 ? first.message : "Rates updated · \(notices.count) expenses")
+  }
   public func changed() {
     Task {
       await sync.syncAll(); await repairExpenseConversions()

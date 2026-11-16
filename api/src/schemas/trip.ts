@@ -21,7 +21,7 @@ const timeZone = z.string().min(1).max(80).refine(value => {
   try { new Intl.DateTimeFormat('en', { timeZone: value }); return true; } catch { return false; }
 });
 const decimalRate = z.string().max(32).refine(value => { try { rateFraction(value); return true; } catch { return false; } }).openapi('DecimalRate', { description: 'Exact positive decimal text with at most 18 significant digits, 18 fractional digits and 12 whole digits. Zero, exponent notation and binary floating-point conversion are forbidden; precision is checked at runtime.' });
-export const conversionSchema = z.strictObject({ homeAmountMinor: amount, rate: decimalRate, rateDate: civil, source: z.string().min(1).max(120), kind: z.enum(['reference', 'manual']), quoteId: nullableId }).openapi('Conversion');
+export const conversionSchema = z.strictObject({ homeAmountMinor: amount, rate: decimalRate, rateDate: civil, source: z.string().min(1).max(120), kind: z.enum(['reference', 'manual']), quoteId: nullableId, estimateDate: civil.optional().openapi({ description: 'Automatic estimate awaiting server reconciliation for the UTC day it was saved. Omit for a settled reference rate, entered rate or actual bank charge.' }) }).openapi('Conversion');
 const conversion = conversionSchema.nullable().openapi('NullableConversion');
 export const travellerSchema = z.strictObject({ id, name: shortText, hue: z.number().min(0).max(360), archived: z.boolean(), revision }).openapi('Traveller');
 const countryCode = z.string().regex(/^[A-Z]{2}$/);

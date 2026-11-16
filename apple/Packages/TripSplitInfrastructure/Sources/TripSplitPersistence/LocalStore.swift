@@ -106,6 +106,9 @@ import TripSplitDomain
     envelope.lastWriteClock = max(envelope.lastWriteClock ?? 0, clock)
     if envelope.recordEdits == nil { envelope.recordEdits = [:] }
     envelope.recordEdits?[operation.recordKey] = version
+    if operation.type.hasPrefix("expense.") {
+      envelope.pendingRateChanges?.removeAll { $0.expenseID == operation.entityId }
+    }
     // Sent operations retain their exact bytes. Later offline edits form an unsent tail.
     if let index = envelope.pending.lastIndex(where: {
       $0.operation.recordKey == operation.recordKey
