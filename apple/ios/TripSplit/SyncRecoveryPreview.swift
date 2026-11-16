@@ -6,6 +6,44 @@
   import TripSplitPersistence
   import TripSplitSync
 
+  /// Uses the real cached-rate path with an isolated Taiwan trip and an offline transport.
+  @MainActor enum OfflineConversionPreview {
+    static func model() throws -> AppModel {
+      let store = try LocalStore(inMemory: true, installationID: "offline-conversion-preview")
+      var draft = OnboardingDraft()
+      draft.name = "Taiwan"
+      draft.currency = "GBP"
+      draft.stops = [Destination.country("TW")!.stop(nights: 7)]
+      draft.budget = "700"
+      let trip = try draft.makeTrip()
+      try store.create(trip)
+      let configuration = URLSessionConfiguration.ephemeral
+      configuration.protocolClasses = [OfflineConversionProtocol.self]
+      let sync = SyncCoordinator(
+        store: store, api: APIClient(
+          baseURL: URL(string: "https://example.invalid")!,
+          transport: URLSession(configuration: configuration)),
+        sessionWriter: { _ in }, sessionReader: { nil }, sessionDeleter: {})
+      let model = AppModel(store: store, sync: sync)
+      let date = CivilDate.today(timeZone: "UTC")
+      model.cacheReferenceRates(.init(
+        base: "GBP", requestedDate: date, rateDate: date, source: "Preview reference",
+        rates: ["GBP": "1", "TWD": "42.5"]), fetchedAt: .now.addingTimeInterval(-7200))
+      model.open(trip)
+      model.showConverter = true
+      return model
+    }
+  }
+
+  private final class OfflineConversionProtocol: URLProtocol, @unchecked Sendable {
+    override class func canInit(with request: URLRequest) -> Bool { true }
+    override class func canonicalRequest(for request: URLRequest) -> URLRequest { request }
+    override func startLoading() {
+      client?.urlProtocol(self, didFailWithError: URLError(.notConnectedToInternet))
+    }
+    override func stopLoading() {}
+  }
+
   /// An isolated, offline reproduction: no saved account, real trips, push or network access.
   @MainActor enum SyncRecoveryPreview {
     static func model() throws -> AppModel {
