@@ -10,29 +10,37 @@ public enum ConversionSide: String, Identifiable {
 
 @MainActor @Observable public final class ConversionModel {
   public typealias QuoteLoader = @Sendable (String, String, String) async throws -> FXQuote
+  public typealias CachedRateLoader = @MainActor (String, String, String) -> CachedFXRate?
 
   public var amount = "10"
   public private(set) var from: ConversionCurrency
   public private(set) var to: ConversionCurrency
   public private(set) var quote: FXQuote?
+  public private(set) var rate: CachedFXRate?
+  public private(set) var usesCachedRate = false
+  public private(set) var waitingForConnection = false
   public private(set) var rateInput = ""
   public private(set) var usesManualRate = false
   public private(set) var message: String?
   public private(set) var isLoading = false
   public let quoteDate: String
   @ObservationIgnored private let loadQuote: QuoteLoader
+  @ObservationIgnored private let cachedRate: CachedRateLoader
   @ObservationIgnored private var requestID = UUID()
   @ObservationIgnored private var request: Task<Void, Never>?
   @ObservationIgnored private var started = false
 
   public init(
     from: ConversionCurrency, to: ConversionCurrency, date: String,
-    today: String = CivilDate.today(timeZone: "UTC"), loadQuote: @escaping QuoteLoader
+    today: String = CivilDate.today(timeZone: "UTC"),
+    cachedRate: @escaping CachedRateLoader = { _, _, _ in nil },
+    loadQuote: @escaping QuoteLoader
   ) {
     self.from = from
     self.to = to
     quoteDate = min(date, today)
     self.loadQuote = loadQuote
+    self.cachedRate = cachedRate
   }
 
   public var isIdentity: Bool { from.code == to.code }
@@ -66,16 +74,14 @@ public enum ConversionSide: String, Identifiable {
     guard effectiveRate != nil, result == nil else { return nil }
     return "The converted amount is too large. Try a smaller amount."
   }
-  private var effectiveRate: String? {
+  public var effectiveRate: String? {
     if usesManualRate {
       let rate = rateInput.trimmingCharacters(in: .whitespacesAndNewlines)
         .replacingOccurrences(of: ",", with: ".")
       return validRate(rate) ? rate : nil
     }
-    guard let quote, quote.from == from.code, quote.to == to.code,
-      quote.requestedDate == quoteDate, validRate(quote.rate)
-    else { return nil }
-    return quote.rate
+    guard let rate, rate.matches(from: from.code, to: to.code, date: quoteDate) else { return nil }
+    return rate.rate
   }
 
   @discardableResult public func start() -> Task<Void, Never>? {
@@ -110,6 +116,9 @@ public enum ConversionSide: String, Identifiable {
   public func enterManualRate(_ value: String = "") {
     cancel()
     quote = nil
+    rate = nil
+    usesCachedRate = false
+    waitingForConnection = false
     message = nil
     usesManualRate = true
     rateInput = value
@@ -123,10 +132,18 @@ public enum ConversionSide: String, Identifiable {
   @discardableResult public func refresh() -> Task<Void, Never>? {
     cancel()
     quote = nil
+    rate = CachedFXRate.newest([rate, cachedRate(from.code, to.code, quoteDate)]
+      .compactMap { $0 }.filter { $0.matches(from: from.code, to: to.code, date: quoteDate) })
+    usesCachedRate = rate != nil
+    waitingForConnection = false
     rateInput = ""
     usesManualRate = false
     message = nil
-    guard !isIdentity else { return nil }
+    guard !isIdentity else {
+      rate = nil
+      usesCachedRate = false
+      return nil
+    }
     let id = requestID
     let requestedFrom = from.code
     let requestedTo = to.code
@@ -138,17 +155,25 @@ public enum ConversionSide: String, Identifiable {
         let response = try await loader(requestedFrom, requestedTo, date)
         guard let self, self.requestID == id, !Task.isCancelled else { return }
         guard response.from == requestedFrom, response.to == requestedTo,
-          response.requestedDate == date, self.validRate(response.rate)
+          response.requestedDate == date, response.rateDate <= date, !response.id.isEmpty,
+          self.validRate(response.rate)
         else {
           throw ServiceError(
             code: "fx_mismatch",
             message: "The returned quote didn’t match this conversion. Try again or enter a rate.")
         }
         self.quote = response
+        self.rate = CachedFXRate(quote: response, fetchedAt: .now)
+        self.usesCachedRate = false
+        self.waitingForConnection = false
         self.message = nil
       } catch {
         guard let self, self.requestID == id, !Task.isCancelled else { return }
         self.message = error.localizedDescription
+        if let error = error as? URLError {
+          self.waitingForConnection = [.notConnectedToInternet, .networkConnectionLost,
+            .dataNotAllowed, .internationalRoamingOff].contains(error.code)
+        }
       }
       guard let self, self.requestID == id else { return }
       self.isLoading = false
@@ -156,6 +181,11 @@ public enum ConversionSide: String, Identifiable {
     }
     request = task
     return task
+  }
+  /// Reconnection and foreground events retry failed fetches without replacing a manual rate.
+  @discardableResult public func refreshIfNeeded() -> Task<Void, Never>? {
+    guard !isIdentity, !usesManualRate, !isLoading, usesCachedRate || rate == nil else { return nil }
+    return refresh()
   }
   /// Any positive amount can be logged in the currency it was typed in. Only a conversion into
   /// home carries its rate across, so only then must that rate be valid.
@@ -168,10 +198,8 @@ public enum ConversionSide: String, Identifiable {
     draft.amount = amount
     draft.currency = from.code
     if to.code == trip.homeCurrency, !isIdentity, let result {
-      if let quote, !usesManualRate, effectiveRate != nil {
-        draft.conversion = Conversion(
-          homeAmountMinor: String(result), rate: quote.rate, rateDate: quote.rateDate,
-          source: quote.source, kind: "reference", quoteId: quote.id)
+      if let rate, !usesManualRate, effectiveRate != nil, let amount = parsedAmount {
+        draft.conversion = try rate.conversion(amount)
       } else if usesManualRate, let rate = effectiveRate {
         draft.conversion = Conversion(
           homeAmountMinor: String(result), rate: rate, rateDate: quoteDate,

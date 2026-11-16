@@ -20,11 +20,13 @@ public struct ConvertView: View {
   @Environment(AppModel.self) private var app
   @Environment(\.dismiss) private var dismiss
   @Environment(\.accessibilityReduceMotion) private var reduceMotion
+  @Environment(\.scenePhase) private var scenePhase
   var tripID: String
   var attachment: Attachment
   /// Tent: read from arm's length on a counter, so the keypad fills the height.
   var tent: Bool
   @State private var conversion: ConversionModel?
+  @State private var connectivity: Connectivity?
   @State private var picking: ConversionSide?
   @State private var size = CGSize.zero
   private var wide: Bool { size.width >= 590 }
@@ -78,15 +80,16 @@ public struct ConvertView: View {
         // A nested picker may cause this task to run again; the open session owns its choices.
         guard conversion == nil else { return }
         let defaults = trip.conversionDefaults(on: trip.date(for: attachment))
-        let api = app.sync.api
         let state = ConversionModel(
-          from: defaults.from, to: defaults.to, date: trip.date(for: attachment)
+          from: defaults.from, to: defaults.to, date: trip.date(for: attachment),
+          cachedRate: { from, to, date in app.cachedConversionRate(from: from, to: to, date: date) }
         ) { from, to, date in
-          try await api.quote(from: from, to: to, date: date, token: nil)
+          try await app.conversionQuote(from: from, to: to, date: date)
         }
         state.amount = ""
         conversion = state
         state.start()
+        connectivity = Connectivity { [weak state] in state?.refreshIfNeeded() }
         #if DEBUG
           // `--convert-amount 24.5` and `--convert-swap` reach a typed or swapped sheet.
           let arguments = ProcessInfo.processInfo.arguments
@@ -95,6 +98,9 @@ public struct ConvertView: View {
           }
           if arguments.contains("--convert-swap") { state.swap() }
         #endif
+      }
+      .onChange(of: scenePhase) { _, phase in
+        if phase == .active { conversion?.refreshIfNeeded() }
       }
       .readVerticalRail($verticalRail)
       .taskRail()
@@ -337,7 +343,7 @@ public struct ConvertView: View {
 
   /// One unit (or a thousand of a zero-decimal currency) at the current rate.
   private func unitRate(_ conversion: ConversionModel) -> String? {
-    let rate = conversion.usesManualRate ? conversion.rateInput : conversion.quote?.rate
+    let rate = conversion.effectiveRate
     guard let rate, !rate.isEmpty else { return nil }
     let from = conversion.from.code
     let to = conversion.to.code
@@ -348,7 +354,32 @@ public struct ConvertView: View {
 
   /// Offline, or with a refused quote: retry, or type the rate off a board or a receipt.
   @ViewBuilder private func rateControls(_ conversion: ConversionModel) -> some View {
-    if !conversion.isIdentity, conversion.usesManualRate || conversion.message != nil {
+    if !conversion.isIdentity, !conversion.usesManualRate, let rate = conversion.rate {
+      TimelineView(.periodic(from: .now, by: 60)) { _ in
+        VStack(spacing: 3) {
+          if let fetchedAt = rate.fetchedAt {
+            Text("Last fetched \(fetchedAt.formatted(.relative(presentation: .named)))")
+          } else {
+            Text("Rate from \(rate.rateDate)")
+          }
+          if conversion.waitingForConnection {
+            Text("We’ll update when you’re back online.")
+          } else if conversion.isLoading {
+            Text("Updating rate…")
+          } else if conversion.message != nil {
+            Button("Couldn’t update the rate. Try again") { conversion.refresh() }
+              .buttonStyle(.plain)
+          }
+          if let issue = conversion.conversionIssue { Text(issue).foregroundStyle(Theme.bad) }
+        }
+        .typeface(12, .medium, relativeTo: .caption, maximum: 1.6)
+        .foregroundStyle(Theme.secondary)
+        .multilineTextAlignment(.center)
+        .accessibilityElement(children: .combine)
+        .accessibilityIdentifier("converter.rateStatus")
+      }
+      .padding(.top, 8)
+    } else if !conversion.isIdentity, conversion.usesManualRate || conversion.message != nil {
       VStack(spacing: 8) {
         if conversion.usesManualRate {
           HStack(spacing: 8) {

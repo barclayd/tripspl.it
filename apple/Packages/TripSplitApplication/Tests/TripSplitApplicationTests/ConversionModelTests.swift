@@ -40,6 +40,9 @@ private actor ControlledConversionQuotes {
   }
   var count: Int { requests.count }
   func date(_ index: Int) -> String { requests[index].date }
+  func fail(_ index: Int) {
+    requests[index].continuation.resume(throwing: URLError(.notConnectedToInternet))
+  }
 }
 
 @MainActor struct ConversionModelTests {
@@ -251,6 +254,89 @@ private actor ControlledConversionQuotes {
     #expect(draft.conversion == nil)
     #expect(draft.actualHomeAmount.isEmpty)
     #expect(draft.amount == "10")
+  }
+
+  @Test func cachedRateWorksDuringFetchAndOfflineThenRefreshesOnReconnect() async throws {
+    let server = ControlledConversionQuotes()
+    let fetchedAt = Date(timeIntervalSince1970: 1_790_000_000)
+    let cached = CachedFXRate(
+      from: "TWD", to: "GBP", rate: "0.025", rateDate: "2026-10-30",
+      source: "Test reference", fetchedAt: fetchedAt)
+    let model = ConversionModel(
+      from: .forCurrency("TWD"), to: .forCurrency("GBP"), date: "2026-11-01",
+      today: "2026-11-01", cachedRate: { _, _, _ in cached }
+    ) { try await server.load($0, $1, $2) }
+    model.amount = "65"
+    let first = model.start()
+    await server.waitForCount(1)
+    #expect(model.result == 163)
+    #expect(model.usesCachedRate)
+    #expect(model.refreshIfNeeded() == nil)
+    await server.fail(0)
+    await first?.value
+    #expect(model.result == 163)
+    #expect(model.waitingForConnection)
+    #expect(model.rate?.fetchedAt == fetchedAt)
+    var onboarding = OnboardingDraft()
+    onboarding.stops = [Destination.all[0].stop()]
+    let trip = try onboarding.makeTrip()
+    let draft = try model.expenseDraft(trip: trip, attachment: .init(kind: .day, id: trip.days[0].id))
+    #expect(draft.conversion?.homeAmountMinor == "163")
+    #expect(draft.conversion?.rateDate == "2026-10-30")
+    #expect(draft.conversion?.quoteId == nil)
+    #expect(draft.conversion?.kind == "manual")
+    let retry = model.refreshIfNeeded()
+    await server.waitForCount(2)
+    #expect(model.result == 163)
+    await server.resolve(1, rate: "0.03")
+    await retry?.value
+    #expect(model.result == 195)
+    #expect(!model.usesCachedRate)
+    #expect(!model.waitingForConnection)
+    #expect(model.message == nil)
+    #expect(model.rate?.fetchedAt != fetchedAt)
+    #expect(model.refreshIfNeeded() == nil)
+    // A failed later refresh retains this newer quote, including its server provenance.
+    let refresh = model.refresh()
+    await server.waitForCount(3)
+    await server.fail(2)
+    await refresh?.value
+    #expect(model.result == 195)
+    #expect(model.rate?.quoteID == "quote-1")
+    model.enterManualRate("0.04")
+    #expect(model.refreshIfNeeded() == nil)
+    #expect(model.result == 260)
+  }
+
+  @Test func fallbackCannotLeakAcrossPairsOrUseAFutureOrInvalidRate() async {
+    let server = ControlledConversionQuotes()
+    let cached = CachedFXRate(
+      from: "EUR", to: "GBP", rate: "0.8", rateDate: "2026-10-01", source: "Test")
+    let model = ConversionModel(
+      from: .forCurrency("EUR"), to: .forCurrency("GBP"), date: "2026-11-01",
+      today: "2026-11-01", cachedRate: { _, _, _ in cached }
+    ) { try await server.load($0, $1, $2) }
+    let first = model.start()
+    await server.waitForCount(1)
+    let next = model.select(.forCurrency("JPY"), for: .from)
+    await server.waitForCount(2)
+    #expect(model.rate == nil)
+    #expect(model.result == nil)
+    await server.fail(1)
+    await next?.value
+    await server.resolve(0, rate: "0.9")
+    await first?.value
+    #expect(model.result == nil)
+    #expect(model.waitingForConnection)
+    for (date, rate) in [("2027-01-01", "0.8"), ("2026-10-01", "0")] {
+      let invalid = ConversionModel(
+        from: .forCurrency("EUR"), to: .forCurrency("GBP"), date: "2026-11-01",
+        today: "2026-11-01", cachedRate: { _, _, _ in
+          .init(from: "EUR", to: "GBP", rate: rate, rateDate: date, source: "Test")
+        }, loadQuote: { _, _, _ in throw URLError(.notConnectedToInternet) })
+      await invalid.start()?.value
+      #expect(invalid.result == nil)
+    }
   }
 
 }

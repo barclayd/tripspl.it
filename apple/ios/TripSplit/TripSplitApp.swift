@@ -19,6 +19,10 @@ import UIKit
   init() {
     do {
       #if DEBUG
+        if ProcessInfo.processInfo.arguments.contains("--offline-conversion-demo") {
+          _model = State(initialValue: try OfflineConversionPreview.model())
+          return
+        }
         if ProcessInfo.processInfo.arguments.contains("--sync-recovery-demo") {
           _model = State(initialValue: try SyncRecoveryPreview.model())
           return

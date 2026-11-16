@@ -2,6 +2,43 @@ import Foundation
 import TripSplitDomain
 
 extension AppModel {
+  /// Quick convert shares the durable rates already available to expenses and the home screen.
+  public func cachedConversionRate(from: String, to: String, date: String) -> CachedFXRate? {
+    var candidates = Array(conversionRates.values)
+    if let quote = expenseQuotes["\(from)/\(to)"] {
+      candidates.append(CachedFXRate(quote: quote))
+    }
+    if let table = referenceRates, let rate = table.rate(from: from, to: to) {
+      candidates.append(.init(
+        from: from, to: to, rate: rate, rateDate: table.rateDate, source: table.source,
+        fetchedAt: referenceRatesFetchedAt))
+    }
+    for trip in store.trips where trip.homeCurrency == to {
+      for expense in trip.expenses where expense.currency == from {
+        guard let conversion = expense.conversion, conversion.kind == "reference",
+          let quoteID = conversion.quoteId else { continue }
+        candidates.append(.init(
+          from: from, to: to, rate: conversion.rate, rateDate: conversion.rateDate,
+          source: conversion.source, quoteID: quoteID))
+      }
+    }
+    return CachedFXRate.newest(candidates.filter { $0.matches(from: from, to: to, date: date) })
+  }
+
+  /// Only a validated network response can advance a saved rate's fetch time.
+  public func conversionQuote(from: String, to: String, date: String) async throws -> FXQuote {
+    let quote = try await sync.api.quote(from: from, to: to, date: date, token: nil)
+    let cached = CachedFXRate(quote: quote, fetchedAt: .now)
+    guard quote.requestedDate == date, !quote.id.isEmpty,
+      cached.matches(from: from, to: to, date: date)
+    else {
+      throw ServiceError(code: "fx_mismatch", message: "The returned quote didn’t match this conversion. Try again or enter a rate.")
+    }
+    conversionRates["\(from)/\(to)/\(date)"] = cached
+    try? store.write(conversionRates, key: "conversionRates")
+    return quote
+  }
+
   /// Uses today's latest published quote, including for future trip days. The API's calendar
   /// is UTC, so a traveller ahead of UTC never asks it for tomorrow's unavailable rate.
   public func expenseConversion(_ amount: Int64, from: String, to: String) async throws -> Conversion? {
@@ -9,7 +46,7 @@ extension AppModel {
     let today = CivilDate.today(timeZone: "UTC")
     let key = "\(from)/\(to)"
     if expenseQuotes[key]?.requestedDate != today, sync.configured,
-      let quote = try? await sync.api.quote(from: from, to: to, date: today, token: nil),
+      let quote = try? await conversionQuote(from: from, to: to, date: today),
       quote.from == from, quote.to == to, quote.requestedDate == today, quote.rateDate <= today,
       !quote.id.isEmpty, (try? Money.convert(0, from: from, to: to, rate: quote.rate)) != nil
     {
@@ -23,26 +60,8 @@ extension AppModel {
   /// conversion format, with their provider/date retained; they never claim a server quote ID.
   public func cachedExpenseConversion(_ amount: Int64, from: String, to: String) throws -> Conversion? {
     guard from != to else { return nil }
-    var conversions = store.trips.filter { $0.homeCurrency == to }.flatMap(\.expenses)
-      .filter { $0.currency == from }.compactMap(\.conversion)
-      .filter { $0.kind == "reference" && $0.quoteId != nil }
-    if let quote = expenseQuotes["\(from)/\(to)"] {
-      conversions.append(.init(
-        homeAmountMinor: "0", rate: quote.rate, rateDate: quote.rateDate,
-        source: quote.source, kind: "reference", quoteId: quote.id))
-    }
-    if let table = referenceRates, let rate = table.rate(from: from, to: to) {
-      conversions.append(.init(
-        homeAmountMinor: "0", rate: rate, rateDate: table.rateDate,
-        source: "Cached " + table.source, kind: "manual"))
-    }
-    let today = CivilDate.today(timeZone: "UTC")
-    // Prefer a direct quote when the table and quote have the same publication date.
-    guard var conversion = conversions.filter({ $0.rateDate <= today }).max(by: {
-      $0.rateDate == $1.rateDate ? $0.kind != "reference" && $1.kind == "reference" : $0.rateDate < $1.rateDate
-    }) else { return nil }
-    conversion.homeAmountMinor = String(try Money.convert(amount, from: from, to: to, rate: conversion.rate))
-    return conversion
+    return try cachedConversionRate(
+      from: from, to: to, date: CivilDate.today(timeZone: "UTC"))?.conversion(amount)
   }
 
   /// Repairs expenses saved by older versions without a conversion, without changing bank

@@ -177,4 +177,60 @@ private final class ExpenseFXProtocol: URLProtocol, @unchecked Sendable {
     model.expenseDraft?.actualHomeAmount = "1.07"
     #expect(try await model.saveExpense().conversion?.homeAmountMinor == "107")
   }
+
+  @Test func quickConvertPersistsFetchedRateAcrossRestartAndOfflineFailure() async throws {
+    let (model, _) = try setUp(online: true)
+    let date = "2026-10-30"
+    ExpenseFXProtocol.handler = { _ in
+      try JSONEncoder().encode(FXQuote(
+        id: "saved-quote", from: "TWD", to: "GBP", rate: "0.025",
+        requestedDate: date, rateDate: date, source: "Test reference"))
+    }
+    _ = try await model.conversionQuote(from: "TWD", to: "GBP", date: date)
+    let cached = try #require(model.cachedConversionRate(from: "TWD", to: "GBP", date: date))
+    #expect(cached.fetchedAt != nil)
+    let restarted = AppModel(store: model.store, sync: model.sync)
+    ExpenseFXProtocol.handler = { _ in throw URLError(.notConnectedToInternet) }
+    await #expect(throws: URLError.self) {
+      try await restarted.conversionQuote(from: "TWD", to: "GBP", date: "2026-11-01")
+    }
+    let offline = try #require(restarted.cachedConversionRate(from: "TWD", to: "GBP", date: "2026-11-01"))
+    #expect(offline.fetchedAt == cached.fetchedAt)
+    #expect(offline.quoteID == "saved-quote")
+    #expect(try offline.conversion(6500).homeAmountMinor == "163")
+    #expect(restarted.cachedConversionRate(from: "TWD", to: "GBP", date: "2026-10-29") == nil)
+    #expect(restarted.cachedConversionRate(from: "JPY", to: "GBP", date: date) == nil)
+  }
+
+  @Test func legacyTableHasPublicationDateUntilARealFetchAndSupportsCrossRates() throws {
+    let (model, _) = try setUp()
+    try model.store.write(rates(), key: "referenceRates")
+    let legacy = AppModel(store: model.store, sync: model.sync)
+    let rate = try #require(legacy.cachedConversionRate(from: "TWD", to: "JPY", date: "2026-11-01"))
+    #expect(rate.rate == "4")
+    #expect(rate.rateDate == "2026-10-01")
+    #expect(rate.fetchedAt == nil)
+    let fetchedAt = Date(timeIntervalSince1970: 1_790_000_000)
+    legacy.cacheReferenceRates(rates(), fetchedAt: fetchedAt)
+    let restarted = AppModel(store: model.store, sync: model.sync)
+    #expect(restarted.cachedConversionRate(from: "TWD", to: "JPY", date: "2026-11-01")?.fetchedAt == fetchedAt)
+  }
+
+  @Test func mismatchedFetchDoesNotReplaceSavedRateOrTimestamp() async throws {
+    let (model, _) = try setUp(online: true)
+    let fetchedAt = Date(timeIntervalSince1970: 1_790_000_000)
+    model.cacheReferenceRates(rates(), fetchedAt: fetchedAt)
+    ExpenseFXProtocol.handler = { _ in
+      try JSONEncoder().encode(FXQuote(
+        id: "wrong-pair", from: "USD", to: "GBP", rate: "0.8",
+        requestedDate: "2026-11-01", rateDate: "2026-11-01", source: "Test"))
+    }
+    await #expect(throws: ServiceError.self) {
+      try await model.conversionQuote(from: "TWD", to: "GBP", date: "2026-11-01")
+    }
+    let saved = model.cachedConversionRate(from: "TWD", to: "GBP", date: "2026-11-01")
+    #expect(saved?.rate == "0.02")
+    #expect(saved?.fetchedAt == fetchedAt)
+    #expect(model.conversionRates.isEmpty)
+  }
 }

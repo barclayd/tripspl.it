@@ -30,6 +30,8 @@ import TripSplitSync
   public var pendingInvitation: URL?
   /// The last reference rates from pounds, also used to save expense estimates offline.
   public private(set) var referenceRates: FXTable?
+  var referenceRatesFetchedAt: Date?
+  var conversionRates: [String: CachedFXRate] = [:]
   var expenseQuotes: [String: FXQuote] = [:]
   var repairingConversions = false
   public var selectedTrip: TripSnapshot? { selectedTripID.flatMap { store.trip($0) } }
@@ -40,6 +42,8 @@ import TripSplitSync
     onboarding.reconcileRoute()
     if onboarding.step == 6 { selectedTripID = onboarding.createdTripID }
     referenceRates = store.read(FXTable.self, key: "referenceRates")
+    referenceRatesFetchedAt = store.read(Date.self, key: "referenceRatesFetchedAt")
+    conversionRates = store.read([String: CachedFXRate].self, key: "conversionRates") ?? [:]
     expenseQuotes = store.read([String: FXQuote].self, key: "expenseQuotes") ?? [:]
   }
   /// An indicative rate between any two currencies the cached table lists.
@@ -77,9 +81,11 @@ import TripSplitSync
     }
     await repairExpenseConversions()
   }
-  public func cacheReferenceRates(_ table: FXTable) {
+  public func cacheReferenceRates(_ table: FXTable, fetchedAt: Date = .now) {
     referenceRates = table
+    referenceRatesFetchedAt = fetchedAt
     try? store.write(table, key: "referenceRates")
+    try? store.write(fetchedAt, key: "referenceRatesFetchedAt")
   }
   public func open(_ trip: TripSnapshot) {
     selectedTripID = trip.id
