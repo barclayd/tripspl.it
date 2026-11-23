@@ -80,11 +80,12 @@ public struct TripTimeline: Sendable {
 
   public init(_ trips: [TripSnapshot], at instant: Date = Date()) {
     let active = trips.filter { !$0.archived }
-    now = active.filter { $0.phase(at: instant) == .now }.sorted { $0.startsOn < $1.startsOn }
-    upcoming = active.filter { $0.phase(at: instant) == .upcoming }.sorted {
+    let today = CivilDate.string(instant, timeZone: TimeZone.current.identifier)
+    now = active.filter { $0.phase(on: today) == .now }.sorted { $0.startsOn < $1.startsOn }
+    upcoming = active.filter { $0.phase(on: today) == .upcoming }.sorted {
       $0.startsOn < $1.startsOn
     }
-    past = active.filter { $0.phase(at: instant) == .past }.sorted { $0.startsOn > $1.startsOn }
+    past = active.filter { $0.phase(on: today) == .past }.sorted { $0.startsOn > $1.startsOn }
   }
 
   public var isEmpty: Bool { now.isEmpty && upcoming.isEmpty && past.isEmpty }
