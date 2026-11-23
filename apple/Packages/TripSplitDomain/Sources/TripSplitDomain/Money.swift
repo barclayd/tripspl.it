@@ -193,6 +193,11 @@ public struct Ledger {
   }
 }
 public enum CivilDate {
+  private static let dayFormat = Date.VerbatimFormatStyle(
+    format: "\(year: .padded(4))-\(month: .twoDigits)-\(day: .twoDigits)",
+    locale: Locale(identifier: "en_US_POSIX"), timeZone: .gmt,
+    calendar: Calendar(identifier: .gregorian))
+
   public static func calendar(_ zone: String = "UTC") -> Calendar {
     var cal = Calendar(identifier: .gregorian)
     cal.timeZone = TimeZone(identifier: zone) ?? TimeZone(secondsFromGMT: 0)!
@@ -207,12 +212,9 @@ public enum CivilDate {
     return formatter.date(from: value) ?? Date(timeIntervalSince1970: 0)
   }
   public static func string(_ date: Date, timeZone: String = "UTC") -> String {
-    let f = DateFormatter()
-    f.calendar = calendar(timeZone)
-    f.locale = Locale(identifier: "en_US_POSIX")
-    f.timeZone = TimeZone(identifier: timeZone)
-    f.dateFormat = "yyyy-MM-dd"
-    return f.string(from: date)
+    var format = dayFormat
+    format.timeZone = TimeZone(identifier: timeZone) ?? .current
+    return date.formatted(format)
   }
   public static func today(timeZone: String) -> String { string(Date(), timeZone: timeZone) }
   public static func days(from start: String, to end: String) -> Int {
